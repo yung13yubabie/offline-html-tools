@@ -1,0 +1,9 @@
+node_modules/
+test-results/
+originals/
+*-conversation-evidence.json
+*recovery-audit.json
+public-safety-scan.json
+qa-baseline/
+*.taxbackup
+*.bak

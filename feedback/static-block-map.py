@@ -1,0 +1,13 @@
+# Build-time constants only. Never derive names from customer DOM text.
+ID_NAMES={
+'accounting-calculator':{'keypad':'計算按鍵','batchCalcPanel':'批量小計算機','batchRows':'批量算式清單','taxSettings':'預設稅率設定','salesSide':'銷項憑證輸入','inputSide':'進項憑證輸入','bracketTableBox':'完整投保級距表','laborExactBox':'勞保帳單實際值','healthExactBox':'健保帳單實際值'},
+'pdf-workbench':{'outputMergePanel':'合併輸出設定','outputSplitPanel':'分組分割設定','outputSinglePanel':'每頁獨立輸出','splitPagePicker':'分割頁面選取','outputSummary':'輸出摘要','cropStage':'裁切預覽','finishStage':'完稿預覽','finishPageNumControls':'頁碼設定','finishWatermarkControls':'浮水印設定','finishTextControls':'新增文字設定','finishStampControls':'圖片印章設定','backupCategories':'備份類別選擇','pdfImageQualityWrap':'圖像品質設定','pdfImageSummary':'轉圖輸出摘要'},
+'vat-workbench':{'workTaskPane210':'待辦工作清單','systemTaskPane210':'系統工作清單','todayStats':'今日工作統計','todayTodos':'今日待辦分類','doneCard':'已完成工作','calendarMonthPane':'月曆區塊','calendarListPane':'日曆列表','clientTable':'客戶清單','workCommonSettings':'本期共同設定','workClientList':'本期客戶清單','workDetail':'本期工作明細','preShipPane':'預寄工作區','feeSearchPane211':'費用查詢','accountingStats':'帳款統計','accountingClientList':'帳款客戶清單','accountingDetail':'帳款明細','noticeContextBar':'通知對象設定','notificationTypeList':'通知類型清單','templateCards':'模板清單','templateEditorCard':'模板內容編輯','templateReminderPane':'通知提醒設定','templateExportPane':'通知匯出設定','pdfTaskOptions210':'待辦列印選項','backupInfo':'備份狀態','receiptStatusSettings':'收件狀態設定','reminderDaysSettings':'提醒天數設定','courierSettings':'物流方式設定','prioritySettings':'工作優先順序設定','cardFieldSettings':'卡片欄位設定','modalRoot':'操作對話框'},
+}
+CLASS_NAMES={
+'accounting-calculator':{'calc-main':['單次計算'],'calc-display':['算式與結果顯示'],'batch-card':['批量計算'],'tax-toolbar':['稅務計算工具列'],'tax-summary':['稅額彙總與留抵'],'insurance-bracket-card':['薪資投保級距查詢'],'bracket-input-row':['月薪查詢輸入'],'cost-controls':['勞健保費率與眷屬設定'],'cost-table-wrap':['每月費用明細'],'cost-summary':['每月費用合計'],'insurance-card':['勞保帳單倒推','健保帳單核對']},
+'pdf-workbench':{'section':['頁面工具','文件完稿工具','工作流程工具','已加入完稿項目','工作階段刪除操作','頁面預覽工具','已載入來源清單','警告與品質報告'],'toolbar':['頁面選取與排序工具'],'output-mode-grid':['輸出模式選擇'],'crop-controls':['裁切參數'],'finish-controls':['完稿項目參數']},
+'vat-workbench':{'calendar-overview':['日曆摘要'],'calendar-toolbar':['日曆篩選與切換']},
+}
+ID_NAMES['vat-workbench'].update({'taskDialog210':'待辦編輯視窗','taskBulkDialog210':'批次待辦視窗'})
+ID_NAMES['pdf-workbench'].update({'cropDialog':'裁切視窗','spreadDialog':'跨頁分割視窗','paperDialog':'紙張尺寸視窗','mergeDialog':'合併視窗','outputDialog':'輸出設定視窗','pagePreviewDialog':'單頁預覽視窗','previewDialog':'文件預覽視窗','finishDialog':'完稿設定視窗','pdfImageDialog':'PDF 轉圖像視窗','flowsDialog':'已保存流程視窗','backupDialog':'備份匯出視窗','resetDialog':'工作階段重設視窗'})
