@@ -21,6 +21,8 @@
 @media print{.sidebar,.topbar,.import-card,.controls,.button,.config-panel,.page-footer,.toast,.search-options,.amount-search,.year-selector,.period-bar,.item-filter,.record-actions,.group-edit,.batch-toolbar,.usage-help{display:none!important}main{margin:0}.stage{padding:0}.record-list{overflow:visible;max-height:none;min-height:0}.record-group>.group-body{display:block}.analysis-grid,.offset-grid,.year-results-grid{display:block}.list-panel,.year-card{margin-bottom:16px;break-inside:avoid}body{background:white}.output-panel textarea{height:auto}.record-source{display:none}}
 .record-account{font-size:.9375rem;font-weight:700}.account-code{font-size:.8125rem}.pair .record-account,.year-card .record-account{font-size:.875rem}.record-amounts{padding-right:58px}.record-source:not([open]){position:absolute;right:13px;bottom:10px;margin:0}.record-source[open]{position:static;margin-top:10px}.record-source>summary{min-height:30px}
 
+/* Let final controls scroll above the fixed annotation toggle on small screens. */
+@media screen and (max-width:700px){body{padding-bottom:84px;scroll-padding-bottom:84px}}
 </style>
   <script>
 

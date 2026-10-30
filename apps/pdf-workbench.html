@@ -59,6 +59,15 @@
 .page-card{content-visibility:auto;contain-intrinsic-size:340px}
 .spread-dialog{width:min(720px,calc(100vw - 28px))}.spread-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.spread-grid .field{margin:0}.paper-dialog{width:min(520px,calc(100vw - 28px))}
 @media(max-width:700px){.spread-grid{grid-template-columns:1fr}}
+/* Narrow-screen toolbar: keep labels on one line inside horizontal scrollers. */
+@media screen and (max-width:700px){
+ .topbar,.top-actions{min-width:0}.brand{flex:0 0 auto}
+ .top-actions{overflow-x:auto;overflow-y:hidden}
+ .top-actions>button,.toolbar>button,.toolbar>.pill{flex:0 0 auto;white-space:nowrap}
+ .top-actions>.spacer{flex:0 0 0}.toolbar{min-width:0;overflow-x:auto;overflow-y:hidden}
+ .toolbar>.sep{flex:0 0 1px}
+ .page-pane{padding-bottom:84px;scroll-padding-bottom:84px}
+}
 </style>
 </head>
 <body>

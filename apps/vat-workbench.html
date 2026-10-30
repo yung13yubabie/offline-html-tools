@@ -424,6 +424,15 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
  .calendar-shell,.calendar-pane-card,#calendarMonthPane,#calendarListPane,.calendar-pane-card>.card-b,#calendarGrid{min-width:0;max-width:100%}#calendarGrid{width:100%;overflow-x:auto}.template-variable-tools210 .var-source{font-size:13px;line-height:1.65;padding-top:0;margin-top:7px;white-space:normal;overflow:visible}.template-variable-tools210 .var-item{display:block;padding:10px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent}.template-variable-tools210 .chip{font-size:13px}
 }
 @media screen and (max-width:799px){.context-grid{grid-template-columns:minmax(0,1fr)!important}.context-grid #mergeClientsField{grid-column:1}.type-panel>.card-b .type-list{flex-direction:row;max-width:100%}.type-item{flex:0 0 175px}.template-properties211{min-width:0}.template-main-column{min-width:0}}
+/* Mobile empty queue and bottom controls must fit the scroll viewport. */
+@media screen and (max-width:799px){
+ .view{padding-bottom:90px}.main{scroll-padding-bottom:84px}
+ .task-bottom210>div{min-width:0;max-width:100%;flex-wrap:wrap}
+ .task-bottom210 .btn{white-space:nowrap;flex-shrink:0}
+ .task-table210:has(.task-empty210){min-width:0;table-layout:auto}
+ .task-table210:has(.task-empty210) colgroup,.task-table210:has(.task-empty210) thead{display:none}
+ .task-empty210{padding:24px 10px;white-space:normal;overflow-wrap:anywhere}
+}
 </style>
 </head>
 <body>

@@ -49,6 +49,50 @@ async function feedback(p,id){
  const box=await ui.locator('.panel').boundingBox();assert(box&&box.width<=390&&box.x>=-1&&box.x+box.width<=391,'Feedback panel fits 390px viewport');await screenshot(p,id+'-feedback-mobile');await p.keyboard.press('Escape');await screenshot(p,id+'-mobile');
  await p.setViewportSize({width:1440,height:1000});
 }
+async function mobileLayout(p,id){
+ await p.setViewportSize({width:390,height:844});
+ try{
+  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Document must not overflow the 390px viewport');
+  const ui=p.locator('#offline-review-host');
+  async function reachable(locator,{trial=true}={}){
+   await locator.evaluate(e=>e.scrollIntoView({block:'center',inline:'center'}));
+   const b=await locator.boundingBox(),t=await ui.locator('.toggle').boundingBox();
+   assert(b&&b.x>=-1&&b.x+b.width<=391&&b.y>=0&&b.y+b.height<=844,'Control must fit after scrolling');
+   assert(!t||b.x+b.width<=t.x||b.x>=t.x+t.width||b.y+b.height<=t.y||b.y>=t.y+t.height,'Closed feedback toggle must not cover the reachable control');
+   assert(await locator.evaluate(e=>{const r=e.getBoundingClientRect(),hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);return hit===e||e.contains(hit)}),'Control center must not be intercepted');
+   if(trial)await locator.click({trial:true});
+  }
+  if(id==='accounting-calculator'||id==='ledger-analyzer'){
+   await p.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+   const last=p.locator(id==='accounting-calculator'?'#copyBatchBtn':'#emptyWorkspace button');
+   await reachable(last);await p.screenshot({path:path.join(OUT,id+'-mobile-bottom-controls.png')});
+  }else if(id==='vat-workbench'){
+   await p.locator('.nav-btn[data-view="today"]').click();
+   await reachable(p.locator('#newWorkTask210'));
+   const empty=p.locator('.task-empty210');await visible(p,'.task-empty210');
+   assert(await empty.evaluate(e=>{const r=e.getBoundingClientRect(),wrap=e.closest('.task-table-scroll210').getBoundingClientRect();return r.left>=wrap.left&&r.right<=wrap.right+1}),'Empty queue explanation must fit, not be centered offscreen in a 780px table');
+   await reachable(empty.locator('button'));await empty.locator('button').click();
+   await p.locator('.main').evaluate(e=>e.scrollTop=e.scrollHeight);
+   await reachable(p.locator('#taskPageSize210'));await p.locator('#taskPageSize210').selectOption('24');
+   await reachable(p.locator('#taskPrev210'),{trial:false});await reachable(p.locator('#taskNext210'),{trial:false});
+   await p.screenshot({path:path.join(OUT,id+'-mobile-bottom-controls.png')});
+   await p.locator('.main').evaluate(e=>e.scrollTop=0);await p.screenshot({path:path.join(OUT,id+'-mobile-empty-queue.png')});
+  }else if(id==='pdf-workbench'){
+   const controls=p.locator('.top-actions>button,.toolbar>button,.toolbar>.pill');
+   for(let i=0;i<await controls.count();i++){
+    const item=controls.nth(i);
+    assert(await item.evaluate(e=>{const range=document.createRange();range.selectNodeContents(e);const lines=[...range.getClientRects()].filter(r=>r.width&&r.height);return getComputedStyle(e).whiteSpace==='nowrap'&&new Set(lines.map(r=>Math.round(r.top))).size<=1}),'PDF toolbar labels must stay on one horizontal line');
+    await reachable(item,{trial:await item.evaluate(e=>e.tagName==='BUTTON'&&!e.disabled)});
+   }
+   await p.locator('.top-actions').evaluate(e=>e.scrollLeft=0);await p.locator('.toolbar').evaluate(e=>e.scrollLeft=0);await p.screenshot({path:path.join(OUT,id+'-mobile-toolbar-start.png')});
+   // Verify scrolling reaches the actual rightmost output action after a synthetic import.
+   const png=await p.evaluate(()=>{const c=document.createElement('canvas');c.width=8;c.height=8;return c.toDataURL('image/png').split(',')[1]});
+   const count=await p.locator('.page-card').count();await p.locator('#imageInput').setInputFiles({name:'synthetic-mobile.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')});await p.waitForFunction(n=>document.querySelectorAll('.page-card').length===n+1,count);
+   await reachable(p.locator('#exportBtn'));await p.screenshot({path:path.join(OUT,id+'-mobile-toolbar-output.png')});await p.locator('#exportBtn').click();await visible(p,'#outputDialog');await p.locator('[data-close="outputDialog"]').click();
+  }
+ }finally{await p.setViewportSize({width:1440,height:1000});}
+}
+
 async function nativeDialogFeedback(p){
  const ui=p.locator('#offline-review-host');
  const png=await p.evaluate(()=>{const c=document.createElement('canvas');c.width=8;c.height=8;return c.toDataURL('image/png').split(',')[1]});
@@ -128,6 +172,7 @@ async function pdf(p){
  await check(id+' offline initial load',async()=>{const file=path.join(ROOT,'apps',id+'.html');assert(fs.existsSync(file),'Missing deliverable '+file);await p.goto(pathToFileURL(file).href);await visible(p,'body');assert((await p.locator('body').innerText()).length>100);assert.equal(await p.evaluate(()=>location.protocol),'file:');await screenshot(p,id+'-initial');});
  await check(id+' primary flows',()=>flow(p));
  await check(id+' feedback visible blocks + export + reload + mobile',()=>feedback(p,id));
+ await check(id+' mobile controls reachable without clipping or toggle overlap',()=>mobileLayout(p,id));
  if(id==='pdf-workbench')await check(id+' native modal feedback reachability + business-click protection',()=>nativeDialogFeedback(p));
  await check(id+' no uncaught JavaScript errors',()=>assert.deepEqual(evidence.pageErrors,[]));
  await check(id+' no external network requested',()=>assert.deepEqual(evidence.blockedNetwork,[]));
