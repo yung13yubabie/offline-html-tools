@@ -452,6 +452,9 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 @media screen and (max-width:1100px){#workCommonSettings .work-common-dates211{flex-basis:100%}#accountingStats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media screen and (max-width:520px){#workCommonSettings .work-common-dates211{grid-template-columns:1fr}.work-date211{grid-template-columns:1fr auto;align-items:center}.work-date-value211{grid-column:1;grid-row:2}.work-date-status211{grid-column:2;grid-row:1/3}#accountingStats{grid-template-columns:1fr}}
 
+
+/* Keep on-screen review controls out of every printed report. */
+@media print{#offline-review-host{display:none!important}}
 </style>
 </head>
 <body>
