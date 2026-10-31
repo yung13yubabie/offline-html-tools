@@ -136,7 +136,9 @@ async function calculator(p){
 async function calculatorScreenshot(p,name){
  // Toasts use opacity transitions, so Playwright's visibility predicate alone is insufficient.
  await p.waitForFunction(()=>[...document.querySelectorAll('.toast')].every(e=>getComputedStyle(e).opacity==='0'||getComputedStyle(e).display==='none'));
- await screenshot(p,name);
+ // Full-page CDP capture can transiently resize to 1×1 and invoke real responsive focus navigation.
+ // Capture the explicitly positioned viewport; do not suppress app resize handlers or restore focus artificially.
+ await p.screenshot({path:path.join(OUT,name+'.png'),fullPage:false});
 }
 // Calculator-only presentation regression, separate from the new math-tools contract below.
 // All amounts below are synthetic and retain the pre-existing 5% arithmetic contract.
@@ -235,10 +237,11 @@ async function calculatorPresentation(p){
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Insurance page must fit 390px; only its wide table may scroll locally');
   await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-mobile');
   await p.setViewportSize({width:1440,height:1000});await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-desktop');
+  const trace=await p.evaluate(()=>window.__calculatorFocusTrace);fs.writeFileSync(path.join(OUT,'accounting-calculator-presentation-trace.json'),JSON.stringify({trace,method:'Viewport-only screenshots; production resize handlers unchanged'},null,2));assert(!trace.some(e=>e.event==='resize'&&(e.width<=1||e.height<=1)),'Presentation capture must not transiently resize the real app to 1×1');
  }catch(error){
   // Capture the failure before cleanup changes the selected tab, viewport, or focus.
   try{
-   await screenshot(p,'accounting-calculator-presentation-failure');
+   await p.screenshot({path:path.join(OUT,'accounting-calculator-presentation-failure.png'),fullPage:false});
    const context=await p.evaluate(()=>({trace:window.__calculatorFocusTrace,viewport:{width:innerWidth,height:innerHeight},activeElement:document.activeElement?.outerHTML,focusedBooks:[...document.querySelectorAll('.book.focus-active')].map(e=>({category:e.closest('.category')?.dataset.cat,book:e.dataset.book}))}));
    fs.writeFileSync(path.join(OUT,'accounting-calculator-presentation-failure.json'),JSON.stringify({error:String(error.stack||error),...context},null,2));
   }catch(captureError){console.error('Calculator failure capture:',captureError.message)}
@@ -397,7 +400,9 @@ async function vatPrintCapture(p,name){
  await p.evaluate(()=>{window.__syntheticPrintCalls=0;window.print=()=>{window.__syntheticPrintCalls++}});
  const preview=await vatPreview(p);await p.locator('#exportPdfBtn').click();await p.waitForFunction(()=>window.__syntheticPrintCalls===1);
  assert.equal(await p.locator('#printRoot').innerHTML(),preview,'Saved preview and real printer HTML must be identical');
- if(name){await p.emulateMedia({media:'print'});const bytes=await p.pdf({path:path.join(OUT,name+'.pdf'),preferCSSPageSize:true,printBackground:true});assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert(bytes.length>1000);await screenshot(p,name);const expected=name.includes('long-note')?{heading:'本期款項／請款',long:true}:name.includes('saved-print')?{heading:'營業稅本期總表'}:name.includes('record-layout')?{heading:'客戶基本資料'}:{heading:'日曆記事'};const pdfEvidence=vatPdfEvidence(path.join(OUT,name+'.pdf'),name,expected);pdfEvidence.renderedPageLabels=await p.locator('#printRoot .pdf-foot').allTextContents();(report.pdfEvidence||=[]).push(pdfEvidence);await p.emulateMedia({media:'screen'});}
+ if(name){await p.emulateMedia({media:'print'});const renderedPageLabels=await p.locator('#printRoot .pdf-foot').allTextContents();await screenshot(p,name);const bytes=await p.pdf({path:path.join(OUT,name+'.pdf'),preferCSSPageSize:true,printBackground:true});assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert(bytes.length>1000);const expected=name.includes('long-note')?{heading:'本期款項／請款',long:true}:name.includes('saved-print')?{heading:'營業稅本期總表'}:name.includes('record-layout')?{heading:'客戶基本資料'}:{heading:'日曆記事'};const pdfEvidence=vatPdfEvidence(path.join(OUT,name+'.pdf'),name,expected);pdfEvidence.renderedPageLabels=renderedPageLabels;(report.pdfEvidence||=[]).push(pdfEvidence);await p.emulateMedia({media:'screen'});
+ // Chromium PDF generation fires the production afterprint cleanup. Rebuild only through the explicit export UI for subsequent live-DOM assertions.
+ await p.locator('#exportPdfBtn').click();await p.waitForFunction(()=>window.__syntheticPrintCalls===2);assert.equal(await p.locator('#printRoot').innerHTML(),preview,'Explicit re-export after actual afterprint cleanup must reproduce saved output');}
  return preview;
 }
 async function vatPrintRevision(p){
