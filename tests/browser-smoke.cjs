@@ -145,7 +145,16 @@ async function calculatorPresentation(p){
  const amount=async selector=>Number((await p.locator(selector).textContent()).replace(/,/g,'').trim());
  const categories=['salesTriple','inputReceipt'];
  const cat=id=>p.locator(`.category[data-cat="${id}"]`);
- async function finishEntry(book){await book.locator('.focus-done').waitFor({state:'visible'});await book.locator('.focus-done').click();await book.locator('.focus-done').waitFor({state:'hidden'});}
+ async function intendedBookFocused(book){
+  assert(await book.evaluate(e=>e.classList.contains('focus-active')),'The intended invoice book, not another book, must be in focus mode');
+  assert.equal(await p.locator('.book.focus-active').count(),1,'Only the intended invoice book may be focused');
+ }
+ async function finishEntry(book){
+  await book.locator('.focus-done').waitFor({state:'visible'});await intendedBookFocused(book);await book.locator('.focus-done').click();await book.locator('.focus-done').waitFor({state:'hidden'});
+  // exitBookFocus restores focus asynchronously; wait for its documented final UI state.
+  await book.locator('.book-toggle:focus').waitFor({state:'visible'});
+ }
+
  async function assertTotals(){assert.equal(await amount('#salesTaxTotal'),617);assert.equal(await amount('#inputTaxTotal'),117);assert.equal(await amount('#finalTax'),500);}
  async function summaryNoCollision(scope){
   const collisions=await scope.locator('.book-summary,.category-summary').evaluateAll(summaries=>summaries.flatMap(summary=>{
@@ -156,15 +165,22 @@ async function calculatorPresentation(p){
  }
 
  try{
+  await p.evaluate(()=>{
+   window.__calculatorFocusTrace=[];
+   const record=e=>{const active=document.activeElement,book=document.querySelector('.book.focus-active');window.__calculatorFocusTrace.push({event:e.type,time:performance.now(),width:innerWidth,height:innerHeight,target:e.target.id||e.target.className||e.target.tagName,active:active?.id||active?.className,focusedCategory:book?.closest('.category')?.dataset.cat,activeCategory:active?.closest?.('.category')?.dataset.cat});if(window.__calculatorFocusTrace.length>200)window.__calculatorFocusTrace.shift()};
+   document.addEventListener('focusin',record);window.addEventListener('resize',record);
+  });
   await p.locator('[data-panel="taxPanel"]').click();await visible(p,'#taxPanel');
   assert.match(await p.locator('.session-note').innerText(),/重新整理.*清空/,'Keep a concise warning about losing current calculations');
   for(const id of ['taxPanel','taxSettings','salesSide','inputSide'])assert.equal(await p.locator('#'+id).getAttribute('data-review-id'),'accounting-calculator-'+id,'Existing annotation identities must remain stable');
   for(const [id,net,tax,gross] of [['salesTriple',12340,617,12957],['inputReceipt',2340,117,2457]]){
    const category=cat(id),book=category.locator('.book').first();
    await category.locator('.category-head').click();await book.locator('.book-toggle').click();
-   const row=book.locator('.tax-row').first();await row.locator('[data-field="net"]').fill(String(net));
+   const row=book.locator('.tax-row').first(),entry=row.locator('[data-field="net"]');
+   // A real pointer click checks actionability; fill alone can write behind an overlay.
+   await entry.click();await intendedBookFocused(book);await entry.fill(String(net));await intendedBookFocused(book);
    for(const [field,value] of [['tax',tax],['gross',gross]])assert.equal(Number((await row.locator(`[data-field="${field}"]`).inputValue()).replace(/,/g,'')),value);
-   await calculatorScreenshot(p,`accounting-calculator-tax-${id}-expanded-desktop`);
+   await calculatorScreenshot(p,`accounting-calculator-tax-${id}-expanded-desktop`);await intendedBookFocused(book);
    await finishEntry(book);
    assert(await book.locator('.book-body').isVisible(),'Entered detail must remain expanded after confirmation');
   }
@@ -219,6 +235,14 @@ async function calculatorPresentation(p){
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Insurance page must fit 390px; only its wide table may scroll locally');
   await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-mobile');
   await p.setViewportSize({width:1440,height:1000});await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-desktop');
+ }catch(error){
+  // Capture the failure before cleanup changes the selected tab, viewport, or focus.
+  try{
+   await screenshot(p,'accounting-calculator-presentation-failure');
+   const context=await p.evaluate(()=>({trace:window.__calculatorFocusTrace,viewport:{width:innerWidth,height:innerHeight},activeElement:document.activeElement?.outerHTML,focusedBooks:[...document.querySelectorAll('.book.focus-active')].map(e=>({category:e.closest('.category')?.dataset.cat,book:e.dataset.book}))}));
+   fs.writeFileSync(path.join(OUT,'accounting-calculator-presentation-failure.json'),JSON.stringify({error:String(error.stack||error),...context},null,2));
+  }catch(captureError){console.error('Calculator failure capture:',captureError.message)}
+  throw error;
  }finally{
   await p.setViewportSize({width:1440,height:1000});
   const done=p.locator('.book.focus-active .focus-done');if(await done.isVisible())await done.click();
