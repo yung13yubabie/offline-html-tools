@@ -31,6 +31,8 @@ jobs:
         run: npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
       - name: Install Chromium and system dependencies
         run: npx playwright install --with-deps chromium
+      - name: Install PDF verification utilities
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y poppler-utils
       - name: Run synthetic offline file tests
         run: node tests/browser-smoke.cjs
       - name: Retain synthetic screenshots and exact test results
