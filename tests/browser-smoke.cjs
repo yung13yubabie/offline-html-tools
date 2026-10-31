@@ -475,6 +475,20 @@ async function vatNoticeRevision(p){
  await vatReload(p);backup=await vatBackup(p);assert.equal(backup.data.templates.length,count,'Migration idempotent after reload');assert.equal(backup.data.templates.find(t=>t.id==='synthetic-custom-template').tone,'合成溫和版');for(const type of [...vatTypes,'accountingMissing'])assert.equal(backup.data.templates.filter(t=>t.id==='notice212_'+type).length,1);assert.equal(backup.data.notifications.find(n=>n.id==='synthetic-notice').content,'SYNTHETIC notification history');
 }
 
+async function vatPreviewPaperGeometry(p){
+ await vatPrintOpen(p);const fields=p.locator('#pdfLayoutPanel212 [data-layout-row]');await fields.nth(1).locator('[data-layout-field="width"]').fill('60');await fields.nth(1).locator('[data-layout-field="width"]').press('Tab');await p.locator('[data-layout-global="fontSize"]').selectOption('11');await vatLayoutSave(p);
+ const measure=()=>p.locator('#pdfLayoutPreviewBody212').evaluate(container=>{const paper=container.querySelector(':scope > .pdf-page,:scope > .task-report210'),table=paper.querySelector('table'),css=getComputedStyle(paper),r=paper.getBoundingClientRect();return {orientation:container.dataset.orientation,containerWidth:container.clientWidth,scrollWidth:container.scrollWidth,overflowX:getComputedStyle(container).overflowX,paperWidth:r.width,paddingLeft:parseFloat(css.paddingLeft),paddingRight:parseFloat(css.paddingRight),tableWidth:table.getBoundingClientRect().width,cellWidths:[...table.tHead.rows[table.tHead.rows.length-1].cells].map(c=>c.getBoundingClientRect().width),cellFonts:[...table.tHead.rows[table.tHead.rows.length-1].cells].map(c=>getComputedStyle(c).fontSize),documentWidth:document.documentElement.scrollWidth,viewport:innerWidth}});
+ for(const [orientation,paperMm] of [['portrait',210],['landscape',297]]){
+  await p.setViewportSize({width:1440,height:1000});await p.locator('#pdfOrientation').selectOption(orientation);const savedHTML=await vatPrintCapture(p);await vatSettle(p);const desktop=await measure();
+  await p.setViewportSize({width:390,height:844});await vatSettle(p);const mobile=await measure(),mm=96/25.4;
+  assert.equal(mobile.orientation,orientation);assert(Math.abs(mobile.paperWidth-paperMm*mm)<1.5,'Preview paper must retain real A4 width, not shrink to phone width');assert(Math.abs(mobile.paddingLeft-10*mm)<1&&Math.abs(mobile.paddingRight-10*mm)<1,'Preview margins match the actual 10 mm print margins');assert(Math.abs(mobile.tableWidth-(paperMm-20)*mm)<2,'Preview table uses the same printable content width as PDF');
+  assert(mobile.containerWidth<=390&&mobile.scrollWidth>mobile.containerWidth+100,'Narrow preview exposes a real horizontal scroll range');assert(['auto','scroll'].includes(mobile.overflowX));assert(mobile.documentWidth<=mobile.viewport+1,'Scrollable A4 preview must not widen the mobile document');assert(Math.abs(desktop.paperWidth-mobile.paperWidth)<1&&Math.abs(desktop.tableWidth-mobile.tableWidth)<1,'Paper/table dimensions remain stable across desktop and phone');assert.deepEqual(mobile.cellFonts,desktop.cellFonts);mobile.cellWidths.forEach((width,i)=>assert(Math.abs(width-desktop.cellWidths[i])<1,'Printed columns must not reflow into narrow digit columns on phone'));assert.equal(await p.locator('#pdfLayoutPreviewBody212').innerHTML(),savedHTML,'Screen-only paper geometry must not alter saved output HTML');
+  const preview=p.locator('#pdfLayoutPreviewBody212');await preview.scrollIntoViewIfNeeded();await preview.hover();await p.mouse.wheel(-2000,0);await p.waitForFunction(()=>document.querySelector('#pdfLayoutPreviewBody212').scrollLeft===0);await vatSettle(p);await p.screenshot({path:path.join(OUT,'vat-revision-a4-preview-'+orientation+'-mobile-left.png'),fullPage:false});
+  await preview.hover();await p.mouse.wheel(1500,0);await p.waitForFunction(()=>document.querySelector('#pdfLayoutPreviewBody212').scrollLeft>100);await vatSettle(p);await p.screenshot({path:path.join(OUT,'vat-revision-a4-preview-'+orientation+'-mobile-right.png'),fullPage:false});
+  (report.previewPaperEvidence||=[]).push({orientation,paperMm,desktop,mobile,scrollLeft:await preview.evaluate(e=>e.scrollLeft)});
+ }
+}
+
 (async()=>{
  browser=await chromium.launch({headless:true});
  for(const [id,flow] of [['accounting-calculator',calculator],['ledger-analyzer',ledger],['vat-workbench',vat],['pdf-workbench',pdf]]){
@@ -497,6 +511,7 @@ async function vatNoticeRevision(p){
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
  await check('vat saved print layout every scope uses actual printer HTML',()=>vatRevisionContext(vatPrintAllScopes));
+ await check('vat A4 preview portrait/landscape paper width + phone scrolling without reflow',()=>vatRevisionContext(vatPreviewPaperGeometry));
  await check('vat saved print record-pair and calendar-block visibility/order/width in real output',()=>vatRevisionContext(vatPrintRecordsAndBlocks));
  await check('vat saved print layout corrupt synthetic profile gracefully sanitized',()=>vatRevisionContext(vatPrintCorrupt));
  await check('vat grouped notice UI + actual preview/TXT + additive migration preserves custom/history + reload',()=>vatRevisionContext(vatNoticeRevision));
