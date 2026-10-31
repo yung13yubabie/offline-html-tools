@@ -30,7 +30,9 @@
 .upper-mini:empty{display:none}.upper-label{font-size:13px;color:#536273;margin-right:6px}.cn-digit{font-size:1.15em;font-weight:800;color:var(--blue-strong)}.cn-unit{font-size:.88em;font-weight:400;color:#536273}
 .upper-guide{font-size:13px;color:#536273;line-height:1.7;margin:6px 0 9px}.upper-guide strong{color:var(--blue-strong)}
 .bracket-note,.cost-note,.bracket-head p,.cost-head p{font-size:14px;line-height:1.7}.cost-note summary{cursor:pointer;font-weight:600}.cost-note p{margin:7px 0 0}
+.insurance-wrap,.insurance-bracket-card{min-width:0}
 @media(max-width:700px){.session-note{max-width:none}.table-head,.tax-row{grid-template-columns:24px repeat(3,minmax(0,1fr)) 34px;gap:4px}.data-grid.summary .table-head,.data-grid.summary .tax-row{grid-template-columns:22px 36px repeat(3,minmax(0,1fr)) 30px;gap:3px}.tax-input{padding:8px 3px;min-width:0}.book.focus-active>.book-body{padding:0 8px 12px}.category-body{padding-left:8px}.book-body{padding-left:0}.cost-control.wide{grid-column:auto}}
+.math-tool{border-top:1px solid var(--line);margin-top:16px;padding-top:12px;min-width:0}.math-tool summary{font-weight:800;cursor:pointer;padding:6px 0}.math-tool p{font-size:13px;line-height:1.6}.math-tool label{display:block;font-size:13px}.math-tool textarea,.math-tool input,.math-tool select{box-sizing:border-box;width:100%;min-width:0;border:1px solid var(--line);border-radius:7px;padding:9px;background:var(--surface);color:var(--text);font:inherit;margin:5px 0 10px}.math-tool textarea{resize:vertical;font-family:var(--mono)}.math-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}.math-result{white-space:pre-wrap;overflow-wrap:anywhere;font-family:var(--mono);font-size:14px;line-height:1.6;margin-top:10px}.math-result[data-status="error"],.math-result[data-status="uncertain"]{color:var(--danger)}@media(max-width:480px){.math-fields{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -69,6 +71,27 @@
 </div>
 <div class="batch-head"><div>算式</div><div style="text-align:right">結果</div><div></div></div><div id="batchRows" data-review-id="accounting-calculator-batchRows" data-review-name="批量算式清單"></div>
 <div class="batch-total"><span class="muted">總計</span><strong id="batchTotal" class="money">0</strong><button class="btn small" id="copyBatchBtn">複製總計</button></div>
+<details id="linearTool" class="math-tool" data-review-id="accounting-calculator-linearTool" data-review-name="多元一次方程式">
+<summary>多元一次方程式</summary>
+<p id="linearHelp" class="muted">每行一條，例如 x+y=100、2x+3y=240。支援小數、正負數、括號及乘除常數，如 2(x-y)/3=10；不支援未知數相乘、次方或除以未知數。最多 10 個未知數、20 條式子、6000 字；未知數用英文字母開頭，大小寫有別。</p>
+<label for="linearInput">方程式（每行一條）</label>
+<textarea id="linearInput" rows="4" maxlength="6000" spellcheck="false" autocapitalize="off" aria-describedby="linearHelp" placeholder="x+y=100&#10;2x+3y=240"></textarea>
+<button type="button" id="linearSolveBtn" class="btn primary">求解方程式</button>
+<div id="linearResult" class="math-result" role="status" aria-live="polite" aria-atomic="true"></div>
+</details>
+<details id="ratioTool" class="math-tool" data-review-id="accounting-calculator-ratioTool" data-review-name="比例換算">
+<summary>比例換算</summary>
+<p class="muted">已知數值 X 對應 p%，可由數值求百分比，或由百分比求數值。可用正數、負數與小數；百分比只填數字，例如 25。X 不可為 0；反向換算時 p 也不可為 0。</p>
+<div class="math-fields">
+<label for="ratioMode">換算方向<select id="ratioMode"><option value="forward">由數值求百分比</option><option value="reverse">由百分比求數值</option></select></label>
+<label for="ratioBaseValue">已知數值 X<input id="ratioBaseValue" type="text" inputmode="decimal" maxlength="120" placeholder="例如 200"></label>
+<label for="ratioBasePercent">已知百分比 p（%）<input id="ratioBasePercent" type="text" inputmode="decimal" maxlength="120" placeholder="例如 100"></label>
+<label for="ratioTarget"><span id="ratioTargetLabel">目標數值 N</span><input id="ratioTarget" type="text" inputmode="decimal" maxlength="120" placeholder="輸入要換算的數字"></label>
+</div>
+<button type="button" id="ratioCalculateBtn" class="btn primary">換算比例</button>
+<div id="ratioResult" class="math-result" role="status" aria-live="polite" aria-atomic="true"></div>
+</details>
+
 </div>
 </div>
 </section>
@@ -172,7 +195,7 @@ function ce(){calcExpr=calcExpr.replace(/(\d+(?:\.\d+)?%?|\([^()]*\))\s*$/,"");t
 document.getElementById("keypad").addEventListener("click",e=>{const b=e.target.closest("button[data-key]");if(!b)return;const k=b.dataset.key;if(k==="C"){calcExpr="";calcValue=0;calcError.textContent="";renderCalc();return}if(k==="CE"){ce();return}if(k==="+/-"){toggleSign();return}if(k==="="){tryCalc();return}calcExpr+=k;tryCalc()});
 document.querySelectorAll("[data-mem]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.mem;if(k==="MC")memory=0;if(k==="MR"){calcExpr+=String(memory);tryCalc()}if(k==="M+")memory+=Number(calcValue)||0;if(k==="M-")memory-=Number(calcValue)||0;toast(k==="MC"?"記憶已清除":"記憶值："+fmtCalc(memory))}));
 document.getElementById("copyCalcBtn").addEventListener("click",()=>copyText(copyComma.checked?fmtCalc(calcValue):String(calcValue)));renderCalc();
-document.addEventListener("keydown",e=>{if(!document.getElementById("generalPanel").classList.contains("active"))return;if(e.target.closest("input,select,textarea,button"))return;const k=e.key;if(/^[0-9.+\-*/()%]$/.test(k)){e.preventDefault();calcExpr+=k;tryCalc()}else if(k==="Enter"){e.preventDefault();tryCalc()}else if(k==="Escape"){calcExpr="";calcValue=0;calcError.textContent="";renderCalc()}else if(k==="Backspace"){e.preventDefault();ce()}});
+document.addEventListener("keydown",e=>{if(!document.getElementById("generalPanel").classList.contains("active"))return;if(e.target.closest("input,select,textarea,button,summary"))return;const k=e.key;if(/^[0-9.+\-*/()%]$/.test(k)){e.preventDefault();calcExpr+=k;tryCalc()}else if(k==="Enter"){e.preventDefault();tryCalc()}else if(k==="Escape"){calcExpr="";calcValue=0;calcError.textContent="";renderCalc()}else if(k==="Backspace"){e.preventDefault();ce()}});
 const batchRows=document.getElementById("batchRows");let activeBatchInput=null;function addBatchRow(value=""){const row=document.createElement("div");row.className="batch-row";row.innerHTML=`<input class="batch-expr" value="${value.replace(/"/g,"&quot;")}" placeholder="輸入算式"><div class="batch-result money" tabindex="-1">0</div><button class="btn small batch-del" title="刪除">刪</button>`;batchRows.appendChild(row);const input=row.querySelector(".batch-expr");input.addEventListener("focus",()=>activeBatchInput=input);input.addEventListener("input",()=>calcBatchRow(row));input.addEventListener("keydown",e=>{const rows=[...batchRows.querySelectorAll(".batch-row")],idx=rows.indexOf(row);if(e.key==="Enter"){e.preventDefault();if(idx===rows.length-1)addBatchRow();batchRows.querySelectorAll(".batch-row")[idx+1].querySelector("input").focus()}else if(e.key==="ArrowDown"&&rows[idx+1]){e.preventDefault();rows[idx+1].querySelector("input").focus()}else if(e.key==="ArrowUp"&&rows[idx-1]){e.preventDefault();rows[idx-1].querySelector("input").focus()}});row.querySelector(".batch-del").addEventListener("click",()=>{row.remove();if(!batchRows.children.length)addBatchRow();updateBatchTotal()});calcBatchRow(row)}
 function calcBatchRow(row){const expr=row.querySelector(".batch-expr").value.trim(),out=row.querySelector(".batch-result");row.dataset.value="0";if(!expr){out.textContent="0";out.style.color="";updateBatchTotal();return}try{const v=evaluateExpression(expr);row.dataset.value=String(v);out.textContent=fmtCalc(v);out.style.color=""}catch(e){out.textContent="錯誤";out.style.color="var(--danger)"}updateBatchTotal()}
 function updateBatchTotal(){const total=[...batchRows.querySelectorAll(".batch-row")].reduce((s,r)=>s+(Number(r.dataset.value)||0),0),el=document.getElementById("batchTotal");el.textContent=fmtCalc(total);el.dataset.raw=String(total)}for(let i=0;i<4;i++)addBatchRow();document.getElementById("addBatchBtn").addEventListener("click",()=>{addBatchRow();batchRows.lastElementChild?.querySelector("input")?.focus()});const batchCalcPanel=document.getElementById("batchCalcPanel"),batchCalcExpr=document.getElementById("batchCalcExpr"),batchCalcResult=document.getElementById("batchCalcResult");let batchCalcValue=0;function refreshBatchMini(){const expr=batchCalcExpr.value.trim();if(!expr){batchCalcValue=0;batchCalcResult.textContent="0";batchCalcResult.style.color="";return}try{batchCalcValue=evaluateExpression(expr);batchCalcResult.textContent=fmtCalc(batchCalcValue);batchCalcResult.style.color=""}catch(err){batchCalcResult.textContent="錯誤";batchCalcResult.style.color="var(--danger)"}}function batchMiniCE(){batchCalcExpr.value=batchCalcExpr.value.replace(/(\d+(?:\.\d+)?%?|\([^()]*\))\s*$/ ,"");refreshBatchMini()}function batchMiniSign(){const v=batchCalcExpr.value,m=v.match(/(\d+(?:\.\d+)?)\s*$/);if(m){const start=m.index,before=v.slice(0,start),num=m[1];batchCalcExpr.value=before.endsWith("-")?before.slice(0,-1)+num:before+"-"+num}else if(!v)batchCalcExpr.value="-";refreshBatchMini()}document.getElementById("jumpCalcBtn").addEventListener("click",()=>{batchCalcPanel.classList.toggle("hidden");if(!batchCalcPanel.classList.contains("hidden"))setTimeout(()=>batchCalcExpr.focus(),0)});document.getElementById("batchCalcCloseBtn").addEventListener("click",()=>batchCalcPanel.classList.add("hidden"));batchCalcExpr.addEventListener("input",refreshBatchMini);batchCalcExpr.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();refreshBatchMini()}});document.getElementById("batchMiniKeypad").addEventListener("click",e=>{const b=e.target.closest("button[data-bkey]");if(!b)return;const k=b.dataset.bkey;if(k==="C"){batchCalcExpr.value="";refreshBatchMini();return}if(k==="CE"){batchMiniCE();return}if(k==="+/-"){batchMiniSign();return}if(k==="="){refreshBatchMini();return}batchCalcExpr.value+=k;refreshBatchMini()});document.getElementById("batchCalcToRowBtn").addEventListener("click",()=>{let target=activeBatchInput;if(!target||!document.body.contains(target)){target=batchRows.querySelector(".batch-row:last-child .batch-expr")}if(!target){addBatchRow();target=batchRows.querySelector(".batch-row:last-child .batch-expr")}target.value=batchCalcExpr.value;target.dispatchEvent(new Event("input",{bubbles:true}));target.focus();toast("已帶入批量列")});document.getElementById("clearBatchBtn").addEventListener("click",()=>{batchRows.innerHTML="";addBatchRow();batchRows.querySelector("input")?.focus()});document.getElementById("copyBatchBtn").addEventListener("click",()=>{const el=document.getElementById("batchTotal");copyText(copyComma.checked?el.textContent:el.dataset.raw||"0")});
@@ -315,7 +338,74 @@ function renderInsurance(kind){const c=insuranceConfig[kind],totalInput=document
 </script>
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.1-review.1"};</script>
+<script>
+/* CALCULATOR_MATH_TOOLS_START: dependency-free, bounded linear algebra and ratios. */
+const CalculatorMathTools = (() => {
+  const LIMIT = 1e100;
+  function finite(n) { if (!Number.isFinite(n) || Math.abs(n) > LIMIT) throw Error('數值過大或無法計算，請縮小數值。'); return n; }
+  function quotient(a,b) { if(b===0)throw Error('不能除以 0。');const n=finite(a/b);if(a!==0&&n===0)throw Error('數值差距過大，無法保留計算精度；請調整單位後再試。');return n; }
+  function sumChecked(a,b) { const n=finite(a+b);if(a!==0&&b!==0&&(n===a||n===b))throw Error('數值差距過大，無法保留加減精度；請調整單位後再試。');return n; }
+  function product(a,b) { const n=finite(a*b); if(a!==0&&b!==0&&n===0)throw Error('數值過小，請調整單位後再試。'); return n; }
+  function parseLinear(source, names) {
+    const tokens=[]; let pos=0;
+    while(pos<source.length){const rest=source.slice(pos),m=/^(?:\s+|(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?|[A-Za-z][A-Za-z0-9_]*|[+*/()=-])/.exec(rest);if(!m)throw Error('含不支援的字元；僅支援一次式，不支援次方。');pos+=m[0].length;if(!/^\s+$/.test(m[0]))tokens.push(m[0]);}
+    let at=0,depth=0;
+    const node=(c=0,v=new Map(),has=false)=>({c,v,has});
+    const add=(a,b,sign)=>{const v=new Map(a.v);for(const [k,n]of b.v)v.set(k,sumChecked(v.get(k)||0,sign*n));return node(sumChecked(a.c,sign*b.c),v,a.has||b.has)};
+    const scale=(a,n)=>node(product(a.c,n),new Map([...a.v].map(([k,v])=>[k,product(v,n)])),a.has);
+    function atom(){if(++depth>40)throw Error('括號或正負號層數過多。');let t=tokens[at++],r;if(t==='+'||t==='-'){r=scale(atom(),t==='-'?-1:1)}else if(t==='('){r=sum();if(tokens[at++]!==')')throw Error('請檢查括號。')}else if(t&&/^\d|^\./.test(t)){const n=finite(Number(t));if(n===0&&/[1-9]/.test(t.split(/[eE]/)[0]))throw Error('數值過小，請調整單位後再試。');r=node(n)}else if(t&&/^[A-Za-z]/.test(t)){if(/^(?:NaN|Infinity)$/i.test(t))throw Error('請輸入有限數字或一般未知數名稱。');if(tokens[at]==='(')throw Error('不支援函式；乘法請用 *，例如 x*(2)。');if(t.length>24)throw Error('未知數名稱最多 24 個字元。');names.add(t);if(names.size>10)throw Error('最多支援 10 個未知數。');r=node(0,new Map([[t,1]]),true)}else throw Error('請輸入完整的一次式。');depth--;return r}
+    function term(){let a=atom();while(true){let op=tokens[at],implicit=op==='('||(op&&/^[A-Za-z]/.test(op));if(op!=='*'&&op!=='/'&&!implicit)break;if(!implicit)at++;else op='*';const b=atom();if(op==='/'){if(b.has)throw Error('不能除以未知數。');if(b.c===0)throw Error('不能除以 0。');a=scale(a,quotient(1,b.c))}else{if(a.has&&b.has)throw Error('僅支援一次式，不能將未知數相乘。');a=a.has?scale(a,b.c):scale(b,a.c)}}return a}
+    function sum(){let a=term();while(tokens[at]==='+'||tokens[at]==='-'){const s=tokens[at++]==='+'?1:-1;a=add(a,term(),s)}return a}
+    const left=sum();if(tokens[at++]!=='=')throw Error('每行需要一個等號，例如 x+y=100。');const right=sum();if(at!==tokens.length)throw Error('請檢查算式；每行只放一條方程式。');return add(left,right,-1);
+  }
+  function solveLinear(input){
+    if(typeof input!=='string'||input.length>6000)throw Error('輸入最多 6000 個字元。');
+    const lines=input.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);if(!lines.length)throw Error('請先輸入方程式。');if(lines.length>20)throw Error('最多支援 20 條方程式。');
+    const names=new Set(),parsed=lines.map((s,i)=>{try{return parseLinear(s,names)}catch(e){throw Error(`第 ${i+1} 行：${e.message}`)}}),vars=[...names],n=vars.length;
+    const original=parsed.map(p=>[...vars.map(k=>p.v.get(k)||0),-p.c]);
+    if(original.some(r=>r.slice(0,n).every(v=>v===0)&&r[n]!==0))return {status:'inconsistent',lines,vars};
+    const rows=original.map(r=>{const s=Math.max(...r.slice(0,n).map(Math.abs));return s?r.map(v=>quotient(v,s)):r.slice()});
+    const columns=vars.map((_,j)=>Math.max(...rows.map(r=>Math.abs(r[j])))||1);
+    for(const r of rows)for(let j=0;j<n;j++)r[j]=quotient(r[j],columns[j]);
+    let rank=0,uncertain=false;const pivots=[],rhsBounds=rows.map(r=>Math.abs(r[n]));
+    for(let col=0;col<n&&rank<rows.length;col++){
+      let best=rank;for(let i=rank+1;i<rows.length;i++)if(Math.abs(rows[i][col])>Math.abs(rows[best][col]))best=i;
+      const p=Math.abs(rows[best][col]);if(p===0)continue;if(p<1e-9){uncertain=true;continue;}
+      [rows[rank],rows[best]]=[rows[best],rows[rank]];[rhsBounds[rank],rhsBounds[best]]=[rhsBounds[best],rhsBounds[rank]];const pivot=rows[rank][col];rhsBounds[rank]/=Math.abs(pivot);for(let j=col;j<=n;j++)rows[rank][j]=quotient(rows[rank][j],pivot);
+      for(let i=rank+1;i<rows.length;i++){const f=rows[i][col];rhsBounds[i]+=Math.abs(f)*rhsBounds[rank];rows[i][col]=0;for(let j=col+1;j<=n;j++)rows[i][j]=finite(rows[i][j]-product(f,rows[rank][j]));}
+      pivots.push(col);rank++;
+    }
+    if(uncertain)return {status:'uncertain',lines,vars};
+    for(let i=rank;i<rows.length;i++)if(rows[i].slice(0,n).every(v=>v===0)&&Math.abs(rows[i][n])>64*Number.EPSILON*rhsBounds[i])return {status:'inconsistent',lines,vars};
+    for(let i=rank;i<rows.length;i++)if(rows[i].slice(0,n).every(v=>v===0)&&rows[i][n]!==0)return {status:'uncertain',lines,vars};
+    if(rank<n)return {status:'infinite',lines,vars};
+    if(!n)return {status:'identity',lines,vars};
+    const x=Array(n).fill(0);for(let i=rank-1;i>=0;i--){const c=pivots[i];x[c]=finite(rows[i][n]-rows[i].slice(c+1,n).reduce((s,v,j)=>finite(s+product(v,x[c+1+j])),0));}
+    for(let j=0;j<n;j++)x[j]=quotient(x[j],columns[j]);
+    for(const r of original){const scale=Math.max(...r.map(Math.abs));if(!scale)continue;const terms=x.map((v,j)=>product(quotient(r[j],scale),v)),rhs=quotient(r[n],scale),total=terms.reduce((s,v)=>finite(s+v),0),den=Math.max(1,Math.abs(rhs));if(Math.abs(total-rhs)>1e-10*den)return {status:'uncertain',lines,vars};}
+    return {status:'unique',lines,vars,values:x};
+  }
+  function numeric(value){const s=String(value).trim();if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(s))throw Error('請將每個欄位填入有效數字，不需輸入 %。');const n=finite(Number(s));if(n===0&&/[1-9]/.test(s.split(/[eE]/)[0]))throw Error('數值過小，請調整單位後再試。');return n;}
+  function ratio(mode,base,percent,target){const x=numeric(base),p=numeric(percent),t=numeric(target);if(x===0)throw Error('已知數值 X 不能為 0，否則無法建立比例。');if(mode!=='forward'&&mode!=='reverse')throw Error('請選擇換算方向。');if(mode==='reverse'&&p===0)throw Error('反向換算時，已知百分比 p 不能為 0。');const result=mode==='forward'?product(quotient(t,x),p):product(quotient(t,p),x);return {value:result,x,p,target:t};}
+  function format(n){return Object.is(n,-0)||n===0?'0':Number(n.toPrecision(12)).toString();}
+  return {solveLinear,ratio,format};
+})();
+/* CALCULATOR_MATH_TOOLS_END */
+/* CALCULATOR_MATH_UI_START */
+(() => {
+  const el=id=>document.getElementById(id),linear=el('linearInput'),lr=el('linearResult'),rr=el('ratioResult');
+  function clear(result){result.textContent='';delete result.dataset.status;}
+  linear.addEventListener('input',()=>clear(lr));
+  el('linearSolveBtn').addEventListener('click',()=>{clear(lr);try{const r=CalculatorMathTools.solveLinear(linear.value);lr.dataset.status=r.status;const messages={inconsistent:'無解：這些條件互相矛盾。',infinite:'無限多組解：獨立條件不足，無法唯一決定所有未知數。',identity:'等式成立，但沒有未知數需要求解。',uncertain:'條件太接近或數值差距過大，無法可靠判定；請調整條件或數值單位。'};lr.textContent='原方程式：\n'+r.lines.join('\n')+'\n\n'+(r.status==='unique'?'唯一解（小數最多顯示 12 位有效數字）：\n'+r.vars.map((v,i)=>v+' = '+CalculatorMathTools.format(r.values[i])).join('\n'):messages[r.status]);}catch(e){lr.dataset.status='error';lr.textContent=e.message;}});
+  const fields=['ratioMode','ratioBaseValue','ratioBasePercent','ratioTarget'];
+  function invalidate(){clear(rr);el('ratioTargetLabel').textContent=el('ratioMode').value==='forward'?'目標數值 N':'目標百分比 q（%）';}
+  fields.forEach(id=>{el(id).addEventListener('input',invalidate);el(id).addEventListener('change',invalidate);});
+  el('ratioCalculateBtn').addEventListener('click',()=>{clear(rr);try{const mode=el('ratioMode').value,r=CalculatorMathTools.ratio(mode,el('ratioBaseValue').value,el('ratioBasePercent').value,el('ratioTarget').value),f=CalculatorMathTools.format;rr.dataset.status='success';rr.textContent=mode==='forward'?`目標百分比 q = ${f(r.value)}%\n計算：N ÷ X × p = ${f(r.target)} ÷ ${f(r.x)} × ${f(r.p)}%`:`目標數值 N = ${f(r.value)}\n計算：X × q ÷ p = ${f(r.x)} × ${f(r.target)} ÷ ${f(r.p)}`;}catch(e){rr.dataset.status='error';rr.textContent=e.message;}});
+})();
+/* CALCULATOR_MATH_UI_END */
+
+</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.2.0"};</script>
 <script>
 /* Offline Review 1.0.0 — dependency-free, inline this file before </body>. */
 (() => {

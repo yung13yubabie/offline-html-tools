@@ -133,7 +133,12 @@ async function calculator(p){
  await p.locator('[data-mem="MC"]').click();await p.locator('[data-mem="M+"]').click();await p.locator('[data-key="C"]').click();await p.locator('[data-mem="MR"]').click();assert.equal((await p.locator('#calcResult').textContent()).trim(),'0.3');
  const before=await p.locator('.batch-row').count();await p.locator('#addBatchBtn').click();assert.equal(await p.locator('.batch-row').count(),before+1);
 }
-// Calculator-only presentation regression; item 1 (new equations/ratios) is intentionally undefined.
+async function calculatorScreenshot(p,name){
+ // Toasts use opacity transitions, so Playwright's visibility predicate alone is insufficient.
+ await p.waitForFunction(()=>[...document.querySelectorAll('.toast')].every(e=>getComputedStyle(e).opacity==='0'||getComputedStyle(e).display==='none'));
+ await screenshot(p,name);
+}
+// Calculator-only presentation regression, separate from the new math-tools contract below.
 // All amounts below are synthetic and retain the pre-existing 5% arithmetic contract.
 async function calculatorPresentation(p){
  const font=locator=>locator.evaluate(e=>parseFloat(getComputedStyle(e).fontSize));
@@ -142,6 +147,14 @@ async function calculatorPresentation(p){
  const cat=id=>p.locator(`.category[data-cat="${id}"]`);
  async function finishEntry(book){await book.locator('.focus-done').waitFor({state:'visible'});await book.locator('.focus-done').click();await book.locator('.focus-done').waitFor({state:'hidden'});}
  async function assertTotals(){assert.equal(await amount('#salesTaxTotal'),617);assert.equal(await amount('#inputTaxTotal'),117);assert.equal(await amount('#finalTax'),500);}
+ async function summaryNoCollision(scope){
+  const collisions=await scope.locator('.book-summary,.category-summary').evaluateAll(summaries=>summaries.flatMap(summary=>{
+   const boxes=[...summary.querySelectorAll('.sum-label,.sum-value')].flatMap((e,i)=>{const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].filter(r=>r.width&&r.height).map(r=>({i,text:e.textContent,left:r.left,right:r.right,top:r.top,bottom:r.bottom}))});
+   const found=[];for(let a=0;a<boxes.length;a++)for(let b=a+1;b<boxes.length;b++){const x=boxes[a],y=boxes[b];if(x.i!==y.i&&Math.min(x.right,y.right)-Math.max(x.left,y.left)>.5&&Math.min(x.bottom,y.bottom)-Math.max(x.top,y.top)>.5)found.push([x.text,y.text]);}return found;
+  }));
+  assert.deepEqual(collisions,[],'Actual summary text glyphs must not collide (including the long inputReceipt title at 390px)');
+ }
+
  try{
   await p.locator('[data-panel="taxPanel"]').click();await visible(p,'#taxPanel');
   assert.match(await p.locator('.session-note').innerText(),/重新整理.*清空/,'Keep a concise warning about losing current calculations');
@@ -151,7 +164,7 @@ async function calculatorPresentation(p){
    await category.locator('.category-head').click();await book.locator('.book-toggle').click();
    const row=book.locator('.tax-row').first();await row.locator('[data-field="net"]').fill(String(net));
    for(const [field,value] of [['tax',tax],['gross',gross]])assert.equal(Number((await row.locator(`[data-field="${field}"]`).inputValue()).replace(/,/g,'')),value);
-   await screenshot(p,`accounting-calculator-tax-${id}-expanded-desktop`);
+   await calculatorScreenshot(p,`accounting-calculator-tax-${id}-expanded-desktop`);
    await finishEntry(book);
    assert(await book.locator('.book-body').isVisible(),'Entered detail must remain expanded after confirmation');
   }
@@ -174,26 +187,27 @@ async function calculatorPresentation(p){
   }
   for(const id of categories)await typography(cat(id));
   await p.evaluate(()=>{window.scrollTo(0,0);document.querySelectorAll('.tax-side').forEach(e=>e.scrollTop=0)});
-  await screenshot(p,'accounting-calculator-tax-populated-desktop');
+  await calculatorScreenshot(p,'accounting-calculator-tax-populated-desktop');
   // Open the real settings UI: neither a direction symbol nor a bare mode name is enough context.
   await p.locator('#toggleSettingsBtn').click();await visible(p,'#taxSettings');
   const options=await p.locator('#taxSettings [data-enter-default] option,.book .enter-select option').allTextContents();
   assert(options.length>0);for(const label of options)assert.match(label,/下一筆.*欄位|下一欄|下一列|向右|向下/,'Enter navigation options must explain the direction in words');
   for(const id of categories){const labels=await cat(id).locator('.mode-select option').allTextContents();assert(labels.some(x=>/逐筆|單筆|個別.*輸入/.test(x)),'Individual mode should explain how to enter');assert(labels.some(x=>/匯總.*輸入|合計|彙總/.test(x)),'Summary mode should explain how to enter');}
-  await screenshot(p,'accounting-calculator-tax-settings-desktop');await p.locator('#toggleSettingsBtn').click();
+  await calculatorScreenshot(p,'accounting-calculator-tax-settings-desktop');await p.locator('#toggleSettingsBtn').click();
   await p.setViewportSize({width:390,height:844});
   // Resizing and switching sides restores the last input focus. Confirm via the actual UI,
   // rather than deleting focus classes or altering app state in the test.
   await finishEntry(cat('salesTriple').locator('.book').first());
   for(const [side,id] of [['sales','salesTriple'],['input','inputReceipt']]){
    if(side==='input'){await p.locator(`#sideTabs [data-side="${side}"]`).click();await finishEntry(cat(id).locator('.book').first());}
-   await typography(cat(id));assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Populated tax page must fit at 390px');
+   await typography(cat(id));await summaryNoCollision(cat(id));assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Populated tax page must fit at 390px');
    await p.evaluate(side=>{window.scrollTo(0,0);document.getElementById(side+'Side').scrollTop=0},side);
-   await screenshot(p,`accounting-calculator-tax-${side}-populated-mobile`);
+   await calculatorScreenshot(p,`accounting-calculator-tax-${side}-populated-mobile`);
    const book=cat(id).locator('.book').first();await book.locator('.tax-input').first().click();await visible(p,'.book.focus-active');
+   await summaryNoCollision(book);
    const upper=book.locator('.upper-mini').first();
    assert(await upper.evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1}),'Expanded Chinese money text should fit the narrow viewport without horizontal clipping');
-   await screenshot(p,`accounting-calculator-tax-${side}-expanded-mobile`);await finishEntry(book);
+   await calculatorScreenshot(p,`accounting-calculator-tax-${side}-expanded-mobile`);await finishEntry(book);
   }
   await assertTotals();
   await p.locator('[data-panel="insurancePanel"]').click();await visible(p,'#insurancePanel');
@@ -202,13 +216,63 @@ async function calculatorPresentation(p){
   assert.match(insurance,/一般全時受僱|一般受僱/,'Applicability must remain explicit');assert.match(insurance,/特殊身分/,'Special cases must not disappear during copy cleanup');assert.match(insurance,/帳單.*核對|依帳單核對/,'Keep the need to reconcile actual bills');
   await p.locator('#insurancePanel details.cost-note summary').click();assert(await p.locator('#insurancePanel details.cost-note').getAttribute('open')!==null,'Calculation details should remain accessible');
   await p.locator('#salaryBracketInput').fill('42000');await p.locator('#salaryBracketInput').press('Tab');
-  await p.evaluate(()=>window.scrollTo(0,0));await screenshot(p,'accounting-calculator-insurance-copy-mobile');
-  await p.setViewportSize({width:1440,height:1000});await p.evaluate(()=>window.scrollTo(0,0));await screenshot(p,'accounting-calculator-insurance-copy-desktop');
+  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Insurance page must fit 390px; only its wide table may scroll locally');
+  await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-mobile');
+  await p.setViewportSize({width:1440,height:1000});await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-desktop');
  }finally{
   await p.setViewportSize({width:1440,height:1000});
   const done=p.locator('.book.focus-active .focus-done');if(await done.isVisible())await done.click();
   await p.locator('[data-panel="generalPanel"]').click();
  }
+}
+// The owner explicitly confirmed multiline linear equations and bidirectional proportional conversion.
+async function calculatorMathTools(p){
+ const before={expression:await p.locator('#calcExpression').textContent(),result:await p.locator('#calcResult').textContent()};
+ async function state(id,expected){assert.equal(await p.locator(id).getAttribute('data-status'),expected);}
+ async function cleared(id){assert.equal((await p.locator(id).textContent()).trim(),'','Editing must remove stale answers and errors');assert.equal(await p.locator(id).getAttribute('data-status'),null,'Editing also clears the previous result status');}
+ async function solve(text){await p.locator('#linearInput').fill(text);await cleared('#linearResult');await p.locator('#linearSolveBtn').click();}
+ async function ratio(){await p.locator('#ratioCalculateBtn').click();}
+ try{
+  await p.locator('[data-panel="generalPanel"]').click();
+  for(const id of ['linearTool','ratioTool']){
+   assert.equal(await p.locator('#'+id).getAttribute('data-review-id'),'accounting-calculator-'+id);
+   const summary=p.locator('#'+id+' > summary');
+   await summary.focus();await summary.press('Enter');
+   assert.notEqual(await p.locator('#'+id).getAttribute('open'),null,'Enter on a focused summary must open the tool');
+   await summary.press('Enter');assert.equal(await p.locator('#'+id).getAttribute('open'),null,'Enter must also close the tool');
+   await summary.press('Enter');assert.notEqual(await p.locator('#'+id).getAttribute('open'),null,'Repeated keyboard activation must reopen it');
+  }
+  await p.locator('#linearInput').pressSequentially('x+y=5');await p.locator('#linearInput').press('Enter');await p.locator('#linearInput').pressSequentially('2*x-y=1');
+  assert.equal(await p.locator('#calcExpression').textContent(),before.expression,'Typing equations must not trigger main calculator shortcuts');assert.equal(await p.locator('#calcResult').textContent(),before.result);
+  await p.locator('#linearSolveBtn').click();await state('#linearResult','unique');
+  assert.match(await p.locator('#linearResult').textContent(),/x\s*=\s*2(?:\D|$)/);assert.match(await p.locator('#linearResult').textContent(),/y\s*=\s*3(?:\D|$)/);
+  await solve('x+y=1\nx+y=2');await state('#linearResult','inconsistent');assert.match(await p.locator('#linearResult').textContent(),/無解|矛盾/);
+  await solve('x*y=2\nx+y=3');await state('#linearResult','error');assert.match(await p.locator('#linearResult').textContent(),/線性|一次式/);
+  await solve('');await state('#linearResult','error');
+  await solve('x+y=5\n2*x-y=1');await state('#linearResult','unique');
+  await p.locator('#ratioBaseValue').fill('200');await p.locator('#ratioBasePercent').fill('40');await p.locator('#ratioTarget').fill('100');
+  await ratio();await state('#ratioResult','success');assert.match(await p.locator('#ratioResult').textContent(),/q\s*=\s*20\s*%/);
+  await p.locator('#ratioMode').selectOption('reverse');await cleared('#ratioResult');assert.match(await p.locator('#ratioTargetLabel').textContent(),/百分比/);await p.locator('#ratioTarget').fill('20');
+  await ratio();await state('#ratioResult','success');assert.match(await p.locator('#ratioResult').textContent(),/N\s*=\s*100(?:\D|$)/);
+  await p.locator('#ratioTarget').fill('');await cleared('#ratioResult');await ratio();await state('#ratioResult','error');
+  await p.locator('#ratioTarget').fill('20');await p.locator('#ratioBasePercent').fill('0');await ratio();await state('#ratioResult','error');
+  await p.locator('#ratioBasePercent').fill('40');await p.locator('#ratioMode').selectOption('forward');await p.locator('#ratioBaseValue').fill('0');await ratio();await state('#ratioResult','error');
+  await p.locator('#ratioBaseValue').fill('200');await p.locator('#ratioTarget').fill('0');await ratio();await state('#ratioResult','success');assert.match(await p.locator('#ratioResult').textContent(),/q\s*=\s*0\s*%/,'Zero target is valid, unlike a zero denominator');
+  await p.locator('#ratioTarget').fill('100');await ratio();await state('#ratioResult','success');
+  await p.locator('#linearTool').scrollIntoViewIfNeeded();await calculatorScreenshot(p,'accounting-calculator-math-tools-desktop');
+  await p.setViewportSize({width:390,height:844});
+  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'New math tools must not overflow 390px');
+  for(const id of ['linearTool','ratioTool']){
+   const tool=p.locator('#'+id);await tool.scrollIntoViewIfNeeded();
+   assert(await tool.evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1}),'New math tool must fit the narrow viewport');
+   await p.waitForFunction(()=>[...document.querySelectorAll('.toast')].every(e=>getComputedStyle(e).opacity==='0'||getComputedStyle(e).display==='none'));
+   await tool.screenshot({path:path.join(OUT,`accounting-calculator-${id}-mobile.png`)});
+  }
+  await p.setViewportSize({width:1440,height:1000});
+  // The original calculator must still evaluate normally after both new tools were used.
+  assert.equal(await p.locator('#calcExpression').textContent(),before.expression);assert.equal(await p.locator('#calcResult').textContent(),before.result);
+  await p.locator('[data-key="C"]').click();for(const key of '2+3')await p.locator(`[data-key="${key}"]`).click();await p.locator('[data-key="="]').click();assert.equal((await p.locator('#calcResult').textContent()).trim(),'5');
+ }finally{await p.setViewportSize({width:1440,height:1000});}
 }
 async function ledger(p){
  await p.locator('[data-action="demo"]').click();await visible(p,'#datasetStats');assert.match(await p.locator('#datasetStats').textContent(),/16/);
@@ -249,6 +313,7 @@ async function pdf(p){
  await check(id+' offline initial load',async()=>{const file=path.join(ROOT,'apps',id+'.html');assert(fs.existsSync(file),'Missing deliverable '+file);await p.goto(pathToFileURL(file).href);await visible(p,'body');assert((await p.locator('body').innerText()).length>100);assert.equal(await p.evaluate(()=>location.protocol),'file:');await screenshot(p,id+'-initial');});
  await check(id+' primary flows',()=>flow(p));
  if(id==='accounting-calculator')await check(id+' populated tax readability + labels + insurance copy at desktop and mobile',()=>calculatorPresentation(p));
+ if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  await check(id+' feedback visible blocks + export + reload + mobile',()=>feedback(p,id));
  await check(id+' mobile controls reachable without clipping or toggle overlap',()=>mobileLayout(p,id));
  if(id==='pdf-workbench')await check(id+' native modal feedback reachability + business-click protection',()=>nativeDialogFeedback(p));

@@ -1,0 +1,33 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const html=fs.readFileSync(path.join(__dirname,'../apps/accounting-calculator.html'),'utf8');
+const core=html.split('/* CALCULATOR_MATH_TOOLS_START:')[1].split('/* CALCULATOR_MATH_TOOLS_END */')[0];
+const code='/* CALCULATOR_MATH_TOOLS_START:'+core;
+const context=vm.createContext({});vm.runInContext(code+';globalThis.math=CalculatorMathTools',context);const m=context.math;
+let checks=0;const test=(name,fn)=>{fn();checks++;console.log('PASS '+name)};
+const near=(a,b)=>assert.ok(Math.abs(a-b)<=1e-10*Math.max(1,Math.abs(b)),`${a} != ${b}`);
+const unique=(input,expected)=>{const r=m.solveLinear(input);assert.equal(r.status,'unique');for(const [v,n]of Object.entries(expected))near(r.values[r.vars.indexOf(v)],n);return r};
+test('unique implicit coefficients',()=>unique('x+y=100\n2x+3y=240',{x:60,y:40}));
+test('overdetermined consistent',()=>unique('x+y=5\n2*x-y=1\n3x=6',{x:2,y:3}));
+test('negative decimal parentheses division',()=>unique('2(x+y)/4=0.25\nx-y=-1.5',{x:-0.5,y:1}));
+test('scientific notation and named variables',()=>unique('1e-3*cost+fee=2\nfee=1',{cost:1000,fee:1}));
+test('under-determined and redundant',()=>{assert.equal(m.solveLinear('x+y=5').status,'infinite');assert.equal(m.solveLinear('x+y=5\n2x+2y=10').status,'infinite')});
+test('inconsistent including tiny constants',()=>{for(const s of ['x+y=1\nx+y=2','0=1','1e-40=0','x=1\nx=2\ny=1e90'])assert.equal(m.solveLinear(s).status,'inconsistent')});
+test('zero coefficients and no variables',()=>{assert.equal(m.solveLinear('0=0').status,'identity');assert.equal(m.solveLinear('0x=0').status,'infinite');unique('x-x+y=3\nx=2',{x:2,y:3})});
+test('scaling small and large',()=>{unique('-8x+y=-40\nx+3y=5',{x:5,y:0});unique('1e-30x+1e-30y=5e-30\n2e30x-1e30y=1e30',{x:2,y:3});unique('1e-25x+y=2\n1e-25x-y=0',{x:1e25,y:1})});
+test('near-singular is inconclusive',()=>{assert.equal(m.solveLinear('x+y=1e20\nx-y=1').status,'uncertain');assert.equal(m.solveLinear('x+y=2\nx+1.000000000001y=2.000000000001').status,'uncertain')});
+test('reject nonlinear and unsafe expressions',()=>{for(const s of ['x*y=2','x^2=2','x/y=2','(x-x)*y=0','x/(y-y+1)=2','alert(1)=2','x=<img>','x=1;globalThis.bad=1','x=Infinity','x=NaN','x=1/0','x=1e999','x=1e-999','x=','x=1=2','(x=1','x=1 2']){assert.throws(()=>m.solveLinear(s),undefined,s)}assert.equal(context.bad,undefined)});
+test('bounds',()=>{for(const s of ['x'.repeat(6001),Array(21).fill('x=1').join('\n'),Array.from({length:11},(_,i)=>`v${i}=1`).join('\n'),'('.repeat(41)+'x'+')'.repeat(41)+'=1'])assert.throws(()=>m.solveLinear(s))});
+test('precision loss must not yield false solutions',()=>{for(const input of ['1e100x+1e-300y=0\nx=0','1e100x=1e-300','x+1e20=1e20+1','x+1e20=1+1e20'])assert.throws(()=>m.solveLinear(input));assert.equal(m.solveLinear('x=1\nx=1.000000000000001').status,'uncertain');for(const mode of ['forward','reverse'])assert.throws(()=>m.ratio(mode,'1e100','1e100','1e-300'))});
+test('blank input',()=>assert.throws(()=>m.solveLinear(' \n ')));
+test('ratio both ways and roundtrip signed',()=>{near(m.ratio('forward','200','40','100').value,20);near(m.ratio('reverse','200','40','20').value,100);for(const [x,p,n]of [[-30,25,12],[200,-40,-30],[.2,.5,.07]])near(m.ratio('reverse',x,p,m.ratio('forward',x,p,n).value).value,n)});
+test('ratio zero targets and forward zero percent',()=>{near(m.ratio('forward',20,25,0).value,0);near(m.ratio('reverse',20,25,0).value,0);near(m.ratio('forward',20,0,5).value,0)});
+test('ratio invalid inputs and extremes',()=>{for(const a of [['forward',0,2,3],['reverse',2,0,3],['forward','',2,3],['reverse',2,'',3],['forward',2,3,''],['forward',2,3,'1%'],['forward',2,3,Infinity],['forward',2,3,'0x10'],['forward',2,3,'1e-999'],['forward','1e-100','1e100','1e100'],['other',2,3,4]])assert.throws(()=>m.ratio(...a))});
+test('stable decimal output',()=>{assert.equal(m.format(-0),'0');assert.equal(m.format(.1+.2),'0.3')});
+// Minimal DOM harness exercises real handlers without browser dependencies.
+const nodes=new Map();function element(id){if(!nodes.has(id))nodes.set(id,{value:'',textContent:'',dataset:{},events:{},addEventListener(k,fn){(this.events[k]??=[]).push(fn)},fire(k){for(const fn of this.events[k]||[])fn({})}});return nodes.get(id)}
+const ui=html.split('/* CALCULATOR_MATH_UI_START */')[1].split('/* CALCULATOR_MATH_UI_END */')[0];context.document={getElementById:element};vm.runInContext(ui,context);
+test('linear actual handler clears stale results and reports failures',()=>{element('linearInput').value='x=3';element('linearSolveBtn').fire('click');assert.equal(element('linearResult').dataset.status,'unique');element('linearInput').value='x*y=1';element('linearInput').fire('input');assert.equal(element('linearResult').textContent,'');assert.equal(element('linearResult').dataset.status,undefined);element('linearSolveBtn').fire('click');assert.equal(element('linearResult').dataset.status,'error');assert.ok(!element('linearResult').textContent.includes('x = 3'))});
+test('ratio actual handler clears on any field edit and mode change',()=>{element('ratioMode').value='forward';element('ratioBaseValue').value='200';element('ratioBasePercent').value='40';element('ratioTarget').value='100';element('ratioCalculateBtn').fire('click');assert.match(element('ratioResult').textContent,/20%/);for(const id of ['ratioMode','ratioBaseValue','ratioBasePercent','ratioTarget']){element('ratioCalculateBtn').fire('click');element(id).fire('input');assert.equal(element('ratioResult').textContent,'');assert.equal(element('ratioResult').dataset.status,undefined)}element('ratioMode').value='reverse';element('ratioMode').fire('change');assert.match(element('ratioTargetLabel').textContent,/百分比/);element('ratioBasePercent').value='0';element('ratioCalculateBtn').fire('click');assert.equal(element('ratioResult').dataset.status,'error')});
+test('static accessibility and offline safety contract',()=>{for(const id of ['linearTool','ratioTool'])assert.match(html,new RegExp(`id="${id}"[^>]+data-review-id="accounting-calculator-${id}"`));for(const id of ['linearResult','ratioResult'])assert.match(html,new RegExp(`id="${id}"[^>]+role="status"[^>]+aria-live="polite"`));assert.match(html,/e\.target\.closest\("input,select,textarea,button,summary"\)/);assert.ok(!/\beval\s*\(|new\s+Function\s*\(/.test(code));assert.ok(!/innerHTML/.test(ui));});
+console.log(`${checks} math-tool checks passed`);
