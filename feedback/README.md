@@ -1,4 +1,4 @@
-# 離線區塊修改標註 1.0.0
+# 離線區塊修改標註 1.1.0
 
 這是「提出修改需求」模式，**不是所見即所得編輯器，也不是遠端 AI**。儲存標註不代表 HTML 已經依需求修改。每份成品仍為單一 HTML，無 CDN、套件、網路或 sibling JS 依賴。
 
@@ -26,7 +26,9 @@
 
 ## 行為與隱私
 
-- 右下角「修改標註」開啟模式；點區塊或用選單選取。選擇內層已標記區塊時，以最接近點擊目標的區塊優先。
+- 「修改標註」開啟模式；預設右下角，可拖曳點狀把手移動入口與面板，支援滑鼠及觸控。選擇內層已標記區塊時，以最接近點擊目標的區塊優先。
+- 聚焦把手後用方向鍵移動 10px，Shift＋方向鍵移動 40px；Home 或展開後的「歸位」回到右下角。調整視窗、展開面板、面板內容改變時，浮動位置會限制在畫面內。
+- 位置存在獨立的 `offline-review-position:1:<encodeURIComponent(appId)>`，與標註、業務資料分開；位置無法儲存時仍可拖曳。歸位只移除此工具的位置設定，不刪標註。位置不包含在 JSON／TXT 需求匯出。
 - 提供儲存、編輯、刪除（需確認）、JSON 與 TXT 匯出。匯出只是下載本機需求檔，沒有上傳，也沒有觸發程式修改。
 - 可使用鍵盤選單、Tab、Escape。一般模式只顯示啟動按鈕，其餘覆層不攔截操作；編輯模式可捲動頁面。
 - 不讀取頁面文字、業務 input value、顧客資料或截圖。只記錄靜態區塊 ID/名稱/selector、使用者輸入的需求、時間與版本。
@@ -46,6 +48,8 @@
 - `test-results.txt`：已執行的合成檢查證據。
 
 ## 驗證證據與限制
+
+以下 1.0.0 的合成檢查與早期瀏覽器限制為歷史紀錄；1.1.0 四頁整合的實際驗證方式、觸控案例與目前環境限制見 [UI 修訂記錄](../revisions/ui-floating-review.md)。目前瀏覽器腳本是 `tests/browser-smoke.cjs`，而非下列早期 `test-review.cjs`。
 
 已通過 `node --check offline-review.js` 與 `node test-static.cjs` 的 **17 項**：新增資料結構與版本、文字安全/編輯、reload hydration、app 隔離、capture guard、Escape 恢復、刪除、storage failure 記憶體保留、fallback selector、不含網路/innerHTML/reload/prototype 修改與 DOM 文字抓取，以及未存草稿確認、介面快捷鍵隔離、大型 storage 拒絕、100 則上限、JSON 無 BOM，以及原生 modal 中標註入口移入／關閉後還原與限定區塊。
 
