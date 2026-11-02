@@ -8,18 +8,18 @@
 
 - 四個工具 **UI 修訂 ui.1**：修改標註可用滑鼠／觸控拖曳、鍵盤移動、記住位置與歸位；計算機桌面並排、PDF 起始引導，以及四頁操作狀態改善。[設計參考、修改與驗證範圍](revisions/ui-floating-review.md)。
 - 營業稅工作台 **v2.12.0**：日期與明細層級、客戶旁儲存、通知分類／親切專業模板、已儲存列印版面及 A4 預覽；[更新與驗證](revisions/vat-workbench-v2.12.0.md)。
-- 計算機維持 **v1.2.0**；分類帳與 PDF 工具此次未變更。
+- 本次四個工具均已套用 UI 修訂；業務計算與資料格式沿用既有版本。
 
 ## 選擇工具
 
-| 工具 | 單檔 | 來源版本 |
-| --- | --- | --- |
-| 營業稅工作台 | [vat-workbench.html](apps/vat-workbench.html) | v2.11 |
-| 分類帳分析 | [ledger-analyzer.html](apps/ledger-analyzer.html) | v4.4 |
-| PDF 家族 | [pdf-workbench.html](apps/pdf-workbench.html) | v0.12.1 |
-| 會計計算機 | [accounting-calculator.html](apps/accounting-calculator.html) | 原離線會計計算機 |
+| 工具 | 下載最新版單檔 | 查看原始碼 | 功能／UI 版本 |
+| --- | --- | --- | --- |
+| 營業稅工作台 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/vat-workbench.html) | [vat-workbench.html](apps/vat-workbench.html) | v2.12.0／ui.1 |
+| 分類帳分析 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/ledger-analyzer.html) | [ledger-analyzer.html](apps/ledger-analyzer.html) | v4.4.1／ui.1 |
+| PDF 家族 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/pdf-workbench.html) | [pdf-workbench.html](apps/pdf-workbench.html) | v0.12.2／ui.1 |
+| 會計計算機 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/accounting-calculator.html) | [accounting-calculator.html](apps/accounting-calculator.html) | v1.2.0／ui.1 |
 
-打開檔案頁，使用 GitHub 的 **Download raw file** 下載；請勿把 GitHub 網頁另存成 HTML。下載後用桌面 Chrome 或 Edge 開啟。
+「下載 HTML」直接指向 `main` 最新版檔案，不需要下載整個 Repo。若瀏覽器顯示原始碼，請使用「另存新檔」，並保留 `.html` 副檔名；也可在下載連結按右鍵選擇「另存連結」。請勿把 GitHub 的檔案檢視網頁另存成 HTML。下載後用桌面 Chrome 或 Edge 開啟。
 
 ## 更新一個工具
 
