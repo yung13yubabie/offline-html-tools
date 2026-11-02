@@ -30,7 +30,7 @@ GitHub 連線及 clone 成功。這輪不需要另建 Stitch、Uizard、Visily�
 
 ## 驗證方式
 
-本輪結果：**42 組 Chromium 瀏覽器檢查全部通過（localhost HTTP、外網封鎖）**；所有既有純回歸套件與標註的 17 項合成檢查通過。桌面、手機及展開標註的實際截圖已人工檢視。
+本輪結果：**[GitHub CI 的 42 組 Chromium file:// 離線檢查全部通過](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41373364685)**；本機 42 組 localhost HTTP 檢查（外網封鎖）也通過；所有既有純回歸套件與標註的 17 項合成檢查通過。桌面、手機及展開標註的實際截圖已人工檢視。
 
 - 執行所有既有純回歸套件，以及 `feedback/test-static.cjs` 17 項合成檢查。
 - 四頁桌面／390px 手機的載入、既有主流程、標註選區、儲存、編輯、刪除、JSON／TXT 匯出、重新載入與業務操作隔離。
@@ -39,7 +39,7 @@ GitHub 連線及 clone 成功。這輪不需要另建 Stitch、Uizard、Visily�
 - 比對四頁業務 script 與原主線相同、內嵌標註與來源一致；重跑內嵌工具不改變檔案。
 - 修正舊標記範圍內混有計算機方程式 script 的情況，避免重新內嵌標註時刪除該功能；原 script 內容保留。
 
-目前環境的受管理 Chromium 以 `ERR_BLOCKED_BY_ADMINISTRATOR` 禁止 `file://`。未修改瀏覽器政策；改以明確允許的 localhost HTTP 預覽，攔截外部 HTTP／HTTPS，測試報告會記錄此模式。**本輪不宣稱直接開檔與 file:// 儲存驗收完成**，原 CI 預設仍使用 file://。
+目前環境的受管理 Chromium 以 `ERR_BLOCKED_BY_ADMINISTRATOR` 禁止 `file://`。未修改瀏覽器政策；改以明確允許的 localhost HTTP 預覽，攔截外部 HTTP／HTTPS，測試報告會記錄此模式。**本機 HTTP 測試不代替直接開檔驗證**；另外已在 GitHub CI 使用 file:// 完成 42 組檢查，實測程式提交為 [9214c62](https://github.com/yung13yubabie/offline-html-tools/commit/9214c62d12e51d0f7136f2259dad20e40d8c0652)。這是 Chromium 人工資料驗證，不代表所有瀏覽器與實際客戶資料均驗收。
 
 開發環境可用以下方式重現 HTTP 模式（需事先啟動本機伺服器）；使用者下載 HTML 不需要這些套件或伺服器：
 
