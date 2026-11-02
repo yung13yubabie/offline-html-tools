@@ -8,7 +8,7 @@
 
 **本機 Chromium localhost HTTP：45 組通過、0 失敗**，外部網路封鎖。既有數學核心 18 項、1468 組對抗案例、計算機 40 項、數字池 23 項（含 180 組獨立窮舉比對）、日期 10 項（含 400 組逐日比對），以及其他工具純回歸與 17 項標註合成檢查全部通過。來源與成品內嵌一致，原方程式及比例數值核心逐字比對未變。
 
-GitHub `file://` 驗證將隨本次提交執行，完成後補入結果；前版紀錄保留於下方。操作與設計參考見 [v1.5.0 修訂紀錄](revisions/accounting-calculator-v1.5.0.md)。
+[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41398242341) 以提交 `0057b11` 的交付 HTML 完成 **45 組 Chromium `file://` 離線開檔檢查，45 通過、0 失敗**，測試亦封鎖外部網路；工作流程的純回歸全部通過。操作與設計參考見 [v1.5.0 修訂紀錄](revisions/accounting-calculator-v1.5.0.md)。前版紀錄保留於下方。
 
 ## 歷史紀錄：計算機 v1.4.0：100 筆數字池與日期工具（2026-11-02）
 

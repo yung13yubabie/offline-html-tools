@@ -39,3 +39,5 @@
 使用者仍只需到 [accounting-calculator.html](../apps/accounting-calculator.html) 的 GitHub 檔案頁，按 **Download raw file** 下載。標註版本為 `1.5.0`，原有可移動標註保留；其他三個 HTML 沒有修改。
 
 維護來源為 `calculator/math-form-core.js`、`math-forms-ui.js`、`math-forms.html`、`math-forms.css`，由 `python3 tools/embed-calculator.py` 內嵌。新增的 10 項表單核心檢查涵蓋 100 組已知解方程式；整套本機 Chromium localhost HTTP 測試 45 組通過，涵蓋選單、草稿保留、範例取消、原文字輸入、比例基準、錯誤與窄螢幕，既有純回歸也通過。最新實測結果見 [TEST_REPORT.md](../TEST_REPORT.md)。
+
+[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41398242341) 已以提交 `0057b11` 完成 45 組 Chromium `file://` 離線開檔檢查，全數通過；本機與 CI 的瀏覽器檢查均封鎖外部網路。尚未實測其他瀏覽器或真實手機。

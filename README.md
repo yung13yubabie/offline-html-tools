@@ -96,7 +96,7 @@
 
 ## 驗證與使用範圍
 
-**v1.5.0** 已通過本機 localhost HTTP 的 **45 組 Chromium 檢查**、10 項表單核心檢查（含 100 組已知解系統），以及既有純回歸與標註合成檢查。GitHub 的 `file://` 離線驗證將隨本次提交執行；最新紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。
+**v1.5.0** 已通過本機 localhost HTTP 的 **45 組 Chromium 檢查**、10 項表單核心檢查（含 100 組已知解系統），以及既有純回歸與標註合成檢查。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41398242341) 也已完成 **45 組 `file://` 離線開檔檢查，全數通過**；完整紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。
 
 **v1.4.0 歷史紀錄**：已通過本機 localhost HTTP 的 **44 組 Chromium 檢查**、23 項數字池核心檢查（含 180 組獨立窮舉比對）、10 項日期核心檢查（含 400 組逐日比對），以及原有純回歸與標註合成檢查。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41394751371) 也已完成 **44 組 `file://` 離線開檔檢查，全數通過**；詳見 [本輪檢查紀錄](TEST_REPORT.md)。下列通過紀錄屬於先前版本。
 
