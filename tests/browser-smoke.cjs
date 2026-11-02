@@ -7,6 +7,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const calculatorPool=require('./calculator-pool.browser.js');
+const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
@@ -342,11 +343,14 @@ async function calculatorMathTools(p){
   for(const id of ['linearTool','ratioTool']){
    assert.equal(await p.locator('#'+id).getAttribute('data-review-id'),'accounting-calculator-'+id);
    const summary=p.locator('#'+id+' > summary');
+   if(await p.locator('#'+id).getAttribute('open')!==null)await summary.click();
    await summary.focus();await summary.press('Enter');
    assert.notEqual(await p.locator('#'+id).getAttribute('open'),null,'Enter on a focused summary must open the tool');
    await summary.press('Enter');assert.equal(await p.locator('#'+id).getAttribute('open'),null,'Enter must also close the tool');
    await summary.press('Enter');assert.notEqual(await p.locator('#'+id).getAttribute('open'),null,'Repeated keyboard activation must reopen it');
   }
+  await p.locator('#linearEntryMode').selectOption('text');
+  await p.locator('#ratioBasis').selectOption('custom');
   await p.locator('#linearInput').pressSequentially('x+y=5');await p.locator('#linearInput').press('Enter');await p.locator('#linearInput').pressSequentially('2*x-y=1');
   assert.equal(await p.locator('#calcExpression').textContent(),before.expression,'Typing equations must not trigger main calculator shortcuts');assert.equal(await p.locator('#calcResult').textContent(),before.result);
   await p.locator('#linearSolveBtn').click();await state('#linearResult','unique');
@@ -576,6 +580,7 @@ async function vatPreviewPaperGeometry(p){
  await check(id+' offline initial load',async()=>{const file=path.join(ROOT,'apps',id+'.html');assert(fs.existsSync(file),'Missing deliverable '+file);await p.goto(appURL(file));await visible(p,'body');assert((await p.locator('body').innerText()).length>100);assert.equal(await p.evaluate(()=>location.protocol),BASE?new URL(BASE).protocol:'file:');await screenshot(p,id+'-initial');});
  await check(id+' primary flows',()=>flow(p));
  if(id==='accounting-calculator')await check(id+' populated tax readability + labels + insurance copy at desktop and mobile',()=>calculatorPresentation(p));
+ if(id==='accounting-calculator')await check(id+' guided math forms + menus + preserved drafts + preview + responsive results',()=>calculatorMathForms(p));
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));
  if(id==='accounting-calculator')await check(id+' date differences + business days + offsets + local dates + mobile + stale results',()=>calculatorDateTools(p));

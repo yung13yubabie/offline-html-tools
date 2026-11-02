@@ -9,6 +9,9 @@ APP = ROOT / 'apps/accounting-calculator.html'
 
 def build(text):
     blocks = [
+        ('MATH_FORMS_STYLE', (ROOT / 'calculator/math-forms.css').read_text(), 'style', '</head>'),
+        ('MATH_FORMS_MARKUP', (ROOT / 'calculator/math-forms.html').read_text(), None, '<!-- GUIDED_MATH_ANCHOR -->'),
+        ('MATH_FORMS_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['math-form-core.js', 'math-forms-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
         ('WORKBENCH_STYLE', (ROOT / 'calculator/workbench.css').read_text(), 'style', '</head>'),
         ('DATE_TOOLS_STYLE', (ROOT / 'calculator/date-tools.css').read_text(), 'style', '</head>'),
         ('NUMBER_POOL_MARKUP', (ROOT / 'calculator/number-pool.html').read_text(), None, '<section id="taxPanel"'),

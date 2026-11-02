@@ -1,0 +1,49 @@
+<section class="guided-math" data-review-id="accounting-calculator-guidedMath" data-review-name="選單式進階計算" aria-labelledby="guidedMathTitle">
+  <div class="guided-heading"><div><p class="workspace-kicker">選擇條件 · 填入數字 · 核對結果</p><h2 id="guidedMathTitle">把計算條件，逐項填好</h2></div><p>從選單開始，不必先寫好整條算式。</p></div>
+  <details id="linearTool" class="math-tool guided-tool" open data-review-id="accounting-calculator-linearTool" data-review-name="多元一次方程式">
+    <summary><span class="guided-tool-index">01</span><span class="guided-tool-title">多元一次方程式<span>選擇幾個未知數，再填每條條件的係數</span></span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="guided-workspace">
+      <form id="linearForm" class="guided-form" novalidate data-review-id="accounting-calculator-linearForm" data-review-name="方程式條件填寫">
+        <div class="guided-form-heading"><h3>設定題目</h3><label class="guided-mode-label" for="linearEntryMode">填寫方式<select id="linearEntryMode"><option value="form">選單與係數欄位</option><option value="text">進階：貼上完整方程式</option></select></label></div>
+        <div id="linearBuilder">
+          <div class="guided-select-row"><label for="linearVariableCount">未知數數量<select id="linearVariableCount"></select></label><label for="linearEquationCount">方程式數量<select id="linearEquationCount"></select></label><label for="linearPreset">試填範例<select id="linearPreset"><option value="">選擇範例…</option><option value="two">二元：兩條條件</option><option value="three">三元：三條條件</option></select></label></div>
+          <p id="linearBuilderHelp" class="guided-help">每欄填一個係數，正負號用選單選；沒填的係數視為 0，等號右側必填。調整數量後，暫時隱藏的欄位仍會保留。</p>
+          <div id="linearRows" class="equation-rows" aria-describedby="linearBuilderHelp"></div>
+        </div>
+        <div id="linearTextEditor" hidden>
+          <label for="linearInput">方程式（每行一條）</label><textarea id="linearInput" rows="6" maxlength="6000" spellcheck="false" autocapitalize="off" aria-describedby="linearHelp" placeholder="x+y=100&#10;2x+3y=240"></textarea>
+          <p id="linearHelp" class="guided-help">支援小數、正負數、括號及乘除常數，如 2(x-y)/3=10；不支援未知數相乘、次方或除以未知數。最多 10 個未知數、20 條式子、6000 字；未知數用英文字母開頭，大小寫有別。兩種填寫方式各自保留內容。</p>
+          <button type="button" class="btn small" id="linearUseFormBtn">帶入目前表格算式</button>
+        </div>
+        <div class="guided-action-row"><button type="submit" id="linearSolveBtn" class="btn primary">求解方程式 <span aria-hidden="true">→</span></button><button type="button" id="linearClearBtn" class="btn guided-reset">清空目前內容</button></div>
+      </form>
+      <aside class="guided-output" aria-label="方程式預覽與結果" data-review-id="accounting-calculator-linearOutput" data-review-name="方程式預覽與結果">
+        <div class="guided-preview-heading"><span>算式預覽</span><span id="linearShape" class="guided-shape">2 個未知數 · 2 條條件</span></div>
+        <div id="linearPreview" class="guided-preview"></div>
+        <div class="guided-result-heading"><span class="guided-result-dot" aria-hidden="true"></span><h3>求解結果</h3></div>
+        <p id="linearEmpty" class="guided-empty">填好條件後，按「求解方程式」。</p>
+        <div id="linearResult" class="math-result guided-result" role="status" aria-live="polite" aria-atomic="true"></div>
+      </aside>
+    </div>
+  </details>
+  <details id="ratioTool" class="math-tool guided-tool" open data-review-id="accounting-calculator-ratioTool" data-review-name="比例換算">
+    <summary><span class="guided-tool-index">02</span><span class="guided-tool-title">比例換算<span>先選想求的結果，再填已知數值與比例</span></span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="guided-workspace">
+      <form id="ratioForm" class="guided-form" novalidate data-review-id="accounting-calculator-ratioForm" data-review-name="比例條件填寫">
+        <div class="guided-form-heading"><h3>選擇換算方式</h3><button type="button" id="ratioExampleBtn" class="btn small">試填範例</button></div>
+        <div class="guided-select-row ratio-select-row"><label for="ratioMode">想求什麼？<select id="ratioMode"><option value="forward">百分比：這個數值占多少？</option><option value="reverse">數值：這個百分比是多少？</option></select></label><label for="ratioBasis">已知比例的設定<select id="ratioBasis"><option value="whole">以完整數值為 100%</option><option value="custom">自訂已知比例</option></select></label></div>
+        <div class="ratio-known"><div class="guided-section-label"><span>01</span> 已知這組對應關係</div><div class="ratio-pair"><label for="ratioBaseValue">已知數值 X<input id="ratioBaseValue" type="text" inputmode="decimal" maxlength="120" placeholder="例如 200"></label><span class="ratio-corresponds" aria-hidden="true">↔</span><label for="ratioBasePercent">對應百分比 p<span class="guided-input-unit"><input id="ratioBasePercent" type="text" inputmode="decimal" maxlength="120" value="100" readonly><span>%</span></span></label></div><p class="guided-help" id="ratioBasisHelp">完整數值對應 100%；若已知的是另一組比例，請在上方選「自訂已知比例」。</p></div>
+        <div class="ratio-question"><div class="guided-section-label"><span>02</span> 填入要換算的條件</div><label for="ratioTarget"><span id="ratioTargetLabel">目標數值 N</span><span class="guided-input-unit"><input id="ratioTarget" type="text" inputmode="decimal" maxlength="120" placeholder="例如 50"><span id="ratioTargetUnit" hidden>%</span></span></label><p class="guided-help" id="ratioTargetHelp">將這個數值與上方已知數值比較，求出對應百分比。</p></div>
+        <div class="guided-action-row"><button type="submit" id="ratioCalculateBtn" class="btn primary">換算比例 <span aria-hidden="true">→</span></button><button type="button" id="ratioClearBtn" class="btn guided-reset">清空數值</button></div>
+      </form>
+      <aside class="guided-output" aria-label="比例預覽與結果" data-review-id="accounting-calculator-ratioOutput" data-review-name="比例預覽與結果">
+        <div class="guided-preview-heading"><span>換算路徑</span><span id="ratioDirection" class="guided-shape">數值 → 百分比</span></div>
+        <div id="ratioRelationship" class="ratio-relationship"></div><div id="ratioPreview" class="guided-preview ratio-preview"></div>
+        <div class="guided-result-heading"><span class="guided-result-dot" aria-hidden="true"></span><h3>換算結果</h3></div>
+        <p id="ratioEmpty" class="guided-empty">選好換算方式並填入數字，就可以計算。</p>
+        <div id="ratioResult" class="math-result guided-result" role="status" aria-live="polite" aria-atomic="true"></div>
+        <p class="guided-help ratio-rules">可用正數、負數與小數；百分比欄只填數字，不需輸入 %。已知數值不可為 0；由百分比求數值時，已知百分比也不可為 0。</p>
+      </aside>
+    </div>
+  </details>
+</section>

@@ -82,11 +82,29 @@
 @media print{.date-tools-grid{display:block}.date-card{break-inside:avoid;margin-bottom:18px}.date-calculate{display:none!important}}
 </style>
 <!-- DATE_TOOLS_STYLE_END -->
+<!-- MATH_FORMS_STYLE_BEGIN -->
+<style>
+/* Guided worksheets: visible conditions, live previews, readable outcomes. */
+.guided-math{margin-top:34px;min-width:0}.guided-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:0 0 20px}.guided-heading h2{margin:0;font-size:23px;letter-spacing:-.025em}.guided-heading>p{margin:0;font-size:14px;line-height:1.7;color:var(--muted)}
+.math-tool.guided-tool{margin:0 0 24px;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--surface);scroll-margin-top:90px;overflow:hidden}.guided-tool>summary{display:flex;align-items:center;gap:16px;list-style:none;padding:21px 24px;cursor:pointer}.guided-tool>summary::-webkit-details-marker{display:none}.guided-tool-index{font:500 14px var(--mono);color:var(--blue);align-self:flex-start;padding-top:4px}.guided-tool-title{font-size:20px;line-height:1.5;font-weight:700}.guided-tool-title>span{display:block;font-size:14px;font-weight:400;color:var(--muted);margin-top:3px}.guided-chevron{margin-left:auto;color:var(--muted);font-size:22px;transition:transform .18s}.guided-tool:not([open]) .guided-chevron{transform:rotate(-90deg)}.guided-tool[open]>summary{border-bottom:1px solid var(--line)}.guided-workspace{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);align-items:stretch}.guided-form{padding:24px;min-width:0}.guided-form-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px}.guided-form-heading h3{margin:0;font-size:16px;white-space:nowrap}.guided-form-heading .guided-mode-label{max-width:220px;font-size:12px;color:var(--muted)}
+.guided-tool label{font-size:14px;font-weight:500;line-height:1.65;min-width:0}.guided-tool input,.guided-tool select,.guided-tool textarea{font:16px/1.5 "Segoe UI","Microsoft JhengHei",system-ui,sans-serif;background:var(--surface);color:var(--text);border:1px solid var(--line-strong);border-radius:8px;margin:7px 0 0;padding:10px 11px;min-height:46px;min-width:0;width:100%}.guided-tool textarea{resize:vertical;min-height:156px;line-height:1.8;font-family:var(--mono);font-size:15px}.guided-tool input:read-only{background:var(--surface-2);color:var(--muted)}.guided-tool input:focus,.guided-tool select:focus,.guided-tool textarea:focus{border-color:var(--blue)}.guided-select-row{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:12px}.guided-select-row.ratio-select-row{grid-template-columns:1fr 1fr}.guided-tool .guided-help{font-size:13px;font-weight:400;line-height:1.8;color:var(--muted);margin:12px 0 16px}.equation-rows{max-height:510px;overflow:auto;padding:3px 4px 4px 0;scrollbar-width:thin;overscroll-behavior:contain}.equation-row{border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden;animation:worksheet-in .16s ease-out}.equation-row:last-child{margin-bottom:0}.equation-row-heading{padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted);font-weight:600}.equation-row-heading span:last-child{font-family:var(--mono);font-weight:400;color:var(--blue)}.equation-terms{display:grid;grid-template-columns:repeat(var(--term-columns,2),minmax(0,1fr));gap:12px;padding:14px}.coefficient-field>span{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.coefficient-control{display:grid;grid-template-columns:58px minmax(0,1fr) 18px;align-items:center;gap:6px}.guided-tool .coefficient-control select,.guided-tool .coefficient-control input{margin:0;padding:8px;min-height:44px}.coefficient-control select{font-size:18px}.coefficient-control input{font-family:var(--mono);text-align:right}.coefficient-symbol{font:italic 19px Georgia,serif;color:var(--blue)}.equation-constant{display:flex;align-items:center;gap:12px;justify-content:flex-end;padding:12px 14px;background:#f8fbfa;border-top:1px solid var(--line)}.equation-constant label{display:flex;align-items:center;gap:12px;font-size:13px}.equation-constant .equals-symbol{font:500 22px var(--mono);color:var(--blue)}.guided-tool .equation-constant input{width:160px;max-width:100%;margin:0;text-align:right;font-family:var(--mono)}.guided-action-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px}.guided-action-row .primary{min-height:48px;display:flex;justify-content:space-between;align-items:center;gap:30px;flex:1;padding:12px 16px;font-weight:650}.guided-reset{font-size:13px;border-color:transparent;color:var(--muted)}
+.guided-output{min-width:0;padding:24px;background:#f8fbfa;border-left:1px solid var(--line)}.guided-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--blue);font-size:13px;font-weight:650;margin-bottom:14px}.guided-shape{font-size:12px;font-weight:400;color:var(--muted)}.guided-preview{font:500 17px/1.9 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;max-height:280px;overflow:auto;scrollbar-width:thin;padding:16px 0;color:var(--text)}.guided-result-heading{display:flex;align-items:center;gap:9px;border-top:1px solid var(--line);padding-top:22px;margin-top:20px}.guided-result-heading h3{margin:0;font-size:15px}.guided-result-dot{width:7px;height:7px;border-radius:50%;background:var(--blue)}.guided-tool .guided-empty{margin:14px 0;font-size:14px;line-height:1.8;color:var(--muted)}.math-tool .math-result.guided-result{font:inherit;white-space:normal;margin-top:16px;overflow-wrap:anywhere;padding:0;background:transparent;border-radius:0}.guided-result:not(:empty){animation:worksheet-in .2s ease-out}.guided-result-title{font-size:14px;line-height:1.8;margin:0 0 12px}.guided-answer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:10px}.guided-answer{padding:14px;background:var(--surface);border:1px solid #bed8ce;border-radius:9px;font:600 23px/1.5 var(--mono);color:var(--blue-strong);overflow-wrap:anywhere}.guided-result-detail{font:14px/1.8 var(--mono);margin-top:16px;white-space:pre-wrap}.guided-result-message{font-size:16px;line-height:1.8;margin:0;padding:14px 0}.guided-result[data-status=error],.guided-result[data-status=uncertain]{color:var(--danger)}.guided-result[data-status=inconsistent],.guided-result[data-status=infinite]{color:#765116}.guided-result .result-original{margin-top:14px}.guided-result .result-original summary{font-size:13px;font-weight:500;padding:6px 0;color:var(--muted)}.guided-result .result-original pre{font:13px/1.8 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}.guided-result-meta{color:var(--muted);font-size:12px;line-height:1.8;margin-top:12px}
+.ratio-known{margin-top:22px;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.guided-section-label{font-size:14px;font-weight:600;margin-bottom:14px}.guided-section-label>span{font:12px var(--mono);color:var(--blue);margin-right:6px}.ratio-pair{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);gap:10px;align-items:end}.ratio-corresponds{font-size:24px;text-align:center;color:var(--blue);padding-bottom:9px}.guided-input-unit{position:relative;display:block}.guided-input-unit>input{padding-right:36px}.guided-input-unit>span{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px}.ratio-known .guided-help{margin-bottom:0}.ratio-question{margin-top:22px}.ratio-question>label{max-width:340px}.ratio-relationship{display:grid;gap:12px;margin-top:18px}.ratio-relationship-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center;font:500 20px/1.6 var(--mono);text-align:center;color:var(--text)}.ratio-relationship-row>span{overflow-wrap:anywhere}.ratio-relationship-row .ratio-unknown{color:var(--blue);font-size:28px}.ratio-relationship-row small{font-size:12px;color:var(--muted)}.ratio-preview{font-size:14px;margin-top:14px}.ratio-answer{font:650 32px/1.5 var(--mono);color:var(--blue-strong);margin:6px 0 0;overflow-wrap:anywhere}.guided-output .ratio-rules{margin-top:24px;margin-bottom:0}
+@keyframes worksheet-in{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1100px){.guided-workspace{grid-template-columns:1fr}.guided-output{border-left:0;border-top:1px solid var(--line)}.guided-preview{max-height:190px}.guided-select-row{grid-template-columns:repeat(3,minmax(0,1fr))}.guided-form-heading .guided-mode-label{max-width:260px}.equation-terms{grid-template-columns:repeat(var(--term-columns,2),minmax(0,1fr))}}
+@media(max-width:600px){.guided-heading{display:block}.guided-heading>p{margin-top:9px}.guided-heading h2{font-size:21px}.guided-tool>summary{padding:18px 16px;gap:10px}.guided-tool-title{font-size:18px}.guided-tool-title>span{font-size:13px}.guided-form,.guided-output{padding:18px 16px}.guided-form-heading{display:block}.guided-form-heading .guided-mode-label{max-width:none;margin-top:12px}.guided-form-heading .btn{margin-top:12px}.guided-select-row{grid-template-columns:1fr 1fr;gap:12px}.guided-select-row>label:last-child{grid-column:1/-1}.guided-select-row.ratio-select-row{grid-template-columns:1fr}.guided-tool input,.guided-tool select{font-size:16px}.equation-terms{grid-template-columns:1fr;gap:12px}.equation-rows{max-height:560px}.coefficient-field{display:grid!important;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:8px}.coefficient-field>span{font-size:13px;margin:0}.coefficient-control{grid-template-columns:58px minmax(0,1fr) 18px}.equation-constant{padding:12px}.equation-constant label{gap:8px}.guided-tool .equation-constant input{width:140px}.guided-action-row .primary{flex-basis:100%}.guided-reset{margin-left:auto}.ratio-pair{grid-template-columns:1fr;gap:12px}.ratio-corresponds{display:none}.guided-answer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.guided-answer{font-size:22px}.guided-preview{font-size:16px}.ratio-answer{font-size:28px}}
+@media(prefers-reduced-motion:reduce){.guided-tool,.guided-tool *{animation:none!important;transition:none!important}}
+@media print{.guided-tool>summary{padding:12px 0}.guided-workspace{display:block}.guided-form{display:none}.guided-output{border:0}.guided-tool{break-inside:avoid}}
+
+.guided-result .ratio-answer{font:650 32px/1.5 var(--mono);margin:6px 0 0}.guided-result .guided-result-message{font-size:16px;line-height:1.8}.guided-result .guided-result-title{font-size:14px}.guided-result .guided-result-meta{font-size:13px}.guided-tool .guided-help{font-size:14px}
+@media(max-width:600px){.guided-result .ratio-answer{font-size:28px}}
+</style>
+<!-- MATH_FORMS_STYLE_END -->
 </head>
 <body>
 <div class="app">
 <header class="topbar" data-review-id="accounting-calculator-header-1" data-review-name="頂端操作 1">
-<div class="brand"><span class="brand-symbol" aria-hidden="true">∑</span>離線計算工作台 <span class="brand-version">1.4.0</span></div>
+<div class="brand"><span class="brand-symbol" aria-hidden="true">∑</span>離線計算工作台 <span class="brand-version">1.5.0</span></div>
 <div class="session-note">提醒：計算內容重新整理後會清空。</div>
 </header>
 <nav class="mode-switch" aria-label="工作模式" data-review-id="accounting-calculator-workspaceNav" data-review-name="工作模式切換">
@@ -128,35 +146,68 @@
 </div>
 <div class="batch-head"><div>算式</div><div style="text-align:right">結果</div><div></div></div><div id="batchRows" data-review-id="accounting-calculator-batchRows" data-review-name="批量算式清單"></div>
 <div class="batch-total"><span class="muted">總計</span><strong id="batchTotal" class="money">0</strong><button class="btn small" id="copyBatchBtn">複製總計</button></div>
-<details id="linearTool" class="math-tool" data-review-id="accounting-calculator-linearTool" data-review-name="多元一次方程式">
-<summary>多元一次方程式</summary>
-<p id="linearHelp" class="muted">每行一條，例如 x+y=100、2x+3y=240。支援小數、正負數、括號及乘除常數，如 2(x-y)/3=10；不支援未知數相乘、次方或除以未知數。最多 10 個未知數、20 條式子、6000 字；未知數用英文字母開頭，大小寫有別。</p>
-<label for="linearInput">方程式（每行一條）</label>
-<textarea id="linearInput" rows="4" maxlength="6000" spellcheck="false" autocapitalize="off" aria-describedby="linearHelp" placeholder="x+y=100&#10;2x+3y=240"></textarea>
-<button type="button" id="linearSolveBtn" class="btn primary">求解方程式</button>
-<div id="linearResult" class="math-result" role="status" aria-live="polite" aria-atomic="true"></div>
-</details>
-<details id="ratioTool" class="math-tool" data-review-id="accounting-calculator-ratioTool" data-review-name="比例換算">
-<summary>比例換算</summary>
-<p class="muted">已知數值 X 對應 p%，可由數值求百分比，或由百分比求數值。可用正數、負數與小數；百分比只填數字，例如 25。X 不可為 0；反向換算時 p 也不可為 0。</p>
-<div class="math-fields">
-<label for="ratioMode">換算方向<select id="ratioMode"><option value="forward">由數值求百分比</option><option value="reverse">由百分比求數值</option></select></label>
-<label for="ratioBaseValue">已知數值 X<input id="ratioBaseValue" type="text" inputmode="decimal" maxlength="120" placeholder="例如 200"></label>
-<label for="ratioBasePercent">已知百分比 p（%）<input id="ratioBasePercent" type="text" inputmode="decimal" maxlength="120" placeholder="例如 100"></label>
-<label for="ratioTarget"><span id="ratioTargetLabel">目標數值 N</span><input id="ratioTarget" type="text" inputmode="decimal" maxlength="120" placeholder="輸入要換算的數字"></label>
-</div>
-<button type="button" id="ratioCalculateBtn" class="btn primary">換算比例</button>
-<div id="ratioResult" class="math-result" role="status" aria-live="polite" aria-atomic="true"></div>
-</details>
+
 
 </div>
 </div>
 <div class="feature-strip" aria-label="更多計算工具">
 <button class="feature-link" data-workspace-go="poolPanel"><span class="feature-icon" aria-hidden="true">±</span><span><strong>數字池</strong>從清單找出符合目標的組合</span></button>
 <button class="feature-link" data-workspace-go="datePanel"><span class="feature-icon" aria-hidden="true">▦</span><span><strong>日期與帳期</strong>相差天數、加減日期與排除週末</span></button>
-<button class="feature-link" data-workspace-go="linearTool"><span class="feature-icon" aria-hidden="true">𝑥</span><span><strong>多元一次方程式</strong>貼上方程式，求出未知數</span></button>
-<button class="feature-link" data-workspace-go="ratioTool"><span class="feature-icon" aria-hidden="true">%</span><span><strong>比例換算</strong>由數值與百分比互相換算</span></button>
+<button class="feature-link" data-workspace-go="linearTool"><span class="feature-icon" aria-hidden="true">𝑥</span><span><strong>多元一次方程式</strong>選未知數、填係數，求出答案</span></button>
+<button class="feature-link" data-workspace-go="ratioTool"><span class="feature-icon" aria-hidden="true">%</span><span><strong>比例換算</strong>選擇方向，逐項填入已知條件</span></button>
 </div>
+<!-- MATH_FORMS_MARKUP_BEGIN -->
+<section class="guided-math" data-review-id="accounting-calculator-guidedMath" data-review-name="選單式進階計算" aria-labelledby="guidedMathTitle">
+  <div class="guided-heading"><div><p class="workspace-kicker">選擇條件 · 填入數字 · 核對結果</p><h2 id="guidedMathTitle">把計算條件，逐項填好</h2></div><p>從選單開始，不必先寫好整條算式。</p></div>
+  <details id="linearTool" class="math-tool guided-tool" open data-review-id="accounting-calculator-linearTool" data-review-name="多元一次方程式">
+    <summary><span class="guided-tool-index">01</span><span class="guided-tool-title">多元一次方程式<span>選擇幾個未知數，再填每條條件的係數</span></span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="guided-workspace">
+      <form id="linearForm" class="guided-form" novalidate data-review-id="accounting-calculator-linearForm" data-review-name="方程式條件填寫">
+        <div class="guided-form-heading"><h3>設定題目</h3><label class="guided-mode-label" for="linearEntryMode">填寫方式<select id="linearEntryMode"><option value="form">選單與係數欄位</option><option value="text">進階：貼上完整方程式</option></select></label></div>
+        <div id="linearBuilder">
+          <div class="guided-select-row"><label for="linearVariableCount">未知數數量<select id="linearVariableCount"></select></label><label for="linearEquationCount">方程式數量<select id="linearEquationCount"></select></label><label for="linearPreset">試填範例<select id="linearPreset"><option value="">選擇範例…</option><option value="two">二元：兩條條件</option><option value="three">三元：三條條件</option></select></label></div>
+          <p id="linearBuilderHelp" class="guided-help">每欄填一個係數，正負號用選單選；沒填的係數視為 0，等號右側必填。調整數量後，暫時隱藏的欄位仍會保留。</p>
+          <div id="linearRows" class="equation-rows" aria-describedby="linearBuilderHelp"></div>
+        </div>
+        <div id="linearTextEditor" hidden>
+          <label for="linearInput">方程式（每行一條）</label><textarea id="linearInput" rows="6" maxlength="6000" spellcheck="false" autocapitalize="off" aria-describedby="linearHelp" placeholder="x+y=100&#10;2x+3y=240"></textarea>
+          <p id="linearHelp" class="guided-help">支援小數、正負數、括號及乘除常數，如 2(x-y)/3=10；不支援未知數相乘、次方或除以未知數。最多 10 個未知數、20 條式子、6000 字；未知數用英文字母開頭，大小寫有別。兩種填寫方式各自保留內容。</p>
+          <button type="button" class="btn small" id="linearUseFormBtn">帶入目前表格算式</button>
+        </div>
+        <div class="guided-action-row"><button type="submit" id="linearSolveBtn" class="btn primary">求解方程式 <span aria-hidden="true">→</span></button><button type="button" id="linearClearBtn" class="btn guided-reset">清空目前內容</button></div>
+      </form>
+      <aside class="guided-output" aria-label="方程式預覽與結果" data-review-id="accounting-calculator-linearOutput" data-review-name="方程式預覽與結果">
+        <div class="guided-preview-heading"><span>算式預覽</span><span id="linearShape" class="guided-shape">2 個未知數 · 2 條條件</span></div>
+        <div id="linearPreview" class="guided-preview"></div>
+        <div class="guided-result-heading"><span class="guided-result-dot" aria-hidden="true"></span><h3>求解結果</h3></div>
+        <p id="linearEmpty" class="guided-empty">填好條件後，按「求解方程式」。</p>
+        <div id="linearResult" class="math-result guided-result" role="status" aria-live="polite" aria-atomic="true"></div>
+      </aside>
+    </div>
+  </details>
+  <details id="ratioTool" class="math-tool guided-tool" open data-review-id="accounting-calculator-ratioTool" data-review-name="比例換算">
+    <summary><span class="guided-tool-index">02</span><span class="guided-tool-title">比例換算<span>先選想求的結果，再填已知數值與比例</span></span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="guided-workspace">
+      <form id="ratioForm" class="guided-form" novalidate data-review-id="accounting-calculator-ratioForm" data-review-name="比例條件填寫">
+        <div class="guided-form-heading"><h3>選擇換算方式</h3><button type="button" id="ratioExampleBtn" class="btn small">試填範例</button></div>
+        <div class="guided-select-row ratio-select-row"><label for="ratioMode">想求什麼？<select id="ratioMode"><option value="forward">百分比：這個數值占多少？</option><option value="reverse">數值：這個百分比是多少？</option></select></label><label for="ratioBasis">已知比例的設定<select id="ratioBasis"><option value="whole">以完整數值為 100%</option><option value="custom">自訂已知比例</option></select></label></div>
+        <div class="ratio-known"><div class="guided-section-label"><span>01</span> 已知這組對應關係</div><div class="ratio-pair"><label for="ratioBaseValue">已知數值 X<input id="ratioBaseValue" type="text" inputmode="decimal" maxlength="120" placeholder="例如 200"></label><span class="ratio-corresponds" aria-hidden="true">↔</span><label for="ratioBasePercent">對應百分比 p<span class="guided-input-unit"><input id="ratioBasePercent" type="text" inputmode="decimal" maxlength="120" value="100" readonly><span>%</span></span></label></div><p class="guided-help" id="ratioBasisHelp">完整數值對應 100%；若已知的是另一組比例，請在上方選「自訂已知比例」。</p></div>
+        <div class="ratio-question"><div class="guided-section-label"><span>02</span> 填入要換算的條件</div><label for="ratioTarget"><span id="ratioTargetLabel">目標數值 N</span><span class="guided-input-unit"><input id="ratioTarget" type="text" inputmode="decimal" maxlength="120" placeholder="例如 50"><span id="ratioTargetUnit" hidden>%</span></span></label><p class="guided-help" id="ratioTargetHelp">將這個數值與上方已知數值比較，求出對應百分比。</p></div>
+        <div class="guided-action-row"><button type="submit" id="ratioCalculateBtn" class="btn primary">換算比例 <span aria-hidden="true">→</span></button><button type="button" id="ratioClearBtn" class="btn guided-reset">清空數值</button></div>
+      </form>
+      <aside class="guided-output" aria-label="比例預覽與結果" data-review-id="accounting-calculator-ratioOutput" data-review-name="比例預覽與結果">
+        <div class="guided-preview-heading"><span>換算路徑</span><span id="ratioDirection" class="guided-shape">數值 → 百分比</span></div>
+        <div id="ratioRelationship" class="ratio-relationship"></div><div id="ratioPreview" class="guided-preview ratio-preview"></div>
+        <div class="guided-result-heading"><span class="guided-result-dot" aria-hidden="true"></span><h3>換算結果</h3></div>
+        <p id="ratioEmpty" class="guided-empty">選好換算方式並填入數字，就可以計算。</p>
+        <div id="ratioResult" class="math-result guided-result" role="status" aria-live="polite" aria-atomic="true"></div>
+        <p class="guided-help ratio-rules">可用正數、負數與小數；百分比欄只填數字，不需輸入 %。已知數值不可為 0；由百分比求數值時，已知百分比也不可為 0。</p>
+      </aside>
+    </div>
+  </details>
+</section>
+<!-- MATH_FORMS_MARKUP_END -->
+<!-- GUIDED_MATH_ANCHOR -->
 </section>
 <!-- NUMBER_POOL_MARKUP_BEGIN -->
 <section id="poolPanel" class="panel" data-review-id="accounting-calculator-poolPanel" data-review-name="數字池">
@@ -524,18 +575,7 @@ const CalculatorMathTools = (() => {
   return {solveLinear,ratio,format};
 })();
 /* CALCULATOR_MATH_TOOLS_END */
-/* CALCULATOR_MATH_UI_START */
-(() => {
-  const el=id=>document.getElementById(id),linear=el('linearInput'),lr=el('linearResult'),rr=el('ratioResult');
-  function clear(result){result.textContent='';delete result.dataset.status;}
-  linear.addEventListener('input',()=>clear(lr));
-  el('linearSolveBtn').addEventListener('click',()=>{clear(lr);try{const r=CalculatorMathTools.solveLinear(linear.value);lr.dataset.status=r.status;const messages={inconsistent:'無解：這些條件互相矛盾。',infinite:'無限多組解：獨立條件不足，無法唯一決定所有未知數。',identity:'等式成立，但沒有未知數需要求解。',uncertain:'條件太接近或數值差距過大，無法可靠判定；請調整條件或數值單位。'};lr.textContent='原方程式：\n'+r.lines.join('\n')+'\n\n'+(r.status==='unique'?'唯一解（小數最多顯示 12 位有效數字）：\n'+r.vars.map((v,i)=>v+' = '+CalculatorMathTools.format(r.values[i])).join('\n'):messages[r.status]);}catch(e){lr.dataset.status='error';lr.textContent=e.message;}});
-  const fields=['ratioMode','ratioBaseValue','ratioBasePercent','ratioTarget'];
-  function invalidate(){clear(rr);el('ratioTargetLabel').textContent=el('ratioMode').value==='forward'?'目標數值 N':'目標百分比 q（%）';}
-  fields.forEach(id=>{el(id).addEventListener('input',invalidate);el(id).addEventListener('change',invalidate);});
-  el('ratioCalculateBtn').addEventListener('click',()=>{clear(rr);try{const mode=el('ratioMode').value,r=CalculatorMathTools.ratio(mode,el('ratioBaseValue').value,el('ratioBasePercent').value,el('ratioTarget').value),f=CalculatorMathTools.format;rr.dataset.status='success';rr.textContent=mode==='forward'?`目標百分比 q = ${f(r.value)}%\n計算：N ÷ X × p = ${f(r.target)} ÷ ${f(r.x)} × ${f(r.p)}%`:`目標數值 N = ${f(r.value)}\n計算：X × q ÷ p = ${f(r.x)} × ${f(r.target)} ÷ ${f(r.p)}`;}catch(e){rr.dataset.status='error';rr.textContent=e.message;}});
-})();
-/* CALCULATOR_MATH_UI_END */
+
 
 </script>
 
@@ -1223,8 +1263,193 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createDat
 })();
 </script>
 <!-- DATE_TOOLS_SCRIPT_END -->
+<!-- MATH_FORMS_SCRIPT_BEGIN -->
+<script>
+/* Build bounded linear equations from numeric fields; the existing solver stays unchanged. */
+function createMathFormEngine() {
+  'use strict';
+  const names = Object.freeze(['x','y','z','a','b','c','d','e','f','g']);
+  function numeric(input, {allowNegative=true, allowBlank=false} = {}) {
+    let text = String(input ?? '').trim().replace(/−/g, '-');
+    if (!text) {if (allowBlank) return '0';throw new Error('請填入數字。');}
+    if (text.length > 120) throw new Error('數字最多 120 個字元。');
+    if (text.includes(',')) {
+      if (!/^[+-]?\d{1,3}(?:,\d{3})+(?:\.\d*)?(?:[eE][+-]?\d+)?$/.test(text)) throw new Error('千分位格式不正確，請使用 1,234.56。');
+      text = text.replace(/,/g,'');
+    }
+    if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(text)) throw new Error('請只填數字，不需輸入算式、未知數或 %。');
+    if (!allowNegative && text.startsWith('-')) throw new Error('係數請填非負數；正負號從旁邊選單選擇。');
+    const value = Number(text);
+    if (!Number.isFinite(value) || Math.abs(value) > 1e100) throw new Error('數值過大，請縮小數值。');
+    if (value === 0 && /[1-9]/.test(text.split(/[eE]/)[0])) throw new Error('數值過小，請調整單位後再試。');
+    // Preserve the supplied decimal/scientific literal, without rounding through Number.
+    return text.replace(/^\+/,'');
+  }
+  function buildLinear({variableCount,rows} = {}) {
+    if (!Number.isInteger(variableCount) || variableCount < 1 || variableCount > 10) throw new Error('未知數數量須為 1 至 10。');
+    if (!Array.isArray(rows) || rows.length < 1 || rows.length > 20) throw new Error('方程式數量須為 1 至 20。');
+    const variables = names.slice(0,variableCount);
+    const lines = rows.map((row,index) => {
+      if (!row || !Array.isArray(row.terms) || row.terms.length !== variableCount) throw new Error('第 ' + (index+1) + ' 條的係數欄位不完整。');
+      const terms = row.terms.map((term,column) => {
+        if (!term || !['+','-'].includes(term.sign)) throw new Error('第 ' + (index+1) + ' 條 ' + variables[column] + '：請選擇正負號。');
+        let value;
+        try {value = numeric(term.value,{allowNegative:false,allowBlank:true});}
+        catch(error) {throw new Error('第 ' + (index+1) + ' 條 ' + variables[column] + '：' + error.message);}
+        return (column ? ' ' + term.sign + ' ' : term.sign === '-' ? '-' : '') + value + '*' + variables[column];
+      });
+      let constant;
+      try {constant = numeric(row.constant);} catch(error) {throw new Error('第 ' + (index+1) + ' 條等號右側：' + error.message);}
+      return terms.join('') + ' = ' + constant;
+    });
+    const text = lines.join('\n');
+    if (text.length > 6000) throw new Error('組成的算式超過 6000 字元，請減少條件或縮短數值。');
+    return {variables,lines,text};
+  }
+  return Object.freeze({names,numeric,buildLinear});
+}
+const MathFormEngine = createMathFormEngine();
+if (typeof module !== 'undefined' && module.exports) module.exports = {createMathFormEngine,MathFormEngine};
+
+/* CALCULATOR_MATH_UI_START */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id), F = MathFormEngine, M = CalculatorMathTools;
+  const draft = Array.from({length:20}, () => ({terms:Array.from({length:10}, () => ({sign:'+',value:''})),constant:''}));
+  let ratioDirection = 'forward', customPercent = '100', basis = 'whole';
+  const targets = {forward:'',reverse:''};
+  function el(tag, className, text) {const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;}
+  function clearResult(id) {
+    const node=$(id+'Result');node.replaceChildren();delete node.dataset.status;
+    $(id+'Empty').hidden=false;$(id+'Empty').textContent='條件已更新，請重新按計算按鈕。';
+  }
+  function showResult(id, status) {const n=$(id+'Result');n.replaceChildren();n.dataset.status=status;$(id+'Empty').hidden=true;return n;}
+  function reveal(id) {
+    if(matchMedia('(max-width:1100px)').matches)$(id+'Result').scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+  }
+  function choices(node, count, label) {for(let i=1;i<=count;i++){const option=el('option','',label(i));option.value=String(i);node.append(option);}}
+  choices($('linearVariableCount'),10,i=>i+' 元');
+  choices($('linearEquationCount'),20,i=>i+' 條');
+  $('linearVariableCount').value='2';$('linearEquationCount').value='2';
+  function shape() {return {variables:Number($('linearVariableCount').value),equations:Number($('linearEquationCount').value)};}
+  function build() {const {variables,equations}=shape();return F.buildLinear({variableCount:variables,rows:draft.slice(0,equations).map(row=>({terms:row.terms.slice(0,variables),constant:row.constant}))});}
+  function previewLinear() {
+    const {variables,equations}=shape(),isText=$('linearEntryMode').value==='text';
+    $('linearShape').textContent=isText?'進階文字輸入':variables+' 個未知數 · '+equations+' 條條件';
+    const lines=draft.slice(0,equations).map(row=>row.terms.slice(0,variables).map((term,index)=>(index?' '+(term.sign==='-'?'−':'+')+' ':term.sign==='-'?'−':'')+(term.value.trim()||'0')+' × '+F.names[index]).join('')+' = '+(row.constant.trim()||'□'));
+    $('linearPreview').textContent=isText?($('linearInput').value.trim()||'在左側貼上完整方程式。'):lines.join('\n');
+  }
+  function renderRows() {
+    const {variables,equations}=shape(),fragment=document.createDocumentFragment();
+    for(let i=0;i<equations;i++){
+      const row=el('div','equation-row');row.dataset.row=String(i);
+      const heading=el('div','equation-row-heading');heading.append(el('span','','第 '+(i+1)+' 條條件'),el('span','','＝'));
+      const terms=el('div','equation-terms');terms.style.setProperty('--term-columns',String(Math.min(variables,3)));
+      for(let j=0;j<variables;j++){
+        const group=el('div','coefficient-field');group.append(el('span','',F.names[j]+' 的係數'));
+        const controls=el('div','coefficient-control'),sign=el('select','linear-sign'),input=el('input','linear-coefficient');
+        for(const [value,label]of [['+','＋'],['-','−']]){const option=el('option','',label);option.value=value;sign.append(option);}
+        sign.value=draft[i].terms[j].sign;sign.dataset.column=String(j);sign.setAttribute('aria-label','第 '+(i+1)+' 條 '+F.names[j]+' 的正負號');
+        input.type='text';input.inputMode='decimal';input.maxLength=120;input.placeholder='0';input.value=draft[i].terms[j].value;input.dataset.column=String(j);input.setAttribute('aria-label','第 '+(i+1)+' 條 '+F.names[j]+' 的係數');
+        controls.append(sign,input,el('span','coefficient-symbol',F.names[j]));group.append(controls);terms.append(group);
+      }
+      const constant=el('div','equation-constant'),label=el('label'),input=el('input','linear-constant');
+      input.type='text';input.inputMode='decimal';input.maxLength=120;input.placeholder='必填';input.value=draft[i].constant;input.id='linearConstant'+i;label.htmlFor=input.id;
+      label.append(el('span','equals-symbol','='),el('span','','右側數值'),input);constant.append(label);row.append(heading,terms,constant);fragment.append(row);
+    }
+    $('linearRows').replaceChildren(fragment);previewLinear();
+  }
+  function saveField(event) {
+    const field=event.target,row=field.closest('.equation-row');if(!row)return;
+    const index=Number(row.dataset.row),column=Number(field.dataset.column);
+    if(field.classList.contains('linear-sign'))draft[index].terms[column].sign=field.value;
+    else if(field.classList.contains('linear-coefficient'))draft[index].terms[column].value=field.value;
+    else if(field.classList.contains('linear-constant'))draft[index].constant=field.value;
+    else return;
+    $('linearPreset').value='';clearResult('linear');previewLinear();
+  }
+  $('linearRows').addEventListener('input',saveField);$('linearRows').addEventListener('change',saveField);
+  for(const id of ['linearVariableCount','linearEquationCount'])$(id).addEventListener('change',()=>{clearResult('linear');renderRows();$('linearPreset').value='';});
+  $('linearEntryMode').addEventListener('change',()=>{const text=$('linearEntryMode').value==='text';$('linearBuilder').hidden=text;$('linearTextEditor').hidden=!text;clearResult('linear');previewLinear();});
+  $('linearInput').addEventListener('input',()=>{clearResult('linear');previewLinear();});
+  function hasFormData(){return draft.some(row=>row.constant||row.terms.some(t=>t.value));}
+  function resetDraft(){draft.forEach(row=>{row.constant='';row.terms.forEach(term=>{term.sign='+';term.value='';});});}
+  $('linearPreset').addEventListener('change',()=>{
+    const preset=$('linearPreset').value;if(!preset)return;
+    if(hasFormData()&&!confirm('載入範例會取代整份表格內容，是否繼續？')){$('linearPreset').value='';return;}
+    resetDraft();const data=preset==='three'?[[1,1,1,6],[2,-1,1,3],[1,2,-1,2]]:[[1,1,100],[2,3,240]],count=data.length;
+    $('linearVariableCount').value=String(count);$('linearEquationCount').value=String(count);
+    data.forEach((numbers,i)=>{numbers.slice(0,count).forEach((value,j)=>{draft[i].terms[j]={sign:value<0?'-':'+',value:String(Math.abs(value))};});draft[i].constant=String(numbers[count]);});
+    clearResult('linear');renderRows();$('linearPreset').value='';
+  });
+  $('linearClearBtn').addEventListener('click',()=>{
+    if($('linearEntryMode').value==='text'){
+      if($('linearInput').value&&!confirm('清空文字模式的方程式？'))return;$('linearInput').value='';
+    }else{
+      if(hasFormData()&&!confirm('清空整份表格（包含暫時隱藏的欄位）？'))return;resetDraft();renderRows();
+    }
+    clearResult('linear');previewLinear();
+  });
+  $('linearUseFormBtn').addEventListener('click',()=>{
+    try{const text=build().text;if($('linearInput').value&&!confirm('用目前表格算式取代文字模式內容？'))return;$('linearInput').value=text;clearResult('linear');previewLinear();}
+    catch(error){showResult('linear','error').append(el('p','guided-result-message',error.message));reveal('linear');}
+  });
+  $('linearForm').addEventListener('submit',event=>{
+    event.preventDefault();
+    try{
+      const result=M.solveLinear($('linearEntryMode').value==='text'?$('linearInput').value:build().text),output=showResult('linear',result.status);
+      const messages={inconsistent:'無解：這些條件互相矛盾，請核對各條數字。',infinite:'無限多組解：獨立條件不足，無法唯一決定所有未知數。',identity:'等式成立，但沒有未知數需要求解。',uncertain:'條件太接近或數值差距過大，無法可靠判定；請調整條件或數值單位。'};
+      if(result.status==='unique'){
+        output.append(el('p','guided-result-title','已找到唯一解'));const answers=el('div','guided-answer-grid');
+        result.vars.forEach((name,i)=>answers.append(el('div','guided-answer',name+' = '+M.format(result.values[i]))));output.append(answers,el('p','guided-result-meta','小數最多顯示 12 位有效數字；請依用途核對所需精度。'));
+      }else output.append(el('p','guided-result-message',messages[result.status]));
+      const original=el('details','result-original');original.append(el('summary','','核對使用的方程式'),el('pre','',result.lines.join('\n')));output.append(original);
+    }catch(error){showResult('linear','error').append(el('p','guided-result-message',error.message));}
+    reveal('linear');
+  });
+  function previewRatio() {
+    const reverse=$('ratioMode').value==='reverse',base=$('ratioBaseValue').value.trim()||'X',percent=$('ratioBasePercent').value.trim()||'p',target=$('ratioTarget').value.trim()||(reverse?'q':'N');
+    $('ratioDirection').textContent=reverse?'百分比 → 數值':'數值 → 百分比';
+    $('ratioTargetLabel').textContent=reverse?'目標百分比 q':'目標數值 N';$('ratioTargetUnit').hidden=!reverse;$('ratioTarget').placeholder=reverse?'例如 25':'例如 50';
+    $('ratioTargetHelp').textContent=reverse?'依照上方已知比例，求出這個百分比對應的數值。':'將這個數值與上方已知數值比較，求出對應百分比。';
+    const relationship=$('ratioRelationship');relationship.replaceChildren();
+    for(const [left,right,unknown]of [[base,percent+'%',false],[reverse?'?':target,reverse?target+'%':'?',true]]){
+      const row=el('div','ratio-relationship-row');row.append(el('span',unknown&&reverse?'ratio-unknown':'',left),el('small','','對應'),el('span',unknown&&!reverse?'ratio-unknown':'',right));relationship.append(row);
+    }
+    $('ratioPreview').textContent=reverse?'計算方式：X × q ÷ p\n'+base+' × '+target+' ÷ '+percent:'計算方式：N ÷ X × p\n'+target+' ÷ '+base+' × '+percent+'%';
+  }
+  function updateBasis(){
+    const whole=$('ratioBasis').value==='whole';$('ratioBasePercent').readOnly=whole;
+    if(whole)$('ratioBasePercent').value='100';else $('ratioBasePercent').value=customPercent;
+    $('ratioBasisHelp').textContent=whole?'完整數值對應 100%；若已知的是另一組比例，請在上方選「自訂已知比例」。':'填入你已知的對應比例，例如 200 對應 40%；不必先換算成 100%。';
+  }
+  $('ratioBasis').addEventListener('change',()=>{if(basis==='custom')customPercent=$('ratioBasePercent').value;basis=$('ratioBasis').value;updateBasis();clearResult('ratio');previewRatio();});
+  $('ratioMode').addEventListener('change',()=>{targets[ratioDirection]=$('ratioTarget').value;ratioDirection=$('ratioMode').value;$('ratioTarget').value=targets[ratioDirection];clearResult('ratio');previewRatio();});
+  for(const id of ['ratioBaseValue','ratioBasePercent','ratioTarget'])$(id).addEventListener('input',()=>{if(id==='ratioBasePercent'&&basis==='custom')customPercent=$(id).value;targets[ratioDirection]=$('ratioTarget').value;clearResult('ratio');previewRatio();});
+  $('ratioExampleBtn').addEventListener('click',()=>{
+    if(($('ratioBaseValue').value||$('ratioTarget').value)&&!confirm('用範例取代目前的比例數值？'))return;
+    $('ratioBaseValue').value='200';$('ratioBasePercent').value=basis==='whole'?'100':'40';if(basis==='custom')customPercent='40';$('ratioTarget').value=ratioDirection==='forward'?'100':'20';targets[ratioDirection]=$('ratioTarget').value;clearResult('ratio');previewRatio();
+  });
+  $('ratioClearBtn').addEventListener('click',()=>{
+    if(($('ratioBaseValue').value||$('ratioTarget').value||targets.forward||targets.reverse)&&!confirm('清空兩個換算方向的數值？'))return;
+    $('ratioBaseValue').value='';$('ratioTarget').value='';targets.forward='';targets.reverse='';customPercent='';$('ratioBasePercent').value=basis==='whole'?'100':'';clearResult('ratio');previewRatio();
+  });
+  $('ratioForm').addEventListener('submit',event=>{
+    event.preventDefault();
+    try{
+      const labels=['已知數值 X','已知百分比 p','目標條件'],values=['ratioBaseValue','ratioBasePercent','ratioTarget'].map((id,i)=>{try{return F.numeric($(id).value);}catch(error){throw new Error(labels[i]+'：'+error.message);}});
+      const mode=$('ratioMode').value,result=M.ratio(mode,...values),output=showResult('ratio','success'),f=M.format,forward=mode==='forward';
+      output.append(el('p','guided-result-title',forward?'目標數值所對應的百分比':'目標百分比所對應的數值'),el('p','ratio-answer',(forward?'q = ':'N = ')+f(result.value)+(forward?'%':'')),el('p','guided-result-detail',forward?'計算：'+f(result.target)+' ÷ '+f(result.x)+' × '+f(result.p)+'%':'計算：'+f(result.x)+' × '+f(result.target)+' ÷ '+f(result.p)));
+    }catch(error){showResult('ratio','error').append(el('p','guided-result-message',error.message));}
+    reveal('ratio');
+  });
+  renderRows();updateBasis();previewRatio();
+})();
+/* CALCULATOR_MATH_UI_END */
+</script>
+<!-- MATH_FORMS_SCRIPT_END -->
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.4.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.5.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
