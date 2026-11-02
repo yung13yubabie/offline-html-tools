@@ -1,68 +1,68 @@
 # 離線 HTML 工具箱
 
-四個工具各自是一個獨立 HTML；使用時不需要下載整個儲存庫、不用安裝 Node，也不依賴同目錄的 JS 或 CSS。
+營業稅、分類帳、PDF 與會計計算機，四個工具各自是一份可以獨立開啟的 HTML。下載需要的那一份即可使用，不必安裝軟體、啟動伺服器或下載整個 Repo。
 
-> 功能版本：營業稅工作台 **v2.12.0**、會計計算機 **v1.2.0**。本次四頁 UI 修訂的 [42 組 Chromium file:// 離線檢查通過](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41373364685)，本機 localhost HTTP 的 42 組檢查也通過；驗證範圍見更新記錄。更新前請完整備份，勿直接取代唯一的工作檔。
-
-## 最新更新
-
-- 四個工具 **UI 修訂 ui.1**：修改標註可用滑鼠／觸控拖曳、鍵盤移動、記住位置與歸位；計算機桌面並排、PDF 起始引導，以及四頁操作狀態改善。[設計參考、修改與驗證範圍](revisions/ui-floating-review.md)。
-- 營業稅工作台 **v2.12.0**：日期與明細層級、客戶旁儲存、通知分類／親切專業模板、已儲存列印版面及 A4 預覽；[更新與驗證](revisions/vat-workbench-v2.12.0.md)。
-- 本次四個工具均已套用 UI 修訂；業務計算與資料格式沿用既有版本。
+目前 `main` 已包含四個工具的 **UI 修訂 ui.1**，以及可拖曳移動的修改標註。Repo 的 `apps/` 內就是更新後的 HTML，使用方式維持原本的本機離線開啟。
 
 ## 選擇工具
 
-| 工具 | 下載最新版單檔 | 查看原始碼 | 功能／UI 版本 |
+| 工具 | HTML 檔案 | 目前修訂 | 用途 |
 | --- | --- | --- | --- |
-| 營業稅工作台 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/vat-workbench.html) | [vat-workbench.html](apps/vat-workbench.html) | v2.12.0／ui.1 |
-| 分類帳分析 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/ledger-analyzer.html) | [ledger-analyzer.html](apps/ledger-analyzer.html) | v4.4.1／ui.1 |
-| PDF 家族 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/pdf-workbench.html) | [pdf-workbench.html](apps/pdf-workbench.html) | v0.12.2／ui.1 |
-| 會計計算機 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/accounting-calculator.html) | [accounting-calculator.html](apps/accounting-calculator.html) | v1.2.0／ui.1 |
+| 營業稅工作台 | [vat-workbench.html](apps/vat-workbench.html) | 2.12.0-ui.1 | 客戶與期別、稅務待辦、帳款、日曆、通知及列印 |
+| 分類帳分析 | [ledger-analyzer.html](apps/ledger-analyzer.html) | 4.4.1-ui.1 | Excel 帳冊匯入、摘要整合、借貸沖銷、搜尋、年度比較與重複檢核 |
+| PDF 家族 | [pdf-workbench.html](apps/pdf-workbench.html) | 0.12.2-ui.1 | 頁面排序、旋轉、裁切、合併、拆頁、完稿與輸出 |
+| 會計計算機 | [accounting-calculator.html](apps/accounting-calculator.html) | 1.2.0-ui.1 | 一般與批量計算、一次方程式、比例換算、稅額及勞健保試算 |
 
-「下載 HTML」直接指向 `main` 最新版檔案，不需要下載整個 Repo。若瀏覽器顯示原始碼，請使用「另存新檔」，並保留 `.html` 副檔名；也可在下載連結按右鍵選擇「另存連結」。請勿把 GitHub 的檔案檢視網頁另存成 HTML。下載後用桌面 Chrome 或 Edge 開啟。
+表中的修訂號與各 HTML 內的 `OFFLINE_REVIEW_CONFIG.appVersion` 一致。這次更新 UI 與標註操作；工具原本顯示的功能版本號可能維持不變。
 
-## 更新一個工具
+## 下載與開啟
 
-1. 在舊版先匯出資料備份，並另存修改標註；保留舊 HTML。
-2. 只下載需要更新的那一個 HTML。
-3. 先用備份副本測試新版，再確認筆數、金額及匯出結果。
-4. 換路徑、換檔名、換瀏覽器或清除瀏覽器資料，可能讓原本的本機儲存無法讀取；不要假設換檔自動搬資料，必要時使用工具內的還原。
+1. 點上表的 HTML 檔案，進入 Repo 的檔案頁。
+2. 使用 GitHub 右上方的 **Download raw file** 按鈕下載該檔案。
+3. 保留 `.html` 副檔名，用桌面 Chrome 或 Edge 開啟。
 
-瀏覽器儲存不是備份。使用正式資料時，請定期把備份存到自己管理的位置，勿上傳本儲存庫。
+請下載 HTML 原始檔，勿把 GitHub 的檔案檢視網頁另存為 HTML。四個工具都已內嵌需要的程式與樣式，不需另外下載 `feedback/`、`tools/` 或其他同目錄檔案。
 
-## 區塊修改標註
+## 新版有哪些改變
 
-- 點「修改標註」（預設右下角）；拖曳旁邊的點狀把手，可移動入口與展開後的面板。
-- 把手可用方向鍵移動，Shift 加速，Home 回到右下角；展開後也可按「歸位」。位置以各工具分開記憶，視窗縮小時會限制在畫面內，儲存不可用時仍可在當次移動。
-- 從選單或頁面選區塊，填寫想修正的方向，儲存。
-- 可編輯、刪除、匯出 JSON／TXT；將匯出檔交給維護者，便能依工具、版本及區塊 ID 修改。
-- 標註只記錄需求，不會自動改程式或已儲存的業務資料。
-- 不自動擷取客戶內容、不上傳；請勿在標註輸入個資、帳號或密碼。
-- 進入標註模式後，原頁面操作暫停；離開後可正常操作。標註儲存與工具資料分離。
+- **四個工具共同更新**：修改標註的入口與展開面板都可移動，支援滑鼠、觸控、位置記憶、鍵盤操作與歸位。
+- **會計計算機**：寬螢幕將單次計算與批量計算並排，改善結果字級與運算鍵分組；窄視窗維持單欄。
+- **PDF 家族**：新增初始操作引導與本機處理提示，調整工具按鈕、鍵盤焦點及暗色模式對比。
+- **分類帳分析**：整理匯入控制項、檔案按鈕、提示文字與標題層級。
+- **營業稅工作台**：加強鍵盤焦點、側欄選取提示及操作回饋，保留原有工作流程與報表。
 
-## 本輪修正
+四份 HTML 維持獨立離線使用，沒有新增 CDN、外部字體或連網元件。完整說明見 [UI 修訂與設計參考](revisions/ui-floating-review.md)。
 
-- 營業稅：備份合併改為整批交易、加強資料結構與核心參照檢查、修正匯入識別碼的 HTML 屬性轉義。
-- 分類帳：摘要欄不再混入其後的傳票號等欄位。
-- 計算機：修正乘除優先順序；取消無法成立的固定健保反推比例；一般受僱勞工雇主勞退低於 6% 時不產生誤導性的合計。
-- PDF：明確標示影像擷取並非完整頁面渲染，轉圖前確認限制；尚未新增完整 PDF 渲染引擎。
-- 四個工具：加入本機區塊修改標註。
+## 使用修改標註
 
-## 已知界線
+1. 點「修改標註」，從選單或頁面選擇想調整的區塊。
+2. 填寫修正方向，按「儲存標註」。
+3. 完成後匯出 JSON 或 TXT，交給維護者處理。
 
-- PDF 的既有轉圖路徑取出頁面內影像，可能不包含文字、向量圖、多張圖片或原排版，不能當作完整頁面轉圖。完整渲染是獨立待確認工作。
-- 金額與保費結果須依實際身分、適用年月與主管機關規定核對。健保帳單總額不足以唯一反推公司負擔，請輸入帳單實際金額。
-- 單元測試、模擬儲存測試、真實瀏覽器測試各自記錄，不互相替代。
-- 尚未代表所有 PDF 格式、所有歷史備份、跨瀏覽器或大量資料均驗證完成。
+標註入口預設在右下角。拖曳旁邊的點狀把手可移動位置，展開後同樣能移動面板；位置依工具分開記憶。聚焦把手後也可用方向鍵移動，按住 Shift 加速，Home 或面板上的「歸位」可回到右下角。
 
-## 維護方式
+標註可編輯與刪除，只記錄修改需求，不會自動更改工具或業務資料。標註模式會暫停原頁面操作，離開後恢復；請勿在需求中填入客戶個資、帳號或密碼。詳細行為見 [標註模組說明](feedback/README.md)。
 
-只改指定的 `apps/某個工具.html` 及必要測試；不要順手改其他工具。共同標註模組在 `feedback/offline-review.js`，透過 `python3 tools/embed-feedback.py` 內嵌，最終 HTML 不會載入該外部檔。
+## 更新與備份
 
-以人工資料執行 `node tests/accounting-regression.cjs` 等測試。瀏覽器測試腳本為 `tests/browser-smoke.cjs`，執行時需要 Playwright；這些套件僅供開發測試，使用 HTML 不需要。
+更新前，先從舊版匯出業務資料及修改標註，保留舊 HTML，再下載需要更新的工具。以備份副本確認筆數、金額、還原與輸出結果後，再用於日常工作。
 
-## 隱私與來源
+瀏覽器儲存不等於備份。更換檔案位置、名稱、瀏覽器，或清除瀏覽器資料，可能影響原本的本機資料讀取；需要時請用工具提供的備份還原。計算機的一般算式與批量內容重新整理後會清空，重要結果請先另存。
 
-公開內容僅包括程式、說明及人工測試。原先內建的私人收款／聯絡模板已換成待設定欄位；原始對話、原始私人檔案、使用者備份及執行紀錄不在本儲存庫。
+## 驗證與使用範圍
 
-分類帳內嵌 SheetJS，保留其原始程式中的授權聲明；第三方元件依各自授權。公開儲存庫本身不額外改授權第三方內容。
+本次 UI 程式已通過 [42 組 Chromium file:// 離線檢查](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41373364685)，本機 localhost HTTP 的 42 組檢查，以及既有純回歸與標註合成檢查。測試使用人工資料；具體範圍見 [檢查紀錄](TEST_REPORT.md) 與 [UI 修訂驗證](revisions/ui-floating-review.md)。
+
+- PDF 的既有轉圖功能擷取頁面內影像，可能不包含文字、向量圖或完整排版，不能當作完整頁面渲染。
+- 稅額、保費與勞退結果須依身分、適用年月及主管機關規定核對；健保公司負擔需輸入實際金額。
+- 已通過的檢查不代表所有 PDF、歷史備份、瀏覽器、大量資料或實際業務情境都已涵蓋。
+
+## 維護與更新紀錄
+
+`apps/` 放可直接下載使用的成品；`feedback/`、`tools/`、`tests/` 用於開發維護，使用者不需安裝。標註模組由 `feedback/offline-review.js` 透過 `python3 tools/embed-feedback.py` 內嵌到各 HTML。
+
+- [四個工具 UI 修訂 ui.1](revisions/ui-floating-review.md)
+- [營業稅工作台 v2.12.0](revisions/vat-workbench-v2.12.0.md)
+- [會計計算機 v1.2.0](revisions/accounting-calculator-v1.2.0.md)
+
+公開 Repo 僅放程式、說明與人工測試資料，請勿提交真實客戶資料、私人對話或備份。分類帳內嵌 SheetJS，保留原有授權聲明；第三方元件依各自授權。

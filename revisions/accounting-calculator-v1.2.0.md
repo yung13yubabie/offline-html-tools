@@ -33,7 +33,7 @@
 
 ## 下載及後續修改
 
-只需[下載最新版 accounting-calculator.html](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/accounting-calculator.html)（[查看原始碼](../apps/accounting-calculator.html)），不必重新下載其他工具。若瀏覽器顯示原始碼，請另存新檔並保留 `.html` 副檔名。兩項新工具位於「一般計算」的批量區下方，預設收合。「修改標註」仍可選擇區塊並匯出需求，新工具也有固定區塊 ID；最新版 UI 另支援拖曳移動。
+點開 Repo 裡的 [accounting-calculator.html](../apps/accounting-calculator.html)，使用 GitHub 的 **Download raw file** 下載最新版，不必重新下載其他工具。兩項新工具位於「一般計算」的批量區下方，預設收合。「修改標註」仍可選擇區塊並匯出需求，新工具也有固定區塊 ID；最新版 UI 另支援拖曳移動。
 
 ### 焦點測試紀錄
 
