@@ -61,4 +61,4 @@ date-fns 採 MIT 授權；本版自行實作日期核心，未內嵌 date-fns �
 
 ## 驗證狀態
 
-本版已通過本機 localhost HTTP 的 44 組 Chromium 檢查、23 項數字池核心檢查與 10 項日期核心檢查；包含 180 組數字池窮舉比對、400 組日期逐日比對、四個時區、100 筆匯入與部分搜尋提示。測試使用人工資料，瀏覽器封鎖外部網路。正式 `file://` 離線開檔另由 GitHub CI 驗證，完成後記錄於 [TEST_REPORT.md](../TEST_REPORT.md)。
+本版已通過本機 localhost HTTP 的 44 組 Chromium 檢查、23 項數字池核心檢查與 10 項日期核心檢查；包含 180 組數字池窮舉比對、400 組日期逐日比對、四個時區、100 筆匯入與部分搜尋提示。測試使用人工資料，瀏覽器封鎖外部網路。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41394751371) 另完成 44 組 `file://` 離線開檔檢查，全數通過；完整紀錄見 [TEST_REPORT.md](../TEST_REPORT.md)。

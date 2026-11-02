@@ -77,7 +77,7 @@
 
 ## 驗證與使用範圍
 
-v1.4.0 已通過本機 localhost HTTP 的 **44 組 Chromium 檢查**、23 項數字池核心檢查（含 180 組獨立窮舉比對）、10 項日期核心檢查（含 400 組逐日比對），以及原有純回歸與標註合成檢查。正式 `file://` 離線開檔另由 GitHub CI 驗證；最新結果見 [本輪檢查紀錄](TEST_REPORT.md)。下列通過紀錄屬於先前版本。
+v1.4.0 已通過本機 localhost HTTP 的 **44 組 Chromium 檢查**、23 項數字池核心檢查（含 180 組獨立窮舉比對）、10 項日期核心檢查（含 400 組逐日比對），以及原有純回歸與標註合成檢查。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41394751371) 也已完成 **44 組 `file://` 離線開檔檢查，全數通過**；詳見 [本輪檢查紀錄](TEST_REPORT.md)。下列通過紀錄屬於先前版本。
 
 **v1.3.0 歷史紀錄**：本機 localhost HTTP 的 43 組 Chromium 檢查、15 項數字池純邏輯檢查（含 180 組獨立窮舉比對），以及原有純回歸與標註合成檢查通過。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41388709232) 同樣完成 43 組 `file://` 直接開檔檢查，全數通過。
 
