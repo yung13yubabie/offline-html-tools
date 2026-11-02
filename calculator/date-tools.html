@@ -1,0 +1,27 @@
+<section id="datePanel" class="panel" data-review-id="accounting-calculator-datePanel" data-review-name="日期與帳期計算">
+  <div class="workspace-heading"><div><p class="workspace-kicker">核對天數 · 推算日期</p><h1>日期與帳期</h1><p>計算兩個日期相差幾天，或從起日加減天數。所有日期都在本機計算。</p></div><span class="local-badge">離線可用</span></div>
+  <p class="date-rule-notice">「排除週末」只略過週六、週日，未扣除國定假日，也未納入補班日。</p>
+  <div class="date-tools-grid">
+    <section class="date-card" data-review-id="accounting-calculator-dateDifference" data-review-name="日期相差天數" aria-labelledby="dateDiffTitle">
+      <div class="date-card-heading"><span class="date-icon" aria-hidden="true">↔</span><div><h2 id="dateDiffTitle">日期差</h2><p>核對期間內有多少天</p></div></div>
+      <form id="dateDiffForm" novalidate data-review-id="accounting-calculator-dateDiffForm" data-review-name="日期差輸入條件">
+        <div class="date-fields"><label for="dateDiffStart">起始日期<input id="dateDiffStart" type="date" min="0001-01-01" max="9999-12-31" required></label><label for="dateDiffEnd">結束日期<input id="dateDiffEnd" type="date" min="0001-01-01" max="9999-12-31" required></label></div>
+        <label class="date-field" for="dateDiffMode">計算方式<select id="dateDiffMode"><option value="calendar">日曆天（每天都計入）</option><option value="business">排除週末（只計週一至週五）</option></select></label>
+        <label class="date-check" for="dateDiffIncludeStart"><input id="dateDiffIncludeStart" type="checkbox">包含起始日</label>
+        <p class="date-help" id="dateDiffHelp">預設不含起日、包含結束日；結束日在起日前，結果為負數。勾選包含起始日，會多算起日；排除週末時，起日也須為週一至週五才計入。</p>
+        <button type="submit" class="btn primary date-calculate" id="dateDiffBtn" aria-describedby="dateDiffHelp">計算相差天數 <span aria-hidden="true">→</span></button>
+      </form>
+      <div id="dateDiffResult" class="date-result" role="status" aria-live="polite" aria-atomic="true"><p class="date-empty">選好起日與結束日後，按「計算相差天數」。</p></div>
+    </section>
+    <section class="date-card" data-review-id="accounting-calculator-dateShift" data-review-name="日期加減與到期日" aria-labelledby="dateShiftTitle">
+      <div class="date-card-heading"><span class="date-icon" aria-hidden="true">＋</span><div><h2 id="dateShiftTitle">日期加減／到期日</h2><p>從起日向前或向後推算</p></div></div>
+      <form id="dateShiftForm" novalidate data-review-id="accounting-calculator-dateShiftForm" data-review-name="日期加減輸入條件">
+        <div class="date-fields"><label for="dateShiftStart">起始日期<input id="dateShiftStart" type="date" min="0001-01-01" max="9999-12-31" required></label><label for="dateShiftAmount">加減天數<input id="dateShiftAmount" type="text" inputmode="text" maxlength="8" value="30" placeholder="例如 30 或 -7" autocomplete="off" required></label></div>
+        <label class="date-field" for="dateShiftMode">計算方式<select id="dateShiftMode"><option value="calendar">日曆天（每天都計入）</option><option value="business">排除週末（只計週一至週五）</option></select></label>
+        <p class="date-help" id="dateShiftHelp">正數往後推，負數往前推，0 保留原日期。排除週末時，從起日的下一天或前一天開始找工作日；即使起日是週末，也不算第 1 天。可填 -100,000 至 100,000 的整數。</p>
+        <button type="submit" class="btn primary date-calculate" id="dateShiftBtn" aria-describedby="dateShiftHelp">推算日期 <span aria-hidden="true">→</span></button>
+      </form>
+      <div id="dateShiftResult" class="date-result" role="status" aria-live="polite" aria-atomic="true"><p class="date-empty">例如帳期 30 天，可從指定起日向後推算。</p></div>
+    </section>
+  </div>
+</section>

@@ -1,9 +1,10 @@
-/* Exact, dependency-free number pool. Inline the factory for the app and Blob Worker. */
+/* Dependency-free number pool: exact small-pool ranking and bounded 100-row search. */
 function createNumberPoolEngine() {
   'use strict';
   const SCALE = 10000;
   const MAX_VALUE = 1000000000 * SCALE;
-  const limits = Object.freeze({add:32, subtract:28, mixed:20});
+  const limits = Object.freeze({add:100, subtract:100, mixed:100});
+  const exactLimits = Object.freeze({add:32, subtract:28, mixed:20});
 
   function parseNumber(input) {
     let text = String(input ?? '').trim().replace(/[０-９]/g, c => String(c.charCodeAt(0)-0xff10)).replace(/−/g, '-');
@@ -95,9 +96,112 @@ function createNumberPoolEngine() {
     return {states,groups};
   }
 
+  // Large pools use bounded beam search, never an exponential 100-row enumeration.
+  // Every row participates in complete single/pair seeding before two opposite-order
+  // passes. Four identities per sum and a diverse frontier avoid collapsing names or
+  // spending the whole budget on many interchangeable equal-value rows.
+  function solveBounded(values, target, mode, tolerance, limit, effort, started) {
+    const width = effort === 'deep' ? 3072 : 768;
+    const maxStates = effort === 'deep' ? 2200000 : 600000;
+    const timeLimit = effort === 'deep' ? 6000 : 1800;
+    const powers = values.map((_,i)=>1n << BigInt(i*2));
+    const capacity = limit+1, best = [], known = new Set();
+    let examined = 0, stopped = '', nextClockCheck = 256;
+    const distance = state=>Math.abs(state.sum-target);
+    const compare = (a,b)=>distance(a)-distance(b) || a.count-b.count || (a.code<b.code?-1:a.code>b.code?1:0);
+    function accept(state) {
+      if (!state.count || (mode==='subtract' && !state.anchor) || distance(state)>tolerance || known.has(state.code)) return;
+      if (best.length===capacity && compare(state,best[best.length-1])>=0) return;
+      let low=0,high=best.length;
+      while(low<high){const middle=(low+high)>>1;if(compare(best[middle],state)<0)low=middle+1;else high=middle;}
+      best.splice(low,0,state);known.add(state.code);
+      if(best.length>capacity)known.delete(best.pop().code);
+    }
+    function exhausted() {
+      if(examined>=maxStates){stopped='state-budget';return true;}
+      if(examined>=nextClockCheck){nextClockCheck=examined+256;if(Date.now()-started>=timeLimit){stopped='time-budget';return true;}}
+      return false;
+    }
+    // At most 20,000 cheap seeds for 100 rows: no prefix-only truncation.
+    for(let i=0;i<values.length;i++){
+      accept({sum:values[i],count:1,code:powers[i],anchor:true});examined++;
+      if(mode==='mixed'){accept({sum:-values[i],count:1,code:powers[i]<<1n,anchor:false});examined++;}
+      for(let j=0;j<i;j++){
+        if(mode!=='subtract'){accept({sum:values[j]+values[i],count:2,code:powers[j]|powers[i],anchor:true});examined++;}
+        if(mode!=='add'){
+          accept({sum:values[j]-values[i],count:2,code:powers[j]|(powers[i]<<1n),anchor:true});
+          accept({sum:-values[j]+values[i],count:2,code:(powers[j]<<1n)|powers[i],anchor:true});examined+=2;
+          if(mode==='mixed'){accept({sum:-values[j]-values[i],count:2,code:(powers[j]|powers[i])<<1n,anchor:false});examined++;}
+        }
+      }
+    }
+    function retain(candidates, step) {
+      candidates.sort(compare);
+      const counts=new Map(),diverse=[];
+      for(const state of candidates){
+        const key=state.sum+':'+Number(mode==='subtract'&&state.anchor),count=counts.get(key)||0;
+        if(count<4){counts.set(key,count+1);diverse.push(state);}
+      }
+      if(diverse.length<=width)return diverse;
+      const chosen=[],codes=new Set();
+      const take=state=>{if(!codes.has(state.code)&&chosen.length<width){codes.add(state.code);chosen.push(state);}};
+      // Keep the target-nearest states, partial progress, and spread-out sums. The
+      // latter two protect paths that need many inputs or later opposite signs.
+      for(let i=0;i<Math.floor(width/2);i++)take(diverse[i]);
+      const progress=target*step/values.length;
+      diverse.sort((a,b)=>Math.abs(a.sum-progress)-Math.abs(b.sum-progress)||compare(a,b));
+      for(let i=0;i<Math.floor(width/4);i++)take(diverse[i]);
+      diverse.sort((a,b)=>a.sum-b.sum||compare(a,b));
+      const spread=Math.floor(width/4);
+      for(let i=0;i<spread;i++)take(diverse[Math.floor(i*(diverse.length-1)/Math.max(1,spread-1))]);
+      for(const state of diverse){take(state);if(chosen.length===width)break;}
+      return chosen;
+    }
+    const natural=values.map((_,i)=>i);
+    for(const order of [natural,[...natural].reverse()]){
+      if(exhausted())break;
+      const remainingMin=Array(values.length+1).fill(0),remainingMax=Array(values.length+1).fill(0),remainingAbs=Array(values.length+1).fill(0);
+      for(let p=values.length-1;p>=0;p--){const value=values[order[p]];remainingMin[p]=remainingMin[p+1]+Math.min(0,value);remainingMax[p]=remainingMax[p+1]+Math.max(0,value);remainingAbs[p]=remainingAbs[p+1]+Math.abs(value);}
+      let frontier=[{sum:0,count:0,code:0n,anchor:false}];
+      for(let position=0;position<order.length;position++){
+        if(exhausted())break;
+        const index=order[position],value=values[index],next=position+1,candidates=[];
+        function consider(state){
+          examined++;accept(state);
+          let low,high;
+          if(mode==='add'){low=remainingMin[next];high=remainingMax[next];}
+          else if(mode==='subtract'&&state.anchor){low=-remainingMax[next];high=-remainingMin[next];}
+          else {low=-remainingAbs[next];high=remainingAbs[next];}
+          if(state.sum+high<target-tolerance||state.sum+low>target+tolerance)return;
+          candidates.push(state);
+        }
+        for(const state of frontier){
+          if(exhausted())break;
+          consider(state);
+          if(mode!=='subtract'||!state.anchor)consider({sum:state.sum+value,count:state.count+1,code:state.code|powers[index],anchor:true});
+          if(mode!=='add')consider({sum:state.sum-value,count:state.count+1,code:state.code|(powers[index]<<1n),anchor:state.anchor});
+        }
+        if(stopped)break;
+        // Always keep the empty prefix so late input rows can start a new path.
+        frontier=retain(candidates,next);
+        if(!frontier.some(state=>!state.count))frontier.push({sum:0,count:0,code:0n,anchor:false});
+      }
+      if(stopped)break;
+    }
+    const solutions=best.slice(0,limit).map(state=>{
+      const terms=[];
+      for(let index=0;index<values.length;index++){const digit=Number((state.code>>BigInt(index*2))&3n);if(digit)terms.push({index,sign:digit===1?1:-1});}
+      return {terms,total:state.sum||0,difference:(state.sum-target)||0};
+    });
+    return {solutions,truncated:best.length>limit,complete:false,totalMatches:null,limit,mode,tolerance,examined,poolSize:values.length,
+      strategy:'bounded',searchComplete:false,rankingGuaranteed:false,stopReason:stopped||'bounded-search',effort,elapsedMs:Math.max(0,Date.now()-started)};
+  }
+
   function solve(options) {
     if (!options || !Array.isArray(options.items)) throw new Error('請提供數字清單。');
-    const {items,target,mode='add',tolerance=Infinity,limit=100} = options;
+    const started=Date.now();
+    const {items,target,mode='add',tolerance=Infinity,limit=100,effort='standard'} = options;
+    if (!['standard','deep'].includes(effort)) throw new Error('請選擇標準或加強搜尋。');
     if (!Object.hasOwn(limits,mode)) throw new Error('請選擇加法、減法或加減混合模式。');
     if (!items.length) throw new Error('請先加入至少一筆數字。');
     if (items.length > limits[mode]) throw new Error((mode==='add'?'加法':mode==='subtract'?'減法':'加減混合')+'模式最多 '+limits[mode]+' 筆；請先縮小數字池。');
@@ -108,6 +212,7 @@ function createNumberPoolEngine() {
       if (!item || !Number.isSafeInteger(item.value) || Math.abs(item.value)>MAX_VALUE) throw new Error('第 '+(index+1)+' 筆數字超出範圍或精度不正確。');
       return item.value;
     });
+    if(values.length>exactLimits[mode])return solveBounded(values,target,mode,tolerance,limit,effort,started);
     const split=Math.floor(values.length/2), base=mode==='add'?2:3, factor=base**split;
     const left=enumerate(values.slice(0,split),mode),right=enumerate(values.slice(split),mode);
     const streams=mode==='subtract' ? [[left.zero,groupStates(right.one)],[left.one,groupStates(right.zero)]] : [[left.zero,groupStates(right.zero)]];
@@ -138,9 +243,10 @@ function createNumberPoolEngine() {
       for(let index=0;index<values.length;index++){const digit=code%base;code=Math.floor(code/base);if(digit)terms.push({index,sign:digit===1?1:-1});}
       solutions.push({terms,total:n.total,difference:n.total-target});
     }
-    return {solutions,truncated,complete:!truncated,totalMatches:truncated?null:solutions.length,limit,mode,tolerance,examined,poolSize:items.length};
+    return {solutions,truncated,complete:!truncated,totalMatches:truncated?null:solutions.length,limit,mode,tolerance,examined,poolSize:items.length,
+      strategy:'exact',searchComplete:true,rankingGuaranteed:true,stopReason:truncated?'display-limit':'complete',effort,elapsedMs:Math.max(0,Date.now()-started)};
   }
-  return Object.freeze({SCALE,MAX_VALUE,limits,parseNumber,parseLines,format,solve});
+  return Object.freeze({SCALE,MAX_VALUE,limits,exactLimits,parseNumber,parseLines,format,solve});
 }
 const NumberPoolEngine = createNumberPoolEngine();
 if (typeof module !== 'undefined' && module.exports) module.exports = {createNumberPoolEngine,NumberPoolEngine};

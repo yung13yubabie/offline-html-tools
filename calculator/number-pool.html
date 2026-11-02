@@ -8,6 +8,8 @@
         <div class="pool-modes" role="group" aria-label="數字池計算模式"><button type="button" data-pool-mode="add" aria-pressed="true"><b>＋</b>加法</button><button type="button" data-pool-mode="subtract" aria-pressed="false"><b>−</b>減法</button><button type="button" data-pool-mode="mixed" aria-pressed="false"><b>±</b>混合</button></div>
         <p id="poolModeHelp" class="pool-help">從清單挑選數字相加，每筆最多使用一次。</p>
         <div class="pool-tolerance"><label class="pool-label" for="poolTolerance">允許差額 ±<input id="poolTolerance" inputmode="decimal" value="2" placeholder="不限" autocomplete="off"></label><p class="pool-help">填 0 只找完全符合；填 2 同時找差 1、差 2 等組合。留空不限制差額。</p></div>
+        <label class="pool-label" for="poolEffort">大清單搜尋強度</label><select id="poolEffort"><option value="standard">標準搜尋</option><option value="deep">加強搜尋（需要較多時間）</option></select>
+        <p id="poolSearchScope" class="pool-search-scope">小清單完整搜尋；大清單搜尋部分組合，結果會標示搜尋範圍。</p>
       </section>
       <section class="pool-card" data-review-id="accounting-calculator-poolEntries" data-review-name="數字池數字與名稱清單">
         <div class="pool-section-heading"><span class="step-label">02</span><h2>放入數字</h2><span id="poolCount" class="pool-count">0 筆</span></div>
@@ -21,7 +23,7 @@
         <div class="pool-row-head" aria-hidden="true"><span>名稱／說明（選填）</span><span>數字</span><span></span></div>
         <div id="poolRows"></div>
         <div class="pool-row-actions"><button type="button" class="btn" id="poolAddBtn">＋ 新增一筆</button><button type="button" class="btn pool-quiet" id="poolClearBtn">清空清單</button></div>
-        <p class="pool-help" id="poolLimits">最多 32 筆，支援正負數及 4 位小數。相同金額仍視為不同筆資料。</p>
+        <p class="pool-help" id="poolLimits">最多 100 筆，支援正負數及 4 位小數。相同金額仍視為不同筆資料。</p>
         <div class="pool-search-actions"><button type="button" class="btn primary" id="poolSearchBtn">找出組合 <span aria-hidden="true">→</span></button><button type="button" class="btn" id="poolCancelBtn" hidden>取消搜尋</button></div>
       </section>
     </div>

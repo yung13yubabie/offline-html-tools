@@ -52,6 +52,14 @@ module.exports = async function calculatorPool(p) {
     assert(await p.locator('#poolSummary').isHidden());
     assert(await p.locator('#poolExportBtn').isDisabled());
   }
+  async function pasteRows(rows) {
+    if(await p.locator('.pool-import').getAttribute('open')===null)await p.locator('.pool-import > summary').click();
+    await p.locator('#poolDelimiter').selectOption('｜');
+    const text=rows.map(([name,value])=>name+'｜'+value).join('\n');
+    await p.locator('#poolPaste').fill(text);
+    await p.locator('#poolImportBtn').click();
+    assert.equal(await p.locator('#poolPaste').inputValue(),text,'Even a rejected import must retain the pasted source');
+  }
   try {
     await p.locator('.mode-switch [data-panel="poolPanel"]').click();
     await p.locator('#poolPanel').waitFor({state: 'visible'});
@@ -199,6 +207,69 @@ module.exports = async function calculatorPool(p) {
     await successfulSearch();
     assert.equal(await p.locator('.pool-solution').count(),100);
     assert.match(await p.locator('#poolStatus').textContent(),/超過 100 組/,'Bounded output must disclose that additional combinations exist');
+
+    // Large pools use the real Worker too. The final row must participate, rather than being silently cut off.
+    const hundredRows=Array.from({length:100},(_,index)=>['  第 '+(index+1)+' 筆原始附件說明  ',index<98?10000+index:index===98?333:667]);
+    await configure([], '1000');
+    const beforeOversize=await snapshot();
+    await pasteRows([...hundredRows,['第 101 筆',1]]);
+    assert.equal(await p.locator('#poolImportStatus').getAttribute('data-state'),'error');
+    assert.match(await p.locator('#poolImportStatus').textContent(),/100/);
+    assert.deepEqual(await snapshot(),beforeOversize,'An oversized 101-row paste must append nothing');
+    await pasteRows(hundredRows);
+    assert.equal(await p.locator('#poolImportStatus').getAttribute('data-state'),'success');
+    assert.equal(await entries.count(),100);
+    assert(await p.locator('#poolAddBtn').isDisabled(),'Manual row creation must stop at 100');
+    const hundredSnapshot=await snapshot();
+    assert.deepEqual(hundredSnapshot.map(row=>row.name),hundredRows.map(row=>row[0]),'Every original name, including surrounding whitespace, survives bulk import');
+    await pasteRows([['不得加入第 101 筆',1]]);
+    assert.equal(await p.locator('#poolImportStatus').getAttribute('data-state'),'error');
+    assert.deepEqual(await snapshot(),hundredSnapshot,'Appending beyond the 100-row cap must be atomic');
+    await entries.last().locator('.pool-remove').click();
+    assert.equal(await entries.count(),99);
+    assert(await p.locator('#poolAddBtn').isEnabled());
+    await p.locator('#poolAddBtn').click();
+    assert.equal(await entries.count(),100);
+    assert(await p.locator('#poolAddBtn').isDisabled(),'The manual 100th row also disables further additions');
+    await entries.last().locator('.pool-name').fill(hundredRows[99][0]);
+    await entries.last().locator('.pool-value').fill('667');
+    await p.locator('#poolEffort').selectOption('standard');
+    for(const [mode,target,equation] of [['add','1000','333+667=1000'],['subtract','-334','333−667=−334'],['mixed','1000','333+667=1000']]){
+      await p.locator('[data-pool-mode="'+mode+'"]').click();
+      await p.locator('#poolTarget').fill(target);
+      assert.match(await p.locator('#poolLimits').textContent(),/100/,'All three modes accept 100 rows');
+      assert.match(await p.locator('#poolSearchScope').textContent(),/部分|有限|不保證|未完整/,'Large-pool scope must be disclosed before searching');
+      await successfulSearch();
+      assert.equal(await p.locator('#poolStatus').getAttribute('data-state'),'partial');
+      assert.match(await p.locator('#poolStatus').textContent(),/未完整|部分|有限/);
+      assert.match(await p.locator('#poolStatus').textContent(),/不保證|不能保證|無法保證/,'Bounded search must not promise globally nearest output');
+      const texts=compact(await equations(p.locator('#poolResults')));
+      assert(texts.includes(equation),'A valid combination using the 100th source row must be found in '+mode);
+      assert((await p.locator('.pool-term-name').allTextContents()).includes(hundredRows[99][0]),'The 100th source name remains visible in results');
+      assert.deepEqual(await snapshot(),hundredSnapshot,'Search must preserve all 100 input names and values');
+    }
+    const [partialDownload]=await Promise.all([p.waitForEvent('download'),p.locator('#poolExportBtn').click()]);
+    assert.equal(await partialDownload.failure(),null);
+    const partialText=fs.readFileSync(await partialDownload.path(),'utf8');
+    assert.match(partialText,/未完整|部分|有限/,'TXT must disclose partial search coverage');
+    assert.match(partialText,/不保證|不能保證|無法保證/);
+    assert(!/範圍內全部|顯示最接近的 100 組|目前顯示最接近目標的 100 組/.test(partialText),'Partial TXT must not claim complete output or globally nearest ranking');
+    assert(partialText.includes(hundredRows[99][0]));
+    await p.locator('#poolStatus').scrollIntoViewIfNeeded();
+    await capture('100-rows-partial');
+    await p.locator('#poolEffort').selectOption('deep');
+    await assertStale();
+    assert.deepEqual(await snapshot(),hundredSnapshot,'Changing search effort must retain all original rows');
+    await p.locator('#poolEffort').selectOption('standard');
+
+    await configure([], '1');
+    await pasteRows(Array.from({length:100},(_,index)=>['偶數資料 '+(index+1),1000+index*2]));
+    await successfulSearch();
+    assert.equal(await p.locator('#poolStatus').getAttribute('data-state'),'partial');
+    assert.equal(await p.locator('.pool-solution').count(),0);
+    assert.match(await p.locator('.pool-no-results').textContent(),/尚未找到/);
+    assert.match(await p.locator('.pool-no-results').textContent(),/不代表沒有|不代表不存在/,'A bounded search without matches must not assert that no solution exists');
+    assert(await p.locator('#poolExportBtn').isDisabled());
 
     // Real Worker searches above stay separate from deterministic race/cancellation fault injection.
     await configure([['保留原始名稱',5]], '5');

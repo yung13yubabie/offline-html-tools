@@ -10,8 +10,11 @@ APP = ROOT / 'apps/accounting-calculator.html'
 def build(text):
     blocks = [
         ('WORKBENCH_STYLE', (ROOT / 'calculator/workbench.css').read_text(), 'style', '</head>'),
+        ('DATE_TOOLS_STYLE', (ROOT / 'calculator/date-tools.css').read_text(), 'style', '</head>'),
         ('NUMBER_POOL_MARKUP', (ROOT / 'calculator/number-pool.html').read_text(), None, '<section id="taxPanel"'),
+        ('DATE_TOOLS_MARKUP', (ROOT / 'calculator/date-tools.html').read_text(), None, '<section id="taxPanel"'),
         ('NUMBER_POOL_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['number-pool.js', 'number-pool-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
+        ('DATE_TOOLS_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['date-tools.js', 'date-tools-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
     ]
     for name, contents, tag, before in blocks:
         start, end = '<!-- ' + name + '_BEGIN -->', '<!-- ' + name + '_END -->'

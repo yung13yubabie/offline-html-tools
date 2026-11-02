@@ -7,6 +7,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const calculatorPool=require('./calculator-pool.browser.js');
+const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
 const BASE=process.env.OFFLINE_TEST_BASE_URL||'';
@@ -577,6 +578,7 @@ async function vatPreviewPaperGeometry(p){
  if(id==='accounting-calculator')await check(id+' populated tax readability + labels + insurance copy at desktop and mobile',()=>calculatorPresentation(p));
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));
+ if(id==='accounting-calculator')await check(id+' date differences + business days + offsets + local dates + mobile + stale results',()=>calculatorDateTools(p));
  await check(id+' feedback visible blocks + export + reload + mobile',()=>feedback(p,id));
  await check(id+' floating feedback drag + persistence + keyboard + resize + reset',()=>floatingPanel(p,id));
  await check(id+' mobile controls reachable without clipping or toggle overlap',()=>mobileLayout(p,id));

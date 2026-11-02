@@ -48,7 +48,11 @@
     const count = [...rows.children].filter(row => row.querySelector('.pool-value').value.trim() || row.querySelector('.pool-name').value).length;
     $('poolCount').textContent = count + ' 筆';
     $('poolLimits').textContent = modes[mode].name + '最多 ' + E.limits[mode] + ' 筆；每個數字絕對值上限 10 億，最多 4 位小數。相同金額仍視為不同筆資料。';
-    $('poolAddBtn').disabled = rows.children.length >= 32;
+    $('poolAddBtn').disabled = rows.children.length >= 100;
+    const exactLimit = E.exactLimits[mode];
+    const partial = count > exactLimit;
+    $('poolSearchScope').dataset.partial = String(partial);
+    $('poolSearchScope').textContent = partial ? '目前 ' + count + ' 筆，將搜尋部分組合。每個結果仍精確核算；可能有其他組合未找到，也不保證已找到最接近的組合。' : modes[mode].name + ' ' + exactLimit + ' 筆以內保留完整排序搜尋；超過時改搜尋部分組合。搜尋強度只影響大清單。';
     [...rows.children].forEach((row,index) => {
       row.querySelector('.pool-name').setAttribute('aria-label', '第 ' + (index+1) + ' 筆名稱或說明');
       row.querySelector('.pool-value').setAttribute('aria-label', '第 ' + (index+1) + ' 筆數字');
@@ -93,7 +97,7 @@
     }
     if (!parsed.items.length) {feedback.textContent = '請先貼上至少一筆數字。';return;}
     const existing = [...rows.children].filter(row => row.querySelector('.pool-value').value.trim() || row.querySelector('.pool-name').value);
-    if (existing.length + parsed.items.length > 32) {feedback.textContent = '清單最多保留 32 筆。此次未匯入，請先縮小資料範圍。';return;}
+    if (existing.length + parsed.items.length > 100) {feedback.textContent = '清單最多保留 100 筆。此次未匯入，請先縮小資料範圍。';return;}
     [...rows.children].filter(row => !existing.includes(row)).forEach(row => row.remove());
     parsed.items.forEach(item => addRow(item.name, E.format(item.value)));
     invalidate();
@@ -113,8 +117,8 @@
       catch(error) {throw new Error('第 ' + (index+1) + ' 筆：' + error.message);}
     });
     if (!items.length) throw new Error('請先加入至少一筆數字。');
-    if (items.length > E.limits[mode]) throw new Error(modes[mode].name + '模式最多 ' + E.limits[mode] + ' 筆，目前有 ' + items.length + ' 筆。請縮小清單或切換模式。');
-    return {items, target, tolerance, mode, limit:100};
+    if (items.length > E.limits[mode]) throw new Error(modes[mode].name + '模式最多 ' + E.limits[mode] + ' 筆，目前有 ' + items.length + ' 筆。請移除多餘資料。');
+    return {items, target, tolerance, mode, limit:100, effort:$('poolEffort').value};
   }
   function termsFor(solution, data) {
     return data.mode === 'subtract' ? [...solution.terms].sort((a,b) => b.sign-a.sign || a.index-b.index) : solution.terms;
@@ -135,8 +139,13 @@
     [[E.format(data.target),'目標數字'],[String(result.solutions.length),'顯示組合'],[String(exact),'其中完全符合']].forEach(([value,label]) => {
       const item = el('div'); item.append(el('strong','',value), el('span','',label)); $('poolSummary').append(item);
     });
-    status(result.truncated ? '符合範圍的組合超過 100 組，目前顯示最接近目標的 100 組；同差額優先顯示筆數較少的組合。可縮小差額或清單再搜尋。' : '已比對完成，共 ' + result.solutions.length + ' 組' + (data.tolerance === Infinity ? '（不限差額）' : '符合 ±' + E.format(data.tolerance) + ' 的範圍') + '。依差額由小到大排列，同差額優先顯示筆數較少的組合。');
-    if (!result.solutions.length) {resultBox.append(el('p','pool-no-results','這個範圍內沒有組合。試著放寬「允許差額」，或檢查目標與清單。'));return;}
+    const partial = result.searchComplete === false || result.rankingGuaranteed === false;
+    if (partial) {
+      status('部分搜尋：已搜尋 ' + data.items.length + ' 筆資料的部分組合，顯示已找到的 ' + result.solutions.length + ' 組。' + (result.truncated ? '已找到超過 100 組，先顯示其中差額較小的 100 組。' : '') + '可能有其他組合未找到，不保證已找到最接近的組合。可用加強搜尋，或縮小清單後再試。', 'partial');
+    } else {
+      status(result.truncated ? '符合範圍的組合超過 100 組，目前顯示最接近目標的 100 組；同差額優先顯示筆數較少的組合。可縮小差額或清單再搜尋。' : '已比對完成，共 ' + result.solutions.length + ' 組' + (data.tolerance === Infinity ? '（不限差額）' : '符合 ±' + E.format(data.tolerance) + ' 的範圍') + '。依差額由小到大排列，同差額優先顯示筆數較少的組合。');
+    }
+    if (!result.solutions.length) {resultBox.append(el('p','pool-no-results',partial ? '目前尚未找到符合組合，不代表沒有。可改用加強搜尋、放寬差額，或縮小清單再試。' : '這個範圍內沒有組合。試著放寬「允許差額」，或檢查目標與清單。'));return;}
     const groups = new Map();
     result.solutions.forEach(solution => {
       const diff = Math.abs(solution.difference);
@@ -205,7 +214,7 @@
   $('poolExportBtn').addEventListener('click', () => {
     if (!latest) return;
     const {result,data} = latest;
-    const lines = ['數字池結果','模式：' + modes[data.mode].name,'目標：' + E.format(data.target),'允許差額：' + (data.tolerance === Infinity ? '不限' : '±' + E.format(data.tolerance)),result.truncated ? '顯示最接近的 100 組，符合範圍的組合尚未全部列出。' : '範圍內全部 ' + result.solutions.length + ' 組。',''];
+    const lines = ['數字池結果','模式：' + modes[data.mode].name,'目標：' + E.format(data.target),'允許差額：' + (data.tolerance === Infinity ? '不限' : '±' + E.format(data.tolerance)),result.searchComplete === false || result.rankingGuaranteed === false ? '部分搜尋：僅列出已找到的組合，可能有其他組合未找到，不保證已找到最接近的組合。' + (result.truncated ? '已找到超過 100 組，僅顯示其中差額較小的 100 組。' : '') : result.truncated ? '顯示最接近的 100 組，符合範圍的組合尚未全部列出。' : '範圍內全部 ' + result.solutions.length + ' 組。',''];
     result.solutions.forEach((solution,index) => {
       lines.push('組合 ' + (index+1) + '｜' + (solution.difference === 0 ? '完全符合' : '差 ' + E.format(Math.abs(solution.difference)) + '（合計 − 目標：' + signed(solution.difference) + '）'), expression(solution,data) + ' = ' + E.format(solution.total));
       termsFor(solution,data).forEach(term => {const item = data.items[term.index];lines.push((term.sign>0?'+ ':'− ') + E.format(item.value) + '｜' + (item.name || '未填名稱') + '（清單第 ' + item.row + ' 筆）');});
@@ -217,7 +226,7 @@
   rows.addEventListener('input', invalidate);
   [$('poolTarget'),$('poolTolerance')].forEach(input => input.addEventListener('input',invalidate));
   document.querySelectorAll('[data-pool-mode]').forEach(button => button.addEventListener('click',() => setMode(button.dataset.poolMode)));
-  $('poolAddBtn').addEventListener('click',() => {if (rows.children.length >= 32) return; addRow('','',true); invalidate();});
+  $('poolAddBtn').addEventListener('click',() => {if (rows.children.length >= 100) return; addRow('','',true); invalidate();});
   $('poolClearBtn').addEventListener('click',() => {
     if ([...rows.children].some(row => row.querySelector('.pool-value').value || row.querySelector('.pool-name').value) && !confirm('清空數字清單？貼上區的原文會保留。')) return;
     invalidate(); rows.replaceChildren(); addRow('','',true); updateCount();
@@ -225,19 +234,22 @@
   $('poolDelimiter').addEventListener('change',() => {$('poolCustomWrap').hidden = $('poolDelimiter').value !== 'custom'; $('poolImportStatus').textContent = '';});
   $('poolImportBtn').addEventListener('click',importLines);
   $('poolSearchBtn').addEventListener('click',search);
+  $('poolEffort').addEventListener('change',invalidate);
   $('poolCancelBtn').addEventListener('click',() => {stop(); status('已取消搜尋，輸入內容已保留。');});
   resultBox.addEventListener('click',event => {if (event.target.closest('#poolExampleBtn')) loadExample();});
   document.querySelectorAll('[data-workspace-go]').forEach(button => button.addEventListener('click',() => {
     const target = button.dataset.workspaceGo;
-    document.querySelector('[data-panel="' + (target === 'poolPanel' ? target : 'generalPanel') + '"]').click();
-    if (target !== 'poolPanel') {$(target).open = true; $(target).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); $(target).querySelector('summary').focus({preventScroll:true});}
-    else $('poolTarget').focus();
+    const isPanel = $(target).classList.contains('panel');
+    document.querySelector('[data-panel="' + (isPanel ? target : 'generalPanel') + '"]').click();
+    if (!isPanel) {$(target).open = true; $(target).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); $(target).querySelector('summary').focus({preventScroll:true});}
+    else $(target === 'poolPanel' ? 'poolTarget' : 'dateDiffStart').focus();
   }));
   const navButtons = [...document.querySelectorAll('.mode-switch button')];
   navButtons.forEach((button,index) => {
     button.setAttribute('aria-controls',button.dataset.panel); button.setAttribute('aria-pressed',String(button.classList.contains('active')));
     button.addEventListener('click',() => {
       navButtons.forEach(nav => nav.setAttribute('aria-pressed',String(nav === button)));
+      if (matchMedia('(max-width: 1280px)').matches) button.scrollIntoView({block:'nearest',inline:'nearest'});
       if (button.dataset.panel === 'poolPanel') rows.querySelectorAll('.pool-name').forEach(input => {input.style.height='auto';input.style.height=Math.max(46,input.scrollHeight+2)+'px';});
     });
     button.addEventListener('keydown',event => {

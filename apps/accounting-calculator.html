@@ -51,12 +51,12 @@
 /* Calculator 1.3: quiet workspace chrome, visible tools and purposeful motion. */
 [hidden]{display:none!important}
 :root{--bg:#f2f5f7;--surface:#fff;--surface-2:#f5f8fa;--text:#1a2b38;--muted:#536777;--blue:#17645f;--blue-soft:#e8f4f0;--blue-strong:#104d48;--line:#d7e2e5;--line-strong:#b0c4ca;--r:14px}
-.app{display:grid;grid-template-columns:204px minmax(0,1fr);grid-template-rows:72px 1fr;align-items:start}.topbar{grid-column:1/-1;height:72px;top:0;padding:12px 24px;backdrop-filter:none;z-index:100}.brand{display:flex;align-items:center;gap:10px;font-size:18px}.brand-symbol{display:grid;place-items:center;width:34px;height:34px;background:var(--blue);color:#fff;border-radius:10px;font-size:23px}.brand-version{font-size:12px;font-weight:500;color:var(--muted)}.session-note{max-width:34em;font-size:12px}.mode-switch{position:sticky;top:72px;display:flex;flex-direction:column;align-self:start;padding:24px 12px;gap:8px;border:0;border-right:1px solid var(--line);border-radius:0;background:var(--surface);height:calc(100dvh - 72px);overflow:auto}.nav-caption{margin:0 12px 12px;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.08em}.mode-switch button{display:flex;align-items:center;gap:12px;min-height:66px;flex:none;text-align:left;padding:12px;border-radius:10px;color:var(--muted);transition:background-color .18s,color .18s,box-shadow .18s}.mode-switch button.active{background:var(--blue-soft);color:var(--blue-strong);box-shadow:inset 3px 0 var(--blue)}.mode-switch button:hover:not(.active){background:var(--surface-2)}.nav-symbol{font-size:22px;width:24px;text-align:center;font-weight:500}.nav-copy{display:grid;gap:4px;font-size:15px}.nav-copy small{font-size:12px;font-weight:400;color:var(--muted)}.nav-foot{margin:auto 12px 4px;padding-top:32px;font-size:12px;line-height:1.8;color:var(--muted)}main{min-width:0;width:100%;padding:28px;max-width:1600px;margin:0 auto;align-self:start}.workspace-heading{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:0 0 24px}.workspace-kicker{color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.08em;margin:0 0 8px}.workspace-heading h1{font-size:28px;line-height:1.3;margin:0;letter-spacing:-.025em}.workspace-heading p:not(.workspace-kicker){margin:9px 0 0;font-size:14px;line-height:1.7;color:var(--muted);max-width:65ch}.local-badge{display:inline-flex;flex-shrink:0;align-items:center;gap:7px;font-size:12px;padding:6px 10px;background:var(--surface);border:1px solid var(--line);border-radius:20px;color:var(--muted)}.local-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue)}.panel.active{animation:workspace-enter .2s ease-out}.calc-layout{gap:20px}.calc-main{position:static!important}.calc-display{border:0;background:#edf5f3;min-height:142px;border-radius:12px}.calc-expression:empty::before{content:'輸入算式';font:14px system-ui,sans-serif;color:var(--muted)}.calc-result{color:var(--blue-strong);font-size:40px!important}.keypad button{border-color:#e0e8e9;min-height:52px;transition:background-color .14s,transform .1s}.keypad button:active{transform:scale(.95)}.keypad .op{background:var(--blue-soft)}.keypad .eq{background:var(--blue)}.keypad .eq:hover{background:var(--blue-strong)}.general-tools{gap:10px}.section-title{font-size:17px}.batch-card,.calc-main{box-shadow:0 3px 16px #183e3b05}.batch-head{padding-bottom:10px}.batch-row{padding:7px 0}.batch-total{padding-top:16px}.math-tool{margin-top:20px;padding-top:14px}.math-tool summary{font-size:16px;padding:10px 0}.math-tool[open]{animation:workspace-enter .18s ease-out}.math-tool .math-result:not(:empty){padding:16px;background:var(--blue-soft);border-radius:10px}.feature-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0 0}.feature-link{display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text)}.feature-link strong{display:block;font-size:15px;margin-bottom:5px}.feature-link span:last-child{font-size:13px;color:var(--muted);line-height:1.5}.feature-icon{display:grid;place-items:center;font-size:22px;width:40px;height:40px;flex-shrink:0;border-radius:10px;background:var(--blue-soft);color:var(--blue)}.feature-link:hover{border-color:var(--blue);background:#f8fcfa}.feature-link:active{transform:translateY(1px)}
+.app{display:grid;grid-template-columns:204px minmax(0,1fr);grid-template-rows:72px 1fr;align-items:start}.topbar{grid-column:1/-1;height:72px;top:0;padding:12px 24px;backdrop-filter:none;z-index:100}.brand{display:flex;align-items:center;gap:10px;font-size:18px}.brand-symbol{display:grid;place-items:center;width:34px;height:34px;background:var(--blue);color:#fff;border-radius:10px;font-size:23px}.brand-version{font-size:12px;font-weight:500;color:var(--muted)}.session-note{max-width:34em;font-size:12px}.mode-switch{position:sticky;top:72px;display:flex;flex-direction:column;align-self:start;padding:24px 12px;gap:8px;border:0;border-right:1px solid var(--line);border-radius:0;background:var(--surface);height:calc(100dvh - 72px);overflow:auto}.nav-caption{margin:0 12px 12px;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.08em}.mode-switch button{display:flex;align-items:center;gap:12px;min-height:66px;flex:none;text-align:left;padding:12px;border-radius:10px;color:var(--muted);transition:background-color .18s,color .18s,box-shadow .18s}.mode-switch button.active{background:var(--blue-soft);color:var(--blue-strong);box-shadow:inset 3px 0 var(--blue)}.mode-switch button:hover:not(.active){background:var(--surface-2)}.nav-symbol{font-size:22px;width:24px;text-align:center;font-weight:500}.nav-copy{display:grid;gap:4px;font-size:15px}.nav-copy small{font-size:12px;font-weight:400;color:var(--muted)}.nav-foot{margin:auto 12px 4px;padding-top:32px;font-size:12px;line-height:1.8;color:var(--muted)}main{min-width:0;width:100%;padding:28px;max-width:1600px;margin:0 auto;align-self:start}.workspace-heading{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:0 0 24px}.workspace-kicker{color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.08em;margin:0 0 8px}.workspace-heading h1{font-size:28px;line-height:1.3;margin:0;letter-spacing:-.025em}.workspace-heading p:not(.workspace-kicker){margin:9px 0 0;font-size:14px;line-height:1.7;color:var(--muted);max-width:65ch}.local-badge{display:inline-flex;flex-shrink:0;align-items:center;gap:7px;font-size:12px;padding:6px 10px;background:var(--surface);border:1px solid var(--line);border-radius:20px;color:var(--muted)}.local-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue)}.panel.active{animation:workspace-enter .2s ease-out}.calc-layout{gap:20px}.calc-main{position:static!important}.calc-display{border:0;background:#edf5f3;min-height:142px;border-radius:12px}.calc-expression:empty::before{content:'輸入算式';font:14px system-ui,sans-serif;color:var(--muted)}.calc-result{color:var(--blue-strong);font-size:40px!important}.keypad button{border-color:#e0e8e9;min-height:52px;transition:background-color .14s,transform .1s}.keypad button:active{transform:scale(.95)}.keypad .op{background:var(--blue-soft)}.keypad .eq{background:var(--blue)}.keypad .eq:hover{background:var(--blue-strong)}.general-tools{gap:10px}.section-title{font-size:17px}.batch-card,.calc-main{box-shadow:0 3px 16px #183e3b05}.batch-head{padding-bottom:10px}.batch-row{padding:7px 0}.batch-total{padding-top:16px}.math-tool{margin-top:20px;padding-top:14px}.math-tool summary{font-size:16px;padding:10px 0}.math-tool[open]{animation:workspace-enter .18s ease-out}.math-tool .math-result:not(:empty){padding:16px;background:var(--blue-soft);border-radius:10px}.feature-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0 0}.feature-link{display:flex;align-items:center;gap:12px;text-align:left;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text)}.feature-link strong{display:block;font-size:15px;margin-bottom:5px}.feature-link span:last-child{font-size:13px;color:var(--muted);line-height:1.5}.feature-icon{display:grid;place-items:center;font-size:22px;width:40px;height:40px;flex-shrink:0;border-radius:10px;background:var(--blue-soft);color:var(--blue)}.feature-link:hover{border-color:var(--blue);background:#f8fcfa}.feature-link:active{transform:translateY(1px)}
 .pool-layout{display:grid;grid-template-columns:minmax(340px,.9fr) minmax(0,1.1fr);gap:24px;align-items:start}.pool-input-column{display:grid;gap:18px;min-width:0}.pool-card{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0}.pool-target-card{border-top:3px solid var(--blue)}.pool-section-heading{display:flex;align-items:center;gap:10px;margin-bottom:18px}.pool-section-heading h2{margin:0;font-size:18px;line-height:1.4}.step-label{font-family:var(--mono);font-size:12px;color:var(--blue);background:var(--blue-soft);padding:5px 7px;border-radius:6px}.pool-count{margin-left:auto;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}.pool-label{display:block;font-size:14px;font-weight:600;margin:14px 0 7px}.pool-card input,.pool-card select,.pool-card textarea{font:inherit;color:var(--text);width:100%;min-width:0;border:1px solid var(--line-strong);border-radius:8px;padding:10px 11px;background:var(--surface)}.pool-card input:focus,.pool-card textarea:focus{border-color:var(--blue)}.pool-card .pool-target{font:600 32px/1.4 var(--mono);letter-spacing:-.02em;padding:12px 14px;background:var(--surface-2)}.pool-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:10px;background:var(--surface-2);margin-top:18px;border:1px solid var(--line)}.pool-modes button{background:transparent;border:0;color:var(--muted);min-height:44px;border-radius:7px;font-weight:600}.pool-modes button b{font-size:20px;vertical-align:-1px;margin-right:5px}.pool-modes button[aria-pressed=true]{background:var(--blue);color:#fff;box-shadow:0 2px 5px #174d4830}.pool-help{font-size:13px;line-height:1.7;color:var(--muted);margin:10px 0 0}.pool-tolerance{display:grid;grid-template-columns:130px minmax(0,1fr);align-items:end;gap:14px}.pool-tolerance .pool-label{margin-bottom:0}.pool-tolerance input{display:block;margin-top:8px;font-variant-numeric:tabular-nums}.pool-import{padding:12px 14px;border:1px solid var(--line);background:var(--surface-2);border-radius:10px;margin-bottom:18px}.pool-import summary{font-size:14px;font-weight:650;cursor:pointer;line-height:1.8}.pool-import summary span{display:block;font-weight:400;color:var(--muted);font-size:12px;padding-left:16px}.pool-import[open] summary{margin-bottom:14px}.pool-import textarea{resize:vertical;min-height:130px;margin-bottom:10px;line-height:1.7}.pool-inline-status{font-size:14px;line-height:1.6;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere}.pool-inline-status:empty{display:none}.pool-row-head,.pool-entry{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) 34px;gap:8px;align-items:start}.pool-row-head{font-size:12px;color:var(--muted);padding:0 0 8px}.pool-entry{margin-bottom:9px}.pool-entry input{font-size:16px;line-height:1.5;min-height:46px;padding:9px 10px}.pool-entry .pool-entry-value{font-family:var(--mono);font-size:16px;text-align:right}.pool-remove{border:0;background:transparent;min-height:44px;color:var(--muted);font-size:22px;border-radius:8px}.pool-remove:hover{background:var(--danger-bg);color:var(--danger)}.pool-row-actions{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px}.pool-quiet{color:var(--muted);border-color:transparent}.pool-search-actions{display:flex;gap:8px;margin-top:20px}.pool-search-actions .primary{flex:1;min-height:48px;display:flex;justify-content:space-between;align-items:center;font-weight:650;padding:12px 16px}.pool-results-card{min-height:480px}.pool-results-card .pool-section-heading>button{margin-left:auto}.pool-status{font-size:14px;line-height:1.8;color:var(--muted);margin:0 0 18px;white-space:pre-wrap;overflow-wrap:anywhere}.pool-status[data-state=error],.pool-inline-status[data-state=error]{color:var(--danger)}.pool-status[data-state=stale]{background:var(--warn-bg);color:var(--warn);padding:10px 12px;border-radius:8px}.pool-busy{display:flex;gap:12px;align-items:center;font-size:14px;padding:22px 0;color:var(--blue)}.pool-spinner{width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:pool-spin .8s linear infinite}.pool-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:20px;background:var(--surface-2)}.pool-summary>div{padding:13px 12px;border-left:1px solid var(--line);min-width:0}.pool-summary>div:first-child{border-left:0}.pool-summary strong{display:block;font-size:23px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.pool-summary span{display:block;font-size:12px;color:var(--muted);margin-top:5px}.pool-empty{padding:50px 8px;text-align:center}.pool-empty h3{font-size:20px;margin:24px 0 10px}.pool-empty p{font-size:14px;line-height:1.8;color:var(--muted);max-width:32ch;margin:0 auto 22px}.pool-example-equation{display:flex;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap;font:600 19px var(--mono)}.pool-example-equation span,.pool-example-equation strong{background:var(--surface-2);border:1px solid var(--line);padding:10px;border-radius:8px}.pool-example-equation strong{background:var(--blue-soft);color:var(--blue-strong);border-color:#a2c9bf}.pool-example-equation i{font-style:normal;color:var(--muted)}.pool-group{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden;animation:workspace-enter .2s ease-out}.pool-group>summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:16px;background:var(--surface-2);font-size:16px;font-weight:650}.pool-group>summary::-webkit-details-marker{display:none}.pool-group>summary::after{content:'›';font-size:24px;line-height:1;margin-left:auto;transition:transform .18s}.pool-group[open]>summary::after{transform:rotate(90deg)}.pool-group>summary span{font-size:13px;font-weight:400;color:var(--muted)}.pool-group[data-exact=true]>summary{background:var(--blue-soft);color:var(--blue-strong)}.pool-group-body{padding:0 16px}.pool-group[open] .pool-group-body{animation:workspace-enter .18s ease-out}.pool-solution{padding:20px 0;border-bottom:1px solid var(--line)}.pool-solution:last-child{border-bottom:0}.pool-solution-top{display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:12px}.pool-equation{font:650 23px/1.7 var(--mono);letter-spacing:-.02em;margin:10px 0 14px;color:var(--text);overflow-wrap:anywhere}.pool-equation strong{color:var(--blue-strong)}.pool-terms{margin:0;padding:0;list-style:none;display:grid;gap:10px}.pool-terms li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start}.pool-term-name{font-size:16px;font-weight:500;line-height:1.6;color:var(--text);white-space:pre-wrap;overflow-wrap:anywhere}.pool-term-value{font:600 16px/1.6 var(--mono);white-space:nowrap;color:var(--blue-strong)}.pool-source{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:3px}.pool-no-results{padding:30px 12px;text-align:center;font-size:15px;line-height:1.8;color:var(--muted)}
 @keyframes workspace-enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@keyframes pool-spin{to{transform:rotate(360deg)}}
 @media(min-width:1200px){.calc-layout{grid-template-columns:minmax(320px,380px) minmax(0,1fr)}}
 @media(max-width:1199px){.calc-layout{grid-template-columns:1fr}.pool-layout{grid-template-columns:1fr}.pool-results-card{min-height:360px}.feature-strip{grid-template-columns:1fr}.feature-link{padding:14px}.pool-empty{padding:30px 8px}}
-@media(max-width:1280px){.app{display:block}.topbar{height:auto;min-height:64px;position:relative;padding:14px 18px;flex-wrap:wrap}.brand{font-size:17px}.brand-version{font-size:11px}.session-note{margin:0;width:auto;max-width:none}.mode-switch{height:auto;position:sticky;top:0;z-index:90;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:7px 10px;gap:4px;border-right:0;border-bottom:1px solid var(--line)}.mode-switch button{min-height:46px;justify-content:center;text-align:center;padding:8px 4px}.mode-switch .nav-copy{font-size:14px;white-space:nowrap}.nav-symbol,.nav-caption,.nav-foot,.nav-copy small{display:none}.mode-switch button.active{box-shadow:inset 0 -3px var(--blue)}main{padding:20px 14px 96px}.workspace-heading{margin-bottom:20px}.workspace-heading h1{font-size:25px}.workspace-heading>.local-badge{display:none}.pool-card{padding:18px}.pool-layout{gap:18px}.pool-example-equation{font-size:17px}.pool-group-body{padding:0 14px}.pool-equation{font-size:21px}.pool-terms li{gap:10px}.pool-row-head,.pool-entry{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 28px}.pool-entry input{padding:8px}.pool-summary strong{font-size:20px}}
+@media(max-width:1280px){.app{display:block}.topbar{height:auto;min-height:64px;position:relative;padding:14px 18px;flex-wrap:wrap}.brand{font-size:17px}.brand-version{font-size:11px}.session-note{margin:0;width:auto;max-width:none}.mode-switch{height:auto;position:sticky;top:0;z-index:90;display:grid;grid-template-columns:repeat(5,minmax(76px,1fr));padding:7px 10px;gap:4px;border-right:0;border-bottom:1px solid var(--line)}.mode-switch button{min-height:46px;justify-content:center;text-align:center;padding:8px 4px}.mode-switch .nav-copy{font-size:14px;white-space:nowrap}.nav-symbol,.nav-caption,.nav-foot,.nav-copy small{display:none}.mode-switch button.active{box-shadow:inset 0 -3px var(--blue)}main{padding:20px 14px 96px}.workspace-heading{margin-bottom:20px}.workspace-heading h1{font-size:25px}.workspace-heading>.local-badge{display:none}.pool-card{padding:18px}.pool-layout{gap:18px}.pool-example-equation{font-size:17px}.pool-group-body{padding:0 14px}.pool-equation{font-size:21px}.pool-terms li{gap:10px}.pool-row-head,.pool-entry{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 28px}.pool-entry input{padding:8px}.pool-summary strong{font-size:20px}}
 @media(max-width:380px){.pool-tolerance{grid-template-columns:1fr}.pool-tolerance input{max-width:140px}.pool-terms li{grid-template-columns:minmax(0,1fr)}.pool-term-value{justify-self:start}.pool-summary{grid-template-columns:1fr}.pool-summary>div{border-left:0;border-top:1px solid var(--line)}.pool-summary>div:first-child{border-top:0}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media print{.mode-switch,.feature-strip,.pool-input-column,.pool-section-heading>button,.pool-status,.pool-busy{display:none!important}.app,.pool-layout{display:block}.topbar{position:static}main{padding:0}.pool-group{break-inside:avoid}}
@@ -64,19 +64,36 @@
 .pool-entry .pool-name{font:16px/1.5 "Segoe UI","Microsoft JhengHei",system-ui,sans-serif;min-height:46px;resize:vertical;overflow:hidden;white-space:pre-wrap;padding:9px 10px}
 
 .pool-results-card{scroll-margin-top:90px}.pool-status{scroll-margin-top:100px}
+
+/* Large lists keep the search controls reachable, with explicit result scope. */
+#poolRows{max-height:520px;overflow-y:auto;overscroll-behavior:contain;padding:4px 4px 0 0;scroll-padding:8px;scrollbar-width:thin}
+.pool-search-scope{font-size:13px;line-height:1.8;color:var(--muted);padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
+.pool-search-scope[data-partial=true],.pool-status[data-state=partial]{color:#765116;background:#fff7e6;border:1px solid #ead5a5;border-radius:8px;padding:12px;line-height:1.8}
+@media(max-width:600px){#poolRows{max-height:420px}}
 </style>
 <!-- WORKBENCH_STYLE_END -->
+<!-- DATE_TOOLS_STYLE_BEGIN -->
+<style>
+/* Date-only tools share the calculator palette without external assets. */
+.date-rule-notice{margin:-4px 0 22px;padding:12px 15px;background:var(--blue-soft);border-left:3px solid var(--blue);border-radius:0 9px 9px 0;font-size:14px;line-height:1.7;color:var(--blue-strong)}
+.date-tools-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}.date-card{min-width:0;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:14px}.date-card-heading{display:flex;gap:12px;align-items:center;margin-bottom:24px}.date-icon{display:grid;place-items:center;flex-shrink:0;width:42px;height:42px;background:var(--blue-soft);color:var(--blue);border-radius:11px;font-size:25px}.date-card-heading h2{margin:0;font-size:20px;line-height:1.4}.date-card-heading p{font-size:14px;line-height:1.6;color:var(--muted);margin:5px 0 0}.date-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.date-fields label,.date-field{display:block;min-width:0;font-size:14px;font-weight:600;line-height:1.6}.date-card input:not([type=checkbox]),.date-card select{display:block;width:100%;min-width:0;max-width:100%;padding:11px 12px;margin-top:7px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--text);font:16px/1.5 "Segoe UI","Microsoft JhengHei",system-ui,sans-serif}.date-card input[type=date]{min-height:48px}.date-card input[type=date]::-webkit-date-and-time-value{text-align:left}.date-field{margin-top:18px}.date-check{display:flex;align-items:center;gap:9px;font-size:15px;line-height:1.6;margin:18px 0 0;cursor:pointer}.date-check input{width:18px;height:18px;accent-color:var(--blue);margin:0}.date-help{font-size:14px;line-height:1.8;color:var(--muted);margin:14px 0 20px}.date-calculate{width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;font-weight:650}.date-result{margin-top:22px;min-height:146px;padding:20px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;overflow-wrap:anywhere}.date-result[data-state=success]{background:var(--blue-soft);border-color:#a2c9bf;animation:workspace-enter .18s ease-out}.date-result[data-state=error]{background:var(--danger-bg);border-color:#e8b2ac;color:var(--danger)}.date-result[data-state=stale]{background:var(--warn-bg);color:var(--warn)}.date-result-label{font-size:14px;line-height:1.6;margin:0 0 8px;color:var(--muted)}.date-result-number{font:650 36px/1.4 var(--mono);letter-spacing:-.025em;color:var(--blue-strong);margin:0}.date-result-number.date-result-date{font-size:30px;letter-spacing:-.035em}.date-result-number span{font:500 16px/1.5 "Segoe UI","Microsoft JhengHei",system-ui,sans-serif;letter-spacing:0;margin-left:10px}.date-result-detail,.date-result-weekday{font-size:15px;line-height:1.8;margin:9px 0 0;white-space:pre-wrap}.date-result-weekday{font-weight:600;color:var(--blue-strong)}.date-empty,.date-result-error,.date-result-stale{font-size:15px;line-height:1.8;margin:0}.date-empty{color:var(--muted)}
+@media(max-width:1199px){.date-tools-grid{grid-template-columns:1fr}.date-card{padding:22px}.date-result-number.date-result-date{font-size:32px}}
+@media(max-width:600px){.date-tools-grid{gap:18px}.date-card{padding:18px}.date-card-heading{margin-bottom:20px}.date-fields{grid-template-columns:1fr;gap:16px}.date-result{padding:16px}.date-result-number{font-size:32px}.date-result-number.date-result-date{font-size:27px}.date-rule-notice{font-size:14px;margin-bottom:18px}.date-card-heading h2{font-size:19px}}
+@media print{.date-tools-grid{display:block}.date-card{break-inside:avoid;margin-bottom:18px}.date-calculate{display:none!important}}
+</style>
+<!-- DATE_TOOLS_STYLE_END -->
 </head>
 <body>
 <div class="app">
 <header class="topbar" data-review-id="accounting-calculator-header-1" data-review-name="頂端操作 1">
-<div class="brand"><span class="brand-symbol" aria-hidden="true">∑</span>離線計算工作台 <span class="brand-version">1.3.0</span></div>
+<div class="brand"><span class="brand-symbol" aria-hidden="true">∑</span>離線計算工作台 <span class="brand-version">1.4.0</span></div>
 <div class="session-note">提醒：計算內容重新整理後會清空。</div>
 </header>
 <nav class="mode-switch" aria-label="工作模式" data-review-id="accounting-calculator-workspaceNav" data-review-name="工作模式切換">
 <p class="nav-caption">計算工具</p>
 <button class="active" data-panel="generalPanel"><span class="nav-symbol" aria-hidden="true">＋</span><span class="nav-copy">一般計算<small>單次・批量・換算</small></span></button>
 <button data-panel="poolPanel"><span class="nav-symbol" aria-hidden="true">⋮</span><span class="nav-copy">數字池<small>找組合・核對差額</small></span></button>
+<button data-panel="datePanel"><span class="nav-symbol" aria-hidden="true">▦</span><span class="nav-copy">日期帳期<small>相差天數・到期日</small></span></button>
 <button data-panel="taxPanel"><span class="nav-symbol" aria-hidden="true">%</span><span class="nav-copy">稅額試算<small>銷項・進項・彙總</small></span></button>
 <button data-panel="insurancePanel"><span class="nav-symbol" aria-hidden="true">⌘</span><span class="nav-copy">勞健保<small>級距・負擔・成本</small></span></button>
 <p class="nav-foot">開啟 HTML 就能使用<br>不需登入，也不需連線</p>
@@ -136,6 +153,7 @@
 </div>
 <div class="feature-strip" aria-label="更多計算工具">
 <button class="feature-link" data-workspace-go="poolPanel"><span class="feature-icon" aria-hidden="true">±</span><span><strong>數字池</strong>從清單找出符合目標的組合</span></button>
+<button class="feature-link" data-workspace-go="datePanel"><span class="feature-icon" aria-hidden="true">▦</span><span><strong>日期與帳期</strong>相差天數、加減日期與排除週末</span></button>
 <button class="feature-link" data-workspace-go="linearTool"><span class="feature-icon" aria-hidden="true">𝑥</span><span><strong>多元一次方程式</strong>貼上方程式，求出未知數</span></button>
 <button class="feature-link" data-workspace-go="ratioTool"><span class="feature-icon" aria-hidden="true">%</span><span><strong>比例換算</strong>由數值與百分比互相換算</span></button>
 </div>
@@ -151,6 +169,8 @@
         <div class="pool-modes" role="group" aria-label="數字池計算模式"><button type="button" data-pool-mode="add" aria-pressed="true"><b>＋</b>加法</button><button type="button" data-pool-mode="subtract" aria-pressed="false"><b>−</b>減法</button><button type="button" data-pool-mode="mixed" aria-pressed="false"><b>±</b>混合</button></div>
         <p id="poolModeHelp" class="pool-help">從清單挑選數字相加，每筆最多使用一次。</p>
         <div class="pool-tolerance"><label class="pool-label" for="poolTolerance">允許差額 ±<input id="poolTolerance" inputmode="decimal" value="2" placeholder="不限" autocomplete="off"></label><p class="pool-help">填 0 只找完全符合；填 2 同時找差 1、差 2 等組合。留空不限制差額。</p></div>
+        <label class="pool-label" for="poolEffort">大清單搜尋強度</label><select id="poolEffort"><option value="standard">標準搜尋</option><option value="deep">加強搜尋（需要較多時間）</option></select>
+        <p id="poolSearchScope" class="pool-search-scope">小清單完整搜尋；大清單搜尋部分組合，結果會標示搜尋範圍。</p>
       </section>
       <section class="pool-card" data-review-id="accounting-calculator-poolEntries" data-review-name="數字池數字與名稱清單">
         <div class="pool-section-heading"><span class="step-label">02</span><h2>放入數字</h2><span id="poolCount" class="pool-count">0 筆</span></div>
@@ -164,7 +184,7 @@
         <div class="pool-row-head" aria-hidden="true"><span>名稱／說明（選填）</span><span>數字</span><span></span></div>
         <div id="poolRows"></div>
         <div class="pool-row-actions"><button type="button" class="btn" id="poolAddBtn">＋ 新增一筆</button><button type="button" class="btn pool-quiet" id="poolClearBtn">清空清單</button></div>
-        <p class="pool-help" id="poolLimits">最多 32 筆，支援正負數及 4 位小數。相同金額仍視為不同筆資料。</p>
+        <p class="pool-help" id="poolLimits">最多 100 筆，支援正負數及 4 位小數。相同金額仍視為不同筆資料。</p>
         <div class="pool-search-actions"><button type="button" class="btn primary" id="poolSearchBtn">找出組合 <span aria-hidden="true">→</span></button><button type="button" class="btn" id="poolCancelBtn" hidden>取消搜尋</button></div>
       </section>
     </div>
@@ -180,6 +200,35 @@
   </div>
 </section>
 <!-- NUMBER_POOL_MARKUP_END -->
+<!-- DATE_TOOLS_MARKUP_BEGIN -->
+<section id="datePanel" class="panel" data-review-id="accounting-calculator-datePanel" data-review-name="日期與帳期計算">
+  <div class="workspace-heading"><div><p class="workspace-kicker">核對天數 · 推算日期</p><h1>日期與帳期</h1><p>計算兩個日期相差幾天，或從起日加減天數。所有日期都在本機計算。</p></div><span class="local-badge">離線可用</span></div>
+  <p class="date-rule-notice">「排除週末」只略過週六、週日，未扣除國定假日，也未納入補班日。</p>
+  <div class="date-tools-grid">
+    <section class="date-card" data-review-id="accounting-calculator-dateDifference" data-review-name="日期相差天數" aria-labelledby="dateDiffTitle">
+      <div class="date-card-heading"><span class="date-icon" aria-hidden="true">↔</span><div><h2 id="dateDiffTitle">日期差</h2><p>核對期間內有多少天</p></div></div>
+      <form id="dateDiffForm" novalidate data-review-id="accounting-calculator-dateDiffForm" data-review-name="日期差輸入條件">
+        <div class="date-fields"><label for="dateDiffStart">起始日期<input id="dateDiffStart" type="date" min="0001-01-01" max="9999-12-31" required></label><label for="dateDiffEnd">結束日期<input id="dateDiffEnd" type="date" min="0001-01-01" max="9999-12-31" required></label></div>
+        <label class="date-field" for="dateDiffMode">計算方式<select id="dateDiffMode"><option value="calendar">日曆天（每天都計入）</option><option value="business">排除週末（只計週一至週五）</option></select></label>
+        <label class="date-check" for="dateDiffIncludeStart"><input id="dateDiffIncludeStart" type="checkbox">包含起始日</label>
+        <p class="date-help" id="dateDiffHelp">預設不含起日、包含結束日；結束日在起日前，結果為負數。勾選包含起始日，會多算起日；排除週末時，起日也須為週一至週五才計入。</p>
+        <button type="submit" class="btn primary date-calculate" id="dateDiffBtn" aria-describedby="dateDiffHelp">計算相差天數 <span aria-hidden="true">→</span></button>
+      </form>
+      <div id="dateDiffResult" class="date-result" role="status" aria-live="polite" aria-atomic="true"><p class="date-empty">選好起日與結束日後，按「計算相差天數」。</p></div>
+    </section>
+    <section class="date-card" data-review-id="accounting-calculator-dateShift" data-review-name="日期加減與到期日" aria-labelledby="dateShiftTitle">
+      <div class="date-card-heading"><span class="date-icon" aria-hidden="true">＋</span><div><h2 id="dateShiftTitle">日期加減／到期日</h2><p>從起日向前或向後推算</p></div></div>
+      <form id="dateShiftForm" novalidate data-review-id="accounting-calculator-dateShiftForm" data-review-name="日期加減輸入條件">
+        <div class="date-fields"><label for="dateShiftStart">起始日期<input id="dateShiftStart" type="date" min="0001-01-01" max="9999-12-31" required></label><label for="dateShiftAmount">加減天數<input id="dateShiftAmount" type="text" inputmode="text" maxlength="8" value="30" placeholder="例如 30 或 -7" autocomplete="off" required></label></div>
+        <label class="date-field" for="dateShiftMode">計算方式<select id="dateShiftMode"><option value="calendar">日曆天（每天都計入）</option><option value="business">排除週末（只計週一至週五）</option></select></label>
+        <p class="date-help" id="dateShiftHelp">正數往後推，負數往前推，0 保留原日期。排除週末時，從起日的下一天或前一天開始找工作日；即使起日是週末，也不算第 1 天。可填 -100,000 至 100,000 的整數。</p>
+        <button type="submit" class="btn primary date-calculate" id="dateShiftBtn" aria-describedby="dateShiftHelp">推算日期 <span aria-hidden="true">→</span></button>
+      </form>
+      <div id="dateShiftResult" class="date-result" role="status" aria-live="polite" aria-atomic="true"><p class="date-empty">例如帳期 30 天，可從指定起日向後推算。</p></div>
+    </section>
+  </div>
+</section>
+<!-- DATE_TOOLS_MARKUP_END -->
 <section id="taxPanel" class="panel" data-review-id="accounting-calculator-taxPanel" data-review-name="稅務計算">
 <div class="tax-toolbar" data-review-id="accounting-calculator-tax-toolbar-1" data-review-name="稅務計算工具列"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn" id="toggleSettingsBtn">設定</button><span class="pill">預設稅率 <strong id="rateBadge">5%</strong></span><label class="copy-pref"><input type="checkbox" id="taxCopyComma" checked> 複製含千分位</label></div><div class="muted" style="font-size:12px">退回／折讓一律輸入正數，系統自動作減項</div></div>
 <div class="tax-settings" id="taxSettings" data-review-id="accounting-calculator-taxSettings" data-review-name="預設稅率設定"><div class="settings-grid" id="settingsGrid"></div></div>
@@ -493,12 +542,13 @@ const CalculatorMathTools = (() => {
 
 <!-- NUMBER_POOL_SCRIPT_BEGIN -->
 <script>
-/* Exact, dependency-free number pool. Inline the factory for the app and Blob Worker. */
+/* Dependency-free number pool: exact small-pool ranking and bounded 100-row search. */
 function createNumberPoolEngine() {
   'use strict';
   const SCALE = 10000;
   const MAX_VALUE = 1000000000 * SCALE;
-  const limits = Object.freeze({add:32, subtract:28, mixed:20});
+  const limits = Object.freeze({add:100, subtract:100, mixed:100});
+  const exactLimits = Object.freeze({add:32, subtract:28, mixed:20});
 
   function parseNumber(input) {
     let text = String(input ?? '').trim().replace(/[０-９]/g, c => String(c.charCodeAt(0)-0xff10)).replace(/−/g, '-');
@@ -590,9 +640,112 @@ function createNumberPoolEngine() {
     return {states,groups};
   }
 
+  // Large pools use bounded beam search, never an exponential 100-row enumeration.
+  // Every row participates in complete single/pair seeding before two opposite-order
+  // passes. Four identities per sum and a diverse frontier avoid collapsing names or
+  // spending the whole budget on many interchangeable equal-value rows.
+  function solveBounded(values, target, mode, tolerance, limit, effort, started) {
+    const width = effort === 'deep' ? 3072 : 768;
+    const maxStates = effort === 'deep' ? 2200000 : 600000;
+    const timeLimit = effort === 'deep' ? 6000 : 1800;
+    const powers = values.map((_,i)=>1n << BigInt(i*2));
+    const capacity = limit+1, best = [], known = new Set();
+    let examined = 0, stopped = '', nextClockCheck = 256;
+    const distance = state=>Math.abs(state.sum-target);
+    const compare = (a,b)=>distance(a)-distance(b) || a.count-b.count || (a.code<b.code?-1:a.code>b.code?1:0);
+    function accept(state) {
+      if (!state.count || (mode==='subtract' && !state.anchor) || distance(state)>tolerance || known.has(state.code)) return;
+      if (best.length===capacity && compare(state,best[best.length-1])>=0) return;
+      let low=0,high=best.length;
+      while(low<high){const middle=(low+high)>>1;if(compare(best[middle],state)<0)low=middle+1;else high=middle;}
+      best.splice(low,0,state);known.add(state.code);
+      if(best.length>capacity)known.delete(best.pop().code);
+    }
+    function exhausted() {
+      if(examined>=maxStates){stopped='state-budget';return true;}
+      if(examined>=nextClockCheck){nextClockCheck=examined+256;if(Date.now()-started>=timeLimit){stopped='time-budget';return true;}}
+      return false;
+    }
+    // At most 20,000 cheap seeds for 100 rows: no prefix-only truncation.
+    for(let i=0;i<values.length;i++){
+      accept({sum:values[i],count:1,code:powers[i],anchor:true});examined++;
+      if(mode==='mixed'){accept({sum:-values[i],count:1,code:powers[i]<<1n,anchor:false});examined++;}
+      for(let j=0;j<i;j++){
+        if(mode!=='subtract'){accept({sum:values[j]+values[i],count:2,code:powers[j]|powers[i],anchor:true});examined++;}
+        if(mode!=='add'){
+          accept({sum:values[j]-values[i],count:2,code:powers[j]|(powers[i]<<1n),anchor:true});
+          accept({sum:-values[j]+values[i],count:2,code:(powers[j]<<1n)|powers[i],anchor:true});examined+=2;
+          if(mode==='mixed'){accept({sum:-values[j]-values[i],count:2,code:(powers[j]|powers[i])<<1n,anchor:false});examined++;}
+        }
+      }
+    }
+    function retain(candidates, step) {
+      candidates.sort(compare);
+      const counts=new Map(),diverse=[];
+      for(const state of candidates){
+        const key=state.sum+':'+Number(mode==='subtract'&&state.anchor),count=counts.get(key)||0;
+        if(count<4){counts.set(key,count+1);diverse.push(state);}
+      }
+      if(diverse.length<=width)return diverse;
+      const chosen=[],codes=new Set();
+      const take=state=>{if(!codes.has(state.code)&&chosen.length<width){codes.add(state.code);chosen.push(state);}};
+      // Keep the target-nearest states, partial progress, and spread-out sums. The
+      // latter two protect paths that need many inputs or later opposite signs.
+      for(let i=0;i<Math.floor(width/2);i++)take(diverse[i]);
+      const progress=target*step/values.length;
+      diverse.sort((a,b)=>Math.abs(a.sum-progress)-Math.abs(b.sum-progress)||compare(a,b));
+      for(let i=0;i<Math.floor(width/4);i++)take(diverse[i]);
+      diverse.sort((a,b)=>a.sum-b.sum||compare(a,b));
+      const spread=Math.floor(width/4);
+      for(let i=0;i<spread;i++)take(diverse[Math.floor(i*(diverse.length-1)/Math.max(1,spread-1))]);
+      for(const state of diverse){take(state);if(chosen.length===width)break;}
+      return chosen;
+    }
+    const natural=values.map((_,i)=>i);
+    for(const order of [natural,[...natural].reverse()]){
+      if(exhausted())break;
+      const remainingMin=Array(values.length+1).fill(0),remainingMax=Array(values.length+1).fill(0),remainingAbs=Array(values.length+1).fill(0);
+      for(let p=values.length-1;p>=0;p--){const value=values[order[p]];remainingMin[p]=remainingMin[p+1]+Math.min(0,value);remainingMax[p]=remainingMax[p+1]+Math.max(0,value);remainingAbs[p]=remainingAbs[p+1]+Math.abs(value);}
+      let frontier=[{sum:0,count:0,code:0n,anchor:false}];
+      for(let position=0;position<order.length;position++){
+        if(exhausted())break;
+        const index=order[position],value=values[index],next=position+1,candidates=[];
+        function consider(state){
+          examined++;accept(state);
+          let low,high;
+          if(mode==='add'){low=remainingMin[next];high=remainingMax[next];}
+          else if(mode==='subtract'&&state.anchor){low=-remainingMax[next];high=-remainingMin[next];}
+          else {low=-remainingAbs[next];high=remainingAbs[next];}
+          if(state.sum+high<target-tolerance||state.sum+low>target+tolerance)return;
+          candidates.push(state);
+        }
+        for(const state of frontier){
+          if(exhausted())break;
+          consider(state);
+          if(mode!=='subtract'||!state.anchor)consider({sum:state.sum+value,count:state.count+1,code:state.code|powers[index],anchor:true});
+          if(mode!=='add')consider({sum:state.sum-value,count:state.count+1,code:state.code|(powers[index]<<1n),anchor:state.anchor});
+        }
+        if(stopped)break;
+        // Always keep the empty prefix so late input rows can start a new path.
+        frontier=retain(candidates,next);
+        if(!frontier.some(state=>!state.count))frontier.push({sum:0,count:0,code:0n,anchor:false});
+      }
+      if(stopped)break;
+    }
+    const solutions=best.slice(0,limit).map(state=>{
+      const terms=[];
+      for(let index=0;index<values.length;index++){const digit=Number((state.code>>BigInt(index*2))&3n);if(digit)terms.push({index,sign:digit===1?1:-1});}
+      return {terms,total:state.sum||0,difference:(state.sum-target)||0};
+    });
+    return {solutions,truncated:best.length>limit,complete:false,totalMatches:null,limit,mode,tolerance,examined,poolSize:values.length,
+      strategy:'bounded',searchComplete:false,rankingGuaranteed:false,stopReason:stopped||'bounded-search',effort,elapsedMs:Math.max(0,Date.now()-started)};
+  }
+
   function solve(options) {
     if (!options || !Array.isArray(options.items)) throw new Error('請提供數字清單。');
-    const {items,target,mode='add',tolerance=Infinity,limit=100} = options;
+    const started=Date.now();
+    const {items,target,mode='add',tolerance=Infinity,limit=100,effort='standard'} = options;
+    if (!['standard','deep'].includes(effort)) throw new Error('請選擇標準或加強搜尋。');
     if (!Object.hasOwn(limits,mode)) throw new Error('請選擇加法、減法或加減混合模式。');
     if (!items.length) throw new Error('請先加入至少一筆數字。');
     if (items.length > limits[mode]) throw new Error((mode==='add'?'加法':mode==='subtract'?'減法':'加減混合')+'模式最多 '+limits[mode]+' 筆；請先縮小數字池。');
@@ -603,6 +756,7 @@ function createNumberPoolEngine() {
       if (!item || !Number.isSafeInteger(item.value) || Math.abs(item.value)>MAX_VALUE) throw new Error('第 '+(index+1)+' 筆數字超出範圍或精度不正確。');
       return item.value;
     });
+    if(values.length>exactLimits[mode])return solveBounded(values,target,mode,tolerance,limit,effort,started);
     const split=Math.floor(values.length/2), base=mode==='add'?2:3, factor=base**split;
     const left=enumerate(values.slice(0,split),mode),right=enumerate(values.slice(split),mode);
     const streams=mode==='subtract' ? [[left.zero,groupStates(right.one)],[left.one,groupStates(right.zero)]] : [[left.zero,groupStates(right.zero)]];
@@ -633,9 +787,10 @@ function createNumberPoolEngine() {
       for(let index=0;index<values.length;index++){const digit=code%base;code=Math.floor(code/base);if(digit)terms.push({index,sign:digit===1?1:-1});}
       solutions.push({terms,total:n.total,difference:n.total-target});
     }
-    return {solutions,truncated,complete:!truncated,totalMatches:truncated?null:solutions.length,limit,mode,tolerance,examined,poolSize:items.length};
+    return {solutions,truncated,complete:!truncated,totalMatches:truncated?null:solutions.length,limit,mode,tolerance,examined,poolSize:items.length,
+      strategy:'exact',searchComplete:true,rankingGuaranteed:true,stopReason:truncated?'display-limit':'complete',effort,elapsedMs:Math.max(0,Date.now()-started)};
   }
-  return Object.freeze({SCALE,MAX_VALUE,limits,parseNumber,parseLines,format,solve});
+  return Object.freeze({SCALE,MAX_VALUE,limits,exactLimits,parseNumber,parseLines,format,solve});
 }
 const NumberPoolEngine = createNumberPoolEngine();
 if (typeof module !== 'undefined' && module.exports) module.exports = {createNumberPoolEngine,NumberPoolEngine};
@@ -690,7 +845,11 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
     const count = [...rows.children].filter(row => row.querySelector('.pool-value').value.trim() || row.querySelector('.pool-name').value).length;
     $('poolCount').textContent = count + ' 筆';
     $('poolLimits').textContent = modes[mode].name + '最多 ' + E.limits[mode] + ' 筆；每個數字絕對值上限 10 億，最多 4 位小數。相同金額仍視為不同筆資料。';
-    $('poolAddBtn').disabled = rows.children.length >= 32;
+    $('poolAddBtn').disabled = rows.children.length >= 100;
+    const exactLimit = E.exactLimits[mode];
+    const partial = count > exactLimit;
+    $('poolSearchScope').dataset.partial = String(partial);
+    $('poolSearchScope').textContent = partial ? '目前 ' + count + ' 筆，將搜尋部分組合。每個結果仍精確核算；可能有其他組合未找到，也不保證已找到最接近的組合。' : modes[mode].name + ' ' + exactLimit + ' 筆以內保留完整排序搜尋；超過時改搜尋部分組合。搜尋強度只影響大清單。';
     [...rows.children].forEach((row,index) => {
       row.querySelector('.pool-name').setAttribute('aria-label', '第 ' + (index+1) + ' 筆名稱或說明');
       row.querySelector('.pool-value').setAttribute('aria-label', '第 ' + (index+1) + ' 筆數字');
@@ -735,7 +894,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
     }
     if (!parsed.items.length) {feedback.textContent = '請先貼上至少一筆數字。';return;}
     const existing = [...rows.children].filter(row => row.querySelector('.pool-value').value.trim() || row.querySelector('.pool-name').value);
-    if (existing.length + parsed.items.length > 32) {feedback.textContent = '清單最多保留 32 筆。此次未匯入，請先縮小資料範圍。';return;}
+    if (existing.length + parsed.items.length > 100) {feedback.textContent = '清單最多保留 100 筆。此次未匯入，請先縮小資料範圍。';return;}
     [...rows.children].filter(row => !existing.includes(row)).forEach(row => row.remove());
     parsed.items.forEach(item => addRow(item.name, E.format(item.value)));
     invalidate();
@@ -755,8 +914,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
       catch(error) {throw new Error('第 ' + (index+1) + ' 筆：' + error.message);}
     });
     if (!items.length) throw new Error('請先加入至少一筆數字。');
-    if (items.length > E.limits[mode]) throw new Error(modes[mode].name + '模式最多 ' + E.limits[mode] + ' 筆，目前有 ' + items.length + ' 筆。請縮小清單或切換模式。');
-    return {items, target, tolerance, mode, limit:100};
+    if (items.length > E.limits[mode]) throw new Error(modes[mode].name + '模式最多 ' + E.limits[mode] + ' 筆，目前有 ' + items.length + ' 筆。請移除多餘資料。');
+    return {items, target, tolerance, mode, limit:100, effort:$('poolEffort').value};
   }
   function termsFor(solution, data) {
     return data.mode === 'subtract' ? [...solution.terms].sort((a,b) => b.sign-a.sign || a.index-b.index) : solution.terms;
@@ -777,8 +936,13 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
     [[E.format(data.target),'目標數字'],[String(result.solutions.length),'顯示組合'],[String(exact),'其中完全符合']].forEach(([value,label]) => {
       const item = el('div'); item.append(el('strong','',value), el('span','',label)); $('poolSummary').append(item);
     });
-    status(result.truncated ? '符合範圍的組合超過 100 組，目前顯示最接近目標的 100 組；同差額優先顯示筆數較少的組合。可縮小差額或清單再搜尋。' : '已比對完成，共 ' + result.solutions.length + ' 組' + (data.tolerance === Infinity ? '（不限差額）' : '符合 ±' + E.format(data.tolerance) + ' 的範圍') + '。依差額由小到大排列，同差額優先顯示筆數較少的組合。');
-    if (!result.solutions.length) {resultBox.append(el('p','pool-no-results','這個範圍內沒有組合。試著放寬「允許差額」，或檢查目標與清單。'));return;}
+    const partial = result.searchComplete === false || result.rankingGuaranteed === false;
+    if (partial) {
+      status('部分搜尋：已搜尋 ' + data.items.length + ' 筆資料的部分組合，顯示已找到的 ' + result.solutions.length + ' 組。' + (result.truncated ? '已找到超過 100 組，先顯示其中差額較小的 100 組。' : '') + '可能有其他組合未找到，不保證已找到最接近的組合。可用加強搜尋，或縮小清單後再試。', 'partial');
+    } else {
+      status(result.truncated ? '符合範圍的組合超過 100 組，目前顯示最接近目標的 100 組；同差額優先顯示筆數較少的組合。可縮小差額或清單再搜尋。' : '已比對完成，共 ' + result.solutions.length + ' 組' + (data.tolerance === Infinity ? '（不限差額）' : '符合 ±' + E.format(data.tolerance) + ' 的範圍') + '。依差額由小到大排列，同差額優先顯示筆數較少的組合。');
+    }
+    if (!result.solutions.length) {resultBox.append(el('p','pool-no-results',partial ? '目前尚未找到符合組合，不代表沒有。可改用加強搜尋、放寬差額，或縮小清單再試。' : '這個範圍內沒有組合。試著放寬「允許差額」，或檢查目標與清單。'));return;}
     const groups = new Map();
     result.solutions.forEach(solution => {
       const diff = Math.abs(solution.difference);
@@ -847,7 +1011,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
   $('poolExportBtn').addEventListener('click', () => {
     if (!latest) return;
     const {result,data} = latest;
-    const lines = ['數字池結果','模式：' + modes[data.mode].name,'目標：' + E.format(data.target),'允許差額：' + (data.tolerance === Infinity ? '不限' : '±' + E.format(data.tolerance)),result.truncated ? '顯示最接近的 100 組，符合範圍的組合尚未全部列出。' : '範圍內全部 ' + result.solutions.length + ' 組。',''];
+    const lines = ['數字池結果','模式：' + modes[data.mode].name,'目標：' + E.format(data.target),'允許差額：' + (data.tolerance === Infinity ? '不限' : '±' + E.format(data.tolerance)),result.searchComplete === false || result.rankingGuaranteed === false ? '部分搜尋：僅列出已找到的組合，可能有其他組合未找到，不保證已找到最接近的組合。' + (result.truncated ? '已找到超過 100 組，僅顯示其中差額較小的 100 組。' : '') : result.truncated ? '顯示最接近的 100 組，符合範圍的組合尚未全部列出。' : '範圍內全部 ' + result.solutions.length + ' 組。',''];
     result.solutions.forEach((solution,index) => {
       lines.push('組合 ' + (index+1) + '｜' + (solution.difference === 0 ? '完全符合' : '差 ' + E.format(Math.abs(solution.difference)) + '（合計 − 目標：' + signed(solution.difference) + '）'), expression(solution,data) + ' = ' + E.format(solution.total));
       termsFor(solution,data).forEach(term => {const item = data.items[term.index];lines.push((term.sign>0?'+ ':'− ') + E.format(item.value) + '｜' + (item.name || '未填名稱') + '（清單第 ' + item.row + ' 筆）');});
@@ -859,7 +1023,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
   rows.addEventListener('input', invalidate);
   [$('poolTarget'),$('poolTolerance')].forEach(input => input.addEventListener('input',invalidate));
   document.querySelectorAll('[data-pool-mode]').forEach(button => button.addEventListener('click',() => setMode(button.dataset.poolMode)));
-  $('poolAddBtn').addEventListener('click',() => {if (rows.children.length >= 32) return; addRow('','',true); invalidate();});
+  $('poolAddBtn').addEventListener('click',() => {if (rows.children.length >= 100) return; addRow('','',true); invalidate();});
   $('poolClearBtn').addEventListener('click',() => {
     if ([...rows.children].some(row => row.querySelector('.pool-value').value || row.querySelector('.pool-name').value) && !confirm('清空數字清單？貼上區的原文會保留。')) return;
     invalidate(); rows.replaceChildren(); addRow('','',true); updateCount();
@@ -867,19 +1031,22 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
   $('poolDelimiter').addEventListener('change',() => {$('poolCustomWrap').hidden = $('poolDelimiter').value !== 'custom'; $('poolImportStatus').textContent = '';});
   $('poolImportBtn').addEventListener('click',importLines);
   $('poolSearchBtn').addEventListener('click',search);
+  $('poolEffort').addEventListener('change',invalidate);
   $('poolCancelBtn').addEventListener('click',() => {stop(); status('已取消搜尋，輸入內容已保留。');});
   resultBox.addEventListener('click',event => {if (event.target.closest('#poolExampleBtn')) loadExample();});
   document.querySelectorAll('[data-workspace-go]').forEach(button => button.addEventListener('click',() => {
     const target = button.dataset.workspaceGo;
-    document.querySelector('[data-panel="' + (target === 'poolPanel' ? target : 'generalPanel') + '"]').click();
-    if (target !== 'poolPanel') {$(target).open = true; $(target).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); $(target).querySelector('summary').focus({preventScroll:true});}
-    else $('poolTarget').focus();
+    const isPanel = $(target).classList.contains('panel');
+    document.querySelector('[data-panel="' + (isPanel ? target : 'generalPanel') + '"]').click();
+    if (!isPanel) {$(target).open = true; $(target).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); $(target).querySelector('summary').focus({preventScroll:true});}
+    else $(target === 'poolPanel' ? 'poolTarget' : 'dateDiffStart').focus();
   }));
   const navButtons = [...document.querySelectorAll('.mode-switch button')];
   navButtons.forEach((button,index) => {
     button.setAttribute('aria-controls',button.dataset.panel); button.setAttribute('aria-pressed',String(button.classList.contains('active')));
     button.addEventListener('click',() => {
       navButtons.forEach(nav => nav.setAttribute('aria-pressed',String(nav === button)));
+      if (matchMedia('(max-width: 1280px)').matches) button.scrollIntoView({block:'nearest',inline:'nearest'});
       if (button.dataset.panel === 'poolPanel') rows.querySelectorAll('.pool-name').forEach(input => {input.style.height='auto';input.style.height=Math.max(46,input.scrollHeight+2)+'px';});
     });
     button.addEventListener('keydown',event => {
@@ -893,8 +1060,171 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createNum
 })();
 </script>
 <!-- NUMBER_POOL_SCRIPT_END -->
+<!-- DATE_TOOLS_SCRIPT_BEGIN -->
+<script>
+/* Gregorian date-only calculations, independent of the browser time zone. */
+function createDateToolsEngine() {
+  'use strict';
+  const DAY_MS = 86400000, MAX_OFFSET = 100000;
+
+  function parseDate(value) {
+    const text = typeof value === 'string' ? value.trim() : '';
+    if (!text) throw new Error('請填入日期。');
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+    if (!match) throw new Error('日期請使用 YYYY-MM-DD 格式。');
+    const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
+    if (year < 1 || year > 9999) throw new Error('年份須介於 0001 至 9999。');
+    // Date.UTC treats years 0–99 as 1900–1999. setUTCFullYear preserves the actual year.
+    const date = new Date(0);
+    date.setUTCHours(0, 0, 0, 0);
+    date.setUTCFullYear(year, month - 1, day);
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+      throw new Error('這個日期不存在，請檢查月份、天數及閏年。');
+    }
+    return date.getTime() / DAY_MS;
+  }
+  const MIN_DAY = parseDate('0001-01-01'), MAX_DAY = parseDate('9999-12-31');
+  function checkedDay(day) {
+    if (!Number.isSafeInteger(day) || day < MIN_DAY || day > MAX_DAY) throw new Error('計算後日期超出 0001-01-01 至 9999-12-31 的範圍。');
+    return day;
+  }
+  function formatDate(day) {
+    const date = new Date(checkedDay(day) * DAY_MS);
+    return String(date.getUTCFullYear()).padStart(4, '0') + '-' + String(date.getUTCMonth() + 1).padStart(2, '0') + '-' + String(date.getUTCDate()).padStart(2, '0');
+  }
+  function weekday(day) {return ((checkedDay(day) + 4) % 7 + 7) % 7;}
+  function isBusinessDay(day) {const index = weekday(day);return index !== 0 && index !== 6;}
+  function checkMode(mode) {if (mode !== 'calendar' && mode !== 'business') throw new Error('請選擇日曆天或排除週末。');}
+  function readDate(label, value) {
+    try {return parseDate(value);} catch (error) {throw new Error(label + '：' + error.message);}
+  }
+  function parseOffset(value) {
+    const text = typeof value === 'number' ? String(value) : typeof value === 'string' ? value.trim() : '';
+    if (!text) throw new Error('請填入要加減的天數。');
+    if (!/^[+-]?\d+$/.test(text)) throw new Error('加減天數須為整數，例如 30、-7 或 0。');
+    const amount = Number(text);
+    if (!Number.isSafeInteger(amount) || Math.abs(amount) > MAX_OFFSET) throw new Error('加減天數須介於 -100,000 至 100,000。');
+    return amount === 0 ? 0 : amount;
+  }
+  function difference(options) {
+    const {start, end, mode = 'calendar', includeStart = false} = options || {};
+    checkMode(mode);
+    if (typeof includeStart !== 'boolean') throw new Error('是否包含起日須為勾選狀態。');
+    const first = readDate('起始日期', start), last = readDate('結束日期', end);
+    const direction = last < first ? -1 : 1, length = Math.abs(last - first);
+    let count = length;
+    if (mode === 'business') {
+      // Any consecutive seven-day block contains five weekdays, in either direction.
+      const weeks = Math.floor(length / 7);
+      count = weeks * 5;
+      for (let i = 1; i <= length % 7; i++) if (isBusinessDay(first + direction * (weeks * 7 + i))) count++;
+    }
+    if (includeStart && (mode === 'calendar' || isBusinessDay(first))) count++;
+    const calendarCount = length + (includeStart ? 1 : 0);
+    return {
+      start:formatDate(first), end:formatDate(last), mode, includeStart,
+      direction, days:count ? direction * count : 0,
+      calendarDays:calendarCount ? direction * calendarCount : 0,
+      excludedWeekendDays:mode === 'business' ? calendarCount - count : 0
+    };
+  }
+  function shift(options) {
+    const {start, amount, mode = 'calendar'} = options || {};
+    checkMode(mode);
+    const first = readDate('起始日期', start), offset = parseOffset(amount);
+    const direction = offset < 0 ? -1 : 1;
+    let day = first;
+    if (mode === 'calendar') day = checkedDay(first + offset);
+    else {
+      let remaining = Math.abs(offset);
+      // A weekend start does not itself count as a workday. Zero always preserves it.
+      while (remaining && !isBusinessDay(day)) {
+        day = checkedDay(day + direction);
+        if (isBusinessDay(day)) remaining--;
+      }
+      if (remaining) {
+        const weeks = Math.floor(remaining / 5);
+        day = checkedDay(day + direction * weeks * 7);
+        remaining %= 5;
+        while (remaining) {
+          day = checkedDay(day + direction);
+          if (isBusinessDay(day)) remaining--;
+        }
+      }
+    }
+    return {
+      start:formatDate(first), date:formatDate(day), amount:offset, mode,
+      weekday:weekday(day), calendarDays:day - first,
+      excludedWeekendDays:mode === 'business' ? Math.abs(day - first) - Math.abs(offset) : 0
+    };
+  }
+  return Object.freeze({MIN_DAY, MAX_DAY, MAX_OFFSET, parseDate, formatDate, weekday, isBusinessDay, parseOffset, difference, shift});
+}
+const DateToolsEngine = createDateToolsEngine();
+if (typeof module !== 'undefined' && module.exports) module.exports = {createDateToolsEngine, DateToolsEngine};
+
+/* Date tools: all displayed strings are text nodes; no runtime dependencies. */
+(() => {
+  'use strict';
+  const E = DateToolsEngine, $ = id => document.getElementById(id);
+  const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function number(value) {return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',').replace('-', '−');}
+  function reset(result) {
+    result.dataset.state = 'stale';
+    result.replaceChildren(element('p','date-result-stale','日期或條件已變更，請重新計算。'));
+  }
+  function error(result, message) {
+    result.dataset.state = 'error';
+    result.replaceChildren(element('p','date-result-error',message));
+  }
+  function calculateDifference(event) {
+    event.preventDefault();
+    const result = $('dateDiffResult');
+    try {
+      const data = E.difference({start:$('dateDiffStart').value,end:$('dateDiffEnd').value,mode:$('dateDiffMode').value,includeStart:$('dateDiffIncludeStart').checked});
+      const figure = element('p','date-result-number',number(data.days));
+      figure.append(element('span','',data.mode === 'business' ? '個工作日' : '天'));
+      const detail = data.start + ' → ' + data.end + '\n' + (data.includeStart ? '含起日與結束日' : '不含起日，含結束日') + (data.direction < 0 ? '；倒算，以負數表示。' : '。');
+      result.dataset.state = 'success';
+      result.replaceChildren(element('p','date-result-label',data.mode === 'business' ? '排除週末後的天數' : '相差日曆天數'),figure,element('p','date-result-detail',detail));
+      if (data.mode === 'business') result.append(element('p','date-result-detail','已略過 ' + number(data.excludedWeekendDays) + ' 個週末日；只計週一至週五，未排除國定假日。'));
+      if (data.start === data.end && data.days === 0) result.append(element('p','date-result-detail',data.includeStart ? '起日是週末，因此工作日為 0。' : '起日與結束日相同，不含起日時為 0 天。'));
+    } catch (exception) {error(result,exception.message);}
+  }
+  function calculateShift(event) {
+    event.preventDefault();
+    const result = $('dateShiftResult');
+    try {
+      const data = E.shift({start:$('dateShiftStart').value,amount:$('dateShiftAmount').value,mode:$('dateShiftMode').value});
+      let operation = data.amount > 0 ? '往後加 ' + number(data.amount) : data.amount < 0 ? '往前減 ' + number(-data.amount) : '加減 0';
+      operation += data.mode === 'business' ? ' 個工作日' : ' 天';
+      result.dataset.state = 'success';
+      result.replaceChildren(element('p','date-result-label','推算日期'),element('p','date-result-number date-result-date',data.date),element('p','date-result-weekday',weekdays[data.weekday]),element('p','date-result-detail',data.start + '，' + operation + '。'));
+      if (data.amount === 0) result.append(element('p','date-result-detail','0 天保留原日期，週末起日也不會自動順延。'));
+      else if (data.mode === 'business') result.append(element('p','date-result-detail','實際跨越 ' + number(Math.abs(data.calendarDays)) + ' 個日曆天，略過 ' + number(data.excludedWeekendDays) + ' 個週末日；未排除國定假日。'));
+    } catch (exception) {error(result,exception.message);}
+  }
+  const now = new Date();
+  // Browser-local calendar date, not UTC's possibly different day.
+  const today = String(now.getFullYear()).padStart(4, '0') + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  ['dateDiffStart','dateDiffEnd','dateShiftStart'].forEach(id => {$(id).value = today;});
+  [['dateDiffForm','dateDiffResult',calculateDifference],['dateShiftForm','dateShiftResult',calculateShift]].forEach(([formId,resultId,handler]) => {
+    const form = $(formId);
+    form.addEventListener('submit',handler);
+    form.addEventListener('input',() => reset($(resultId)));
+    form.addEventListener('change',() => reset($(resultId)));
+  });
+})();
+</script>
+<!-- DATE_TOOLS_SCRIPT_END -->
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.3.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.4.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

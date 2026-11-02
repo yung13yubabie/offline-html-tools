@@ -63,7 +63,7 @@ check('signed distance, exact decimal totals and empty pool semantics',()=>{
 });
 check('hard input and result bounds provide explicit errors',()=>{
  for(const [mode,max] of Object.entries(E.limits))assert.throws(()=>E.solve({items:items(Array(max+1).fill(1)),target:1,mode}));
- for(const options of [{mode:'unknown'},{mode:'toString'},{target:0.5},{tolerance:-1},{tolerance:NaN},{limit:0},{limit:1001},{items:[{value:0.1}]}])assert.throws(()=>E.solve({items:items([1]),target:0,...options}));
+ for(const options of [{mode:'unknown'},{mode:'toString'},{target:0.5},{tolerance:-1},{tolerance:NaN},{limit:0},{limit:1001},{effort:'unlimited'},{items:[{value:0.1}]}])assert.throws(()=>E.solve({items:items([1]),target:0,...options}));
 });
 let seed=27031;
 function next(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed;}
@@ -92,12 +92,96 @@ check('factory is standalone for a worker and shares no captured module state',(
  const vm=require('node:vm'),factory=vm.runInNewContext('('+createNumberPoolEngine.toString()+')');const independent=factory();
  assert.equal(independent.parseNumber('12.3456'),123456);assert.equal(independent.solve({items:[{value:1}],target:1,tolerance:0}).solutions[0].difference,0);
 });
-check('upper supported row counts return bounded, correctly ranked output',()=>{
- for(const [mode,max] of Object.entries(E.limits)){
+check('exact thresholds retain original globally ranked output',()=>{
+ for(const [mode,max] of Object.entries(E.exactLimits)){
   const rows=items(Array.from({length:max},(_,i)=>i+1));const result=E.solve({items:rows,target:E.parseNumber(20),mode,tolerance:E.parseNumber(1),limit:5});
+  assert.equal(result.strategy,'exact');assert(result.searchComplete);assert(result.rankingGuaranteed);
   assert.equal(result.solutions.length,5);assert(result.truncated);assert.equal(result.solutions[0].difference,0);assert.equal(result.solutions[0].terms.length,1);
   for(const s of result.solutions){assert.equal(s.total,s.terms.reduce((sum,t)=>sum+rows[t.index].value*t.sign,0));assert.equal(new Set(s.terms.map(t=>t.index)).size,s.terms.length);}
  }
+});
+function validateLarge(result, rows, target, mode, tolerance) {
+ assert.equal(result.strategy,'bounded');assert.equal(result.searchComplete,false);assert.equal(result.rankingGuaranteed,false);
+ assert.equal(result.complete,false);assert.equal(result.totalMatches,null);assert.equal(result.poolSize,100);
+ assert(Number.isFinite(result.elapsedMs)&&result.elapsedMs>=0);assert(result.examined<=2200010);
+ assert(['bounded-search','state-budget','time-budget'].includes(result.stopReason));
+ const identities=new Set();
+ for(const solution of result.solutions){
+  assert(solution.terms.length>0);const seen=new Set();
+  for(const term of solution.terms){assert(Number.isInteger(term.index)&&term.index>=0&&term.index<rows.length);assert([1,-1].includes(term.sign));assert(!seen.has(term.index));seen.add(term.index);}
+  if(mode==='add')assert(solution.terms.every(term=>term.sign===1));
+  if(mode==='subtract')assert.equal(solution.terms.filter(term=>term.sign===1).length,1);
+  assert.equal(solution.total,solution.terms.reduce((sum,term)=>sum+rows[term.index].value*term.sign,0));
+  assert(Number.isSafeInteger(solution.total));assert.equal(solution.difference,solution.total-target);assert(Math.abs(solution.difference)<=tolerance);
+  const key=solution.terms.map(term=>term.index+':'+term.sign).join(',');assert(!identities.has(key));identities.add(key);
+ }
+ for(let i=1;i<result.solutions.length;i++){
+  const previous=result.solutions[i-1],current=result.solutions[i];
+  assert(Math.abs(previous.difference)<=Math.abs(current.difference));
+  if(Math.abs(previous.difference)===Math.abs(current.difference))assert(previous.terms.length<=current.terms.length);
+ }
+}
+check('100-row support covers end-of-list singletons and pairs in all three modes',()=>{
+ assert.deepEqual(E.limits,{add:100,subtract:100,mixed:100});
+ const rows=items(Array.from({length:100},(_,i)=>i===99?667:i===98?333:10000+i));const before=JSON.stringify(rows);
+ for(const mode of ['add','subtract','mixed']){
+  const target=E.parseNumber(mode==='subtract'?-334:1000),result=E.solve({items:rows,target,mode,tolerance:0});
+  validateLarge(result,rows,target,mode,0);
+  assert(result.solutions.some(solution=>solution.terms.length===2&&solution.terms[0].index===98&&solution.terms[1].index===99));
+  const single=E.solve({items:rows,target:E.parseNumber(667),mode,tolerance:0});
+  assert(single.solutions.some(solution=>solution.terms.length===1&&solution.terms[0].index===99&&solution.terms[0].sign===1));
+ }
+ assert.equal(JSON.stringify(rows),before,'Searching must never modify names, values or source identity');
+});
+check('100-row search finds genuine three-term combinations beyond single/pair seeding',()=>{
+ for(const mode of ['add','subtract','mixed']){
+  const rows=items(Array(97).fill(10000).concat(mode==='subtract'?[100,31,59]:[311,337,352]));
+  const target=E.parseNumber(mode==='subtract'?10:1000),result=E.solve({items:rows,target,mode,tolerance:0});
+  validateLarge(result,rows,target,mode,0);
+  assert(result.solutions.some(solution=>solution.terms.length===3&&solution.terms.map(term=>term.index).join(',')==='97,98,99'));
+  assert(result.solutions.every(solution=>solution.terms.length>=3),'Fixture has no valid one/two-term result');
+ }
+});
+check('partial no-result searches never claim a complete impossibility result',()=>{
+ const rows=items(Array.from({length:100},(_,i)=>(i+1)*2));
+ for(const mode of ['add','subtract','mixed']){
+  const result=E.solve({items:rows,target:E.parseNumber(1),mode,tolerance:0});validateLarge(result,rows,E.parseNumber(1),mode,0);
+  assert.deepEqual(result.solutions,[]);assert.equal(result.truncated,false);assert.equal(result.complete,false);assert.equal(result.totalMatches,null);
+ }
+});
+check('large zeros and duplicate amounts keep distinct source terms and display truncation separate',()=>{
+ const rows=items(Array(100).fill(0));
+ for(const mode of ['add','subtract','mixed']){
+  const result=E.solve({items:rows,target:0,mode,tolerance:0,limit:5});validateLarge(result,rows,0,mode,0);
+  assert.equal(result.solutions.length,5);assert.equal(result.truncated,true);assert(result.solutions.every(solution=>solution.terms.length===1));
+  assert(new Set(result.solutions.map(solution=>solution.terms[0].index)).size>=3);
+ }
+});
+check('large signed four-decimal amounts and near matches retain exact arithmetic',()=>{
+ const rows=items(Array(97).fill(10000).concat([-0.1,0.2,0.0001])),target=E.parseNumber(0.1001),tolerance=E.parseNumber(0.0001);
+ for(const mode of ['add','subtract','mixed']){
+  const result=E.solve({items:rows,target,mode,tolerance});validateLarge(result,rows,target,mode,tolerance);
+  if(mode!=='subtract')assert(result.solutions.some(solution=>solution.total===1001&&solution.terms.length===3));
+ }
+});
+check('large maximum magnitudes stay within safe integer totals',()=>{
+ const rows=items(Array(100).fill(1000000000));
+ const result=E.solve({items:rows,target:E.parseNumber(1000000000),mode:'mixed',tolerance:Infinity,limit:7});
+ validateLarge(result,rows,E.parseNumber(1000000000),'mixed',Infinity);assert.equal(result.solutions.length,7);
+});
+check('standard/deep settings are reproducible on bounded fixtures and report effort',()=>{
+ const rows=items(Array(97).fill(10000).concat([311,337,352])),target=E.parseNumber(1000);
+ const standard=E.solve({items:rows,target,mode:'add',tolerance:0}),again=E.solve({items:rows,target,mode:'add',tolerance:0}),deep=E.solve({items:rows,target,mode:'add',tolerance:0,effort:'deep'});
+ assert.deepEqual(standard.solutions,again.solutions);assert.equal(standard.effort,'standard');assert.equal(deep.effort,'deep');
+ validateLarge(deep,rows,target,'add',0);assert(deep.solutions.some(solution=>solution.difference===0));
+});
+check('clock cutoff returns already-found seeds with explicit partial metadata',()=>{
+ const vm=require('node:vm');let clock=0;
+ const factory=vm.runInNewContext('('+createNumberPoolEngine.toString()+')',{Date:{now:()=>clock+=250}}),engine=factory();
+ const rows=items(Array.from({length:100},(_,i)=>i===99?667:i===98?333:10000+i));
+ const result=engine.solve({items:rows,target:E.parseNumber(1000),mode:'mixed',tolerance:0});
+ assert.equal(result.stopReason,'time-budget');assert.equal(result.searchComplete,false);assert.equal(result.rankingGuaranteed,false);
+ assert(result.solutions.some(solution=>solution.terms.length===2&&solution.terms[0].index===98&&solution.terms[1].index===99));
 });
 check('standalone download contains the current engine, UI, markup and styles',()=>{
  const {spawnSync}=require('node:child_process'),path=require('node:path');
