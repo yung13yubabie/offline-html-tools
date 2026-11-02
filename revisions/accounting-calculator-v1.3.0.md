@@ -51,4 +51,4 @@
 
 ## 驗證範圍
 
-[數字池核心測試](../tests/calculator-number-pool.cjs)涵蓋輸入解析、三種模式、精度、列身分與結果排序等行為。本機 Chromium localhost HTTP 的 43 組檢查已通過，封鎖外部網路。正式離線驗證另以實際交付 HTML 在 GitHub CI 的 `file://` 下確認模式切換、匯入、搜尋與取消、結果群組、舊結果清除、窄視窗及既有計算功能；測試紀錄見 [TEST_REPORT.md](../TEST_REPORT.md)。先前 ui.1 的 42 組通過紀錄不包含這次新增功能。
+[數字池核心測試](../tests/calculator-number-pool.cjs)涵蓋輸入解析、三種模式、精度、列身分與結果排序等行為。本機 Chromium localhost HTTP 的 43 組檢查已通過，封鎖外部網路。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41388709232) 也以實際交付 HTML 在 `file://` 下完成 43 組檢查，全部通過，涵蓋模式切換、匯入、搜尋與取消、結果群組、舊結果清除、窄視窗及既有計算功能；測試紀錄見 [TEST_REPORT.md](../TEST_REPORT.md)。先前 ui.1 的 42 組通過紀錄不包含這次新增功能。

@@ -66,7 +66,7 @@
 
 ## 驗證與使用範圍
 
-v1.3.0 已通過本機 localhost HTTP 的 **43 組 Chromium 檢查**、15 項數字池純邏輯檢查（含 180 組獨立窮舉比對），以及原有純回歸與標註合成檢查。本機環境限制直接開啟 `file://`，正式離線開檔另由 GitHub CI 驗證。
+v1.3.0 已通過本機 localhost HTTP 的 **43 組 Chromium 檢查**、15 項數字池純邏輯檢查（含 180 組獨立窮舉比對），以及原有純回歸與標註合成檢查。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41388709232) 同樣完成 **43 組 `file://` 直接開檔檢查，全數通過**。
 
 先前 ui.1 修訂已通過 [42 組 Chromium file:// 離線檢查](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41373364685)、本機 localhost HTTP 的 42 組檢查，以及既有純回歸與標註合成檢查。這是 ui.1 的歷史紀錄，不包含 v1.3.0 新增的數字池。測試使用人工資料；具體範圍見 [檢查紀錄](TEST_REPORT.md)、[計算機 v1.3.0](revisions/accounting-calculator-v1.3.0.md) 與 [UI 修訂驗證](revisions/ui-floating-review.md)。
 
