@@ -1,0 +1,38 @@
+<section id="poolPanel" class="panel" data-review-id="accounting-calculator-poolPanel" data-review-name="數字池">
+  <div class="workspace-heading"><div><p class="workspace-kicker">找組合 · 核對差額</p><h1>數字池</h1><p>給一個目標，從清單找出可能的組合。名稱會跟著每一筆數字保留。</p></div><span class="local-badge">本機計算</span></div>
+  <div class="pool-layout">
+    <div class="pool-input-column">
+      <section class="pool-card pool-target-card" data-review-id="accounting-calculator-poolTarget" data-review-name="數字池目標與模式">
+        <div class="pool-section-heading"><span class="step-label">01</span><h2>設定目標</h2></div>
+        <label class="pool-label" for="poolTarget">目標數字</label><input id="poolTarget" class="pool-target" inputmode="decimal" placeholder="例如 1,000" autocomplete="off">
+        <div class="pool-modes" role="group" aria-label="數字池計算模式"><button type="button" data-pool-mode="add" aria-pressed="true"><b>＋</b>加法</button><button type="button" data-pool-mode="subtract" aria-pressed="false"><b>−</b>減法</button><button type="button" data-pool-mode="mixed" aria-pressed="false"><b>±</b>混合</button></div>
+        <p id="poolModeHelp" class="pool-help">從清單挑選數字相加，每筆最多使用一次。</p>
+        <div class="pool-tolerance"><label class="pool-label" for="poolTolerance">允許差額 ±<input id="poolTolerance" inputmode="decimal" value="2" placeholder="不限" autocomplete="off"></label><p class="pool-help">填 0 只找完全符合；填 2 同時找差 1、差 2 等組合。留空不限制差額。</p></div>
+      </section>
+      <section class="pool-card" data-review-id="accounting-calculator-poolEntries" data-review-name="數字池數字與名稱清單">
+        <div class="pool-section-heading"><span class="step-label">02</span><h2>放入數字</h2><span id="poolCount" class="pool-count">0 筆</span></div>
+        <details class="pool-import"><summary>貼上多筆資料 <span>選擇分隔符號</span></summary>
+          <label class="pool-label" for="poolDelimiter">名稱與數字之間的符號</label><select id="poolDelimiter"><option value="｜">｜ 全形直線</option><option value="|">| 半形直線</option><option value="tab">Tab（試算表兩欄）</option><option value=",">, 逗號</option><option value=";">; 分號</option><option value="custom">自訂符號</option></select>
+          <label id="poolCustomWrap" class="pool-label" hidden for="poolCustomDelimiter">自訂分隔符號<input id="poolCustomDelimiter" maxlength="10" placeholder="例如：：或 /"></label>
+          <label class="pool-label" for="poolPaste">每行一筆；只有數字也可以</label><textarea id="poolPaste" rows="5" maxlength="40000" placeholder="貨款 A｜600&#10;貨款 B｜400&#10;250"></textarea>
+          <button type="button" class="btn" id="poolImportBtn">加入下方清單</button><p class="pool-help">匯入會新增資料，保留現有列與貼上的原文。依分隔符號辨識名稱與數字；名稱中的其他符號會保留。</p>
+          <div id="poolImportStatus" class="pool-inline-status" role="status"></div>
+        </details>
+        <div class="pool-row-head" aria-hidden="true"><span>名稱／說明（選填）</span><span>數字</span><span></span></div>
+        <div id="poolRows"></div>
+        <div class="pool-row-actions"><button type="button" class="btn" id="poolAddBtn">＋ 新增一筆</button><button type="button" class="btn pool-quiet" id="poolClearBtn">清空清單</button></div>
+        <p class="pool-help" id="poolLimits">最多 32 筆，支援正負數及 4 位小數。相同金額仍視為不同筆資料。</p>
+        <div class="pool-search-actions"><button type="button" class="btn primary" id="poolSearchBtn">找出組合 <span aria-hidden="true">→</span></button><button type="button" class="btn" id="poolCancelBtn" hidden>取消搜尋</button></div>
+      </section>
+    </div>
+    <section class="pool-card pool-results-card" data-review-id="accounting-calculator-poolResults" data-review-name="數字池組合與差額結果" aria-labelledby="poolResultsTitle">
+      <div class="pool-section-heading"><span class="step-label">03</span><h2 id="poolResultsTitle">組合結果</h2><button type="button" id="poolExportBtn" class="btn small" disabled>匯出 TXT</button></div>
+      <p id="poolStatus" class="pool-status" role="status" aria-live="polite">先輸入目標與數字，或載入範例試試看。</p>
+      <div id="poolBusy" class="pool-busy" hidden><span class="pool-spinner" aria-hidden="true"></span><span>正在比對組合…可隨時取消</span></div>
+      <div id="poolSummary" class="pool-summary" hidden></div>
+      <div id="poolResults">
+        <div class="pool-empty"><div class="pool-example-equation"><span>600</span><i>＋</i><span>400</span><i>＝</i><strong>1,000</strong></div><h3>從目標，找到可能的組合</h3><p>完全符合與有差額的結果分組整理，每一筆名稱都會完整保留。</p><button type="button" class="btn" id="poolExampleBtn">載入這組範例</button></div>
+      </div>
+    </section>
+  </div>
+</section>

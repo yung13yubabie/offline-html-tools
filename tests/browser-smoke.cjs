@@ -6,6 +6,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
+const calculatorPool=require('./calculator-pool.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
 const BASE=process.env.OFFLINE_TEST_BASE_URL||'';
@@ -229,6 +230,28 @@ async function calculatorPresentation(p){
   await p.locator('[data-panel="taxPanel"]').click();await visible(p,'#taxPanel');
   assert.match(await p.locator('.session-note').innerText(),/重新整理.*清空/,'Keep a concise warning about losing current calculations');
   for(const id of ['taxPanel','taxSettings','salesSide','inputSide'])assert.equal(await p.locator('#'+id).getAttribute('data-review-id'),'accounting-calculator-'+id,'Existing annotation identities must remain stable');
+  // A page can fit while its tax columns clip the summary row's last control.
+  // Exercise both sides of the navigation breakpoint with the wider summary-input grid.
+  const widthCategory=cat('salesTriple'),widthBook=widthCategory.locator('.book').first();
+  await widthCategory.locator('.category-head').click();await widthBook.locator('.book-toggle').click();
+  await widthBook.locator('.mode-select').selectOption('summary');
+  for(const width of [981,1000,1080,1081,1200,1280,1281]){
+   await p.setViewportSize({width,height:1000});
+   await p.evaluate(()=>new Promise(requestAnimationFrame));
+   const geometry=await widthBook.evaluate(book=>{
+    const side=book.closest('.tax-side'),bounds=side.getBoundingClientRect();
+    const left=bounds.left+side.clientLeft,right=left+side.clientWidth;
+    const clipped=[...book.querySelectorAll('.table-head>div,.tax-input,.delete-row,.book-controls select,.book-controls button')].flatMap(e=>{
+     const r=e.getBoundingClientRect();return r.width&&r.height&&(r.left<left-.5||r.right>right+.5)?[{element:e.className||e.tagName,text:e.textContent,left:r.left,right:r.right}]:[];
+    });
+    return {clientWidth:side.clientWidth,scrollWidth:side.scrollWidth,clipped};
+   });
+   assert.equal(geometry.scrollWidth,geometry.clientWidth,`${width}px tax column must fit the summary grid without horizontal scrolling`);
+   assert.deepEqual(geometry.clipped,[],`${width}px tax headers, amount inputs and delete controls must fit their column`);
+  }
+  await p.setViewportSize({width:1440,height:1000});
+  await widthBook.locator('.mode-select').selectOption('individual');
+  await widthBook.locator('.book-toggle').click();await widthCategory.locator('.category-head').click();
   for(const [id,net,tax,gross] of [['salesTriple',12340,617,12957],['inputReceipt',2340,117,2457]]){
    const category=cat(id),book=category.locator('.book').first();
    await category.locator('.category-head').click();await book.locator('.book-toggle').click();
@@ -553,6 +576,7 @@ async function vatPreviewPaperGeometry(p){
  await check(id+' primary flows',()=>flow(p));
  if(id==='accounting-calculator')await check(id+' populated tax readability + labels + insurance copy at desktop and mobile',()=>calculatorPresentation(p));
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
+ if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));
  await check(id+' feedback visible blocks + export + reload + mobile',()=>feedback(p,id));
  await check(id+' floating feedback drag + persistence + keyboard + resize + reset',()=>floatingPanel(p,id));
  await check(id+' mobile controls reachable without clipping or toggle overlap',()=>mobileLayout(p,id));

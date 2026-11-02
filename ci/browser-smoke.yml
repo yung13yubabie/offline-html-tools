@@ -2,9 +2,9 @@ name: Offline browser smoke
 on:
   workflow_dispatch:
   push:
-    paths: ['apps/**', 'tests/**', 'feedback/**', 'ci/**', '.github/workflows/browser-smoke.yml']
+    paths: ['apps/**', 'calculator/**', 'tools/embed-calculator.py', 'tests/**', 'feedback/**', 'ci/**', '.github/workflows/browser-smoke.yml']
   pull_request:
-    paths: ['apps/**', 'tests/**', 'feedback/**', 'ci/**', '.github/workflows/browser-smoke.yml']
+    paths: ['apps/**', 'calculator/**', 'tools/embed-calculator.py', 'tests/**', 'feedback/**', 'ci/**', '.github/workflows/browser-smoke.yml']
 permissions:
   contents: read
 jobs:
