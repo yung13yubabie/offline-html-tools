@@ -2,23 +2,24 @@
 
 四個工具各自是一個獨立 HTML；使用時不需要下載整個儲存庫、不用安裝 Node，也不依賴同目錄的 JS 或 CSS。
 
-> 最新版本：營業稅工作台 **v2.12.0**、會計計算機 **v1.2.0**。最新主線 37 項 Chromium 離線檢查通過；各次更新、驗證範圍與限制見下方連結。更新前請完整備份，勿直接取代唯一的工作檔。
+> 功能版本：營業稅工作台 **v2.12.0**、會計計算機 **v1.2.0**。本次四頁 UI 修訂的 [42 組 Chromium file:// 離線檢查通過](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41373364685)，本機 localhost HTTP 的 42 組檢查也通過；驗證範圍見更新記錄。更新前請完整備份，勿直接取代唯一的工作檔。
 
 ## 最新更新
 
+- 四個工具 **UI 修訂 ui.1**：修改標註可用滑鼠／觸控拖曳、鍵盤移動、記住位置與歸位；計算機桌面並排、PDF 起始引導，以及四頁操作狀態改善。[設計參考、修改與驗證範圍](revisions/ui-floating-review.md)。
 - 營業稅工作台 **v2.12.0**：日期與明細層級、客戶旁儲存、通知分類／親切專業模板、已儲存列印版面及 A4 預覽；[更新與驗證](revisions/vat-workbench-v2.12.0.md)。
-- 計算機維持 **v1.2.0**；分類帳與 PDF 工具此次未變更。
+- 本次四個工具均已套用 UI 修訂；業務計算與資料格式沿用既有版本。
 
 ## 選擇工具
 
-| 工具 | 單檔 | 來源版本 |
-| --- | --- | --- |
-| 營業稅工作台 | [vat-workbench.html](apps/vat-workbench.html) | v2.11 |
-| 分類帳分析 | [ledger-analyzer.html](apps/ledger-analyzer.html) | v4.4 |
-| PDF 家族 | [pdf-workbench.html](apps/pdf-workbench.html) | v0.12.1 |
-| 會計計算機 | [accounting-calculator.html](apps/accounting-calculator.html) | 原離線會計計算機 |
+| 工具 | 下載最新版單檔 | 查看原始碼 | 功能／UI 版本 |
+| --- | --- | --- | --- |
+| 營業稅工作台 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/vat-workbench.html) | [vat-workbench.html](apps/vat-workbench.html) | v2.12.0／ui.1 |
+| 分類帳分析 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/ledger-analyzer.html) | [ledger-analyzer.html](apps/ledger-analyzer.html) | v4.4.1／ui.1 |
+| PDF 家族 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/pdf-workbench.html) | [pdf-workbench.html](apps/pdf-workbench.html) | v0.12.2／ui.1 |
+| 會計計算機 | [下載 HTML](https://raw.githubusercontent.com/yung13yubabie/offline-html-tools/refs/heads/main/apps/accounting-calculator.html) | [accounting-calculator.html](apps/accounting-calculator.html) | v1.2.0／ui.1 |
 
-打開檔案頁，使用 GitHub 的 **Download raw file** 下載；請勿把 GitHub 網頁另存成 HTML。下載後用桌面 Chrome 或 Edge 開啟。
+「下載 HTML」直接指向 `main` 最新版檔案，不需要下載整個 Repo。若瀏覽器顯示原始碼，請使用「另存新檔」，並保留 `.html` 副檔名；也可在下載連結按右鍵選擇「另存連結」。請勿把 GitHub 的檔案檢視網頁另存成 HTML。下載後用桌面 Chrome 或 Edge 開啟。
 
 ## 更新一個工具
 
@@ -31,7 +32,8 @@
 
 ## 區塊修改標註
 
-- 點右下角「修改標註」。
+- 點「修改標註」（預設右下角）；拖曳旁邊的點狀把手，可移動入口與展開後的面板。
+- 把手可用方向鍵移動，Shift 加速，Home 回到右下角；展開後也可按「歸位」。位置以各工具分開記憶，視窗縮小時會限制在畫面內，儲存不可用時仍可在當次移動。
 - 從選單或頁面選區塊，填寫想修正的方向，儲存。
 - 可編輯、刪除、匯出 JSON／TXT；將匯出檔交給維護者，便能依工具、版本及區塊 ID 修改。
 - 標註只記錄需求，不會自動改程式或已儲存的業務資料。
