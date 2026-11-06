@@ -1,0 +1,13 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{execFileSync}=require('node:child_process');
+const src=fs.readFileSync('apps/vat-workbench.html','utf8'),ctx={};vm.createContext(ctx);
+for(const prefix of ['function localDate(','function addDays(','function validDate210('])vm.runInContext(src.split('\n').find(x=>x.startsWith(prefix)),ctx);
+vm.runInContext(src.slice(src.indexOf('function collectionTarget213('),src.indexOf('function collectionDate213()')),ctx);
+let count=0;const check=f=>{f();count++};
+for(const [today,n,target] of [['2026-11-05','1','2026-11-06'],['2026-11-05','2','2026-11-07'],['2026-11-05','3','2026-11-08'],['2026-12-31','1','2027-01-01'],['2028-02-28','1','2028-02-29'],['2028-02-28','2','2028-03-01'],['2026-03-07','2','2026-03-09']])check(()=>assert.equal(ctx.collectionTarget213(today,n),target));
+for(const n of ['','0','-1','1.5','1e2','NaN','3651','<script>'])check(()=>assert.equal(ctx.collectionTarget213('2026-11-05',n),''));
+check(()=>assert.equal(ctx.collectionTarget213('invalid','1'),''));
+const rows=[{id:'a',periodId:'p',appointmentDate:'2026-11-06',receiptStatusId:'pending'},{id:'b',periodId:'p',appointmentDate:'2026-11-06',receiptStatusId:'partial'},{id:'c',periodId:'p',appointmentDate:'2026-11-06',receiptStatusId:'done'},{id:'d',periodId:'p',appointmentDate:'2026-11-06',notApplicable:true},{id:'e',periodId:'other',appointmentDate:'2026-11-06'},{id:'f',periodId:'p',appointmentDate:'2026-11-07'},{id:'g',periodId:'p',appointmentDate:''}],before=JSON.stringify(rows);
+check(()=>assert.deepEqual(JSON.parse(JSON.stringify(ctx.collectionMatches213(rows,'p','2026-11-06',['done']))).map(x=>x.id),['a','b']));
+check(()=>assert.equal(JSON.stringify(rows),before));check(()=>assert.equal(ctx.collectionMatches213(rows,'p','',['done']).length,0));
+if(!process.env.VAT_TZ_CHILD)for(const tz of ['Asia/Taipei','America/Los_Angeles','Pacific/Kiritimati','UTC'])check(()=>execFileSync(process.execPath,[__filename],{env:{...process.env,TZ:tz,VAT_TZ_CHILD:'1'},stdio:'pipe'}));
+console.log(`${count} VAT collection date checks passed (calendar boundaries, invalid offsets, filtering, four time zones).`);

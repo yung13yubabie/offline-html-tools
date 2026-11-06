@@ -7,6 +7,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const calculatorPool=require('./calculator-pool.browser.js');
+const vatCollection=require('./vat-collection.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
@@ -419,8 +420,8 @@ async function vatSettle(p){
 async function vatScreenshot(p,name){await vatSettle(p);await screenshot(p,name);}
 async function vatReload(p){await p.reload();await p.waitForFunction(()=>typeof document.querySelector('#saveWorkBtn')?.onclick==='function');}
 // Revision fixtures are wholly synthetic. Each group owns a fresh context, including popup diagnostics.
-async function vatRevisionContext(run){
- const context=await browser.newContext({acceptDownloads:true,viewport:{width:1440,height:1000},serviceWorkers:'block'});
+async function vatRevisionContext(run,options={}){
+ const context=await browser.newContext({acceptDownloads:true,viewport:{width:1440,height:1000},serviceWorkers:'block',...options});
  const evidence={id:'vat-revision',pageErrors:[],consoleErrors:[],blockedNetwork:[]};report.apps.push(evidence);
  context.on('page',page=>{page.setDefaultTimeout(15000);page.setDefaultNavigationTimeout(30000);page.on('pageerror',e=>evidence.pageErrors.push(e.message));page.on('console',m=>{if(m.type()==='error')evidence.consoleErrors.push(m.text())});});
  await context.route(/^https?:/i,networkGuard(evidence));
@@ -542,20 +543,9 @@ async function vatPrintRecordsAndBlocks(p){
  const summary=p.locator('#pdfLayoutPanel212 [data-layout-row]').filter({hasText:'月曆摘要'});await summary.locator('[data-layout-field="visible"]').uncheck();await vatLayoutSave(p);await vatPrintCapture(p,'vat-revision-calendar-layout-browser-pdf');assert.equal(await p.locator('#printRoot [data-layout-block212="b:月曆摘要"]').count(),0);assert(await p.locator('#printRoot [data-layout-block212="b:記事明細"]').count()>0);assert.match(await p.locator('#printRoot').innerText(),/合成日曆記事/);
 }
 
-async function vatNoticeRevision(p){
- // Simulate a pre-upgrade synthetic database; custom originals and history must survive additive migration.
- await p.evaluate(async()=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('VAT_WORKBENCH_DB');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});await new Promise((resolve,reject)=>{const tx=db.transaction(['settings','templates'],'readwrite'),settings=tx.objectStore('settings'),templates=tx.objectStore('templates'),r=settings.getAll();r.onsuccess=()=>{const row=r.result[0];delete row.noticeTemplates212Installed;settings.put(row)};for(const type of ['receiptAsk','collectionTomorrow211','dispatchReminder','firstBilling','finalRemit','accountingMissing'])templates.delete('notice212_'+type);templates.put({id:'receiptAsk',typeId:'receiptAsk',name:'合成既有內建修改',text:'SYNTHETIC ORIGINAL CUSTOM {客戶}',builtIn:true,enabled:true,reminders:[],createdAt:'2026-01-01T00:00:00Z'});templates.put({id:'synthetic-custom-template',typeId:'receiptAsk',name:'合成自訂原稿',text:'SYNTHETIC CUSTOM PRESERVED {客戶}',builtIn:false,enabled:true,tone:'原有測試語氣',reminders:[],createdAt:'2026-01-01T00:00:00Z'});tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)});db.close()});await vatReload(p);await p.locator('#topPeriod').selectOption('2026-1');await p.locator('.nav-btn[data-view="templates"]').click();
- await p.locator('#noticeGroup212').selectOption('vat');await p.locator('#noticeToneFilter212').selectOption('親切專業版');
- const vatTypes=['receiptAsk','collectionTomorrow211','dispatchReminder','firstBilling','finalRemit'];assert.deepEqual((await p.locator('#notificationTypeList [data-select-type]').evaluateAll(es=>es.map(e=>e.dataset.selectType))).sort(),[...vatTypes].sort());
- for(const type of vatTypes){await p.locator(`#notificationTypeList [data-select-type="${type}"]`).click();await p.locator(`[data-select-template="notice212_${type}"]`).click();assert.equal(await p.locator('#templateTone212').inputValue(),'親切專業版');await p.locator('#noticeClient').selectOption('2026-1::synthetic-a');await p.locator('#refreshPreviewBtn').click();const preview=await p.locator('#templatePreview').inputValue();assert.match(preview,/合成測試客戶甲/);assert.match(preview,/謝謝/);assert(!preview.includes('{客戶}'))}
- await vatScreenshot(p,'vat-revision-notice-groups-desktop');
- await p.locator('#noticeGroup212').selectOption('accounting');assert.deepEqual(await p.locator('#notificationTypeList [data-select-type]').evaluateAll(es=>es.map(e=>e.dataset.selectType)),['accountingMissing']);await p.locator('#notificationTypeList [data-select-type="accountingMissing"]').click();await p.locator('[data-select-template="notice212_accountingMissing"]').click();await p.locator('#noticeClient').selectOption('2026-1::synthetic-a');await p.locator('#refreshPreviewBtn').click();assert.match(await p.locator('#templatePreview').inputValue(),/合成欠缺文件/);
- await p.locator('[data-template-tab="export"]').click();await p.locator('#exportTemplateClearBtn').click();await p.locator('.txt-template-choice[value="notice212_accountingMissing"]').check();await p.locator('#txtClients').selectOption('2026-1::synthetic-a');const txt=await download(p,()=>p.locator('#exportTxtBtn').click());assert.match(txt.toString('utf8'),/合成測試客戶甲/);assert.match(txt.toString('utf8'),/合成欠缺文件/);
- await p.locator('[data-template-tab="manage"]').click();await p.locator('#noticeGroup212').selectOption('vat');await p.locator('#noticeToneFilter212').selectOption('');await p.locator('#notificationTypeList [data-select-type="receiptAsk"]').click();await p.locator('[data-select-template="synthetic-custom-template"]').click();assert.equal(await p.locator('#templateText').inputValue(),'SYNTHETIC CUSTOM PRESERVED {客戶}');await p.locator('#templateTone212').fill('合成溫和版');await p.locator('#saveTemplateBtn').click();await p.locator('.toast').filter({hasText:'模板已儲存'}).last().waitFor();
- await p.setViewportSize({width:390,height:844});await vatScreenshot(p,'vat-revision-notice-groups-mobile');await p.setViewportSize({width:1440,height:1000});
- let backup=await vatBackup(p);assert.equal(backup.data.templates.find(t=>t.id==='receiptAsk').text,'SYNTHETIC ORIGINAL CUSTOM {客戶}');assert.equal(backup.data.templates.find(t=>t.id==='synthetic-custom-template').text,'SYNTHETIC CUSTOM PRESERVED {客戶}');assert.equal(backup.data.notifications.find(n=>n.id==='synthetic-notice').content,'SYNTHETIC notification history');assert.equal(backup.data.settings[0].noticeTemplates212Installed,true);const count=backup.data.templates.length;
- await vatReload(p);backup=await vatBackup(p);assert.equal(backup.data.templates.length,count,'Migration idempotent after reload');assert.equal(backup.data.templates.find(t=>t.id==='synthetic-custom-template').tone,'合成溫和版');for(const type of [...vatTypes,'accountingMissing'])assert.equal(backup.data.templates.filter(t=>t.id==='notice212_'+type).length,1);assert.equal(backup.data.notifications.find(n=>n.id==='synthetic-notice').content,'SYNTHETIC notification history');
-}
+const vatNoticeHelpers={reload:vatReload,backup:vatBackup,screenshot:vatScreenshot,download};
+async function vatNoticeRevision(p){await vatCollection.originals(p,vatNoticeHelpers)}
+async function vatCollectionRevision(p){await vatCollection.collection(p,vatNoticeHelpers)}
 
 async function vatPreviewPaperGeometry(p){
  await vatPrintOpen(p);const fields=p.locator('#pdfLayoutPanel212 [data-layout-row]');await fields.nth(1).locator('[data-layout-field="width"]').fill('60');await fields.nth(1).locator('[data-layout-field="width"]').press('Tab');await p.locator('[data-layout-global="fontSize"]').selectOption('11');await vatLayoutSave(p);
@@ -600,7 +590,8 @@ async function vatPreviewPaperGeometry(p){
  await check('vat A4 preview portrait/landscape paper width + phone scrolling without reflow',()=>vatRevisionContext(vatPreviewPaperGeometry));
  await check('vat saved print record-pair and calendar-block visibility/order/width in real output',()=>vatRevisionContext(vatPrintRecordsAndBlocks));
  await check('vat saved print layout corrupt synthetic profile gracefully sanitized',()=>vatRevisionContext(vatPrintCorrupt));
- await check('vat grouped notice UI + actual preview/TXT + additive migration preserves custom/history + reload',()=>vatRevisionContext(vatNoticeRevision));
+ await check('vat original notices + preview/TXT + removes generated tone copies + preserves edits/history + reload',()=>vatRevisionContext(vatNoticeRevision));
+ await check('vat collection local today + day offset + auto clients + merge/TXT + empty + midnight + two time zones',async()=>{for(const timezoneId of ['Asia/Taipei','America/Los_Angeles'])await vatRevisionContext(vatCollectionRevision,{timezoneId})});
  await check('four tools floating feedback real touch movement + save',floatingTouch);
  for(const kind of ['unavailable','quota'])await check('feedback '+kind+' storage retains exportable in-memory note',()=>storageFailure(kind));
 })().catch(e=>{report.checks.push({name:'test infrastructure',status:'fail',error:String(e.stack||e)});console.error(e)}).finally(async()=>{if(browser)await browser.close();report.finishedAt=new Date().toISOString();report.pass=report.checks.filter(x=>x.status==='pass').length;report.fail=report.checks.filter(x=>x.status==='fail').length;fs.writeFileSync(path.join(OUT,'report.json'),JSON.stringify(report,null,2));console.log(`${report.pass} passed, ${report.fail} failed`);process.exitCode=report.fail?1:0});

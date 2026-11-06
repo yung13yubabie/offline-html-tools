@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.12.0</title>
+<title>營業稅工作台 v2.13.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -472,6 +472,7 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<style>.collection-filter213{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr);gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.collection-filter213.hidden{display:none}.collection-filter213 output{display:block;padding:10px 0;font-weight:700;font-size:17px}.collection-filter213 p{grid-column:1/-1;margin:0}.collection-filter213 input{max-width:180px}@media(max-width:600px){.collection-filter213{grid-template-columns:1fr}.collection-filter213 input{max-width:none}}</style>
 </head>
 <body>
 <div class="app">
@@ -479,7 +480,7 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.12.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.13.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -615,7 +616,7 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 <section class="view" id="view-templates" data-review-id="vat-workbench-view-templates" data-review-name="通知模板">
 <div class="page-head"><div><h1 class="page-title">通知與模板</h1><div class="page-sub">選客戶與模板，確認內容後複製或輸出。</div></div></div>
 
-<div class="card notice-context" id="noticeContextBar" data-review-id="vat-workbench-noticeContextBar" data-review-name="通知對象設定"><div class="card-h">目前通知情境</div><div class="card-b"><div class="context-grid"><div class="field"><label>通知模式</label><select class="select" id="noticeMode"><option value="single">單一客戶</option><option value="merge">合併通知</option></select></div><div class="field" id="noticeClientField"><label>套用客戶</label><select class="select" id="noticeClient"></select></div><div class="field hidden" id="mergeSalutationField"><label>共同稱呼</label><input class="input" id="mergeSalutation" list="mergeSalutationList" placeholder="例如 林小姐"/><datalist id="mergeSalutationList"></datalist></div><div class="field hidden" id="mergeClientsField"><label>合併客戶</label><div class="merge-picker" id="mergeClientPicker"></div></div></div></div></div><p class="template-inline-hint211" hidden="" id="collectionContextHint211" role="status"></p>
+<div class="card notice-context" id="noticeContextBar" data-review-id="vat-workbench-noticeContextBar" data-review-name="通知對象設定"><div class="card-h">目前通知情境</div><div class="card-b"><div class="context-grid"><div class="field"><label>通知模式</label><select class="select" id="noticeMode"><option value="single">單一客戶</option><option value="merge">合併通知</option></select></div><div class="field" id="noticeClientField"><label>套用客戶</label><select class="select" id="noticeClient"></select></div><div class="field hidden" id="mergeSalutationField"><label>共同稱呼</label><input class="input" id="mergeSalutation" list="mergeSalutationList" placeholder="例如 林小姐"/><datalist id="mergeSalutationList"></datalist></div><div class="field hidden" id="mergeClientsField"><label>合併客戶</label><div class="merge-picker" id="mergeClientPicker"></div></div></div><div class="collection-filter213 hidden" id="collectionFilter213" data-review-id="vat-workbench-collectionFilter213" data-review-name="收發票通知日期篩選"><div class="field"><label for="collectionDays213">本機今天起算，幾天後收發票？</label><input class="input" id="collectionDays213" type="number" min="1" max="3650" step="1" value="1" aria-describedby="collectionStatus213"/></div><div class="field"><label>目標收發票日</label><output id="collectionDate213"></output></div><p id="collectionStatus213" class="small muted" role="status" aria-live="polite"></p></div></div></div><p class="template-inline-hint211" hidden="" id="collectionContextHint211" role="status"></p>
 <div class="subtabs"><button class="subtab active" data-template-tab="manage">模板管理</button><button class="subtab" data-template-tab="reminders">提醒設定</button><button class="subtab" data-template-tab="export">批量輸出</button></div>
 <div id="templateManagePane">
 <div class="template-workspace">
@@ -683,7 +684,7 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.12.0', BACKUP_VERSION=7, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=3;
+const APP_VERSION='2.13.0', BACKUP_VERSION=7, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=3;
 const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks'];
 const PERIOD_SLOTS=[['01','1–2 月',3,15],['02','3–4 月',5,15],['03','5–6 月',7,15],['04','7–8 月',9,15],['05','9–10 月',11,15],['06','11–12 月',1,15]];
 const TEMPLATE_TYPES=[['receiptAsk','詢問收發票時間'],['dispatchReminder','最晚寄出提醒'],['firstBilling','首次請款'],['finalRemit','最後匯款日']];
@@ -1665,7 +1666,7 @@ function wire(){
   $$('[data-template-tab]').forEach(b=>b.onclick=()=>setTemplateTab(b.dataset.templateTab));$('#addNotificationTypeBtn').onclick=addNotificationType;$('#editNotificationTypeBtn').onclick=editNotificationType;$('#addTemplateBtn').onclick=addTemplate;
   $('#notificationTypeEnabled').onchange=async e=>{const nt=notificationTypeById(state.selectedNotificationTypeId);if(!nt)return;nt.enabled=e.target.checked;nt.updatedAt=nowISO();await put('notificationTypes',nt);await loadAll();state.selectedNotificationTypeId=nt.id;renderTemplates()};
   $('#templateText').oninput=refreshTemplatePreview;$('#templateName').oninput=()=>{};$('#templateEnabled').onchange=()=>{};$('#variableSearch').oninput=renderVariableChips;$('#refreshPreviewBtn').onclick=refreshTemplatePreview;$('#saveTemplateBtn').onclick=saveTemplate;$('#restoreTemplateBtn').onclick=restoreBuiltInTemplate;$('#templateDeleteBtn').onclick=deleteTemplate;$('#templateDuplicateBtn').onclick=duplicateTemplate;$('#copyNoticeBtn').onclick=copyNotice;$('#noticeMode').onchange=e=>{state.noticeMode=e.target.value;renderTemplates()};$('#noticeClient').onchange=e=>{state.templatePCId=e.target.value;refreshTemplatePreview()};$('#mergeSalutation').oninput=e=>{state.mergeSalutation=e.target.value;refreshTemplatePreview()};
-  $('#exportTemplateAllBtn').onclick=()=>{$$('.txt-template-choice').forEach(o=>o.checked=true);updateExportSummary()};$('#exportTemplateClearBtn').onclick=()=>{$$('.txt-template-choice').forEach(o=>o.checked=false);updateExportSummary()};$('#txtSelectAllBtn').onclick=()=>{$$('#txtClients option').forEach(o=>o.selected=true);updateExportSummary()};$('#txtClearBtn').onclick=()=>{$$('#txtClients option').forEach(o=>o.selected=false);updateExportSummary()};$('#txtClientSearch').oninput=renderTxtClientOptions;$('#exportTxtBtn').onclick=exportTemplateTxt;
+  $('#exportTemplateAllBtn').onclick=()=>{$$('.txt-template-choice').forEach(o=>o.checked=true);renderTxtClientOptions();updateExportSummary()};$('#exportTemplateClearBtn').onclick=()=>{$$('.txt-template-choice').forEach(o=>o.checked=false);renderTxtClientOptions();updateExportSummary()};$('#txtSelectAllBtn').onclick=()=>{$$('#txtClients option').forEach(o=>o.selected=true);updateExportSummary()};$('#txtClearBtn').onclick=()=>{$$('#txtClients option').forEach(o=>o.selected=false);updateExportSummary()};$('#txtClientSearch').oninput=renderTxtClientOptions;$('#exportTxtBtn').onclick=exportTemplateTxt;
 
   $('#pdfScope').onchange=()=>{togglePdfFields();renderPdf()};$('#pdfPeriod').onchange=renderPdf;$('#pdfSection').onchange=()=>{togglePdfFields();renderPdf()};$('#pdfAccountingMissingMode').onchange=renderPdf;$('#exportPdfBtn').onclick=buildPdf;$('#fullBackupBtn').onclick=()=>downloadBackup();$('#restoreMergeBtn').onclick=()=>restoreFile('merge');$('#restoreOverwriteBtn').onclick=()=>restoreFile('overwrite');$('#partialScope').onchange=renderPartialOptions;$('#partialExportBtn').onclick=partialExport;$('#partialImportFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{await mergeBackup(await fileJson(f))}catch{toast('無法讀取部分資料檔')}};
   $('#addReceiptStatusBtn').onclick=()=>{state.settings.receiptStatuses.push({id:uid('st'),name:'新狀態',complete:false,active:true});renderSettings()};$('#addReminderDayBtn').onclick=()=>{state.settings.reminderDays.push(1);renderSettings()};$('#addCourierBtn').onclick=()=>{state.settings.couriers.push('新方式');renderSettings()};$('#saveSettingsBtn').onclick=saveSettings;window.onafterprint=()=>{$('#printRoot').innerHTML=''};
@@ -2279,12 +2280,11 @@ const NOTICE_SPECS212=[
  {id:'accountingMissing',name:'缺件通知',group:'accounting',old:'帳務缺件通知',text:'{聯繫人}您好：\n{客戶} {年度}年{期別}帳務資料確認如下：\n{欠缺文件明細}\n\n如有待補資料，再麻煩協助提供；有任何問題也歡迎告訴我們，謝謝。'}
 ];
 const NOTICE_GROUPS212=[['vat','營業稅'],['accounting','帳務'],['custom','其他／自訂']];
-let freshNotices212=false;
 function noticeSpec212(id){return NOTICE_SPECS212.find(x=>x.id===id)}
 function noticeTone212(t){return String(t?.tone||'原有語氣')}
 function noticeGroup212(nt){return nt?.noticeGroup212||noticeSpec212(nt?.id)?.group||'custom'}
 function noticeGroupLabel212(nt){const key=noticeGroup212(nt);return NOTICE_GROUPS212.find(x=>x[0]===key)?.[1]||key}
-// Pure additive plan: only canonical built-in type labels may change; existing template bodies never do.
+// Keep the original template bodies; classification migration only.
 function noticeMigration212(types,templates,settings,fresh=false,at=nowISO()){
  if(!settings||settings.noticeTemplates212Installed===true)return [];
  const ops=[];
@@ -2292,50 +2292,92 @@ function noticeMigration212(types,templates,settings,fresh=false,at=nowISO()){
   const old=types.find(x=>x.id===s.id);
   if(!old)ops.push({store:'notificationTypes',value:{id:s.id,name:s.name,noticeGroup212:s.group,noticeOrder212:order,builtIn:true,enabled:true,createdAt:at,updatedAt:at}});
   else if(old.builtIn===true){const next={...old,noticeGroup212:old.noticeGroup212||s.group,noticeOrder212:order};if(old.name===s.old)next.name=s.name;ops.push({store:'notificationTypes',value:next})}
-  const canonical=s.id==='accountingMissing'?'accountingMissingDefault':s.id==='collectionTomorrow211'?'collectionTomorrow211_default':s.id;
-  const source=templates.find(x=>x.id===canonical&&x.typeId===s.id);
-  const id=fresh&&source?canonical:'notice212_'+s.id;
-  if(!templates.some(x=>x.id===id)||fresh&&source)ops.push({store:'templates',value:{...(fresh&&source?source:{}),id,typeId:s.id,name:s.name+'・'+NOTICE_TONE212,text:s.text,tone:NOTICE_TONE212,noticeBuiltin212:s.id,builtIn:true,enabled:source?.enabled!==false,remindersEnabled:fresh?!!source?.remindersEnabled:false,reminders:fresh?source?.reminders||[]:[],createdAt:at,updatedAt:at}});
  }
- ops.push({store:'settings',value:{...settings,noticeTemplates212Installed:true,preferredNoticeTone212:settings.preferredNoticeTone212||NOTICE_TONE212}});
+ ops.push({store:'settings',value:{...settings,noticeTemplates212Installed:true}});return ops;
+}
+// Remove only recognizable, unedited generated copies. Edited bodies and history survive.
+function noticeOriginalMigration213(templates,settings,at=nowISO()){
+ const ops=[];
+ for(const t of templates){
+  const spec=noticeSpec212(t.noticeBuiltin212);if(!spec)continue;
+  const duplicate=t.id==='notice212_'+spec.id,canonical=spec.id==='accountingMissing'?'accountingMissingDefault':spec.id==='collectionTomorrow211'?'collectionTomorrow211_default':spec.id;
+  const untouched=t.text===spec.text&&t.name===spec.name+'・'+NOTICE_TONE212;
+  if(duplicate&&untouched&&templates.some(x=>x.id===canonical&&x.typeId===spec.id)){ops.push({store:'templates',action:'delete',id:t.id});continue}
+  const next={...t,tone:'原有語氣',updatedAt:at};delete next.noticeBuiltin212;
+  if(untouched&&t.id===canonical){next.text=BUILTIN_TEMPLATE_TEXT[spec.id]??'';next.name=spec.id==='collectionTomorrow211'?'明日收憑證通知':spec.id==='accountingMissing'?'帳務缺件通知':'預設模板'}
+  else {if(next.name===spec.name+'・'+NOTICE_TONE212)next.name=spec.name;if(duplicate)next.builtIn=false}
+  ops.push({store:'templates',value:next});
+ }
+ if(settings&&(!settings.noticeOriginal213Installed||settings.preferredNoticeTone212===NOTICE_TONE212))ops.push({store:'settings',value:{...settings,noticeOriginal213Installed:true,preferredNoticeTone212:'原有語氣'}});
  return ops;
 }
-const seedNoticesBefore212=seedDefaults;
-seedDefaults=async function(){await seedNoticesBefore212();freshNotices212=true;};
 const loadNoticesBefore212=loadAll;
-loadAll=async function(){const unselected=!state.selectedTemplateId;await loadNoticesBefore212();const ops=noticeMigration212(state.notificationTypes,state.templates,state.settings,freshNotices212);if(ops.length){await writeBatch210(ops);state.notificationTypes=await getAll('notificationTypes');state.templates=await getAll('templates');state.settings=(await getAll('settings'))[0];}freshNotices212=false;if(unselected){const preferred=state.templates.find(t=>t.typeId===state.selectedNotificationTypeId&&t.noticeBuiltin212);if(preferred)state.selectedTemplateId=preferred.id;}renderTemplates();};
-const typesBefore212=typeTemplates;
-typeTemplates=function(id=state.selectedNotificationTypeId){return typesBefore212(id).slice().sort((a,b)=>Number(!!b.noticeBuiltin212)-Number(!!a.noticeBuiltin212));};
-function noticeVisibleTemplates212(id){return typeTemplates(id).filter(t=>!state.noticeToneFilter212||noticeTone212(t)===state.noticeToneFilter212)}
+loadAll=async function(){await loadNoticesBefore212();let ops=noticeMigration212(state.notificationTypes,state.templates,state.settings);if(ops.length){await writeBatch210(ops);state.notificationTypes=await getAll('notificationTypes');state.settings=(await getAll('settings'))[0];}ops=noticeOriginalMigration213(state.templates,state.settings);if(ops.length){await writeBatch210(ops);state.templates=await getAll('templates');state.settings=(await getAll('settings'))[0];}renderTemplates();renderToday();};
+function noticeVisibleTemplates212(id){return typeTemplates(id)}
 function noticeTypeVisible212(nt){const group=noticeGroup212(nt),category=NOTICE_GROUPS212.some(x=>x[0]===group)?group:'custom';return !state.noticeGroupFilter212||category===state.noticeGroupFilter212}
 typeListHtml=function(selectedId){return NOTICE_GROUPS212.map(([group,label])=>{const types=state.notificationTypes.filter(nt=>noticeTypeVisible212(nt)&&(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===group).sort((a,b)=>(a.noticeOrder212??99)-(b.noticeOrder212??99));return types.length?`<div class="strong small" style="padding:10px 8px 5px">${esc(label)}</div>`+types.map(nt=>`<button type="button" style="text-align:left;font:inherit;color:inherit" class="type-item ${selectedId===nt.id?'active':''}" data-select-type="${esc(nt.id)}"><span class="type-name" style="display:block">${esc(nt.name)}</span><span class="type-meta" style="display:block">${noticeVisibleTemplates212(nt.id).length} 個模板${nt.enabled===false?' · 停用':''}</span></button>`).join(''):''}).join('');};
 const renderNoticesBefore212=renderTemplates;
 renderTemplates=function(){
  const current=notificationTypeById(state.selectedNotificationTypeId);if(current&&!noticeTypeVisible212(current))state.noticeGroupFilter212='';
- renderNoticesBefore212();
- const panes=$('#templateManagePane');if(!panes)return;
+ renderNoticesBefore212();const panes=$('#templateManagePane');if(!panes)return;
  let bar=$('#noticeFilters212');if(!bar){bar=document.createElement('div');bar.id='noticeFilters212';bar.className='actions';bar.style.cssText='justify-content:flex-start;margin-bottom:12px';panes.parentNode.insertBefore(bar,panes);}
- const tones=[...new Set([NOTICE_TONE212,...state.templates.map(noticeTone212)])];
- bar.innerHTML=`<label>通知分類 <select class="select" id="noticeGroup212"><option value="">全部分類</option>${NOTICE_GROUPS212.map(([v,n])=>`<option value="${v}" ${state.notificationTypes.some(nt=>(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===v)?'':'disabled'}>${n}</option>`).join('')}</select></label><label>語氣 <select class="select" id="noticeToneFilter212"><option value="">全部語氣</option>${tones.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('')}</select></label><span class="small muted">新模板預設為親切專業版；原有內容另行保留。</span>`;
- $('#noticeGroup212').value=state.noticeGroupFilter212||'';$('#noticeToneFilter212').value=state.noticeToneFilter212||'';
+ bar.innerHTML=`<label>通知分類 <select class="select" id="noticeGroup212"><option value="">全部分類</option>${NOTICE_GROUPS212.map(([v,n])=>`<option value="${v}" ${state.notificationTypes.some(nt=>(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===v)?'':'disabled'}>${n}</option>`).join('')}</select></label>`;
+ $('#noticeGroup212').value=state.noticeGroupFilter212||'';
  $('#noticeGroup212').onchange=e=>{state.noticeGroupFilter212=e.target.value;const nt=state.notificationTypes.filter(noticeTypeVisible212).sort((a,b)=>(a.noticeOrder212??99)-(b.noticeOrder212??99))[0];state.selectedNotificationTypeId=nt?.id||null;state.selectedTemplateId=null;renderTemplates()};
- $('#noticeToneFilter212').onchange=e=>{state.noticeToneFilter212=e.target.value;state.selectedTemplateId=null;renderTemplates()};
- let tone=$('#templateTone212');if(!tone){const box=document.createElement('div');box.className='field';box.innerHTML='<label for="templateTone212">模板語氣</label><input class="input" id="templateTone212" list="noticeTones212" maxlength="80"><datalist id="noticeTones212"></datalist><span class="tiny muted">語氣標籤隨模板儲存；修改標籤不會改寫內容。</span>';box.style.gridColumn='1 / -1';$('#templateName').parentNode.parentNode.append(box);tone=$('#templateTone212');}
- $('#noticeTones212').innerHTML=tones.map(t=>`<option value="${esc(t)}"></option>`).join('');tone.value=noticeTone212(selectedTemplate());
- const t=selectedTemplate();if(t)$('#templateStatusText').textContent=`${noticeGroupLabel212(notificationTypeById(t.typeId))}／${notificationTypeName(t.typeId)}｜${noticeTone212(t)}${t.noticeBuiltin212?'｜新版內建':t.builtIn?'｜保留的原版':''}`;
- $$('[data-select-template]').forEach(el=>{const tpl=templateById(el.dataset.selectTemplate);const tag=document.createElement('div');tag.className='small muted';tag.textContent=noticeTone212(tpl)+(tpl.noticeBuiltin212?' · 新版內建':tpl.builtIn?' · 保留的原版':' · 自訂');el.append(tag)});
+ const t=selectedTemplate();if(t)$('#templateStatusText').textContent=`${noticeGroupLabel212(notificationTypeById(t.typeId))}／${notificationTypeName(t.typeId)}${t.builtIn?'｜內建模板':'｜自訂模板'}`;
 };
-const saveNoticesBefore212=saveTemplate;
-saveTemplate=async function(){const t=selectedTemplate();if(t)t.tone=$('#templateTone212')?.value.trim()||NOTICE_TONE212;return saveNoticesBefore212();};
 BUILTIN_TEMPLATE_TEXT[ACCOUNT_MISSING_TYPE]='{聯繫人}您好：\n{客戶} 本期帳務目前尚缺以下資料：\n{欠缺文件明細}\n\n再麻煩協助提供，謝謝。';
-const restoreNoticesBefore212=restoreBuiltInTemplate;
-restoreBuiltInTemplate=async function(){const t=selectedTemplate(),s=noticeSpec212(t?.noticeBuiltin212);if(!s)return restoreNoticesBefore212();if(!await confirm2('還原內建模板',`只還原「${t.name}」的內容與語氣；其他模板不會變更。`,'還原'))return;await put('templates',{...t,text:s.text,tone:NOTICE_TONE212,updatedAt:nowISO()});await loadAll();toast('已還原這份內建模板');};
-addTemplate=function(){const nt=notificationTypeById(state.selectedNotificationTypeId);if(!nt)return;showModal('新增模板',`<div class="field"><label>模板名稱</label><input id="newTemplateName" class="input"></div><div class="small muted">${esc(noticeGroupLabel212(nt))}／${esc(nt.name)} · ${NOTICE_TONE212}</div>`,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#newTemplateName').value.trim();if(!name){toast('請輸入模板名稱');return}const t={id:uid('tpl'),typeId:nt.id,name,text:noticeSpec212(nt.id)?.text||'',tone:NOTICE_TONE212,builtIn:false,enabled:true,remindersEnabled:false,reminders:[],createdAt:nowISO(),updatedAt:nowISO()};await put('templates',t);state.noticeToneFilter212='';state.selectedTemplateId=t.id;await loadAll();renderTemplates();toast('模板已建立')});};
+addTemplate=function(){const nt=notificationTypeById(state.selectedNotificationTypeId);if(!nt)return;showModal('新增模板',`<div class="field"><label>模板名稱</label><input id="newTemplateName" class="input"></div>`,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#newTemplateName').value.trim();if(!name){toast('請輸入模板名稱');return}const t={id:uid('tpl'),typeId:nt.id,name,text:BUILTIN_TEMPLATE_TEXT[nt.id]||'',builtIn:false,enabled:true,remindersEnabled:false,reminders:[],createdAt:nowISO(),updatedAt:nowISO()};await put('templates',t);state.selectedTemplateId=t.id;await loadAll();renderTemplates();toast('模板已建立')});};
 // Use actual accounting pending rows; no invented list, no unresolved placeholder on empty cases.
 const noticeContextBefore212=templateContext;
 templateContext=function(pc=currentPC(),p=currentPeriod()){const ctx=noticeContextBefore212(pc,p);return {...ctx,欠缺文件明細:pc&&accPendingDocs(pc).length?accMissingText(pc):'目前沒有待補文件。',最晚寄出日:pc&&p&&dispatchDate(pc,p)?ctx.最晚寄出日:'尚未設定',最晚匯款日:p?.latestRemitDate?ctx.最晚匯款日:'尚未設定'};};
-renderExportTemplates=function(){if(!$('#exportTemplateList'))return;const selected=new Set($$('.txt-template-choice:checked').map(x=>x.value));$('#exportTemplateList').innerHTML=NOTICE_GROUPS212.map(([g,label])=>{const types=state.notificationTypes.filter(nt=>nt.enabled!==false&&noticeTypeVisible212(nt)&&(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===g&&noticeVisibleTemplates212(nt.id).some(t=>t.enabled!==false)).sort((a,b)=>(a.noticeOrder212??99)-(b.noticeOrder212??99));return types.length?`<h3>${esc(label)}</h3>`+types.map(nt=>`<div class="export-template-group"><div class="strong small">${esc(nt.name)}</div>${noticeVisibleTemplates212(nt.id).filter(t=>t.enabled!==false).map(t=>`<label class="check-row"><input class="txt-template-choice" type="checkbox" value="${esc(t.id)}" ${selected.has(t.id)?'checked':''}>${esc(t.name)} · ${esc(noticeTone212(t))}${t.builtIn&&!t.noticeBuiltin212?' · 保留的原版':''}</label>`).join('')}</div>`).join(''):''}).join('')||'<div class="empty">目前篩選沒有可供選用的模板</div>';renderTxtClientOptions();$$('.txt-template-choice').forEach(x=>x.onchange=updateExportSummary);updateExportSummary();};
+renderExportTemplates=function(){if(!$('#exportTemplateList'))return;const selected=new Set($$('.txt-template-choice:checked').map(x=>x.value));$('#exportTemplateList').innerHTML=NOTICE_GROUPS212.map(([g,label])=>{const types=state.notificationTypes.filter(nt=>nt.enabled!==false&&noticeTypeVisible212(nt)&&(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===g&&noticeVisibleTemplates212(nt.id).some(t=>t.enabled!==false)).sort((a,b)=>(a.noticeOrder212??99)-(b.noticeOrder212??99));return types.length?`<h3>${esc(label)}</h3>`+types.map(nt=>`<div class="export-template-group"><div class="strong small">${esc(nt.name)}</div>${noticeVisibleTemplates212(nt.id).filter(t=>t.enabled!==false).map(t=>`<label class="check-row"><input class="txt-template-choice" type="checkbox" value="${esc(t.id)}" ${selected.has(t.id)?'checked':''}>${esc(t.name)}</label>`).join('')}</div>`).join(''):''}).join('')||'<div class="empty">目前篩選沒有可供選用的模板</div>';renderTxtClientOptions();$$('.txt-template-choice').forEach(x=>x.onchange=()=>{renderTxtClientOptions();updateExportSummary()});updateExportSummary();};
 /* ===== End confirmed item 5 ===== */
+
+/* VAT_COLLECTION213_START */
+const collectionState213={days:'1',contextKey:'',txtKey:'',today:localDate()};
+function collectionTarget213(today,raw){
+ const text=String(raw).trim();if(!/^\d{1,4}$/.test(text))return '';const n=Number(text);if(n<1||n>3650||!validDate210(today))return '';const target=addDays(today,n);return validDate210(target)?target:'';
+}
+function collectionMatches213(rows,periodId,target,completeIds){return target?rows.filter(pc=>pc.periodId===periodId&&!pc.notApplicable&&!completeIds.includes(pc.receiptStatusId)&&pc.appointmentDate===target):[];}
+function collectionDate213(){return collectionTarget213(localDate(),collectionState213.days)}
+function collectionRows213(){return collectionMatches213(state.periodClients,state.periodId,collectionDate213(),(state.settings?.receiptStatuses||[]).filter(s=>s.complete).map(s=>s.id))}
+function collectionActive213(){return state.selectedNotificationTypeId===COLLECTION_TYPE211}
+function collectionExport213(){return $$('.txt-template-choice:checked').some(x=>templateById(x.value)?.typeId===COLLECTION_TYPE211)}
+const noticePCsBefore213=noticePCs;
+noticePCs=function(){return collectionActive213()?collectionRows213():noticePCsBefore213()};
+const renderNoticeContextBefore213=renderNoticeContext;
+renderNoticeContext=function(){
+ const active=collectionActive213(),target=collectionDate213(),rows=collectionRows213(),ids=rows.map(pc=>pc.id),key=JSON.stringify([active,state.periodId,target]);
+ if(active){if(key!==collectionState213.contextKey)state.mergeClientIds=ids.slice();else state.mergeClientIds=(state.mergeClientIds||[]).filter(id=>ids.includes(id));if(!ids.includes(state.templatePCId))state.templatePCId=ids[0]||null;}
+ collectionState213.contextKey=key;renderNoticeContextBefore213();
+ const box=$('#collectionFilter213');if(!box)return;box.classList.toggle('hidden',!active&&!(state.templateTab==='export'&&collectionExport213()));
+ const input=$('#collectionDays213');if(input.value!==collectionState213.days)input.value=collectionState213.days;input.setAttribute('aria-invalid',String(!target));
+ $('#collectionDate213').textContent=target?fmtDateWeekday(target):'—';
+ $('#collectionStatus213').textContent=!target?'請輸入 1～3650 的整數天數。':`本機今天 ${fmtDate(localDate())} ＋ ${Number(collectionState213.days)} 天；目前期別 ${rows.length} 位符合。只列出預約日相同、本期適用且尚未收齊發票的客戶。${rows.length?'合併通知已預選符合客戶，可自行取消勾選。':'沒有符合客戶，請調整天數或確認預約收發票日。'}`;
+ input.oninput=()=>{collectionState213.days=input.value;renderNoticeContext();renderTxtClientOptions();refreshTemplatePreview()};
+};
+const refreshCollectionBefore213=refreshTemplatePreview;
+refreshTemplatePreview=function(){
+ refreshCollectionBefore213();const active=collectionActive213(),pcs=active?(state.noticeMode==='merge'?(state.mergeClientIds||[]).map(id=>state.periodClients.find(pc=>pc.id===id)).filter(Boolean):[noticeSelectedPC()].filter(Boolean)):[];
+ if(active&&!pcs.length)$('#templatePreview').value='';
+ $('#copyNoticeBtn').disabled=active&&!pcs.length;
+ const hint=$('#collectionContextHint211');if(active&&hint){hint.hidden=false;hint.textContent=pcs.length?`已選 ${pcs.length} 位客戶，收發票日為 ${fmtDateWeekday(collectionDate213())}。複製僅留紀錄，不代表已傳送。`:'目前沒有選取符合日期的客戶。';hint.classList.toggle('is-warning',!pcs.length)}
+};
+const renderTxtClientsBefore213=renderTxtClientOptions;
+renderTxtClientOptions=function(){
+ renderTxtClientsBefore213();const select=$('#txtClients');if(!select)return;const active=collectionExport213(),key=JSON.stringify([active,state.periodId,collectionDate213()]);
+ if(active){const ids=new Set(collectionRows213().map(pc=>pc.id));for(const o of [...select.options]){if(!ids.has(o.value))o.remove();else if(key!==collectionState213.txtKey)o.selected=true;}}
+ collectionState213.txtKey=key;updateExportSummary();$('#collectionFilter213')?.classList.toggle('hidden',!collectionActive213()&&!(state.templateTab==='export'&&active));
+};
+const copyCollectionBefore213=copyNotice;
+copyNotice=async function(){if(collectionActive213()){const ids=new Set(collectionRows213().map(pc=>pc.id)),selected=state.noticeMode==='merge'?state.mergeClientIds||[]:[state.templatePCId];if(!selected.length||selected.some(id=>!ids.has(id))){toast('請重新確認收發票日期並選取符合客戶');renderNoticeContext();refreshTemplatePreview();return}}return copyCollectionBefore213()};
+const exportCollectionBefore213=exportTemplateTxt;
+exportTemplateTxt=function(){if(collectionExport213()){const ids=new Set(collectionRows213().map(pc=>pc.id));if([...($('#txtClients')?.selectedOptions||[])].some(o=>!ids.has(o.value))){toast('請重新確認收發票日期並選取符合客戶');renderTxtClientOptions();return}}return exportCollectionBefore213()};
+// A page left open overnight follows the device's next calendar day on focus or return.
+function refreshCollectionDay213(){const today=localDate();if(today===collectionState213.today)return;collectionState213.today=today;if(collectionActive213()||collectionExport213()){renderNoticeContext();renderTxtClientOptions();refreshTemplatePreview()}}
+window.addEventListener('focus',refreshCollectionDay213);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCollectionDay213()});
+/* VAT_COLLECTION213_END */
 
 boot();
 })();
@@ -2343,7 +2385,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.12.0-ui.1"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.13.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
