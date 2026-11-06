@@ -6,7 +6,7 @@
 
 **本機 Chromium localhost HTTP：46 組通過、0 失敗**，外部網路封鎖；既有純回歸與 17 項標註合成檢查也通過。新增實際瀏覽器流程在 `Asia/Taipei`、`America/Los_Angeles` 驗證本機日期、＋1／＋2／＋3、跨年、單一與合併名單、手動取消勾選、無結果停用、模板草稿、複製紀錄、TXT 客戶篩選、390px 及隔日重新聚焦。已人工檢視桌面與手機寬度畫面。舊版資料的原稿、編輯副本、原版還原、通知歷史與重新載入也以 IndexedDB 實測。
 
-GitHub `file://` 離線驗證隨本次提交執行，完成後補入 CI 連結。詳細操作見 [v2.13.0 修訂紀錄](revisions/vat-workbench-v2.13.0.md)。
+[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42134030506) 以提交 `436231f` 的交付 HTML 完成 **46 組 Chromium `file://` 離線開檔檢查，46 通過、0 失敗**，外部網路封鎖；純回歸全部通過。詳細操作見 [v2.13.0 修訂紀錄](revisions/vat-workbench-v2.13.0.md)。
 
 ## 計算機 v1.5.0：選單式方程式與比例工作表（2026-11-02）
 

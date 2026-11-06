@@ -110,7 +110,7 @@
 
 ## 驗證與使用範圍
 
-**營業稅 v2.13.0** 已通過本機 localhost HTTP 的 **46 組 Chromium 檢查**、32 項通知核心與 23 項日期篩選檢查，以及既有純回歸。新流程另以台北、洛杉磯兩個時區實測；GitHub `file://` 離線驗證隨本次提交執行，最新紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。下方 v1.5.0 等紀錄屬於前次交付。
+**營業稅 v2.13.0** 已通過本機 localhost HTTP 的 **46 組 Chromium 檢查**、32 項通知核心與 23 項日期篩選檢查，以及既有純回歸。新流程另以台北、洛杉磯兩個時區實測；[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42134030506) 也完成 **46 組 `file://` 離線開檔檢查，全數通過**，完整紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。下方 v1.5.0 等紀錄屬於前次交付。
 
 **v1.5.0** 已通過本機 localhost HTTP 的 **45 組 Chromium 檢查**、10 項表單核心檢查（含 100 組已知解系統），以及既有純回歸與標註合成檢查。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/41398242341) 也已完成 **45 組 `file://` 離線開檔檢查，全數通過**；完整紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。
 

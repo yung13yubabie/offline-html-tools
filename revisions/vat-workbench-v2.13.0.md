@@ -31,3 +31,5 @@ TXT 匯出只要選取收發票模板，客戶名單也會依同一日期篩選�
 [vat-workbench.html](../apps/vat-workbench.html) 即為 v2.13.0 成品，進入 GitHub 檔案頁按 **Download raw file**。維持單檔離線使用、原有可拖曳修改標註，未新增外部執行依賴。
 
 32 項通知核心與 23 項日期篩選檢查通過。整套 Chromium localhost HTTP 回歸 46 組通過、0 失敗，封鎖外部網路；新增通知流程另以台北與洛杉磯兩個時區檢查，已人工檢視桌面與 390px 畫面。最新離線驗證記錄於 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用合成客戶資料，未實測其他瀏覽器或真實手機。
+
+[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42134030506) 已以提交 `436231f` 完成 46 組 Chromium `file://` 離線開檔檢查，全數通過，且封鎖外部網路。
