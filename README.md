@@ -127,7 +127,7 @@
 
 ## 驗證與使用範圍
 
-**營業稅 v2.14.0** 已通過本機 localhost HTTP 的 **49 組 Chromium 檢查**、15 項期別與收入核心、51 項合併付款核心及既有純回歸；四個子代理已完成交叉查核。最後針對舊費用識別碼追加的實際資料庫測試也通過；GitHub `file://` 離線驗證隨本次提交執行，詳見 [TEST_REPORT.md](TEST_REPORT.md)。下列為前次交付紀錄。
+**營業稅 v2.14.0** 已通過本機 localhost HTTP 的 **49 組 Chromium 檢查**、15 項期別與收入核心、51 項合併付款核心及既有純回歸；四個子代理已完成交叉查核。最後針對舊費用識別碼追加的實際資料庫測試也通過；[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42948974256) 也已完成 **49 組 `file://` 離線開檔檢查，全數通過**，詳見 [TEST_REPORT.md](TEST_REPORT.md)。下列為前次交付紀錄。
 
 **營業稅 v2.13.0** 已通過本機 localhost HTTP 的 **46 組 Chromium 檢查**、32 項通知核心與 23 項日期篩選檢查，以及既有純回歸。新流程另以台北、洛杉磯兩個時區實測；[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42134030506) 也完成 **46 組 `file://` 離線開檔檢查，全數通過**，完整紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。下方 v1.5.0 等紀錄屬於前次交付。
 

@@ -36,4 +36,4 @@
 
 來源在 `vat/`，以 `python3 tools/embed-vat.py` 內嵌；`--check` 核對成品。設計來源、採用與未採用的技能建議記錄於 [設計規則](../design-system/vat-workbench.md)。本輪測試只使用合成資料，不將使用者截圖的客戶資料加入公開範例。
 
-本機 localhost HTTP 的 49 組 Chromium 檢查、15 項期別／收入核心與 51 項合併付款核心，以及既有純回歸均通過。最後追加的舊費用 ID 真實資料庫案例也通過。GitHub 離線開檔結果將記錄於 [TEST_REPORT.md](../TEST_REPORT.md)；未實測其他瀏覽器、真實手機或同步多使用者壓力。
+本機 localhost HTTP 的 49 組 Chromium 檢查、15 項期別／收入核心與 51 項合併付款核心，以及既有純回歸均通過。最後追加的舊費用 ID 真實資料庫案例也通過。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42948974256) 已以提交 `64b8c80` 完成 49 組 Chromium `file://` 離線開檔檢查，全數通過；完整紀錄見 [TEST_REPORT.md](../TEST_REPORT.md)；未實測其他瀏覽器、真實手機或同步多使用者壓力。
