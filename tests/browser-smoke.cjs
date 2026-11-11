@@ -8,6 +8,8 @@ const path=require('node:path');
 const {pathToFileURL}=require('node:url');
 const calculatorPool=require('./calculator-pool.browser.js');
 const vatCollection=require('./vat-collection.browser.js');
+const vatWorkspace=require('./vat-workspace.browser.js');
+const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
@@ -584,6 +586,9 @@ async function vatPreviewPaperGeometry(p){
  await context.close();
  }
  await check('vat revision populated dates + save identity + persistence + locking + mobile',()=>vatRevisionContext(vatUIRevision));
+ await check('vat period shared messages + revenue + dirty guards + one-pass variables',()=>vatRevisionContext(p=>vatWorkspace.periodAndRevenue(p,vatNoticeHelpers)));
+ await check('vat group payments atomic shares + partial backup closure + restore safety + cancellation',()=>vatRevisionContext(p=>vatWorkspace.groupPayments(p,vatNoticeHelpers)));
+ await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
  await check('vat saved print layout every scope uses actual printer HTML',()=>vatRevisionContext(vatPrintAllScopes));

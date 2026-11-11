@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.13.0</title>
+<title>營業稅工作台 v2.14.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -473,6 +473,96 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <style>.collection-filter213{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr);gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.collection-filter213.hidden{display:none}.collection-filter213 output{display:block;padding:10px 0;font-weight:700;font-size:17px}.collection-filter213 p{grid-column:1/-1;margin:0}.collection-filter213 input{max-width:180px}@media(max-width:600px){.collection-filter213{grid-template-columns:1fr}.collection-filter213 input{max-width:none}}</style>
+<!-- VAT_WORKSPACE_STYLE_START -->
+<style>
+/* VAT 2.14 visual system. Screen-only: report/paper sizing stays in the existing print layer. */
+@media screen {
+ :root{--bg:#eef2f6;--panel:#fff;--panel2:#f5f7fb;--panel3:#e9eff7;--text:#19283b;--muted:#526075;--line:#cbd5e2;--brand:#245fba;--brand-soft:#eaf1fc;--blue:#245fba;--blue-soft:#eaf1fc;--green:#246b50;--green-soft:#edf7f1;--orange:#895000;--orange-soft:#fff5e7;--yellow:#786015;--yellow-soft:#fff8dd;--red:#b13643;--red-soft:#fff0f2;--radius:10px;--motion-fast211:160ms;--motion-base211:200ms;--vat-focus:0 0 0 3px color-mix(in srgb,var(--brand) 22%,transparent)}
+ [data-theme="dark"]{--bg:#0e1724;--panel:#162233;--panel2:#1c2b40;--panel3:#24364d;--text:#eef3fa;--muted:#b2c1d4;--line:#465a73;--brand:#97bfff;--brand-soft:#203b61;--blue:#97bfff;--blue-soft:#203b61;--green:#85d9b0;--green-soft:#163729;--orange:#ffd093;--orange-soft:#3d2b18;--yellow:#ead28c;--yellow-soft:#3a321c;--red:#ffb0ba;--red-soft:#452531}
+ body{font-family:system-ui,-apple-system,"Microsoft JhengHei","Noto Sans TC",sans-serif;font-size:14px;line-height:1.65}
+ .app{color:var(--text)}.main{scroll-padding-block:20px 84px}.view{padding-bottom:36px}
+ .app .page-title{font-size:26px;font-weight:750;letter-spacing:0}.app .page-sub{font-size:14px;line-height:1.7;max-width:76ch}
+ .app .small,.app .tiny,.modal .small,.modal .tiny,dialog .small,dialog .tiny{font-size:14px;line-height:1.65}
+ .app .muted,.modal .muted,dialog .muted{color:var(--muted)}
+ .app .card,.app .section-card,.app .accounting-section,.app .focus-section-shell,.app .table-wrap{border-radius:var(--radius);border-color:var(--line)}
+ .app .card-h{padding:14px 16px;font-size:16px;font-weight:700;line-height:1.5}.app .card-b{padding:16px}.app .detail-stage>.card-b{padding:0}
+ .app .btn,.modal .btn,dialog .btn{min-height:40px;padding:8px 12px;font-size:14px;line-height:1.4;border-radius:7px;font-weight:650;touch-action:manipulation;transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease}
+ .app .btn.small,.modal .btn.small,dialog .btn.small{min-height:36px;padding:6px 10px;font-size:14px}
+ .app .btn:not(:disabled):active,.modal .btn:not(:disabled):active,dialog .btn:not(:disabled):active{transform:none;background:var(--panel3)}
+ .app .btn.primary,.modal .btn.primary,dialog .btn.primary{background:#245fba;border-color:#245fba;color:#fff}
+ .app .btn.primary:not(:disabled):hover,.modal .btn.primary:not(:disabled):hover,dialog .btn.primary:not(:disabled):hover{background:#194b99;border-color:#194b99}
+ [data-theme="dark"] .app .btn.primary,[data-theme="dark"] .modal .btn.primary,[data-theme="dark"] dialog .btn.primary{background:#2e63b2;border-color:#688dc6;color:#fff}
+ .app .btn:disabled,.modal .btn:disabled,dialog .btn:disabled{opacity:.6;cursor:not-allowed}
+ .app .actions,.modal .actions,dialog .actions{gap:8px}.app .field,.modal .field,dialog .field{gap:7px;min-width:0}
+ .app .field label,.modal .field label,dialog .field label{font-size:14px;font-weight:600;line-height:1.55;color:var(--muted)}
+ .app .input,.app .select,.app .textarea,.modal .input,.modal .select,.modal .textarea,dialog .input,dialog .select,dialog .textarea{font-size:15px;line-height:1.55;min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);max-width:100%}
+ .app .textarea,.modal .textarea,dialog .textarea{line-height:1.8}.app .form-grid,.modal .form-grid,dialog .form-grid{gap:14px}
+ :where(button,[role="button"],a,input,select,textarea,summary):focus-visible{outline:2px solid var(--brand)!important;outline-offset:3px;box-shadow:var(--vat-focus)!important}
+ .app .input:focus,.app .select:focus,.app .textarea:focus{border-color:var(--brand)}
+ .app .sidebar .nav-btn{font-size:15px;min-height:44px}.app .sidebar .nav-btn.active{box-shadow:inset 3px 0 var(--brand)}
+ .app .side-note,.app .nav-section-label{font-size:13px}.app .topbar{border-bottom-color:var(--line);background:var(--panel)}
+ .app .tabs,.app .subtabs{gap:18px}.app .tab,.app .subtab{font-size:15px;min-height:44px;line-height:1.5}.app .toolbar{gap:10px}
+ .app .badge,.app .reminder-tag,.app .work-linked-tag,.app .kpi{font-size:14px;line-height:1.5;white-space:normal;overflow-wrap:anywhere}
+ .app .stat-label,.app .stat-sub{font-size:14px}.app .stat-num{font-size:28px;line-height:1.3}.app .stat{padding:16px;min-width:0}
+ .app .todo-title,.app .cc-name,.app .accounting-client-name{font-size:16px;line-height:1.55}.app .todo-meta,.app .cc-code,.app .accounting-client-card .meta{font-size:14px;line-height:1.6}
+ .app .client-card,.app .accounting-client-card{padding:13px 12px;border-radius:8px}.app .client-card.active,.app .accounting-client-card.active{border-color:var(--brand);background:var(--brand-soft);box-shadow:inset 3px 0 var(--brand)}
+ .app .cc-name,.app .todo-title{white-space:normal;overflow-wrap:anywhere}.app .cc-meta{gap:6px}
+ .app .table-wrap table,.app table{font-size:14px;line-height:1.65}.app th{font-size:14px;font-weight:700}.app th,.app td{padding:11px 12px}.app .filter-row .select,.app .filter-row .input{font-size:14px!important}
+ .app .section-title{font-size:17px;font-weight:750}.app .section-subtitle{font-size:14px!important;line-height:1.7}.app .section-head,.app .section-body{padding:16px}
+ .app .section-subtitle,.app .module-sub,.app .work-focus-sub,.app .accounting-module-sub,.app .fee-note211{color:var(--muted)}
+ #workDetail .module-title{font-size:18px;font-weight:750;line-height:1.5}#workDetail .module-sub{font-size:14px!important;line-height:1.7;font-weight:400}#workDetail .module-metric span{font-size:14px;line-height:1.6}#workDetail .module-metric b{font-size:22px;font-weight:750;line-height:1.4}#workDetail .module-footer{font-size:14px}
+ #workDetail .work-module-card{border-radius:10px;padding:18px;min-height:190px!important}#workDetail .work-focus-title{font-size:22px;font-weight:750}#workDetail .work-focus-sub{font-size:14px!important;line-height:1.7}
+ #workDetail .focus-section-heading .strong{font-size:18px;font-weight:750}#workDetail .focus-section-heading .tiny{font-size:14px!important;font-weight:400;line-height:1.7}
+ #workDetail .section-body .small.muted,#workDetail .section-body .tiny{font-size:14px!important;line-height:1.7}
+ .app .carry-title,.app .debt-components,.app .work-date-label211,.app .work-date-status211,.app .work-date-help211{font-size:14px;line-height:1.6}.app .carry-value{font-size:19px}.app .work-date-value211{font-size:21px}.app .work-date211.is-unset .work-date-value211{font-size:18px}
+ .app .accounting-module-title{font-size:17px;font-weight:750}.app .accounting-module-number{font-size:28px}.app .accounting-module-sub{font-size:14px!important;line-height:1.7}
+ .app .type-name,.app .template-card-title{font-size:16px;font-weight:700}.app .type-meta,.app .template-card-preview,.app .var-source{font-size:14px;line-height:1.7}.app .chip{font-size:14px;min-height:36px;border-radius:6px}.app .var-item{gap:10px}
+ .app .template-compose210 .textarea{font-size:15px;line-height:1.85}.app .template-inline-hint211,.app .notice,.app .export-summary{font-size:14px;line-height:1.7}
+ .app .fee-header211 h2,.app .calendar-month-title{font-size:22px}.app .fee-meta211,.app .fee-total-help211,.app .fee-applied211,.app .fee-footer211{font-size:14px;line-height:1.65}
+ .app .calendar-note-mini{font-size:13px;line-height:1.5}.app .note-content,.app .note-meta{font-size:14px;line-height:1.7}
+ .modal-backdrop{background:rgba(8,19,35,.62)}.modal-backdrop .modal,dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px}.modal-title{font-size:21px}.modal-head,.modal-body{padding:20px}.modal-foot{padding:16px 20px;gap:10px}.close-x{width:44px;height:44px;border-radius:7px}.toast{font-size:14px;line-height:1.65;max-width:min(360px,calc(100vw - 32px));border-radius:8px}
+ /* Customer identity and labelled facts are read as normal content, not footnotes. */
+ #workDetail .detail-head{padding:20px;margin-bottom:20px;gap:20px;border:1px solid var(--line);border-radius:12px;background:var(--panel);align-items:flex-start;flex-wrap:wrap}
+ #workDetail .detail-head>div:first-child{min-width:min(100%,280px);flex:1 1 350px}
+ .vat-client-identity214{min-width:0}.vat-client-heading214{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+ #workDetail .vat-client-heading214 .detail-title{margin:0;font-size:25px;line-height:1.5;font-weight:750;overflow-wrap:anywhere}
+ .vat-client-code214{font-size:14px;line-height:1.5;font-weight:650;padding:3px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel2);font-variant-numeric:tabular-nums;overflow-wrap:anywhere;max-width:100%}
+ .vat-client-business214{font-size:15px;line-height:1.7;color:var(--muted);margin:4px 0 0;overflow-wrap:anywhere}
+ .vat-client-facts214{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 0;padding:0}
+ .vat-client-fact214{min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+ .vat-client-fact214 dt{font-size:14px;line-height:1.6;color:var(--muted);font-weight:600;margin:0 0 5px}
+ .vat-client-fact214 dd{font-size:16px;line-height:1.65;font-weight:550;color:var(--text);margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+ .vat-client-fact214.is-financial dd{font-size:19px;font-weight:750;font-variant-numeric:tabular-nums}.vat-client-fact214.is-empty dd{font-size:16px;font-weight:400;color:var(--muted)}
+ .vat-client-state214{display:inline-flex;padding:3px 8px;border-radius:6px;font-size:14px;font-weight:650;background:var(--orange-soft);color:var(--orange)}
+ #workDetail .work-portfolio-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.work-portfolio-chip{font-size:14px;line-height:1.65;padding:5px 8px;border-color:var(--line);border-radius:6px;background:var(--panel2);color:var(--text);white-space:normal}.work-portfolio-chip strong{font-size:16px;font-weight:750}
+ #workSaveHost211{gap:8px;max-width:100%;align-items:flex-start}#workSaveHost211 .btn{white-space:normal;max-width:100%}
+ .app .accounting-detail-name{font-size:24px;font-weight:750}.app .accounting-detail-head>.small,.app .accounting-detail-head .muted{font-size:14px;line-height:1.7}
+ .app input[type="checkbox"],.modal input[type="checkbox"],dialog input[type="checkbox"]{accent-color:var(--brand)}
+}
+@media screen and (max-width:799px){
+ body{font-size:16px}.app .page-title{font-size:24px}.app .page-sub,.app .small,.app .tiny,.modal .small,.modal .tiny,dialog .small,dialog .tiny{font-size:16px}
+ .app .btn,.app .btn.small,.modal .btn,.modal .btn.small,dialog .btn,dialog .btn.small{font-size:16px;min-height:44px;padding:9px 12px}
+ .app .input,.app .select,.app .textarea,.modal .input,.modal .select,.modal .textarea,dialog .input,dialog .select,dialog .textarea{font-size:16px;min-height:44px}
+ .app .topbar .btn.small{font-size:13px;min-height:36px;min-width:36px;padding:6px}.app .topbar .select{font-size:13px;min-height:38px;padding:6px 4px}.app .topbar .brand{font-size:12px}
+ .app .field label,.modal .field label,dialog .field label{font-size:14px}.app .stat-label,.app .stat-sub,.app .todo-meta,.app .cc-code,.app .badge,.app .reminder-tag,.app .kpi{font-size:14px}
+ .app .page-head{gap:12px}.app .card-h{padding:14px}.app .card-b{padding:14px}.app .detail-stage>.card-b{padding:0}
+ #workDetail .detail-head{padding:16px;gap:16px}#workDetail .detail-head>div:first-child{flex-basis:100%;min-width:0}
+ #workDetail .vat-client-heading214 .detail-title{font-size:24px}.vat-client-facts214{gap:10px;margin-top:14px}.vat-client-fact214{padding:12px}.vat-client-fact214 dt{font-size:14px}.vat-client-fact214 dd{font-size:16px}.vat-client-business214{font-size:16px}
+ #workSaveHost211{width:100%;display:flex;flex-wrap:wrap}#workSaveHost211 #saveWorkBtn{flex:1 1 100%}#workSaveHost211 .btn{flex:1 1 auto}
+ #workDetail .module-title{font-size:19px}#workDetail .module-sub{font-size:16px!important}#workDetail .module-metric span{font-size:14px}#workDetail .module-footer{font-size:16px}#workDetail .work-focus-sub{font-size:16px!important}#workDetail .focus-section-heading .strong{font-size:19px}#workDetail .focus-section-heading .tiny{font-size:16px!important}
+ .app .template-compose210 .textarea{font-size:16px}.app .var-source,.app .template-card-preview,.app .type-meta,.app .note-content{font-size:16px}.app .chip{min-height:44px;font-size:16px}
+ #workDetail .section-body .small.muted,#workDetail .section-body .tiny{font-size:16px!important}.app .fee-note211{font-size:16px}.app .section-subtitle{font-size:16px!important}.app .section-title{font-size:18px}.app .carry-title{font-size:14px}.app .work-date-value211{font-size:21px}.app .work-date211.is-unset .work-date-value211{font-size:18px}
+ .app .actions{gap:8px}.modal-head,.modal-body{padding:16px}.modal-foot{padding:14px 16px;flex-wrap:wrap}.modal-title{font-size:20px}.modal-backdrop .modal{max-width:calc(100vw - 20px)}
+}
+@media screen and (max-width:540px){
+ .vat-client-facts214{grid-template-columns:1fr}.vat-client-fact214.is-financial{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center}.vat-client-fact214.is-financial dt{margin:0}.vat-client-fact214.is-financial dd{text-align:right;max-width:100%;overflow-wrap:anywhere}
+ .app .view{padding-inline:12px}.app .page-head>.actions{width:100%;justify-content:flex-start}.app .template-editor>.card-h .actions{gap:8px}.app .template-editor>.card-h .btn{flex:1 1 auto}
+}
+@media screen and (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+<!-- VAT_WORKSPACE_STYLE_END -->
 </head>
 <body>
 <div class="app">
@@ -480,7 +570,7 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.13.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.14.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -684,7 +774,7 @@ html[data-motion="reduce"] *,html[data-motion="reduce"] *::before,html[data-moti
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.13.0', BACKUP_VERSION=7, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=3;
+const APP_VERSION='2.14.0', BACKUP_VERSION=7, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=3;
 const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks'];
 const PERIOD_SLOTS=[['01','1–2 月',3,15],['02','3–4 月',5,15],['03','5–6 月',7,15],['04','7–8 月',9,15],['05','9–10 月',11,15],['06','11–12 月',1,15]];
 const TEMPLATE_TYPES=[['receiptAsk','詢問收發票時間'],['dispatchReminder','最晚寄出提醒'],['firstBilling','首次請款'],['finalRemit','最後匯款日']];
@@ -1127,7 +1217,7 @@ async function fileJson(file){return JSON.parse(await file.text())}
 function backupSummaryHtml(b){const d=b.data||{};return `<div class="notice"><div class="strong">檔案摘要</div><div class="kpi-row" style="margin-top:8px"><span class="kpi">版本 ${esc(b.backupVersion)}</span><span class="kpi">客戶 ${(d.clients||[]).length}</span><span class="kpi">期別 ${(d.periods||[]).length}</span><span class="kpi">工作紀錄 ${(d.periodClients||[]).length}</span><span class="kpi">通知 ${(d.notifications||[]).length}</span></div></div>`}
 async function restoreFile(mode){const file=$('#restoreFile').files[0];if(!file){toast('請先選擇備份檔');return}let b;try{b=await fileJson(file)}catch{toast('無法讀取備份檔');return}if(!b.backupVersion||!b.data){toast('這不是可辨識的備份檔');return}if(mode==='overwrite'){showModal('完整覆蓋',backupSummaryHtml(b)+'<div class="notice warn" style="margin-top:9px">覆蓋前會先下載目前資料的安全備份。完成後目前資料將以備份內容取代。</div>',[{text:'取消',value:false},{text:'確認覆蓋',value:true,cls:'danger'}],async ok=>{if(!ok)return;await downloadBackup('覆蓋前安全備份');for(const s of STORES)await clearStore(s);for(const s of STORES)for(const x of b.data[s]||[])await put(s,x);await loadAll();toast('完整還原完成')})}else await mergeBackup(b)}
 async function mergeBackup(b){const conflicts=[];for(const s of STORES){const cur=await getAll(s);const map=new Map(cur.map(x=>[x.id,x]));for(const x of b.data[s]||[])if(map.has(x.id)&&JSON.stringify(map.get(x.id))!==JSON.stringify(x))conflicts.push({store:s,id:x.id,old:map.get(x.id),next:x,choice:'skip'})}const html=backupSummaryHtml(b)+(conflicts.length?`<div class="hr"></div><div class="strong">發現 ${conflicts.length} 筆差異</div><div class="actions" style="justify-content:flex-start;margin:7px 0"><button id="confAllOverwrite" class="btn small">全部覆蓋</button><button id="confAllSkip" class="btn small">全部略過</button></div><div style="max-height:360px;overflow:auto" class="table-wrap"><table><thead><tr><th>資料</th><th>舊</th><th>新</th><th>處理</th></tr></thead><tbody>${conflicts.map((c,i)=>`<tr><td>${esc(c.store)}｜${esc(c.id)}</td><td><pre class="tiny" style="white-space:pre-wrap;max-width:240px">${esc(JSON.stringify(c.old,null,1).slice(0,900))}</pre></td><td><pre class="tiny" style="white-space:pre-wrap;max-width:240px">${esc(JSON.stringify(c.next,null,1).slice(0,900))}</pre></td><td><select class="select conflict-choice" data-i="${esc(i)}"><option value="skip">略過</option><option value="overwrite">覆蓋</option></select></td></tr>`).join('')}</tbody></table></div>`:'<div class="notice" style="margin-top:9px">沒有衝突，可直接合併。</div>');showModal('合併備份',html,[{text:'取消',value:false},{text:'合併',value:true,cls:'primary'}],async ok=>{if(!ok)return;const choice=new Map(conflicts.map((c,i)=>[`${c.store}:${c.id}`,document.querySelector(`.conflict-choice[data-i="${esc(i)}"]`)?.value||'skip']));try{await commitBackupMerge211(b,choice);await loadAll();toast('合併完成')}catch(e){toast('合併未完成，未提交的交易已取消：'+e.message);console.error(e)}});setTimeout(()=>{const ao=$('#confAllOverwrite'),as=$('#confAllSkip');if(ao)ao.onclick=()=>$$('.conflict-choice').forEach(x=>x.value='overwrite');if(as)as.onclick=()=>$$('.conflict-choice').forEach(x=>x.value='skip')},0)}
-async function partialExport(){const scope=$('#partialScope').value,b=await backupData('partial'),pid=state.periodId,pc=currentPC();for(const s of STORES)b.data[s]=[];if(scope==='clients')b.data.clients=state.clients;else if(scope==='year'){const y=Number($('#partialYear').value),periods=state.periods.filter(x=>Number(x.year)===y),ids=new Set(periods.map(x=>x.id)),pcs=state.periodClients.filter(x=>ids.has(x.periodId));b.data.periods=periods;b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));b.data.notifications=state.notifications.filter(n=>ids.has(n.periodId));b.data.completed=state.completed.filter(n=>ids.has(n.periodId));b.meta={year:y}}else if(scope==='period'){b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcForPeriod(pid);b.data.notifications=state.notifications.filter(n=>n.periodId===pid);b.data.completed=state.completed.filter(n=>n.periodId===pid);b.data.clients=state.clients.filter(c=>b.data.periodClients.some(x=>x.clientId===c.id))}else if(scope==='client'&&pc){b.data.clients=state.clients.filter(c=>c.id===pc.clientId);b.data.periods=state.periods.filter(x=>x.id===pc.periodId);b.data.periodClients=[pc];b.data.notifications=state.notifications.filter(n=>n.periodClientId===pc.id);b.data.completed=state.completed.filter(n=>n.periodClientId===pc.id)}else if(scope==='status'){const pcs=filteredWorkPCs();b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));b.data.notifications=state.notifications.filter(n=>pcs.some(x=>x.id===n.periodClientId));b.data.completed=state.completed.filter(n=>pcs.some(x=>x.id===n.periodClientId));b.meta={filters:clone(state.workFilters||[])}}else if(scope==='section'){const sec=$('#partialSection').value,pcs=pcForPeriod(pid);b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));if(sec==='notices')b.data.notifications=state.notifications.filter(n=>n.periodId===pid);b.meta={section:sec}}if(scope==='calendar'){b.data.calendarNotes=clone(state.calendarNotes);b.data.calendarHistory=clone(state.calendarHistory);b.data.periodClients=clone(state.periodClients);b.data.periods=clone(state.periods);b.data.clients=clone(state.clients);b.data.workTasks=clone(state.workTasks||[])}else if(scope==='period'||scope==='section'||scope==='status'){b.data.workTasks=clone((state.workTasks||[]).filter(x=>x.periodId===pid))}else if(scope==='year'){const ids=new Set(b.data.periods.map(x=>x.id));b.data.workTasks=clone((state.workTasks||[]).filter(x=>ids.has(x.periodId)))}else if(scope==='client'&&pc){b.data.workTasks=clone((state.workTasks||[]).filter(x=>x.clientId===pc.clientId&&x.periodId===pc.periodId))}b.data.settings=clone([state.settings]);downloadBlob(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}),`營業稅部分資料_${localDate()}.taxbackup`)}
+async function partialExport(){const scope=$('#partialScope').value,b=await backupData('partial'),pid=state.periodId,pc=currentPC();for(const s of STORES)b.data[s]=[];if(scope==='clients')b.data.clients=state.clients;else if(scope==='year'){const y=Number($('#partialYear').value),periods=state.periods.filter(x=>Number(x.year)===y),ids=new Set(periods.map(x=>x.id)),pcs=state.periodClients.filter(x=>ids.has(x.periodId));b.data.periods=periods;b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));b.data.notifications=state.notifications.filter(n=>ids.has(n.periodId));b.data.completed=state.completed.filter(n=>ids.has(n.periodId));b.meta={year:y}}else if(scope==='period'){b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcForPeriod(pid);b.data.notifications=state.notifications.filter(n=>n.periodId===pid);b.data.completed=state.completed.filter(n=>n.periodId===pid);b.data.clients=state.clients.filter(c=>b.data.periodClients.some(x=>x.clientId===c.id))}else if(scope==='client'&&pc){b.data.clients=state.clients.filter(c=>c.id===pc.clientId);b.data.periods=state.periods.filter(x=>x.id===pc.periodId);b.data.periodClients=[pc];b.data.notifications=state.notifications.filter(n=>n.periodClientId===pc.id);b.data.completed=state.completed.filter(n=>n.periodClientId===pc.id)}else if(scope==='status'){const pcs=filteredWorkPCs();b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));b.data.notifications=state.notifications.filter(n=>pcs.some(x=>x.id===n.periodClientId));b.data.completed=state.completed.filter(n=>pcs.some(x=>x.id===n.periodClientId));b.meta={filters:clone(state.workFilters||[])}}else if(scope==='section'){const sec=$('#partialSection').value,pcs=pcForPeriod(pid);b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));if(sec==='notices')b.data.notifications=state.notifications.filter(n=>n.periodId===pid);b.meta={section:sec}}if(scope==='calendar'){b.data.calendarNotes=clone(state.calendarNotes);b.data.calendarHistory=clone(state.calendarHistory);b.data.periodClients=clone(state.periodClients);b.data.periods=clone(state.periods);b.data.clients=clone(state.clients);b.data.workTasks=clone(state.workTasks||[])}else if(scope==='period'||scope==='section'||scope==='status'){b.data.workTasks=clone((state.workTasks||[]).filter(x=>x.periodId===pid))}else if(scope==='year'){const ids=new Set(b.data.periods.map(x=>x.id));b.data.workTasks=clone((state.workTasks||[]).filter(x=>ids.has(x.periodId)))}else if(scope==='client'&&pc){b.data.workTasks=clone((state.workTasks||[]).filter(x=>x.clientId===pc.clientId&&x.periodId===pc.periodId))}b.data.settings=clone([state.settings]);const selectedCount214=b.data.periodClients.length;try{b.data=closeGroupBackup214(b.data)}catch(e){toast(e.message);return}if(b.data.periodClients.length>selectedCount214)toast('已連同合併付款關聯資料匯出，共 '+b.data.periodClients.length+' 筆工作紀錄');downloadBlob(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}),`營業稅部分資料_${localDate()}.taxbackup`)}
 function renderSettings(){const s=state.settings;syncDateMode();$('#setDispatchDays').value=s.dispatchLeadDays??'';$('#billingCompleteMode').value=s.billingCompleteMode||'amount';$('#receiptStatusSettings').innerHTML=(s.receiptStatuses||[]).map((x,i)=>`<div class="form-grid" style="grid-template-columns:1fr auto auto auto;align-items:end;margin-bottom:6px"><div class="field"><label>狀態</label><input class="input rs-name" data-i="${esc(i)}" value="${esc(x.name)}"></div><label class="check-row"><input class="rs-active" data-i="${esc(i)}" type="checkbox" ${x.active!==false?'checked':''}>啟用</label><label class="check-row"><input class="rs-complete" data-i="${esc(i)}" type="checkbox" ${x.complete?'checked':''}>視為完成</label><button class="btn small danger rs-del" data-i="${esc(i)}">刪除</button></div>`).join('');$('#reminderDaysSettings').innerHTML=(s.reminderDays||[]).map((n,i)=>`<div class="form-grid two" style="align-items:end;margin-bottom:6px"><div class="field"><label>提前天數</label><input class="input rd-val" data-i="${esc(i)}" type="number" min="1" value="${esc(n)}"></div><button class="btn small danger rd-del" data-i="${esc(i)}">刪除</button></div>`).join('');$('#courierSettings').innerHTML=(s.couriers||[]).map((x,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px"><input class="input courier-val" data-i="${esc(i)}" value="${esc(x)}"><button class="btn small danger courier-del" data-i="${esc(i)}">刪除</button></div>`).join('');const law=state.laws.find(l=>Number(l.year)===new Date().getFullYear())||state.laws[0]||{};$('#lawYear').value=law.year||new Date().getFullYear();$('#lawInterest').value=law.interest??'';$('#lawDays').value=law.lateEveryDays??3;$('#lawPct').value=law.latePct??1;$('#lawMax').value=law.lateMaxPct??10;$('#lawPeriod').value=law.latePeriodDays??30;$('#prioritySettings').innerHTML=Object.entries(EVENT_LABELS).map(([k,n])=>`<div class="form-grid two" style="align-items:end;margin-bottom:6px"><div class="small">${esc(n)}</div><select class="select pri-val" data-k="${esc(k)}"><option value="urgent" ${s.priorities[k]==='urgent'?'selected':''}>緊急</option><option value="today" ${s.priorities[k]==='today'?'selected':''}>今天要處理</option><option value="tracking" ${s.priorities[k]==='tracking'?'selected':''}>持續追蹤</option></select></div>`).join('');const cfNames={code:'客戶代號',name:'客戶名稱',receipt:'收件狀態',appointment:'預約收件日',payment:'付款狀態',debt:'尚欠金額',taxPaid:'繳納狀態',closed:'結案狀態',priority:'今日優先級'};$('#cardFieldSettings').innerHTML=Object.entries(cfNames).map(([k,n])=>`<label class="check-row"><input class="card-field-opt" data-k="${esc(k)}" type="checkbox" ${s.cardFields[k]!==false?'checked':''}>${n}</label>`).join('');bindSettingsRows()}
 function bindSettingsRows(){$$('.rs-del').forEach(b=>b.onclick=async()=>{if(await confirm2('刪除收件狀態','刪除後舊紀錄中的這個狀態也不再保留。','刪除')){const i=Number(b.dataset.i),deleted=state.settings.receiptStatuses[i];state.settings.receiptStatuses.splice(i,1);for(const pc of state.periodClients)if(pc.receiptStatusId===deleted.id){pc.receiptStatusId='';pc.receiptStatusText='';await put('periodClients',pc)}renderSettings()}});$$('.rd-del').forEach(b=>b.onclick=()=>{state.settings.reminderDays.splice(Number(b.dataset.i),1);renderSettings()});$$('.courier-del').forEach(b=>b.onclick=()=>{state.settings.couriers.splice(Number(b.dataset.i),1);renderSettings()})}
 async function saveSettings(){const s=state.settings;s.dateMode=$('#dateDisplayMode')?.value||s.dateMode||'gregorian';localStorage.setItem('vatDateMode',s.dateMode);s.dispatchLeadDays=$('#setDispatchDays').value===''?null:Number($('#setDispatchDays').value);s.billingCompleteMode=$('#billingCompleteMode').value;s.receiptStatuses=$$('.rs-name').map((el,i)=>({...s.receiptStatuses[i],name:el.value.trim(),active:$$('.rs-active')[i].checked,complete:$$('.rs-complete')[i].checked})).filter(x=>x.name);s.reminderDays=[...new Set($$('.rd-val').map(x=>Number(x.value)).filter(x=>x>0))].sort((a,b)=>b-a);s.couriers=$$('.courier-val').map(x=>x.value.trim()).filter(Boolean);s.priorities=Object.fromEntries($$('.pri-val').map(x=>[x.dataset.k,x.value]));s.cardFields=Object.fromEntries($$('.card-field-opt').map(x=>[x.dataset.k,x.checked]));s.updatedAt=nowISO();await put('settings',s);const y=Number($('#lawYear').value);const old=state.laws.find(l=>Number(l.year)===y);await put('laws',{id:String(y),year:y,interest:Number($('#lawInterest').value||0),lateEveryDays:Number($('#lawDays').value||3),latePct:Number($('#lawPct').value||1),lateMaxPct:Number($('#lawMax').value||10),latePeriodDays:Number($('#lawPeriod').value||30),createdAt:old?.createdAt||nowISO(),updatedAt:nowISO()});await loadAll();toast('設定已儲存')}
@@ -2379,13 +2469,247 @@ function refreshCollectionDay213(){const today=localDate();if(today===collection
 window.addEventListener('focus',refreshCollectionDay213);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCollectionDay213()});
 /* VAT_COLLECTION213_END */
 
+/* VAT_WORKSPACE_SCRIPT_START */
+/* VAT_PERIOD_FEATURES214_START */
+// Per-period values only. Existing client master notes and period-client notes stay independent.
+const MAX_SHARED_MESSAGES214=20,MAX_SHARED_MESSAGE_LENGTH214=4000;
+function sharedMessages214(period){
+ const value=period?.sharedMessages214;if(value==null)return [''];
+ if(!Array.isArray(value)||value.length>MAX_SHARED_MESSAGES214||value.some(x=>typeof x!=='string'||x.length>MAX_SHARED_MESSAGE_LENGTH214))throw new Error('共用備註格式錯誤：最多 20 則，每則最多 4000 字');
+ return value.length?value.slice():[''];
+}
+function salesRevenueValue214(raw){
+ if(raw==null||raw==='')return '';if(typeof raw!=='number'&&typeof raw!=='string')throw new Error('銷貨收入格式錯誤');
+ const text=String(raw).trim();if(!text)return '';
+ if(!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?$/.test(text))throw new Error('銷貨收入請填 0 以上的金額，最多兩位小數');
+ const clean=text.replace(/,/g,''),parts=clean.split('.'),cents=Number(parts[0])*100+Number((parts[1]||'').padEnd(2,'0'));
+ if(!Number.isSafeInteger(cents)||cents>99999999999999)throw new Error('銷貨收入超出範圍，最多 999,999,999,999.99');
+ return cents/100;
+}
+function salesRevenueText214(pc){const value=salesRevenueValue214(pc?.salesRevenue214);return value===''?'尚未填寫':Number(value).toLocaleString('zh-TW',{maximumFractionDigits:2})}
+function periodVariables214(pc,p){const notes=sharedMessages214(p),vars={銷貨收入:salesRevenueText214(pc),本期共用備註:notes.filter(x=>x.trim()).join('\n\n')};for(let i=1;i<=MAX_SHARED_MESSAGES214;i++)vars['共用備註'+i]=notes[i-1]||'';return vars}
+for(const key of ['銷貨收入','本期共用備註',...Array.from({length:MAX_SHARED_MESSAGES214},(_,i)=>'共用備註'+(i+1))]){if(!VARS.includes(key))VARS.push(key);VAR_SOURCE[key]=key==='銷貨收入'?'本期工作／客戶清單 → 本期銷貨收入（未填與 0 分開顯示）':key==='本期共用備註'?'本期設定 → 所有非空白共用備註，依順序合併':'本期設定 → 第 '+key.slice(4)+' 則共用備註；未設定時留空';}
+const templateContextBefore214=templateContext;
+let tokenRender214=null,tokenCounter214=0;
+templateContext=function(pc=currentPC(),p=currentPeriod()){const vars=periodVariables214(pc,p);if(tokenRender214)for(const key of Object.keys(vars)){const token=tokenRender214.prefix+tokenRender214.values.length+'\uE001';tokenRender214.values.push([token,String(vars[key])]);vars[key]=token}return {...templateContextBefore214(pc,p),...vars}};
+// Insert common messages once, after the legacy placeholder loop, so braces stay literal.
+const applyPeriodTokensBefore214=applyTemplate;
+applyTemplate=function(type,text,pc=currentPC(),p=currentPeriod()){const haystack=String(text||'')+JSON.stringify(pc||{})+JSON.stringify(p||{});let prefix;do{prefix='\uE000vat214_'+(++tokenCounter214)+'_'}while(haystack.includes(prefix));const runtime={prefix,values:[]},before=tokenRender214;tokenRender214=runtime;let out;try{out=applyPeriodTokensBefore214(type,text,pc,p)}finally{tokenRender214=before}for(const [token,value] of runtime.values)out=String(out).split(token).join(value);return out};
+const renderPeriodVariablesBefore214=renderVariableChips;
+renderVariableChips=function(){renderPeriodVariablesBefore214();const count=Math.max(2,sharedMessages214(currentPeriod()).length);$$('#variableChips [data-var]').forEach(button=>{const match=button.dataset.var.match(/^共用備註(\d+)$/);if(match&&Number(match[1])>count)button.closest('.var-item').style.display='none'})};
+const prepareRevenueBefore214=preparedPC210;
+preparedPC210=function(obj,old=null){const pc=prepareRevenueBefore214(obj,old);if(Object.prototype.hasOwnProperty.call(pc,'salesRevenue214'))pc.salesRevenue214=salesRevenueValue214(pc.salesRevenue214);return pc};
+const validatePeriodFeaturesBefore214=validateBackup210;
+validateBackup210=function(b){validatePeriodFeaturesBefore214(b);for(const p of b.data.periods||[])sharedMessages214(p);for(const pc of b.data.periodClients||[])if(Object.prototype.hasOwnProperty.call(pc,'salesRevenue214'))salesRevenueValue214(pc.salesRevenue214)};
+const renderBillingRevenueBefore214=renderBillingBody;
+renderBillingBody=function(pc,p){return `<section class="sales-revenue214"><div class="field"><label for="wSalesRevenue214">本期銷貨收入</label><input class="input money" id="wSalesRevenue214" inputmode="decimal" maxlength="20" value="${esc(pc.salesRevenue214??'')}" placeholder="尚未填寫" aria-describedby="salesRevenueHelp214"><div class="small muted" id="salesRevenueHelp214">依本期記錄，通知模板可插入 {銷貨收入}；不加入應收款或稅金計算。</div></div></section>`+renderBillingRevenueBefore214(pc,p)};
+const captureRevenueBefore214=captureWorkForm210;
+captureWorkForm210=function(){const pc=captureRevenueBefore214();if(pc&&$('#wSalesRevenue214'))pc.salesRevenue214=$('#wSalesRevenue214').value;return pc};
+const persistRevenueBefore214=persistWork210;
+persistWork210=async function(pc,old){if(Object.prototype.hasOwnProperty.call(pc,'salesRevenue214'))pc.salesRevenue214=salesRevenueValue214(pc.salesRevenue214);return persistRevenueBefore214(pc,old)};
+const clientRevenueCardBefore214=clientCardHtml;
+clientCardHtml=function(pc,p){return clientRevenueCardBefore214(pc,p).replace(/<\/div>$/,`<div class="client-sales214"><span>本期銷貨收入</span><strong>${esc(salesRevenueText214(pc))}</strong></div></div>`)};
+function sharedMessagesMarkup214(period){return `<section class="period-shared-messages214"><div class="section-title">本期共用備註</div><p class="small muted">此期所有客戶共用；通知模板可插入 {本期共用備註} 或 {共用備註1}、{共用備註2}。不影響個別客戶的本期補充事項。</p><div id="sharedMessageRows214">${sharedMessages214(period).map((text,i)=>sharedMessageRow214(text,i)).join('')}</div><button type="button" class="btn small" id="addSharedMessage214">新增一則備註</button></section>`}
+function sharedMessageRow214(text,i){return `<div class="shared-message-row214"><div class="field"><label for="sharedMessage214_${i+1}">共用備註 ${i+1}<span class="small muted">　{共用備註${i+1}}</span></label><textarea id="sharedMessage214_${i+1}" class="textarea shared-message-text214" maxlength="4000" rows="3">${esc(text)}</textarea></div><button type="button" class="btn small danger" data-remove-shared214="${i}" aria-label="刪除共用備註 ${i+1}">刪除</button></div>`}
+function collectSharedMessages214(){return $$('.shared-message-text214').map(x=>x.value)}
+function bindSharedMessages214(){
+ const render=rows=>{$('#sharedMessageRows214').innerHTML=rows.map((text,i)=>sharedMessageRow214(text,i)).join('');bindSharedMessages214()};
+ $('#addSharedMessage214').disabled=$$('.shared-message-text214').length>=MAX_SHARED_MESSAGES214;
+ $('#addSharedMessage214').onclick=()=>{const rows=collectSharedMessages214();if(rows.length>=MAX_SHARED_MESSAGES214)return;rows.push('');render(rows);$$('.shared-message-text214').at(-1)?.focus()};
+ $$('[data-remove-shared214]').forEach(button=>button.onclick=()=>{const rows=collectSharedMessages214(),index=Number(button.dataset.removeShared214);if(rows[index]?.trim()&&!window.confirm('確定移除這則共用備註？其他備註的編號會依順序前移。'))return;rows.splice(index,1);render(rows.length?rows:[''])});
+}
+// The legacy modal closes immediately after an async callback. These forms keep drafts and errors visible.
+function guardedPeriodModal214(title,html,save,label='儲存',locked=false){
+ showModal(title,html,[{text:locked?'關閉':'取消',value:false},...locked?[]:[{text:label,value:true,cls:'primary'}]],()=>{});
+ const root=$('#modalRoot'),dialog=root.querySelector('.modal'),snapshot=()=>JSON.stringify([...dialog.querySelectorAll('input,textarea,select')].map(x=>x.type==='checkbox'?x.checked:x.value));let baseline=snapshot(),busy=false;
+ const error=document.createElement('p');error.className='notice warn';error.id='periodError214';error.hidden=true;error.setAttribute('role','alert');dialog.querySelector('.modal-body').append(error);
+ const close=()=>{if(busy)return;if(snapshot()!==baseline&&!window.confirm('本期設定尚未儲存，確定捨棄這次變更？'))return;root.classList.remove('show');root.innerHTML=''};
+ root.querySelector('[data-close]').onclick=close;root.querySelector('.modal-foot button').onclick=close;root.onclick=e=>{if(e.target===root)close()};
+ dialog.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}});
+ if(locked){dialog.querySelectorAll('input,textarea,select,[data-remove-shared214],#addSharedMessage214').forEach(x=>x.disabled=true);return}
+ const button=root.querySelector('.modal-foot button:last-child');button.onclick=async()=>{if(busy)return;busy=true;const controls=[...dialog.querySelectorAll('input,textarea,select,button')].map(el=>[el,el.disabled]);for(const [el] of controls)el.disabled=true;error.hidden=true;try{await save();baseline=snapshot();root.classList.remove('show');root.innerHTML=''}catch(e){error.textContent=e.message||'儲存失敗，請保留目前內容後再試';error.hidden=false}finally{busy=false;for(const [el,disabled] of controls)if(el.isConnected)el.disabled=disabled}};
+}
+function periodFormValues214(prefix){
+ const read=name=>$('#'+prefix+name).value,remit=read('Remit'),dispatch=read('DispatchDate'),due=read('Due'),lead=read('Dispatch');
+ if(!validDate210(remit))throw new Error('請設定有效的本期最晚匯款日');if(dispatch&&!validDate210(dispatch))throw new Error('最晚寄出日格式錯誤');if(due&&!validDate210(due))throw new Error('法定繳款日格式錯誤');if(lead!==''&&(!/^\d+$/.test(lead)||Number(lead)>3650))throw new Error('往前天數請填 0～3650 的整數');
+ return {latestRemitDate:remit,latestDispatchDate:dispatch,dispatchLeadDaysOverride:lead===''?null:Number(lead),dueDate:due,sharedMessages214:sharedMessages214({sharedMessages214:collectSharedMessages214()})};
+}
+function periodDateFields214(prefix,p){return `<div class="form-grid two"><div class="field"><label for="${prefix}Remit">本期共用最晚匯款日</label><input id="${prefix}Remit" class="input" type="date" value="${esc(p.latestRemitDate||'')}"></div><div class="field"><label for="${prefix}DispatchDate">本期最晚寄出日</label><input id="${prefix}DispatchDate" class="input" type="date" value="${esc(p.latestDispatchDate||'')}"></div><div class="field"><label for="${prefix}Dispatch">未填最晚寄出日時，自動往前幾天</label><input id="${prefix}Dispatch" class="input" type="number" min="0" max="3650" step="1" placeholder="沿用平常設定" value="${esc(p.dispatchLeadDaysOverride??'')}"></div><div class="field"><label for="${prefix}Due">法定繳款日</label><input id="${prefix}Due" class="input" type="date" value="${esc(p.dueDate||'')}"></div></div>`}
+function allowPeriodEntry214(){if(!workDirty210())return true;if(!allowDiscard210())return false;renderWorkDetail();return true}
+const periodManagerBefore214=openPeriodManager;
+openPeriodManager=function(){if(allowPeriodEntry214())return periodManagerBefore214()};
+openPeriodSettings=function(p){
+ if(!p||!allowPeriodEntry214())return;const locked=p.status==='已結束'&&!p.unlocked,initialUpdated=p.updatedAt||'',html=periodDateFields214('ep',{...p,dueDate:p.dueDate||statutoryDueDate(p.year,p.slot)})+sharedMessagesMarkup214(p)+`<div class="hr"></div><div class="strong">本期優先級</div><div class="grid grid-2">${Object.entries(EVENT_LABELS).map(([k,n])=>`<div class="field"><label>${esc(n)}</label><select class="select ep-pri" data-k="${esc(k)}"><option value="">沿用平常設定</option>${[['urgent','緊急'],['today','今天要處理'],['tracking','持續追蹤']].map(([v,label])=>`<option value="${v}" ${p.priorityOverrides?.[k]===v?'selected':''}>${label}</option>`).join('')}</select></div>`).join('')}</div>${locked?'<p class="notice warn">此期已結束，請先解鎖再修改本期設定與共用備註。</p>':''}`;
+ guardedPeriodModal214(`本期設定｜${periodLabel(p)}`,html,async()=>{const values=periodFormValues214('ep'),latest=await getOne('periods',p.id);if(!latest)throw new Error('此期已不存在');if(latest.status==='已結束'&&!latest.unlocked)throw new Error('此期已結束，請先解鎖');if((latest.updatedAt||'')!==initialUpdated)throw new Error('本期資料已更新，請關閉後重新開啟設定，避免覆寫其他變更');const next={...latest,...values,priorityOverrides:Object.fromEntries($$('.ep-pri').filter(x=>x.value).map(x=>[x.dataset.k,x.value])),updatedAt:nowISO()};if(next.status==='已結束'&&next.unlocked){next.unlocked=false;next.relockedAt=nowISO();next.unlockHistory=clone(next.unlockHistory||[]);const h=next.unlockHistory.at(-1);if(h&&!h.relockedAt)h.relockedAt=next.relockedAt}await put('periods',next);await loadAll();toast('本期設定與共用備註已儲存')},'儲存',locked);if(!locked)bindSharedMessages214();
+};
+function newPeriodClient214(c,p){const t=nowISO(),fees=[];if(c.bookkeepingFee!==''&&c.bookkeepingFee!=null)fees.push({id:uid('fee'),name:'記帳費',amount:Number(c.bookkeepingFee||0),note:'',createdAt:t,updatedAt:t});return preparedPC210({id:p.id+'::'+c.id,periodId:p.id,clientId:c.id,snapshot:{code:c.code,name:c.name,businessItem:c.businessItem||'',bookkeepingFee:c.bookkeepingFee??'',businessStatus:clientBusinessStatus(c),businessStatusExplicit:clientBusinessStatus(c)!=='',pauseStart:c.pauseStart||'',pauseEnd:c.pauseEnd||'',address:c.address,courier:c.courier,contacts:clone(c.contacts||[]),note:c.note||'',stickerCountAtPeriodStart:clientStickerCount(c),shippingPreset:normalizeShip(c.shippingPreset||{})},preShipping:normalizeShip(c.shippingPreset||{}),shippingHistory:[],preShippingChangeHistory:[],notApplicable:false,notApplicableReason:'',appointmentDate:'',receiptNote:'',receiptStatusHistory:[],receiptStatusId:state.settings.receiptStatuses.find(s=>s.name==='未收到')?.id||state.settings.receiptStatuses[0]?.id||'',dispatchLeadDaysOverride:null,taxAmount:'',salesRevenue214:'',fees,payments:[],carryInvoiceForward:false,priorCarryInvoiceHandled:false,billingConfirmed:false,taxPaid:false,taxPaidDate:'',taxPaidAmount:'',plannedTaxPayDate:'',caseClosed:false,notes:'',scheduleHistory:[],dueDateOverride:'',lawSnapshot:lawSnapshotFor(p.dueDate||statutoryDueDate(p.year,p.slot)),createdAt:t,updatedAt:t});}
+openNewPeriodModal=function(){
+ if(!allowPeriodEntry214())return;const year=new Date().getFullYear(),yearText=currentDateMode()==='roc'?'民國年度':'西元年度',html=`<div class="form-grid two"><div class="field"><label for="npYear">${yearText}</label><input id="npYear" class="input" type="number" value="${esc(displayYearNumber(year))}"></div><div class="field"><label for="npSlot">期別</label><select id="npSlot" class="select">${PERIOD_SLOTS.map((x,i)=>`<option value="0${i+1}">${x[1]}</option>`).join('')}</select></div></div>`+periodDateFields214('np',{dueDate:statutoryDueDate(year,'01')})+sharedMessagesMarkup214({});
+ guardedPeriodModal214('建立新一期',html,async()=>{const rawYear=$('#npYear').value;if(!/^\d{1,4}$/.test(rawYear))throw new Error('請填寫有效年度');const year=Number(rawYear)+(currentDateMode()==='roc'?1911:0),slot=$('#npSlot').value;if(year<1||year>9998||Number(slot)<1||Number(slot)>6)throw new Error('年度或期別超出範圍');const periods=await getAll('periods');if(periods.some(p=>Number(p.year)===year&&Number(p.slot)===Number(slot)))throw new Error('這一期已存在');const values=periodFormValues214('np'),t=nowISO(),p={id:year+'-'+slot,year,slot,status:'尚未開始',...values,dueDate:values.dueDate||statutoryDueDate(year,slot),priorityOverrides:{},unlockHistory:[],createdAt:t,updatedAt:t},clients=await getAll('clients'),eligible=clients.filter(c=>clientEligibleForPeriod(c,p)),ops=[{store:'periods',value:p},...eligible.map(c=>({store:'periodClients',value:newPeriodClient214(c,p)}))];await writeBatch210(ops);state.periodId=p.id;localStorage.setItem('vatCurrentPeriod',p.id);await loadAll();toast(`新期別已建立｜加入 ${eligible.length} 位，略過 ${clients.length-eligible.length} 位`)},'建立');bindSharedMessages214();const sync=()=>{const yy=Number($('#npYear').value)+(currentDateMode()==='roc'?1911:0);$('#npDue').value=statutoryDueDate(yy,$('#npSlot').value)};$('#npYear').onchange=sync;$('#npSlot').onchange=sync;sync();
+};
+function openRevenueEditor214(pcId){
+ if(!allowDiscard210())return;const pc=state.periodClients.find(x=>x.id===pcId),p=state.periods.find(x=>x.id===pc?.periodId);if(!pc||!p)return;const locked=p.status==='已結束'&&!p.unlocked;
+ guardedPeriodModal214('本期銷貨收入｜'+(pc.snapshot?.name||''),`<p>${esc(periodLabel(p))}</p><div class="field"><label for="quickSalesRevenue214">銷貨收入</label><input id="quickSalesRevenue214" class="input money" inputmode="decimal" maxlength="20" value="${esc(pc.salesRevenue214??'')}" placeholder="尚未填寫"></div><p class="small muted">可填 0；留空表示尚未填寫。只記錄本期銷貨收入，不加入應收款。</p>${locked?'<p class="notice warn">此期已結束，請先解鎖再修改。</p>':''}`,async()=>{const value=salesRevenueValue214($('#quickSalesRevenue214').value),latest=await getOne('periodClients',pcId),period=await getOne('periods',p.id);if(!latest||!period)throw new Error('客戶或期別已不存在');if(period.status==='已結束'&&!period.unlocked)throw new Error('此期已結束，請先解鎖');const next=await persistWork210({...latest,salesRevenue214:value},latest);await loadAll();toast('本期銷貨收入已儲存')},'儲存',locked);
+}
+const renderClientsRevenueBefore214=renderClients;
+renderClients=function(){renderClientsRevenueBefore214();const table=$('#clientTable table');if(!table)return;for(const [i,row] of [...table.tHead.rows].entries()){const th=document.createElement('th');th.textContent=i===0?'本期銷貨收入':'';th.className='client-sales-column214';row.insertBefore(th,row.lastElementChild)}for(const row of table.tBodies[0].rows){const clientId=row.querySelector('[data-edit-client]')?.dataset.editClient,pc=state.periodClients.find(x=>x.clientId===clientId&&x.periodId===state.periodId),cell=document.createElement('td');cell.className='client-sales-column214 money';if(pc){const button=document.createElement('button');button.className='btn small revenue-edit214';button.textContent=salesRevenueText214(pc);button.title='編輯 '+periodLabel(currentPeriod())+' 銷貨收入';button.onclick=()=>openRevenueEditor214(pc.id);cell.append(button)}else cell.textContent='未加入本期';row.insertBefore(cell,row.lastElementChild)}};
+const renderWorkNotesBefore214=renderWork;
+renderWork=function(){renderWorkNotesBefore214();let box=$('#periodSharedSummary214');const p=currentPeriod(),host=$('#workPeriodLabel');if(!host)return;if(!box){box=document.createElement('section');box.id='periodSharedSummary214';box.className='period-shared-summary214';box.setAttribute('aria-label','本期共用備註');host.closest('.page-head').insertAdjacentElement('afterend',box)}box.replaceChildren();if(!p){box.hidden=true;return}const messages=sharedMessages214(p),nonempty=messages.map((text,i)=>({text,index:i+1})).filter(x=>x.text.trim());box.hidden=!nonempty.length;const heading=document.createElement('div');heading.className='period-shared-summary-head214';const title=document.createElement('strong');title.textContent='本期共用備註';const button=document.createElement('button');button.type='button';button.className='btn small';button.textContent='本期設定';button.onclick=()=>openPeriodSettings(currentPeriod());heading.append(title,button);box.append(heading);for(const message of nonempty){const row=document.createElement('div');row.className='period-shared-summary-message214';const label=document.createElement('span');label.className='period-message-label214';label.textContent='備註 '+message.index;const text=document.createElement('p');text.style.whiteSpace='pre-wrap';text.textContent=message.text;row.append(label,text);box.append(row)}};
+/* VAT_PERIOD_FEATURES214_END */
+
+/* VAT_GROUP_PAYMENTS214_START — one receipt, explicit company shares; no duplicated money. */
+function createGroupPaymentEngine214(){
+ 'use strict';
+ const copy=x=>JSON.parse(JSON.stringify(x));
+ function cents(raw,zero=false){const s=String(raw??'').trim();if(!/^\d+(?:\.\d{1,2})?$/.test(s))throw new Error('付款與分配金額請填最多兩位小數的正數');const [a,b='']=s.split('.'),exact=BigInt(a)*100n+BigInt((b+'00').slice(0,2));if(exact>900000000000000n)throw new Error('付款金額超出安全範圍');const n=Number(exact);if(!Number.isSafeInteger(n)||n<0||(!zero&&n===0))throw new Error('付款與分配金額必須大於零且不可超出安全範圍');return n}
+ const id=x=>typeof x==='string'&&!!x&&!/[<>"'\x00-\x1f]/.test(x);
+ function date(s){if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;const d=new Date(s+'T12:00:00Z');return !isNaN(d)&&d.toISOString().slice(0,10)===s}
+ function unlocked(p){if(!p)throw new Error('期別已不存在');if(p.status==='已結束'&&!p.unlocked)throw new Error('期別已結束，請先解鎖所有受影響的期別')}
+ function signature(r){return JSON.stringify([r.version,r.receiptId,r.status,r.periodId,r.payerPCId,r.payerClientId,r.payerName,cents(r.total),r.date,r.account||'',r.note||'',r.createdAt,(r.shares||[]).map(x=>[x.pcId,x.clientId,cents(x.amount)])])}
+ function validate(data,{requireAllocationRecords=false}={}){
+  const rows=data.periodClients||[],pcs=new Map(rows.map(x=>[x.id,x])),periods=new Set((data.periods||[]).map(x=>x.id)),headers=new Map(),parts=new Map();
+  for(const pc of rows){if(pc.groupPaymentReceipts214!=null&&!Array.isArray(pc.groupPaymentReceipts214))throw new Error('合併付款來源紀錄必須是清單');for(const r of pc.groupPaymentReceipts214||[]){
+   if(!r||r.version!==1||!id(r.receiptId)||headers.has(r.receiptId)||r.payerPCId!==pc.id||r.payerClientId!==pc.clientId||r.periodId!==pc.periodId||!periods.has(r.periodId)||!['active','void'].includes(r.status)||!date(r.date)||!Array.isArray(r.shares)||!r.shares.length)throw new Error('合併付款來源紀錄損壞或重複');
+   const seen=new Set(),seenClients=new Set();let sum=0;for(const a of r.shares){if(!a||!id(a.pcId)||seen.has(a.pcId)||!id(a.clientId)||seenClients.has(a.clientId))throw new Error('合併付款分配對象重複或無效');seen.add(a.pcId);seenClients.add(a.clientId);sum+=cents(a.amount);const dst=pcs.get(a.pcId);if(r.status==='active'&&(!dst||dst.periodId!==r.periodId||dst.clientId!==a.clientId))throw new Error('合併付款缺少相關公司的工作紀錄，請一併匯入整筆付款');}
+   if(!Number.isSafeInteger(sum)||sum!==cents(r.total))throw new Error('合併付款分配總額不等於原始付款總額');headers.set(r.receiptId,r);
+  }
+  for(const pay of pc.payments||[]){if(!pay.groupPayment214)continue;const r=pay.groupPayment214;if(!r||!id(r.receiptId))throw new Error('合併付款分項缺少來源編號');if(!parts.has(r.receiptId))parts.set(r.receiptId,[]);parts.get(r.receiptId).push({pc,pay});}}
+  for(const [key,list] of parts){const h=headers.get(key);if(!h||h.status!=='active')throw new Error('合併付款缺少有效來源紀錄，請一併匯入付款公司');if(list.length!==h.shares.length)throw new Error('合併付款分項不完整，請一併匯入整筆付款');const seenParts=new Set();for(const {pc,pay}of list){if(seenParts.has(pc.id))throw new Error('同一家公司有重複的合併付款分項');seenParts.add(pc.id);const share=h.shares.find(x=>x.pcId===pc.id);if(!share||signature(pay.groupPayment214)!==signature(h)||pay.id!==key+'::'+pc.id||cents(pay.amount)!==cents(share.amount)||pay.date!==h.date||(pay.account||'')!==(h.account||'')||(pay.note||'')!==(h.note||''))throw new Error('合併付款來源與各公司分配資料不一致');
+   if(pay.target!=='auto'||!Array.isArray(pay.allocationOrder)||pay.allocationOrder.length)throw new Error('合併付款分項的沖銷方式已被改動');
+   const record=pay.allocationRecord;if(!record){if(requireAllocationRecords)throw new Error('合併付款缺少已保存的沖銷明細');continue}
+   if(record.version!==1||record.fingerprint!==JSON.stringify([Number(pay.amount),pay.date,'auto',[]])||!Array.isArray(record.allocations)||!Array.isArray(record.itemsBefore)||!Array.isArray(record.itemsAfter)||!Number.isFinite(record.unapplied)||record.unapplied<0||record.unapplied>0.0001)throw new Error('合併付款沖銷明細格式或金額無效');
+   const itemKeys=new Set();let allocated=0;for(const a of record.allocations){if(!a||typeof a!=='object')throw new Error('合併付款沖銷項目無效');const source=pcs.get(a.sourcePCId),before=record.itemsBefore.find(x=>x.key===a.itemKey);if(!a||!id(a.itemKey)||itemKeys.has(a.itemKey)||!Number.isFinite(a.amount)||a.amount<=0||!before||before.sourcePCId!==a.sourcePCId||before.sourcePeriodId!==a.sourcePeriodId||!Number.isFinite(before.balance)||before.balance+0.0001<a.amount||source&&(source.clientId!==pc.clientId||source.periodId!==a.sourcePeriodId||![...(Number(source.taxAmount)>0?[source.id+'::tax']:[]),...(source.fees||[]).flatMap((f,i)=>Number(f.amount)>0?[source.id+'::fee:'+(f.id||i)]:[])].includes(a.itemKey))||!source&&!(pc.openingSnapshot210||[]).some(x=>x.key===a.itemKey&&x.sourcePCId===a.sourcePCId)||!Number.isFinite(a.balanceBefore)||!Number.isFinite(a.balanceAfter)||a.balanceBefore<0||a.balanceAfter<0||Math.abs(a.balanceBefore-a.amount-a.balanceAfter)>0.0001)throw new Error('合併付款含無效金額或其他公司的沖銷來源');itemKeys.add(a.itemKey);allocated+=a.amount;}
+   if(!Number.isFinite(allocated)||Math.abs(allocated+record.unapplied-Number(pay.amount))>0.0001)throw new Error('合併付款已沖與未沖金額不等於分配金額');
+   for(const item of [...record.itemsBefore,...record.itemsAfter])if(!item||!Number.isFinite(item.amount)||item.amount<0||!Number.isFinite(item.balance)||item.balance<0)throw new Error('合併付款餘額快照無效');
+  }}
+  for(const [key,h]of headers)if(h.status==='active'&&!parts.has(key))throw new Error('合併付款來源存在，但沒有沖款分項');
+  return [...headers.values()].map(copy);
+ }
+ function create(input,data,balances,receiptId,at){
+  validate(data);if(!id(receiptId))throw new Error('付款編號無效');if((data.periodClients||[]).some(pc=>(pc.groupPaymentReceipts214||[]).some(r=>r.receiptId===receiptId)))throw new Error('付款編號已存在，請重新建立');
+  const rows=copy(data.periodClients||[]),pcs=new Map(rows.map(x=>[x.id,x])),period=(data.periods||[]).find(x=>x.id===input.periodId);unlocked(period);
+  const payer=pcs.get(input.payerPCId);if(!payer||payer.periodId!==input.periodId||payer.notApplicable)throw new Error('請選擇目前期別適用的付款公司');if(!date(input.date))throw new Error('請填寫有效付款日期');
+  const total=cents(input.total),shares=[],seen=new Set(),seenClients=new Set();let sum=0;
+  for(const a of input.allocations||[]){const raw=String(a.amount??'').trim();if(raw===''||cents(raw,true)===0)continue;if(seen.has(a.pcId))throw new Error('同一家公司只能分配一次');seen.add(a.pcId);const dst=pcs.get(a.pcId);if(!dst||dst.periodId!==input.periodId||dst.notApplicable)throw new Error('分配對象已不存在、不適用或不屬於目前期別');if(seenClients.has(dst.clientId))throw new Error('同一家公司只能分配一次');seenClients.add(dst.clientId);const n=cents(raw);const balance=balances[a.pcId];if(!Number.isFinite(balance)||n>Math.floor(balance*100+1e-6))throw new Error('分配金額不可超過該公司目前尚欠金額');shares.push({pcId:dst.id,clientId:dst.clientId,amount:n/100});sum+=n;}
+  if(!shares.length||!Number.isSafeInteger(sum)||sum!==total)throw new Error('各公司分配合計必須等於原始付款總額');
+  const receipt={version:1,receiptId,status:'active',periodId:input.periodId,payerPCId:payer.id,payerClientId:payer.clientId,payerName:String(payer.snapshot?.name||''),total:total/100,date:input.date,account:String(input.account||'').trim(),note:String(input.note||'').trim(),shares,createdAt:at};
+  payer.groupPaymentReceipts214=[...(payer.groupPaymentReceipts214||[]),copy(receipt)];const changed=new Set([payer.id]);
+  for(const a of shares){const dst=pcs.get(a.pcId);if((dst.payments||[]).some(pay=>pay.id===receiptId+'::'+dst.id))throw new Error('付款分項編號已存在');dst.payments=[...(dst.payments||[]),{id:receiptId+'::'+dst.id,date:receipt.date,amount:a.amount,target:'auto',allocationOrder:[],account:receipt.account,note:receipt.note,groupPayment214:copy(receipt),createdAt:at,updatedAt:at}];changed.add(dst.id)}
+  const result={periodClients:rows,receipt,changedIds:[...changed]};validate({...data,periodClients:rows});return result;
+ }
+ function voidReceipt(receiptId,data,at){
+  const receipts=validate(data),r=receipts.find(x=>x.receiptId===receiptId);if(!r||r.status!=='active')throw new Error('這筆合併付款已撤銷或不存在');unlocked((data.periods||[]).find(x=>x.id===r.periodId));const rows=copy(data.periodClients),changed=new Set([r.payerPCId]);
+  for(const pc of rows){const old=pc.payments||[];pc.payments=old.filter(pay=>pay.groupPayment214?.receiptId!==receiptId);if(pc.payments.length!==old.length)changed.add(pc.id);if(pc.id===r.payerPCId)pc.groupPaymentReceipts214=pc.groupPaymentReceipts214.map(x=>x.receiptId===receiptId?{...x,status:'void',canceledAt:at}:x)}
+  validate({...data,periodClients:rows});return {periodClients:rows,receipt:r,changedIds:[...changed]};
+ }
+ function assertUnchanged(old,next){
+  const previous=(old.payments||[]).filter(x=>x.groupPayment214),after=(next.payments||[]).filter(x=>x.groupPayment214);
+  if(JSON.stringify(old.groupPaymentReceipts214||[])!==JSON.stringify(next.groupPaymentReceipts214||[])||previous.length!==after.length||previous.some(a=>{const b=after.find(x=>x.id===a.id);return !b||JSON.stringify([a.amount,a.date,a.account||'',a.note||'',a.target||'auto',a.allocationOrder||[],a.groupPayment214,a.allocationRecord])!==JSON.stringify([b.amount,b.date,b.account||'',b.note||'',b.target||'auto',b.allocationOrder||[],b.groupPayment214,b.allocationRecord])}))throw new Error('合併付款不能單獨修改或刪除分項；請使用「撤銷整筆合併付款」後重新登記');
+ }
+ function closeBackup(selected,full){
+  validate(full);const out=copy(selected),all=new Map((full.periodClients||[]).map(x=>[x.id,x])),rows=new Map((out.periodClients||[]).map(x=>[x.id,copy(all.get(x.id)||x)])),queue=[...rows.values()];
+  for(let i=0;i<queue.length;i++){const pc=queue[i],receipts=[...(pc.groupPaymentReceipts214||[]).filter(x=>x.status==='active'),...(pc.payments||[]).map(x=>x.groupPayment214).filter(Boolean)];for(const r of receipts)for(const key of [r.payerPCId,...r.shares.map(a=>a.pcId)])if(!rows.has(key)){const ref=all.get(key);if(!ref)throw new Error('合併付款相關資料缺失，無法匯出');rows.set(key,copy(ref));queue.push(ref)}}
+  out.periodClients=[...rows.values()];const periodIds=new Set(out.periodClients.map(x=>x.periodId)),clientIds=new Set(out.periodClients.map(x=>x.clientId));
+  for(const field of ['periods','clients']){const map=new Map((out[field]||[]).map(x=>[x.id,x])),ids=field==='periods'?periodIds:clientIds;for(const x of full[field]||[])if(ids.has(x.id)&&!map.has(x.id))map.set(x.id,copy(x));out[field]=[...map.values()]}
+  validate(out);return out;
+ }
+ return {cents,validate,create,voidReceipt,assertUnchanged,closeBackup};
+}
+function closeGroupBackup214(data){return createGroupPaymentEngine214().closeBackup(data,{periodClients:state.periodClients,periods:state.periods,clients:state.clients})}
+if(typeof module!=='undefined'&&module.exports)module.exports={createGroupPaymentEngine214};
+
+if(typeof document!=='undefined'){
+ const groupEngine214=createGroupPaymentEngine214();let groupSaving214=false;
+ function groupData214(){return {periodClients:state.periodClients,periods:state.periods,clients:state.clients}}
+ function groupIdsForPC214(pc){return [...new Set([...(pc.groupPaymentReceipts214||[]).filter(x=>x.status==='active').map(x=>x.receiptId),...(pc.payments||[]).map(x=>x.groupPayment214?.receiptId).filter(Boolean)])]}
+ // Source is read in the same readwrite transaction that commits every company share.
+ function commitGroupPayment214(input,receiptId=null){return new Promise((resolve,reject)=>{
+  const tr=db.transaction(['periodClients','periods'],'readwrite'),store=tr.objectStore('periodClients'),ps=tr.objectStore('periods'),rr=store.getAll(),pr=ps.getAll();let rows,periods,result,failed=false;
+  const abort=e=>{failed=true;try{tr.abort()}catch{}reject(e)};
+  const build=()=>{if(!rows||!periods||failed)return;const oldRows=state.periodClients,oldPeriods=state.periods;
+   try{state.periodClients=rows;state.periods=periods;const feeBaselines=new Map(rows.map(pc=>[pc.id,JSON.stringify(pc.fees||[])])),wanted=new Set(input?.allocations?.filter(a=>Number(a.amount)>0).map(a=>a.pcId)||[]),balances=Object.fromEntries(rows.filter(pc=>wanted.has(pc.id)).map(pc=>[pc.id,groupOutstanding(pc)])),at=nowISO();result=receiptId?groupEngine214.voidReceipt(receiptId,{periodClients:rows,periods},at):groupEngine214.create(input,{periodClients:rows,periods},balances,uid('groupReceipt'),at);
+    state.periodClients=result.periodClients;const affected=new Set(result.changedIds),clientIds=new Set(result.changedIds.map(id=>rows.find(pc=>pc.id===id)?.clientId));
+    for(const clientId of clientIds){const ledger=computeClientLedgerV19(clientId);if([...ledger.values()].some(l=>(l.conflicts||[]).length))throw new Error('這筆合併付款會影響已儲存的沖銷來源，未儲存；請先確認後續期別付款');for(const pc of result.periodClients.filter(x=>x.clientId===clientId)){const l=ledger.get(pc.id),before=rows.find(x=>x.id===pc.id);if(!l)continue;if(feeBaselines.get(pc.id)!==JSON.stringify(pc.fees||[]))affected.add(pc.id);const opening=JSON.stringify(l.openingItems);if(JSON.stringify(pc.openingSnapshot210||[])!==opening){const p=periods.find(x=>x.id===pc.periodId);if(p?.status==='已結束'&&!p.unlocked&&pc.periodId!==result.receipt.periodId)throw new Error('此付款會改變已結束後期的承接餘額，請先解鎖該期');pc.openingSnapshot210=clone(l.openingItems);affected.add(pc.id)}
+      for(const pay of pc.payments||[])if(pay.groupPayment214?.receiptId===result.receipt.receiptId&&!hasSavedAllocation210(pay)){const snap=l.paymentSnapshots.find(x=>x.paymentId===pay.id);pay.allocationRecord={version:1,fingerprint:paymentFingerprint210(pay),confirmedAt:at,legacyBaseline:false,allocations:clone(snap.allocations),itemsBefore:clone(snap.itemsBefore),itemsAfter:clone(snap.itemsAfter),unapplied:snap.unapplied}}
+      if(affected.has(pc.id)){pc.updatedAt=at;store.put(preparedPC210(pc,before))}
+    }}
+    groupEngine214.validate({periodClients:result.periodClients,periods});const affectedPeriods=new Set([...affected].map(id=>rows.find(pc=>pc.id===id)?.periodId));for(const p of periods)if(affectedPeriods.has(p.id)&&p.status==='已結束'&&p.unlocked){const next=clone(p);next.unlocked=false;next.relockedAt=at;const h=next.unlockHistory?.at(-1);if(h&&!h.relockedAt)h.relockedAt=at;ps.put(next)}
+   }catch(e){abort(e)}finally{state.periodClients=oldRows;state.periods=oldPeriods}
+  };
+  rr.onsuccess=()=>{rows=rr.result;build()};pr.onsuccess=()=>{periods=pr.result;build()};tr.oncomplete=()=>resolve(result);tr.onabort=()=>{if(!failed)reject(tr.error||new Error('合併付款未儲存，所有分配均已取消'))};tr.onerror=()=>{};
+ })}
+ const groupMoney214=n=>new Intl.NumberFormat('zh-TW',{maximumFractionDigits:2}).format(Number(n||0));
+ function groupSummary214(receipt){return `${receipt.payerName||'付款公司'}｜原始付款 ${groupMoney214(receipt.total)} 元｜${receipt.shares.length} 家分配｜${fmtDate(receipt.date)}`}
+ const paymentRowBefore214=payRowV19;
+ payRowV19=function(x={},i=0,snapshot=null){if(!x.groupPayment214)return paymentRowBefore214(x,i,snapshot);const r=x.groupPayment214;return `<div class="pay-row v19-pay-row group-payment-share214" data-pay-id="${esc(x.id)}"><div class="field"><label>付款日期</label><input class="input pay-date" type="date" value="${esc(x.date)}" readonly></div><div class="field"><label>本公司沖款金額</label><input class="input pay-amount" type="number" value="${esc(x.amount)}" readonly></div><div class="field"><label>匯款帳號</label><input class="input pay-account" value="${esc(x.account||'')}" readonly></div><div class="field pay-note-field"><label>備註</label><input class="input pay-note" value="${esc(x.note||'')}" readonly></div><div class="pay-allocation-cell"><div class="strong">合併付款分項</div><div class="small">${esc(groupSummary214(r))}</div><div class="tiny pay-allocation-preview">${allocationPreviewForSnapshot(snapshot)}</div></div><span class="small muted">整筆管理</span></div>`};
+ const renderGroupPaymentBefore214=renderPaymentBody;
+ renderPaymentBody=function(pc,p){let receipts=[];try{receipts=groupEngine214.validate(groupData214()).filter(r=>r.status==='active'&&groupIdsForPC214(pc).includes(r.receiptId))}catch(e){return renderGroupPaymentBefore214(pc,p)+`<p class="notice warn">${esc(e.message)}</p>`}return renderGroupPaymentBefore214(pc,p)+`<div class="group-payments214"><div class="section-mini-head"><div><div class="strong">關係企業合併付款</div><p class="small muted">一筆付款可分配給多家公司；每家公司只計入自己分配的金額。</p></div><button class="btn small primary" id="addGroupPayment214" type="button">新增合併付款</button></div>${receipts.map(r=>`<div class="group-receipt214"><div class="strong">${esc(groupSummary214(r))}</div><div class="small muted">付款編號 ${esc(r.receiptId)}</div><ul>${r.shares.map(a=>{const dst=state.periodClients.find(x=>x.id===a.pcId);return `<li>${esc(dst?.snapshot?.name||a.pcId)}：${groupMoney214(a.amount)} 元</li>`}).join('')}</ul><button class="btn small danger gp-cancel214" type="button" data-receipt-id="${esc(r.receiptId)}">撤銷整筆合併付款</button></div>`).join('')}</div>`};
+ function openGroupPayment214(){
+  if(groupSaving214)return;try{groupEngine214.validate(groupData214())}catch(e){toast(e.message);return}if(workDirty210()){toast('請先儲存目前本期工作的變更，再登記合併付款');return}
+  const p=currentPeriod();if(!p||p.status==='已結束'&&!p.unlocked){toast('請先選擇並解鎖目前期別');return}const pcs=pcForPeriod(p.id).filter(x=>!x.notApplicable),opts=pcs.map(pc=>`<option value="${esc(pc.id)}" ${pc.id===state.selectedPCId?'selected':''}>${esc(pc.snapshot?.code||'')}｜${esc(pc.snapshot?.name||'')}</option>`).join('');
+  showModal('登記關係企業合併付款',`<p class="small">先填原始付款總額，再逐家指定沖款金額。分配合計必須一致，每家公司沿用自己的 FIFO 沖銷，不會把付款總額重複計入。</p><div class="form-grid"><div class="field"><label for="gpPayer214">付款公司</label><select class="select" id="gpPayer214">${opts}</select></div><div class="field"><label for="gpDate214">付款日期</label><input class="input" id="gpDate214" type="date" value="${esc(localDate())}"></div><div class="field"><label for="gpTotal214">原始付款總額</label><input class="input" id="gpTotal214" type="number" min="0.01" step="0.01"></div><div class="field"><label for="gpAccount214">匯款帳號／末碼</label><input class="input" id="gpAccount214"></div><div class="field"><label for="gpNote214">本次付款備註</label><input class="input" id="gpNote214"></div></div><div class="field"><label for="gpSearch214">尋找沖款公司</label><input class="input" id="gpSearch214" type="search" placeholder="名稱或代號"></div><div id="gpRows214" class="group-payment-rows214">${pcs.map(pc=>{const balance=groupOutstanding(pc);return `<div class="group-payment-target214" data-search="${esc([pc.snapshot?.code,pc.snapshot?.name].join(' ').toLocaleLowerCase())}"><label for="gpShare214-${esc(pc.id)}"><span class="strong">${esc(pc.snapshot?.code||'')}｜${esc(pc.snapshot?.name||'')}</span><span class="small muted">目前尚欠 ${groupMoney214(balance)} 元</span></label><input id="gpShare214-${esc(pc.id)}" class="input gp-share214" data-pc-id="${esc(pc.id)}" type="number" min="0" step="0.01" max="${esc(balance)}" value="" ${balance>0?'':'disabled'} aria-label="${esc(pc.snapshot?.name||'')} 沖款金額"></div>`}).join('')}</div><p id="gpSum214" class="strong" role="status">已分配 0 元</p><p id="gpError214" class="notice warn" hidden role="alert"></p><div class="actions"><button id="gpSave214" class="btn primary" type="button">儲存整筆合併付款</button></div>`,[{text:'關閉',value:false}],()=>{});
+  const modal=$('#modalRoot'),snapshot=()=>JSON.stringify(['#gpPayer214','#gpDate214','#gpTotal214','#gpAccount214','#gpNote214'].map(id=>$(id)?.value).concat($$('.gp-share214').map(el=>[el.dataset.pcId,el.value]))),baseline=snapshot();
+  const close=()=>{if(groupSaving214)return;if(snapshot()!==baseline&&!window.confirm('合併付款尚未儲存。確定捨棄這次填寫並關閉？'))return;modal.onkeydown=null;modal.classList.remove('show');modal.innerHTML=''};
+  modal.querySelector('[data-close]').onclick=close;modal.querySelector('.modal-foot button').onclick=close;modal.onclick=e=>{if(e.target===modal)close()};modal.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close()}};
+  const refresh=()=>{let sum=0;for(const el of $$('.gp-share214')){try{sum+=groupEngine214.cents(el.value||'0',true)}catch{}}$('#gpSum214').textContent=`已分配 ${groupMoney214(sum/100)} 元`;};$$('.gp-share214').forEach(el=>el.oninput=refresh);$('#gpSearch214').oninput=e=>{const q=e.target.value.trim().toLocaleLowerCase();$$('.group-payment-target214').forEach(el=>el.hidden=q&&!el.dataset.search.includes(q))};
+  $('#gpSave214').onclick=async()=>{if(groupSaving214)return;const err=$('#gpError214'),button=$('#gpSave214');err.hidden=true;groupSaving214=true;button.disabled=true;try{const input={periodId:p.id,payerPCId:$('#gpPayer214').value,date:$('#gpDate214').value,total:$('#gpTotal214').value,account:$('#gpAccount214').value,note:$('#gpNote214').value,allocations:$$('.gp-share214').map(el=>({pcId:el.dataset.pcId,amount:el.value}))};await commitGroupPayment214(input);$('#modalRoot').onkeydown=null;$('#modalRoot').classList.remove('show');$('#modalRoot').innerHTML='';await loadAll();toast('合併付款已儲存；各公司只計入自己的沖款金額')}catch(e){err.textContent=e.message||'儲存失敗';err.hidden=false}finally{groupSaving214=false;if(button.isConnected)button.disabled=false}};
+ }
+ const bindGroupPaymentsBefore214=bindWorkDetail;
+ bindWorkDetail=function(pc,p,locked){bindGroupPaymentsBefore214(pc,p,locked);const add=$('#addGroupPayment214');if(add){add.disabled=locked;bindWorkListener210(add,'click',openGroupPayment214)}$$('.gp-cancel214').forEach(button=>{button.disabled=locked;bindWorkListener210(button,'click',async()=>{if(groupSaving214)return;if(workDirty210()){toast('請先儲存目前變更，再撤銷合併付款');return}const receipt=groupEngine214.validate(groupData214()).find(r=>r.receiptId===button.dataset.receiptId);if(!receipt)return;if(!await confirm2('撤銷整筆合併付款',`${groupSummary214(receipt)}。所有公司的分配會一併撤銷並恢復尚欠，撤銷紀錄會保留。`,'撤銷整筆'))return;groupSaving214=true;try{await commitGroupPayment214(null,receipt.receiptId);await loadAll();toast('整筆合併付款已撤銷，各公司尚欠已恢復')}catch(e){toast(e.message)}finally{groupSaving214=false}})})};
+ const persistGroupWorkBefore214=persistWork210;
+ persistWork210=async function(pc,old){groupEngine214.assertUnchanged(old||{},pc);return persistGroupWorkBefore214(pc,old)};
+ const validateGroupBackupBefore214=validateBackup210;
+ validateBackup210=function(b){validateGroupBackupBefore214(b);groupEngine214.validate(b.data,{requireAllocationRecords:true})};
+ const validateGroupReferencesBefore214=validateBackupReferences211;
+ validateBackupReferences211=function(data){validateGroupReferencesBefore214(data);groupEngine214.validate(data,{requireAllocationRecords:true})};
+ // Hook used by the partial-export builder immediately before serializing its selected records.
+ const style=document.createElement('style');style.textContent='.group-payments214{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.group-receipt214{border:1px solid var(--line);padding:14px;margin-top:10px;border-radius:8px}.group-payment-rows214{max-height:420px;overflow:auto;margin-top:12px}.group-payment-target214{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--line)}.group-payment-target214[hidden]{display:none}.group-payment-target214 label span{display:block}.group-payment-share214{background:var(--panel2)}@media(max-width:600px){.group-payment-target214{grid-template-columns:minmax(0,1fr) 110px}.group-payments214 .section-mini-head{display:block}.group-payments214 .section-mini-head button{margin-top:10px}}';document.head.appendChild(style);
+}
+/* VAT_GROUP_PAYMENTS214_END */
+
+/* VAT_WORKBENCH_UI214_START — no external fonts, assets or runtime dependencies. */
+function vatElement214(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!=null)el.textContent=String(text);return el;}
+function vatReferenceMoney214(raw){return raw==null||String(raw).trim()===''||!Number.isFinite(Number(raw))?'尚未設定':money(Number(raw))+' 元';}
+function vatClientFacts214(pc,master){
+ const snapshot=pc.snapshot||{},liveContacts=Array.isArray(master?.contacts)&&master.contacts.length>0,contacts=liveContacts?{...snapshot,contacts:master.contacts}:snapshot;
+ const reference=master?master.bookkeepingFee:snapshot.bookkeepingFee;
+ return [
+  {label:'本期地址',value:String(snapshot.address||'').trim()||'尚未設定',empty:!String(snapshot.address||'').trim()},
+  {label:liveContacts?'聯絡人（客戶庫）':'聯絡人（本期資料）',value:String(contactSummary(contacts)||'').trim()||'尚未設定',empty:!String(contactSummary(contacts)||'').trim()},
+  {label:'本期記帳費',value:vatReferenceMoney214(bookkeepingFeeOf(pc)),financial:true},
+  {label:master?'客戶庫預設記帳費':'本期快照預設記帳費',value:vatReferenceMoney214(reference),financial:true,empty:reference==null||String(reference).trim()===''}
+ ];
+}
+function renderClientOverview214(){
+ const head=$('#workDetail .detail-head'),pc=state.periodClients.find(x=>x.id===state.selectedPCId&&x.periodId===state.periodId);if(!head||!pc)return;
+ const title=head.querySelector('.detail-title'),copy=title?.parentElement;if(!title||!copy||copy.querySelector('.vat-client-identity214'))return;
+ const c=pc.snapshot||{},master=clientById(pc.clientId)||null,identity=vatElement214('div','vat-client-identity214'),heading=vatElement214('div','vat-client-heading214');
+ heading.append(vatElement214('h2','detail-title',c.name||'未命名客戶'));
+ if(c.code)heading.append(vatElement214('span','vat-client-code214',c.code));
+ if(pc.notApplicable)heading.append(vatElement214('span','vat-client-state214','本期不適用'));
+ identity.append(heading);
+ if(c.businessItem)identity.append(vatElement214('p','vat-client-business214',c.businessItem));
+ const facts=vatElement214('dl','vat-client-facts214');facts.setAttribute('aria-label','客戶與本期資料');
+ for(const item of vatClientFacts214(pc,master)){
+  const row=vatElement214('div','vat-client-fact214'+(item.financial?' is-financial':'')+(item.empty?' is-empty':''));row.append(vatElement214('dt','',item.label),vatElement214('dd','',item.value));facts.append(row);
+ }
+ identity.append(facts);copy.insertBefore(identity,title);
+ // Remove only the old title and its two immediate metadata lines. Keep live controls,
+ // the portfolio strip and any feature content mounted elsewhere in this container.
+ let next=title.nextElementSibling;for(let i=0;i<2&&next?.classList.contains('small');i++){const old=next;next=old.nextElementSibling;old.remove();}title.remove();
+}
+const renderWorkDetailBefore214Visual=renderWorkDetail;
+renderWorkDetail=function(){const result=renderWorkDetailBefore214Visual();renderClientOverview214();return result;};
+/* VAT_WORKBENCH_UI214_END */
+/* VAT_WORKSPACE_SCRIPT_END */
+
 boot();
 })();
 </script>
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.13.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.14.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

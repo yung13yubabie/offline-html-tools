@@ -1,0 +1,48 @@
+const assert=require('node:assert/strict'),{createGroupPaymentEngine214}=require('../vat/group-payments.js');
+const g=createGroupPaymentEngine214(),copy=x=>JSON.parse(JSON.stringify(x));let count=0;const check=fn=>{fn();count++};
+const at='2026-11-11T12:00:00Z',data={periods:[{id:'p',status:'進行中'},{id:'other',status:'進行中'}],clients:['a','b','c','z'].map(id=>({id})),periodClients:[{id:'p::a',periodId:'p',clientId:'a',snapshot:{name:'Synthetic A'},taxAmount:100,payments:[]},{id:'p::b',periodId:'p',clientId:'b',snapshot:{name:'Synthetic B'},taxAmount:200,payments:[]},{id:'p::c',periodId:'p',clientId:'c',snapshot:{name:'Synthetic C'},payments:[]},{id:'other::z',periodId:'other',clientId:'z',payments:[]}]},balances={'p::a':100,'p::b':200,'p::c':50};
+const input={periodId:'p',payerPCId:'p::a',date:'2026-11-11',total:'120.30',account:'TEST',note:'SYNTHETIC',allocations:[{pcId:'p::a',amount:'20.10'},{pcId:'p::b',amount:'100.20'}]},before=JSON.stringify(data),made=g.create(input,data,balances,'group1',at),next={...data,periodClients:made.periodClients};
+check(()=>assert.equal(JSON.stringify(data),before));
+check(()=>assert.equal(g.validate(next).length,1));
+check(()=>assert.equal(made.periodClients.flatMap(pc=>pc.payments||[]).reduce((n,p)=>n+g.cents(p.amount),0),12030));
+check(()=>assert.equal(made.periodClients.find(pc=>pc.id==='p::a').payments[0].amount,20.1));
+check(()=>assert.equal(made.periodClients.find(pc=>pc.id==='p::b').payments[0].amount,100.2));
+check(()=>assert.equal(made.periodClients.find(pc=>pc.id==='p::a').groupPaymentReceipts214[0].total,120.3));
+check(()=>assert.throws(()=>g.create({...input,total:'120.31'},data,balances,'g2',at),/合計/));
+check(()=>assert.throws(()=>g.create({...input,allocations:[{pcId:'p::a',amount:120.3}]},data,balances,'g2',at),/尚欠/));
+check(()=>assert.throws(()=>g.create(input,{...data,periods:[{id:'p',status:'已結束'}]},balances,'g2',at),/解鎖/));
+check(()=>assert.throws(()=>g.create({...input,date:'2026-02-30'},data,balances,'g2',at),/日期/));
+check(()=>assert.throws(()=>g.create({...input,allocations:[{pcId:'p::a',amount:20.1},{pcId:'p::a',amount:100.2}]},data,balances,'g2',at),/一次/));
+check(()=>assert.throws(()=>g.create({...input,allocations:[{pcId:'other::z',amount:120.3}]},data,balances,'g2',at),/目前期別/));
+check(()=>assert.throws(()=>g.create(input,next,balances,'group1',at),/已存在/));
+for(const raw of ['-1','1e2','1.001','NaN','Infinity','<script>','90071992547409.92'])check(()=>assert.throws(()=>g.cents(raw)));
+check(()=>assert.equal(g.cents('0.10'),10));
+check(()=>assert.equal(g.create({...input,total:'0.29',allocations:[{pcId:'p::a',amount:'0.29'}]},data,{'p::a':0.29},'g-cent',at).receipt.total,0.29));
+check(()=>assert.throws(()=>g.create({...input,total:0.01,allocations:[{pcId:'p::a',amount:0.01}]},data,{'p::a':0.005},'g2',at),/尚欠/));
+const payerOnly=g.create({...input,payerPCId:'p::c',total:100.2,allocations:[{pcId:'p::b',amount:100.2}]},data,balances,'g-zero-payer',at);
+check(()=>assert.equal(payerOnly.periodClients.find(pc=>pc.id==='p::c').payments.length,0));
+check(()=>assert.equal(g.validate({...data,periodClients:payerOnly.periodClients}).length,1));
+for(const mutate of [d=>{d.periodClients.find(x=>x.id==='p::b').payments=[]},d=>{d.periodClients.find(x=>x.id==='p::b').payments[0].amount=99},d=>{d.periodClients.find(x=>x.id==='p::a').groupPaymentReceipts214=[]},d=>{d.periodClients.find(x=>x.id==='p::a').payments.push(copy(d.periodClients.find(x=>x.id==='p::a').payments[0]));d.periodClients.find(x=>x.id==='p::b').payments=[]}])check(()=>{const bad=copy(next);mutate(bad);assert.throws(()=>g.validate(bad))});
+check(()=>g.assertUnchanged(made.periodClients[0],{...copy(made.periodClients[0]),notes:'Edited ordinary notes'}));
+check(()=>{const bad=copy(made.periodClients[0]);bad.payments=[];assert.throws(()=>g.assertUnchanged(made.periodClients[0],bad),/不能單獨/)});
+check(()=>{const bad=copy(made.periodClients[0]);bad.payments[0].amount=1;assert.throws(()=>g.assertUnchanged(made.periodClients[0],bad),/不能單獨/)});
+const partial={periodClients:[copy(made.periodClients.find(x=>x.id==='p::b'))],periods:[data.periods[0]],clients:[data.clients[1]]},closed=g.closeBackup(partial,next);
+check(()=>assert.deepEqual(closed.periodClients.map(x=>x.id).sort(),['p::a','p::b']));
+check(()=>assert.deepEqual(closed.clients.map(x=>x.id).sort(),['a','b']));
+check(()=>assert.equal(closed.periods.length,1));
+check(()=>assert.equal(partial.periodClients.length,1));
+const cancelled=g.voidReceipt('group1',next,'2026-11-12T00:00:00Z'),voidData={...data,periodClients:cancelled.periodClients};
+check(()=>assert.equal(voidData.periodClients.flatMap(pc=>pc.payments||[]).length,0));
+check(()=>assert.equal(g.validate(voidData)[0].status,'void'));
+check(()=>assert.throws(()=>g.voidReceipt('group1',voidData,at),/已撤銷/));
+check(()=>assert.throws(()=>g.voidReceipt('group1',{...next,periods:[{id:'p',status:'已結束'}]},at),/解鎖/));
+// A second connected receipt expands only the graph's necessary records, not unrelated DB rows.
+const second=g.create({...input,payerPCId:'p::b',total:10,allocations:[{pcId:'p::c',amount:10}]},next,balances,'group2',at),connected={...data,periodClients:second.periodClients};
+check(()=>assert.deepEqual(g.closeBackup(partial,connected).periodClients.map(x=>x.id).sort(),['p::a','p::b','p::c']));
+// Restored records cannot rewrite FIFO, inject negative allocations, or silently leave money unapplied.
+const sealed=copy(next);for(const pc of sealed.periodClients)for(const pay of pc.payments||[])if(pay.groupPayment214){const before={key:pc.id+'::tax',sourcePCId:pc.id,sourcePeriodId:'p',amount:pc.taxAmount,balance:pc.taxAmount};pay.allocationRecord={version:1,fingerprint:JSON.stringify([pay.amount,pay.date,'auto',[]]),allocations:[{itemKey:before.key,sourcePCId:pc.id,sourcePeriodId:'p',amount:pay.amount,balanceBefore:before.balance,balanceAfter:before.balance-pay.amount}],itemsBefore:[before],itemsAfter:[{...before,balance:before.balance-pay.amount}],unapplied:0};}
+check(()=>assert.equal(g.validate(sealed,{requireAllocationRecords:true}).length,1));
+check(()=>assert.throws(()=>g.validate(next,{requireAllocationRecords:true}),/明細/));
+for(const mutate of [p=>p.target='current',p=>p.allocationOrder=['foreign'],p=>p.allocationRecord.allocations[0].amount=-1,p=>p.allocationRecord.allocations[0].sourcePCId='p::b',p=>p.allocationRecord.allocations[0].itemKey='nonexistent',p=>p.allocationRecord.unapplied=1,p=>p.allocationRecord.allocations[0].balanceAfter=-1])check(()=>{const bad=copy(sealed);mutate(bad.periodClients[0].payments[0]);assert.throws(()=>g.validate(bad,{requireAllocationRecords:true}))});
+check(()=>assert.throws(()=>g.create(input,{...data,periodClients:data.periodClients.map(pc=>pc.id==='p::a'?{...pc,payments:[{id:'g-collide::p::a'}]}:pc)},balances,'g-collide',at),/編號已存在/));
+console.log(`${count} group-payment checks passed (explicit cent sums, partial closure, linked integrity, edit protection, cancellation, locks).`);
