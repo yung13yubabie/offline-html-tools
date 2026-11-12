@@ -11,6 +11,7 @@ const vatCollection=require('./vat-collection.browser.js');
 const vatWorkspace=require('./vat-workspace.browser.js');
 const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
+const calculatorTaxBooks=require('./calculator-tax-workspace.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
@@ -203,138 +204,16 @@ async function calculatorScreenshot(p,name){
 // Calculator-only presentation regression, separate from the new math-tools contract below.
 // All amounts below are synthetic and retain the pre-existing 5% arithmetic contract.
 async function calculatorPresentation(p){
- const font=locator=>locator.evaluate(e=>parseFloat(getComputedStyle(e).fontSize));
- const amount=async selector=>Number((await p.locator(selector).textContent()).replace(/,/g,'').trim());
- const categories=['salesTriple','inputReceipt'];
- const cat=id=>p.locator(`.category[data-cat="${id}"]`);
- async function intendedBookFocused(book){
-  assert(await book.evaluate(e=>e.classList.contains('focus-active')),'The intended invoice book, not another book, must be in focus mode');
-  assert.equal(await p.locator('.book.focus-active').count(),1,'Only the intended invoice book may be focused');
- }
- async function finishEntry(book){
-  await book.locator('.focus-done').waitFor({state:'visible'});await intendedBookFocused(book);await book.locator('.focus-done').click();await book.locator('.focus-done').waitFor({state:'hidden'});
-  // exitBookFocus restores focus asynchronously; wait for its documented final UI state.
-  await book.locator('.book-toggle:focus').waitFor({state:'visible'});
- }
-
- async function assertTotals(){assert.equal(await amount('#salesTaxTotal'),617);assert.equal(await amount('#inputTaxTotal'),117);assert.equal(await amount('#finalTax'),500);}
- async function summaryNoCollision(scope){
-  const collisions=await scope.locator('.book-summary,.category-summary').evaluateAll(summaries=>summaries.flatMap(summary=>{
-   const boxes=[...summary.querySelectorAll('.sum-label,.sum-value')].flatMap((e,i)=>{const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].filter(r=>r.width&&r.height).map(r=>({i,text:e.textContent,left:r.left,right:r.right,top:r.top,bottom:r.bottom}))});
-   const found=[];for(let a=0;a<boxes.length;a++)for(let b=a+1;b<boxes.length;b++){const x=boxes[a],y=boxes[b];if(x.i!==y.i&&Math.min(x.right,y.right)-Math.max(x.left,y.left)>.5&&Math.min(x.bottom,y.bottom)-Math.max(x.top,y.top)>.5)found.push([x.text,y.text]);}return found;
-  }));
-  assert.deepEqual(collisions,[],'Actual summary text glyphs must not collide (including the long inputReceipt title at 390px)');
- }
-
  try{
-  await p.evaluate(()=>{
-   window.__calculatorFocusTrace=[];
-   const record=e=>{const active=document.activeElement,book=document.querySelector('.book.focus-active');window.__calculatorFocusTrace.push({event:e.type,time:performance.now(),width:innerWidth,height:innerHeight,target:e.target.id||e.target.className||e.target.tagName,active:active?.id||active?.className,focusedCategory:book?.closest('.category')?.dataset.cat,activeCategory:active?.closest?.('.category')?.dataset.cat});if(window.__calculatorFocusTrace.length>200)window.__calculatorFocusTrace.shift()};
-   document.addEventListener('focusin',record);window.addEventListener('resize',record);
-  });
-  await p.locator('[data-panel="taxPanel"]').click();await visible(p,'#taxPanel');
-  assert.match(await p.locator('.session-note').innerText(),/重新整理.*清空/,'Keep a concise warning about losing current calculations');
-  for(const id of ['taxPanel','taxSettings','salesSide','inputSide'])assert.equal(await p.locator('#'+id).getAttribute('data-review-id'),'accounting-calculator-'+id,'Existing annotation identities must remain stable');
-  // A page can fit while its tax columns clip the summary row's last control.
-  // Exercise both sides of the navigation breakpoint with the wider summary-input grid.
-  const widthCategory=cat('salesTriple'),widthBook=widthCategory.locator('.book').first();
-  await widthCategory.locator('.category-head').click();await widthBook.locator('.book-toggle').click();
-  await widthBook.locator('.mode-select').selectOption('summary');
-  for(const width of [981,1000,1080,1081,1200,1280,1281]){
-   await p.setViewportSize({width,height:1000});
-   await p.evaluate(()=>new Promise(requestAnimationFrame));
-   const geometry=await widthBook.evaluate(book=>{
-    const side=book.closest('.tax-side'),bounds=side.getBoundingClientRect();
-    const left=bounds.left+side.clientLeft,right=left+side.clientWidth;
-    const clipped=[...book.querySelectorAll('.table-head>div,.tax-input,.delete-row,.book-controls select,.book-controls button')].flatMap(e=>{
-     const r=e.getBoundingClientRect();return r.width&&r.height&&(r.left<left-.5||r.right>right+.5)?[{element:e.className||e.tagName,text:e.textContent,left:r.left,right:r.right}]:[];
-    });
-    return {clientWidth:side.clientWidth,scrollWidth:side.scrollWidth,clipped};
-   });
-   assert.equal(geometry.scrollWidth,geometry.clientWidth,`${width}px tax column must fit the summary grid without horizontal scrolling`);
-   assert.deepEqual(geometry.clipped,[],`${width}px tax headers, amount inputs and delete controls must fit their column`);
-  }
-  await p.setViewportSize({width:1440,height:1000});
-  await widthBook.locator('.mode-select').selectOption('individual');
-  await widthBook.locator('.book-toggle').click();await widthCategory.locator('.category-head').click();
-  for(const [id,net,tax,gross] of [['salesTriple',12340,617,12957],['inputReceipt',2340,117,2457]]){
-   const category=cat(id),book=category.locator('.book').first();
-   await category.locator('.category-head').click();await book.locator('.book-toggle').click();
-   const row=book.locator('.tax-row').first(),entry=row.locator('[data-field="net"]');
-   // A real pointer click checks actionability; fill alone can write behind an overlay.
-   await entry.click();await intendedBookFocused(book);await entry.fill(String(net));await intendedBookFocused(book);
-   for(const [field,value] of [['tax',tax],['gross',gross]])assert.equal(Number((await row.locator(`[data-field="${field}"]`).inputValue()).replace(/,/g,'')),value);
-   await calculatorScreenshot(p,`accounting-calculator-tax-${id}-expanded-desktop`);await intendedBookFocused(book);
-   await finishEntry(book);
-   assert(await book.locator('.book-body').isVisible(),'Entered detail must remain expanded after confirmation');
-  }
-  await assertTotals();
-  async function typography(category){
-   const name=category.locator('.category-name'),sum=category.locator('.category-summary .sum-value').first(),book=category.locator('.book').first();
-   assert(await font(name)>=await font(sum),'Category title must not be smaller than its summary amount');
-   assert(await font(book.locator('.book-toggle'))>=await font(book.locator('.book-summary .sum-value').first()),'Book title must not be smaller than its summary amount');
-   for(const locator of [name,book.locator('.book-toggle'),book.locator('.table-head'),book.locator('.tax-input').first()])assert(await font(locator)>=13,'Core tax text must remain readable, not tiny metadata');
-   assert(await font(category.locator('.sum-label').first())>=.75*await font(sum),'Summary labels should not shrink far below the amount text');
-   const expected=(await category.getAttribute('data-cat'))==='salesTriple'?'壹萬貳仟玖佰伍拾柒':'貳仟肆佰伍拾柒';
-   for(const upper of [category.locator('.category-upper'),book.locator('.book-upper'),book.locator('.upper-mini').first()]){
-    assert((await upper.textContent()).includes(expected),'Chinese money text must preserve the actual gross amount');
-    const digit=upper.locator('.cn-digit').first(),unit=upper.locator('.cn-unit').first();
-    assert(await digit.isVisible()&&await unit.isVisible(),'Both numeral and place-value glyphs must be visible');
-    assert(await font(digit)>await font(unit),'Financial numerals should be larger than place-value units');
-    const style=locator=>locator.evaluate(e=>{const s=getComputedStyle(e);return {weight:s.fontWeight,color:s.color}});
-    const a=await style(digit),b=await style(unit);assert(Number(a.weight)>Number(b.weight),'Numerals need emphasis beyond color alone');assert.notEqual(a.color,b.color,'Digit/unit distinction should also use contrasting text treatment');
-   }
-  }
-  for(const id of categories)await typography(cat(id));
-  await p.evaluate(()=>{window.scrollTo(0,0);document.querySelectorAll('.tax-side').forEach(e=>e.scrollTop=0)});
-  await calculatorScreenshot(p,'accounting-calculator-tax-populated-desktop');
-  // Open the real settings UI: neither a direction symbol nor a bare mode name is enough context.
-  await p.locator('#toggleSettingsBtn').click();await visible(p,'#taxSettings');
-  const options=await p.locator('#taxSettings [data-enter-default] option,.book .enter-select option').allTextContents();
-  assert(options.length>0);for(const label of options)assert.match(label,/下一筆.*欄位|下一欄|下一列|向右|向下/,'Enter navigation options must explain the direction in words');
-  for(const id of categories){const labels=await cat(id).locator('.mode-select option').allTextContents();assert(labels.some(x=>/逐筆|單筆|個別.*輸入/.test(x)),'Individual mode should explain how to enter');assert(labels.some(x=>/匯總.*輸入|合計|彙總/.test(x)),'Summary mode should explain how to enter');}
-  await calculatorScreenshot(p,'accounting-calculator-tax-settings-desktop');await p.locator('#toggleSettingsBtn').click();
-  await p.setViewportSize({width:390,height:844});
-  // Resizing and switching sides restores the last input focus. Confirm via the actual UI,
-  // rather than deleting focus classes or altering app state in the test.
-  await finishEntry(cat('salesTriple').locator('.book').first());
-  for(const [side,id] of [['sales','salesTriple'],['input','inputReceipt']]){
-   if(side==='input'){await p.locator(`#sideTabs [data-side="${side}"]`).click();await finishEntry(cat(id).locator('.book').first());}
-   await typography(cat(id));await summaryNoCollision(cat(id));assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Populated tax page must fit at 390px');
-   await p.evaluate(side=>{window.scrollTo(0,0);document.getElementById(side+'Side').scrollTop=0},side);
-   await calculatorScreenshot(p,`accounting-calculator-tax-${side}-populated-mobile`);
-   const book=cat(id).locator('.book').first();await book.locator('.tax-input').first().click();await visible(p,'.book.focus-active');
-   await summaryNoCollision(book);
-   const upper=book.locator('.upper-mini').first();
-   assert(await upper.evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1}),'Expanded Chinese money text should fit the narrow viewport without horizontal clipping');
-   await calculatorScreenshot(p,`accounting-calculator-tax-${side}-expanded-mobile`);await finishEntry(book);
-  }
-  await assertTotals();
-  await p.locator('[data-panel="insurancePanel"]').click();await visible(p,'#insurancePanel');
-  const insurance=await p.locator('#insurancePanel').innerText();
-  assert(!/直接內嵌於此 HTML|完整內嵌級距/.test(insurance),'Insurance UI should use task language, not implementation details');
-  assert.match(insurance,/一般全時受僱|一般受僱/,'Applicability must remain explicit');assert.match(insurance,/特殊身分/,'Special cases must not disappear during copy cleanup');assert.match(insurance,/帳單.*核對|依帳單核對/,'Keep the need to reconcile actual bills');
-  await p.locator('#insurancePanel details.cost-note summary').click();assert(await p.locator('#insurancePanel details.cost-note').getAttribute('open')!==null,'Calculation details should remain accessible');
-  await p.locator('#salaryBracketInput').fill('42000');await p.locator('#salaryBracketInput').press('Tab');
-  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Insurance page must fit 390px; only its wide table may scroll locally');
-  await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-mobile');
-  await p.setViewportSize({width:1440,height:1000});await p.evaluate(()=>window.scrollTo(0,0));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-desktop');
-  const trace=await p.evaluate(()=>window.__calculatorFocusTrace);fs.writeFileSync(path.join(OUT,'accounting-calculator-presentation-trace.json'),JSON.stringify({trace,method:'Viewport-only screenshots; production resize handlers unchanged'},null,2));assert(!trace.some(e=>e.event==='resize'&&(e.width<=1||e.height<=1)),'Presentation capture must not transiently resize the real app to 1×1');
- }catch(error){
-  // Capture the failure before cleanup changes the selected tab, viewport, or focus.
-  try{
-   await p.screenshot({path:path.join(OUT,'accounting-calculator-presentation-failure.png'),fullPage:false});
-   const context=await p.evaluate(()=>({trace:window.__calculatorFocusTrace,viewport:{width:innerWidth,height:innerHeight},activeElement:document.activeElement?.outerHTML,focusedBooks:[...document.querySelectorAll('.book.focus-active')].map(e=>({category:e.closest('.category')?.dataset.cat,book:e.dataset.book}))}));
-   fs.writeFileSync(path.join(OUT,'accounting-calculator-presentation-failure.json'),JSON.stringify({error:String(error.stack||error),...context},null,2));
-  }catch(captureError){console.error('Calculator failure capture:',captureError.message)}
-  throw error;
- }finally{
-  await p.setViewportSize({width:1440,height:1000});
-  const done=p.locator('.book.focus-active .focus-done');if(await done.isVisible())await done.click();
-  await p.locator('[data-panel="generalPanel"]').click();
- }
+  await calculatorTaxBooks.presentation(p,{screenshot:calculatorScreenshot});
+  await p.setViewportSize({width:390,height:844});await p.locator('[data-panel="insurancePanel"]').click();await visible(p,'#insurancePanel');
+  const insurance=await p.locator('#insurancePanel').innerText();assert(!/直接內嵌於此 HTML|完整內嵌級距/.test(insurance));assert.match(insurance,/一般全時受僱|一般受僱/);assert.match(insurance,/特殊身分/);assert.match(insurance,/帳單.*核對|依帳單核對/);
+  await p.locator('#insurancePanel details.cost-note summary').click();assert(await p.locator('#insurancePanel details.cost-note').getAttribute('open')!==null);
+  await p.locator('#salaryBracketInput').fill('42000');await p.locator('#salaryBracketInput').press('Tab');assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await calculatorScreenshot(p,'accounting-calculator-insurance-copy-mobile');
+  await p.setViewportSize({width:1440,height:1000});await calculatorScreenshot(p,'accounting-calculator-insurance-copy-desktop');
+ }finally{const done=p.locator('.book.focus-active .focus-done');if(await done.count())await done.click();await p.setViewportSize({width:1440,height:1000});await p.locator('[data-panel="generalPanel"]').click();}
 }
-// The owner explicitly confirmed multiline linear equations and bidirectional proportional conversion.
+
 async function calculatorMathTools(p){
  const before={expression:await p.locator('#calcExpression').textContent(),result:await p.locator('#calcResult').textContent()};
  async function state(id,expected){assert.equal(await p.locator(id).getAttribute('data-status'),expected);}
@@ -571,7 +450,8 @@ async function vatPreviewPaperGeometry(p){
  await context.route(/^https?:/i,networkGuard(evidence));
  await check(id+' offline initial load',async()=>{const file=path.join(ROOT,'apps',id+'.html');assert(fs.existsSync(file),'Missing deliverable '+file);await p.goto(appURL(file));await visible(p,'body');assert((await p.locator('body').innerText()).length>100);assert.equal(await p.evaluate(()=>location.protocol),BASE?new URL(BASE).protocol:'file:');await screenshot(p,id+'-initial');});
  await check(id+' primary flows',()=>flow(p));
- if(id==='accounting-calculator')await check(id+' populated tax readability + labels + insurance copy at desktop and mobile',()=>calculatorPresentation(p));
+ if(id==='accounting-calculator')await check(id+' tax book summary + bounded focus + numbering + disclosure + keyboard + insurance',()=>calculatorPresentation(p));
+ if(id==='accounting-calculator')await check(id+' optional parent exemptions + exact combined total + blank/zero + invalid states',()=>calculatorTaxBooks.exempt(p,{screenshot:calculatorScreenshot}));
  if(id==='accounting-calculator')await check(id+' guided math forms + menus + preserved drafts + preview + responsive results',()=>calculatorMathForms(p));
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));

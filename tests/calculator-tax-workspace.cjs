@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),{createTaxWorkspacePolicy}=require('../calculator/tax-workspace-core.js'),p=createTaxWorkspacePolicy();let count=0;const check=f=>{f();count++};
+check(()=>assert.deepEqual(p.order.sales.slice(0,3),['salesTriple','salesElectronic','salesTwo']));
+check(()=>{for(const [side,ids]of Object.entries(p.order)){ids.forEach((id,i)=>{assert.equal(p.number(id),i+1);assert.equal(p.code(id,2),(i+1)+'-2')})}});
+check(()=>{assert.throws(()=>p.code('unknown',1));for(const n of [0,-1,1.2,Infinity,'bad'])assert.throws(()=>p.code('salesTriple',n))});
+check(()=>assert.deepEqual(p.eligible,['salesTriple','salesTwo']));
+check(()=>{assert.equal(p.parse('').blank,true);assert.equal(p.parse('  ').blank,true);assert.equal(p.parse('0').blank,false);assert.equal(p.parse('0').cents,0)});
+check(()=>{assert.equal(p.parse('1,234.56').cents,123456);assert.equal(p.parse('０.２５').value,.25);assert.equal(p.parse('999,999,999,999.99').cents,99999999999999)});
+check(()=>{for(const v of ['-1','1e3','12,34','Infinity','abc','1.001','<script>','9999999999999'])assert.throws(()=>p.parse(v))});
+check(()=>assert.equal(p.sum(['0.1','0.2']),.3));
+check(()=>{assert.equal(p.sum(['100.25','200','50']),350.25);assert.equal(p.sum(['','','0']),0);assert.throws(()=>p.sum(['100','bad']))});
+check(()=>{assert.equal(p.format(p.sum(['100.25','200','50'])),'350.25');assert.equal(p.format(p.parse('1234.56').value),'1,234.56')});
+const app=fs.readFileSync('apps/accounting-calculator.html','utf8');
+check(()=>{for(const name of ['tax-workspace-core.js','tax-workspace-ui.js','tax-workspace.css'])assert(app.includes(fs.readFileSync('calculator/'+name,'utf8').trim()),name+' must match embedded download')});
+console.log(`${count} calculator tax workspace checks passed (numbering, optional amounts, exact cents, embedded sources).`);
