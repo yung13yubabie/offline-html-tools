@@ -145,7 +145,7 @@
 
 ## 驗證與使用範圍
 
-**計算機 v1.7.0** 已通過 16 項編號與免稅核心檢查、**51 組本機 Chromium 檢查**及全部既有純回歸；包含逐筆免稅、進銷項多筆覆核與序列編輯。GitHub 離線結果完成後補入 [TEST_REPORT.md](TEST_REPORT.md)。
+**計算機 v1.7.0** 已通過 16 項編號與免稅核心檢查、全部既有純回歸，以及本機與 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43152231671) 各 **51 組 Chromium 檢查，全數通過**；CI 使用 `file://` 直接離線開檔，包含逐筆免稅、進銷項多筆覆核與序列編輯。完整範圍見 [TEST_REPORT.md](TEST_REPORT.md)。
 
 **計算機 v1.6.0** 已通過 11 項編號與免稅核心檢查、新增的本機瀏覽器流程，以及 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43146137847) 的 **50 組 Chromium `file://` 離線開檔檢查，全數通過**。完整範圍與本機回歸紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。
 
