@@ -28,4 +28,4 @@
 
 [accounting-calculator.html](../apps/accounting-calculator.html) 是完整獨立的 v1.8.0，GitHub 檔案頁按 **Download raw file** 後即可離線使用。新增 `calculator/session-ui.js` 與既有來源一併由 `python3 tools/embed-calculator.py` 內嵌；`--check` 核對成品。
 
-21 項核心、53 組本機 Chromium localhost HTTP 檢查、既有純回歸及標註合成檢查通過。已人工檢視桌面與窄視窗畫面；完整範圍與離線結果見 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用人工資料，未實測其他瀏覽器或真實手機。沿用 UI UX Pro Max 的可讀字級、可見標籤、觸控尺寸與內容分層規則，沒有新增外部字體或 CDN。
+21 項核心、53 組本機 Chromium localhost HTTP 檢查、既有純回歸及標註合成檢查通過。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43166123080) 亦以提交 `fc0ccbd` 完成 **53 組 `file://` 直接離線開檔檢查，53 通過、0 失敗**，瀏覽器檢查封鎖外部網路。已人工檢視桌面與窄視窗畫面；完整範圍見 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用人工資料，未實測其他瀏覽器或真實手機。沿用 UI UX Pro Max 的可讀字級、可見標籤、觸控尺寸與內容分層規則，沒有新增外部字體或 CDN。
