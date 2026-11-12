@@ -32,7 +32,7 @@ def build(text):
             text = text.replace(before, replacement + before, 1)
     text = re.sub(r'<!-- TAX_WORKSPACE_SCRIPT_BEGIN -->[\s\S]*?<!-- TAX_WORKSPACE_SCRIPT_END -->\n?', '', text)
     start, end = '/* TAX_WORKSPACE_SCRIPT_BEGIN */', '/* TAX_WORKSPACE_SCRIPT_END */'
-    contents = '\n'.join((ROOT / ('calculator/' + name)).read_text().strip() for name in ['tax-workspace-core.js', 'tax-workspace-ui.js'])
+    contents = '\n'.join((ROOT / ('calculator/' + name)).read_text().strip() for name in ['tax-workspace-core.js', 'tax-workspace-ui.js', 'session-ui.js'])
     assert '</script' not in contents.lower()
     script = start + '\n' + contents + '\n' + end
     if start in text:

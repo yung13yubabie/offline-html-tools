@@ -14,6 +14,11 @@ check(()=>assert.deepEqual(p.exemptAmounts('salesTwo','105'),{amount:105,net:105
 check(()=>{assert.equal(p.exemptAmounts('salesTriple',''),null);assert.equal(p.exemptAmounts('salesTwo','0').amount,0)});
 check(()=>{for(const id of ['inputReceipt','salesElectronic','salesReturn','salesExempt'])assert.throws(()=>p.exemptAmounts(id,'100'))});
 check(()=>{assert.equal(p.exemptAmounts('salesTriple','100.99').amount,100);for(const n of ['-1','oops','1e3'])assert.throws(()=>p.exemptAmounts('salesTriple',n))});
+check(()=>{const layout=p.reviewLayout(24,1408,700);assert.equal(layout.columns,2);assert.equal(layout.pages,1);assert(layout.pageSize>=24)});
+check(()=>{const layout=p.reviewLayout(24,343,600);assert.equal(layout.columns,1);assert(layout.pages>1);assert(layout.rows*44+36<=600)});
+check(()=>{assert.equal(p.reviewLayout(0,343,600).pages,1);assert.equal(p.reviewLayout(1,343,0).pageSize,1)});
+check(()=>{assert(p.reviewLayout(100,343,600,88).pageSize<p.reviewLayout(100,343,600,44).pageSize)});
+check(()=>{for(const n of [1,24,100,1000]){const {pageSize,pages}=p.reviewLayout(n,343,600);assert(pageSize*pages>=n);assert(pageSize*(pages-1)<n)}});
 const app=fs.readFileSync('apps/accounting-calculator.html','utf8');
-check(()=>{for(const name of ['tax-workspace-core.js','tax-workspace-ui.js','tax-workspace.css'])assert(app.includes(fs.readFileSync('calculator/'+name,'utf8').trim()),name+' must match embedded download')});
+check(()=>{for(const name of ['tax-workspace-core.js','tax-workspace-ui.js','tax-workspace.css','session-ui.js'])assert(app.includes(fs.readFileSync('calculator/'+name,'utf8').trim()),name+' must match embedded download')});
 console.log(`${count} calculator tax workspace checks passed (numbering, row exemptions, blank/zero, exact sums, embedded sources).`);

@@ -45,6 +45,10 @@
       else if (data.mode === 'business') result.append(element('p','date-result-detail','實際跨越 ' + number(Math.abs(data.calendarDays)) + ' 個日曆天，略過 ' + number(data.excludedWeekendDays) + ' 個週末日；未排除國定假日。'));
     } catch (exception) {error(result,exception.message);}
   }
+  document.addEventListener('calculator:clear-data',()=>{
+    ['dateDiffStart','dateDiffEnd','dateShiftStart','dateShiftAmount'].forEach(id=>{$(id).value='';});
+    reset($('dateDiffResult'));reset($('dateShiftResult'));
+  });
   const now = new Date();
   // Browser-local calendar date, not UTC's possibly different day.
   const today = String(now.getFullYear()).padStart(4, '0') + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');

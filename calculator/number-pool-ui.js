@@ -244,6 +244,13 @@
     if (!isPanel) {$(target).open = true; $(target).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); $(target).querySelector('summary').focus({preventScroll:true});}
     else $(target === 'poolPanel' ? 'poolTarget' : 'dateDiffStart').focus();
   }));
+  document.addEventListener('calculator:clear-data',()=>{
+    stop();latest=null;rows.replaceChildren();addRow();
+    for(const id of ['poolTarget','poolPaste'])$(id).value='';
+    $('poolImportStatus').textContent='';resultBox.replaceChildren();
+    $('poolExportBtn').disabled=true;$('poolSummary').hidden=true;
+    status('計算資料已清除，請輸入目標與數字。');updateCount();
+  });
   const navButtons = [...document.querySelectorAll('.mode-switch button')];
   navButtons.forEach((button,index) => {
     button.setAttribute('aria-controls',button.dataset.panel); button.setAttribute('aria-pressed',String(button.classList.contains('active')));

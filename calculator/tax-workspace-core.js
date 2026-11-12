@@ -13,6 +13,11 @@ function createTaxWorkspacePolicy(){
  function sum(values){let cents=0;for(const value of values){cents+=parse(value).cents;if(!Number.isSafeInteger(cents))throw new Error('免稅合計超出範圍')}return cents/100}
  function exemptAmounts(id,raw){if(!eligible.includes(id))throw new Error('此發票類型不適用清空稅額轉免稅');const input=parse(raw);if(input.blank)return null;const amount=Math.trunc(input.value);return {amount,net:amount,tax:0,gross:amount};}
  function format(value){return new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(value)}
- return {order,eligible,number,code,parse,sum,format,exemptAmounts};
+ function reviewLayout(count,width,height,rowHeight=44){
+  const rows=Math.max(1,Math.floor((Math.max(0,height)-36)/Math.max(44,rowHeight)));
+  const columns=width>=850&&count>rows?2:1;
+  return {rows,columns,pageSize:rows*columns,pages:Math.max(1,Math.ceil(count/(rows*columns)))};
+ }
+ return {order,eligible,number,code,parse,sum,format,exemptAmounts,reviewLayout};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createTaxWorkspacePolicy};

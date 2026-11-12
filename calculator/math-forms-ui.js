@@ -130,6 +130,11 @@
     }catch(error){showResult('ratio','error').append(el('p','guided-result-message',error.message));}
     reveal('ratio');
   });
+  document.addEventListener('calculator:clear-data',()=>{
+    resetDraft();$('linearInput').value='';$('linearPreset').value='';renderRows();clearResult('linear');previewLinear();
+    $('ratioBaseValue').value='';$('ratioTarget').value='';targets.forward='';targets.reverse='';customPercent='';
+    updateBasis();clearResult('ratio');previewRatio();
+  });
   renderRows();updateBasis();previewRatio();
 })();
 /* CALCULATOR_MATH_UI_END */

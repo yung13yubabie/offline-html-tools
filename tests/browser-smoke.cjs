@@ -13,6 +13,7 @@ const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorTaxBooks=require('./calculator-tax-workspace.browser.js');
 const calculatorTaxReview=require('./calculator-tax-review.browser.js');
+const calculatorSession=require('./calculator-session.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
@@ -458,6 +459,8 @@ async function vatPreviewPaperGeometry(p){
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));
  if(id==='accounting-calculator')await check(id+' date differences + business days + offsets + local dates + mobile + stale results',()=>calculatorDateTools(p));
+ if(id==='accounting-calculator')await check(id+' focus next book + chosen category + existing books + mobile + preserved entries',()=>calculatorSession.navigation(p,{screenshot:calculatorScreenshot}));
+ if(id==='accounting-calculator')await check(id+' clear calculations in place + cancel + preserved settings + hidden drafts + worker cancellation',()=>calculatorSession.clear(p,{screenshot:calculatorScreenshot}));
  await check(id+' feedback visible blocks + export + reload + mobile',()=>feedback(p,id));
  await check(id+' floating feedback drag + persistence + keyboard + resize + reset',()=>floatingPanel(p,id));
  await check(id+' mobile controls reachable without clipping or toggle overlap',()=>mobileLayout(p,id));

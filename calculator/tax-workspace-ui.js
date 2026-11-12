@@ -4,6 +4,34 @@
  const policy=createTaxWorkspacePolicy(),root=document.getElementById('taxPanel');if(!root)return;
  function tag(name,className,text){const el=document.createElement(name);if(className)el.className=className;if(text!=null)el.textContent=text;return el}
  const reviewStates=new WeakMap();
+ function fillBookChoices(book){
+  const nav=book.querySelector('.book-navigation'),type=nav.querySelector('.focus-category'),select=nav.querySelector('.focus-book');
+  const category=root.querySelector('.category[data-cat="'+type.value+'"]'),current=book.closest('.category').dataset.cat;
+  select.replaceChildren();
+  for(const candidate of category.querySelectorAll('.book')){const option=tag('option','',candidate.dataset.code);option.value=candidate.dataset.book;select.append(option)}
+  const create=tag('option','','新增冊別');create.value='new';select.append(create);
+  select.value=type.value===current?book.dataset.book:select.options[0].value;
+ }
+ function syncBookNavigation(book){
+  book.querySelector('.focus-category').value=book.closest('.category').dataset.cat;fillBookChoices(book);
+ }
+ function goToBook(book,next){
+  const nav=book.querySelector('.book-navigation'),id=nav.querySelector('.focus-category').value,def=catById(id),category=root.querySelector('.category[data-cat="'+id+'"]');
+  const books=[...category.querySelectorAll('.book')],selected=nav.querySelector('.focus-book').value;
+  let target=books.find(b=>b.dataset.book===selected);
+  if(next){const same=book.closest('.category')===category;target=same?books[books.indexOf(book)+1]:books[0];}
+  if(!target)target=addBook(category,def);
+  openDetails(target,def);
+  requestAnimationFrame(()=>{const input=document.activeElement;if(target.classList.contains('focus-active')&&target.contains(input)&&input.matches('.tax-input'))input.scrollIntoView({block:'nearest',behavior:'auto'});});
+ }
+ function bookNavigation(book){
+  const nav=tag('div','book-navigation'),type=tag('select','focus-category'),select=tag('select','focus-book');
+  type.setAttribute('aria-label','前往發票種類');select.setAttribute('aria-label','前往冊別');
+  for(const side of ['sales','input']){const group=tag('optgroup');group.label=side==='sales'?'銷項':'進項';for(const def of taxDefs[side]){const option=tag('option','',policy.number(def.id)+' '+def.title);option.value=def.id;group.append(option)}type.append(group)}
+  for(const [text,input]of [['種類',type],['冊別',select]]){const label=tag('label','book-option');label.append(tag('span','',text),input);nav.append(label)}
+  const go=tag('button','btn focus-go-book','前往'),next=tag('button','btn focus-next-book','下一冊');go.type=next.type='button';
+  type.addEventListener('change',()=>fillBookChoices(book));go.addEventListener('click',()=>goToBook(book,false));next.addEventListener('click',()=>goToBook(book,true));nav.append(go,next);return nav;
+ }
  function rowInputs(row){return Object.fromEntries([...row.querySelectorAll('.tax-input')].map(i=>[i.dataset.field,i]))}
  function isExempt(row,def){return policy.eligible.includes(def.id)&&row.dataset.exempt==='1'}
  function clearExempt(row){delete row.dataset.exempt;delete row.dataset.exemptValue;delete row.dataset.exemptInvalid;const tax=row.querySelector('[data-field="tax"]');if(tax)tax.placeholder='0';const note=row.querySelector('.tax-exempt-note');if(note)note.hidden=true;}
@@ -35,18 +63,41 @@
  function bookExemption(book){const rows=[...book.querySelectorAll('.tax-row[data-exempt="1"]')];if(rows.some(r=>r.dataset.exemptInvalid==='1'))return {has:true,invalid:true,value:0};try{return {has:rows.length>0,invalid:false,value:policy.sum(rows.map(r=>r.dataset.exemptValue||'0'))}}catch{return {has:rows.length>0,invalid:true,value:0}};}
  function setReview(book,on){
   const def=catById(book.closest('.category').dataset.cat),panel=book.querySelector('.book-review'),button=book.querySelector('.book-review-toggle');if(!panel||!button)return;
-  if(on){const invalid=book.querySelector('.tax-row[data-exempt-invalid="1"]');if(invalid){toast('請先修正第 '+invalid.querySelector('.row-index').textContent+' 筆免稅金額');revealRow(invalid);return false;}renderReview(book,def);book.dataset.review='1';panel.hidden=false;button.textContent='返回登打';button.setAttribute('aria-pressed','true');const state=reviewStates.get(book);requestAnimationFrame(()=>{if(book.dataset.review==='1')panel.scrollTop=state?.scrollTop||0});}
-  else{if(book.dataset.review==='1'){const state=reviewStates.get(book)||{};state.scrollTop=panel.scrollTop;reviewStates.set(book,state);}delete book.dataset.review;panel.hidden=true;button.textContent='覆核';button.setAttribute('aria-pressed','false');}
+  if(on){const invalid=book.querySelector('.tax-row[data-exempt-invalid="1"]');if(invalid){toast('請先修正第 '+invalid.querySelector('.row-index').textContent+' 筆免稅金額');revealRow(invalid);return false;}book.dataset.review='1';panel.hidden=false;button.textContent='返回登打';button.setAttribute('aria-pressed','true');renderReview(book,def);}
+  else{delete book.dataset.review;delete book.dataset.reviewColumns;panel.hidden=true;button.textContent='覆核';button.setAttribute('aria-pressed','false');}
   return true;
  }
- function renderReview(book,def){
-  const panel=book.querySelector('.book-review'),table=tag('table','book-review-table'),head=tag('thead'),header=tag('tr');table.setAttribute('aria-label',book.dataset.code+' 覆核');
-  for(const label of ['序列','未稅','稅額','含稅']){const th=tag('th','',label);th.scope='col';header.append(th)}head.append(header);table.append(head);const body=tag('tbody');
-  for(const row of book.querySelectorAll('.tax-row')){if(![...row.querySelectorAll('.tax-input')].some(i=>i.value.trim()!==''))continue;const tr=tag('tr'),seq=tag('td'),n=row.querySelector('.row-index').textContent,link=tag('button','review-sequence',n);link.type='button';link.setAttribute('aria-label','編輯第 '+n+' 筆');
-   link.addEventListener('click',()=>{if(!row.isConnected||!book.contains(row)){renderReview(book,def);return}setReview(book,false);const target=row.querySelector('[data-field="'+(def.kind==='simple'?'amount':categoryDefault[def.id])+'"]')||row.querySelector('.tax-input');enterBookFocus(book,def,target);requestAnimationFrame(()=>{if(book.classList.contains('focus-active'))row.scrollIntoView({block:'center',behavior:'auto'})});});seq.append(link);tr.append(seq);
-   const values=rowValues(row),numbers=def.kind==='simple'?[values.amount,0,values.amount]:[values.net,values.tax,values.gross];for(const value of numbers)tr.append(tag('td','review-amount',fmt(value)));body.append(tr);
+ function renderReview(book,def,measuredHeight=44,availableHeight=null){
+  const panel=book.querySelector('.book-review'),rows=[...book.querySelectorAll('.tax-row')].filter(row=>[...row.querySelectorAll('.tax-input')].some(i=>i.value.trim()!==''));
+  const layout=policy.reviewLayout(rows.length,window.innerWidth-32,availableHeight??panel.clientHeight-142,measuredHeight),state=reviewStates.get(book)||{page:0};
+  state.page=Math.min(Math.max(0,state.page),layout.pages-1);reviewStates.set(book,state);book.dataset.reviewColumns=layout.columns;
+  const grid=tag('div','review-grid');grid.style.setProperty('--review-columns',layout.columns);
+  const shown=rows.slice(state.page*layout.pageSize,(state.page+1)*layout.pageSize),perColumn=Math.max(1,Math.ceil(shown.length/layout.columns));
+  for(let column=0;column<layout.columns;column++){
+   const table=tag('table','book-review-table'),head=tag('thead'),header=tag('tr');table.setAttribute('aria-label',book.dataset.code+' 覆核'+(column+1));
+   for(const label of ['序列','未稅','稅額','含稅']){const th=tag('th','',label);th.scope='col';header.append(th)}head.append(header);table.append(head);const body=tag('tbody');
+   for(const row of shown.slice(column*perColumn,(column+1)*perColumn)){
+    const tr=tag('tr'),seq=tag('td'),n=row.querySelector('.row-index').textContent,link=tag('button','review-sequence',n);link.type='button';link.setAttribute('aria-label','編輯第 '+n+' 筆');
+    link.addEventListener('click',()=>{if(!row.isConnected||!book.contains(row)){renderReview(book,def);return}setReview(book,false);const target=row.querySelector('[data-field="'+(def.kind==='simple'?'amount':categoryDefault[def.id])+'"]')||row.querySelector('.tax-input');enterBookFocus(book,def,target);requestAnimationFrame(()=>{if(book.classList.contains('focus-active'))row.scrollIntoView({block:'center',behavior:'auto'})});});seq.append(link);tr.append(seq);
+    const values=rowValues(row),numbers=def.kind==='simple'?[values.amount,0,values.amount]:[values.net,values.tax,values.gross];for(const value of numbers)tr.append(tag('td','review-amount',fmt(value)));body.append(tr);
+   }
+   table.append(body);grid.append(table);
   }
-  table.append(body);panel.replaceChildren(table);
+  const totals=tag('div','review-totals'),s=sumBook(book,def);totals.append(tag('strong','','全冊加總'));
+  for(const field of ['net','tax','gross']){const value=def.kind==='simple'?(field==='tax'?0:s.amount):s[field],cell=tag('strong','review-amount',fmt(value));cell.dataset.total=field;cell.setAttribute('aria-label',({net:'未稅',tax:'稅額',gross:'含稅'}[field])+'加總 '+fmt(value));totals.append(cell)}
+  const pager=tag('div','review-pager'),previous=tag('button','btn review-previous','上一頁'),next=tag('button','btn review-next','下一頁'),position=tag('span','review-page-position',(state.page+1)+' / '+layout.pages+' · 共 '+rows.length+' 筆');position.setAttribute('role','status');
+  previous.type=next.type='button';previous.disabled=state.page===0;next.disabled=state.page===layout.pages-1;
+  for(const [button,delta]of [[previous,-1],[next,1]])button.addEventListener('click',()=>{state.page+=delta;renderReview(book,def,measuredHeight,availableHeight);book.querySelector(delta>0?'.review-next':'.review-previous').focus({preventScroll:true})});
+  pager.append(previous,position,next);panel.replaceChildren(grid,totals,pager);panel.scrollTop=0;
+  requestAnimationFrame(()=>{
+   if(book.dataset.review!=='1'||!grid.isConnected)return;
+   let tallest=Math.max(44,...[...grid.querySelectorAll('tbody tr')].map(row=>row.getBoundingClientRect().height));
+   const cell=grid.querySelector('td.review-amount');
+   if(cell){const style=getComputedStyle(cell),width=cell.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),context=document.createElement('canvas').getContext('2d');context.font=style.fontWeight+' '+style.fontSize+' '+style.fontFamily;
+    for(const row of rows){const values=rowValues(row),numbers=def.kind==='simple'?[values.amount,0,values.amount]:[values.net,values.tax,values.gross];for(const value of numbers)tallest=Math.max(tallest,Math.ceil(context.measureText(fmt(value)).width/Math.max(1,width))*24+1);}
+   }
+   if(tallest>measuredHeight+1||Math.abs(grid.clientHeight-(availableHeight??panel.clientHeight-142))>1)renderReview(book,def,tallest,grid.clientHeight);
+  });
  }
  const previousSummary=summaryHtml;
  summaryHtml=function(s,def){return def.kind==='simple'?[['未稅',s.amount],['稅額',0],['含稅',s.amount]].map(([label,value])=>`<div class="sum-cell"><span class="sum-label">${label}</span><span class="sum-value money">${fmt(value)}</span></div>`).join(''):previousSummary(s,def)};
@@ -60,7 +111,7 @@
   const add=controls.querySelector('.add-detail'),done=controls.querySelector('.focus-done'),remove=controls.querySelector('.delete-book'),warn=controls.querySelector('.book-warn'),detail=tag('button','btn small book-detail','明細'),actions=tag('div','book-actions');detail.type='button';detail.setAttribute('aria-label',code+' 明細');detail.addEventListener('click',()=>openDetails(book,def));actions.append(detail,remove,done);head.append(actions);controls.remove();
   const review=tag('div','book-review');review.hidden=true;book.append(review);const reviewButton=tag('button','btn small book-review-toggle','覆核');reviewButton.type='button';reviewButton.setAttribute('aria-pressed','false');reviewButton.addEventListener('click',()=>setReview(book,book.dataset.review!=='1'));actions.insertBefore(reviewButton,done);if(policy.eligible.includes(def.id)){const exemption=tag('div','book-exempt-summary');exemption.hidden=true;exemption.append(tag('span','','免稅合計'),tag('strong','','0'));head.children[1].append(exemption);}
   const caption=tag('div','book-focus-caption',def.title);head.querySelector('.book-name-wrap').append(caption);
-  const top=tag('div','book-focus-toolbar');top.append(add,warn);const upper=book.querySelector('.book-upper');if(upper)body.prepend(upper);body.prepend(options,top);
+  const top=tag('div','book-focus-toolbar');top.append(add,warn);const upper=book.querySelector('.book-upper');if(upper)body.prepend(upper);body.prepend(bookNavigation(book),options,top);
   const help=tag('details','book-help'),helpSummary=tag('summary','','操作說明'),helpBody=tag('div','book-help-body');help.append(helpSummary,helpBody);if(upper)helpBody.append(upper);body.querySelectorAll('.upper-guide').forEach(el=>helpBody.append(el));helpBody.append(tag('p','','逐筆輸入與合計輸入需在尚未填寫資料時切換；合計輸入請填張數。'),tag('p','','預設欄位與本類 Enter 方式可在設定調整，每冊也可另選 Enter 方式。退回／折讓一律輸入正數，系統自動作減項。'));body.append(help);
   const sticky=book.querySelector('.book-sticky');if(sticky)sticky.firstElementChild.firstChild.textContent=code+'｜';
   remove.setAttribute('aria-label','刪除冊別 '+code);remove.addEventListener('click',()=>cat.querySelector('.add-book')?.focus());
@@ -79,7 +130,7 @@
  const previousBookSummary=updateBookSummary;
  updateBookSummary=function(book,def){previousBookSummary(book,def);const button=book.querySelector('.book-detail');if(button){const exemption=book.querySelector('.book-exempt-summary');if(exemption){const amount=bookExemption(book);exemption.hidden=!amount.has;exemption.querySelector('strong').textContent=amount.invalid?'待修正':policy.format(amount.value);}const count=sumBook(book,def).warn;button.textContent='明細';button.setAttribute('aria-label',book.dataset.code+' 明細'+(count?'，'+count+' 筆警示':''));button.title=count?count+' 筆警示，開啟明細查看':'';button.classList.toggle('has-warning',!!count)}};
  const previousEnter=enterBookFocus,previousExit=exitBookFocus;
- enterBookFocus=function(book,def,input){if(input&&book.dataset.review==='1')setReview(book,false);book.closest('.category').classList.add('open');previousEnter(book,def,null);book.setAttribute('role','dialog');book.setAttribute('aria-modal','true');book.setAttribute('aria-label',def.title+' '+book.dataset.code+' 專心模式');book.closest('.category').querySelector('.category-head').setAttribute('aria-expanded','true');if(matchMedia('(max-width:1080px)').matches)showMobileSide(book.closest('.category').dataset.side);
+ enterBookFocus=function(book,def,input){if(input&&book.dataset.review==='1')setReview(book,false);const entering=!book.classList.contains('focus-active');book.closest('.category').classList.add('open');previousEnter(book,def,null);if(entering)syncBookNavigation(book);book.setAttribute('role','dialog');book.setAttribute('aria-modal','true');book.setAttribute('aria-label',def.title+' '+book.dataset.code+' 專心模式');book.closest('.category').querySelector('.category-head').setAttribute('aria-expanded','true');if(matchMedia('(max-width:1080px)').matches)showMobileSide(book.closest('.category').dataset.side);
   if(input&&document.activeElement!==input)requestAnimationFrame(()=>{const active=document.activeElement,editingInside=book.contains(active)&&active.getClientRects().length&&!active.matches('.book-detail,.book-toggle');if(book.classList.contains('focus-active')&&book.dataset.review!=='1'&&!editingInside)input.focus({preventScroll:true})});
  };
  exitBookFocus=function(book,restore=true){if(book)setReview(book,false);if(book){book.removeAttribute('role');book.removeAttribute('aria-modal');book.removeAttribute('aria-label')}const result=previousExit(book,false);if(book&&restore)requestAnimationFrame(()=>{const active=document.activeElement;if(!activeFocusBook()&&root.classList.contains('active')&&(book.contains(active)||active===document.body||active===document.getElementById('bookFocusBackdrop')))book.querySelector('.book-toggle')?.focus({preventScroll:true})});return result};
@@ -88,6 +139,8 @@
  revealRow=function(row){const book=row.closest('.book'),cat=row.closest('.category'),def=catById(cat.dataset.cat),input=row.querySelector('.tax-input');enterBookFocus(book,def,input);requestAnimationFrame(()=>{if(book.classList.contains('focus-active'))row.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'})})};
  document.getElementById('bookFocusBackdrop').addEventListener('click',()=>exitBookFocus(activeFocusBook(),true));
  document.addEventListener('keydown',e=>{const book=activeFocusBook();if(!book||e.target.closest?.('#offline-review-host'))return;if(e.key==='Escape'){e.preventDefault();exitBookFocus(book,true)}else if(e.key==='Tab'){const nodes=[...book.querySelectorAll('button,input,select,textarea,summary,a[href]')].filter(el=>!el.disabled&&el.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}});
+ document.addEventListener('calculator:clear-data',()=>{root.querySelectorAll('.book').forEach(book=>{setReview(book,false);reviewStates.delete(book);book.querySelector('.book-review').replaceChildren();});});
+ let reviewResizeFrame=0;window.addEventListener('resize',()=>{cancelAnimationFrame(reviewResizeFrame);reviewResizeFrame=requestAnimationFrame(()=>{const book=activeFocusBook();if(book?.dataset.review==='1')renderReview(book,catById(book.closest('.category').dataset.cat));});});
  renderTaxSides();updateAllSummaries();updateTaxTotals();syncResponsive();
 })();
 /* CALCULATOR_TAX_WORKSPACE_END */
