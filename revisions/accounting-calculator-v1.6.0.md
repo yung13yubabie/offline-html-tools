@@ -32,4 +32,4 @@
 
 [accounting-calculator.html](../apps/accounting-calculator.html) 即為新版成品，進入 GitHub 檔案頁按 **Download raw file**。代碼來源為 `calculator/tax-workspace-core.js`、`tax-workspace-ui.js`、`tax-workspace.css`，由 `python3 tools/embed-calculator.py` 內嵌；`--check` 核對來源一致。
 
-11 項核心檢查與新增瀏覽器流程已通過；完整結果見 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用合成金額，手機寬度模擬不等同真實手機驗收。
+11 項核心檢查與新增本機瀏覽器流程已通過；[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43146137847) 以提交 `bdbf45e` 完成 50 組 Chromium `file://` 離線開檔檢查，全數通過。完整結果與本機下載逾時重跑紀錄見 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用合成金額，手機寬度模擬不等同真實手機驗收。

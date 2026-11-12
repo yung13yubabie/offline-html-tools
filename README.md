@@ -142,7 +142,7 @@
 
 ## 驗證與使用範圍
 
-**計算機 v1.6.0** 已通過 11 項編號與免稅核心檢查，以及針對性瀏覽器流程；整套回歸進行中，結果見 [TEST_REPORT.md](TEST_REPORT.md)。
+**計算機 v1.6.0** 已通過 11 項編號與免稅核心檢查、新增的本機瀏覽器流程，以及 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43146137847) 的 **50 組 Chromium `file://` 離線開檔檢查，全數通過**。完整範圍與本機回歸紀錄見 [TEST_REPORT.md](TEST_REPORT.md)。
 
 **營業稅 v2.14.0** 已通過本機 localhost HTTP 的 **49 組 Chromium 檢查**、15 項期別與收入核心、51 項合併付款核心及既有純回歸；四個子代理已完成交叉查核。最後針對舊費用識別碼追加的實際資料庫測試也通過；[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/42948974256) 也已完成 **49 組 `file://` 離線開檔檢查，全數通過**，詳見 [TEST_REPORT.md](TEST_REPORT.md)。下列為前次交付紀錄。
 
