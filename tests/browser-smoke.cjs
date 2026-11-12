@@ -12,6 +12,7 @@ const vatWorkspace=require('./vat-workspace.browser.js');
 const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorTaxBooks=require('./calculator-tax-workspace.browser.js');
+const calculatorTaxReview=require('./calculator-tax-review.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
@@ -279,7 +280,7 @@ async function vat(p){
  await p.locator('.nav-btn[data-view="backup"]').click();const original=parseJSON(await download(p,()=>p.locator('#fullBackupBtn').click()));assert(original.backupVersion&&original.data);assert(Array.isArray(original.data.clients));assert.equal(original.data.clients.length,0,'Published default must not include client records');
  await p.locator('#restoreFile').setInputFiles({name:'synthetic-empty.taxbackup',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(original))});await p.locator('#restoreMergeBtn').click();await visible(p,'#modalRoot.show');await p.locator('#modalRoot .modal-foot').getByRole('button',{name:'合併',exact:true}).click();await p.locator('.toast').filter({hasText:'合併完成'}).waitFor({state:'visible'});
  const after=parseJSON(await download(p,()=>p.locator('#fullBackupBtn').click()));assert.equal(after.data.clients.length,0);assert.equal(after.data.templates.length,original.data.templates.length,'Merge must not duplicate default templates');
- await p.reload();await p.locator('.nav-btn[data-view="backup"]').click();const reloaded=parseJSON(await download(p,()=>p.locator('#fullBackupBtn').click()));assert.equal(reloaded.data.clients.length,0);
+ await vatReload(p);await p.locator('.nav-btn[data-view="backup"]').click();const reloaded=parseJSON(await download(p,()=>p.locator('#fullBackupBtn').click()));assert.equal(reloaded.data.clients.length,0);
 }
 async function pdf(p){
  // Create an original synthetic PNG in-browser, never read a user's file.
@@ -451,7 +452,8 @@ async function vatPreviewPaperGeometry(p){
  await check(id+' offline initial load',async()=>{const file=path.join(ROOT,'apps',id+'.html');assert(fs.existsSync(file),'Missing deliverable '+file);await p.goto(appURL(file));await visible(p,'body');assert((await p.locator('body').innerText()).length>100);assert.equal(await p.evaluate(()=>location.protocol),BASE?new URL(BASE).protocol:'file:');await screenshot(p,id+'-initial');});
  await check(id+' primary flows',()=>flow(p));
  if(id==='accounting-calculator')await check(id+' tax book summary + bounded focus + numbering + disclosure + keyboard + insurance',()=>calculatorPresentation(p));
- if(id==='accounting-calculator')await check(id+' optional parent exemptions + exact combined total + blank/zero + invalid states',()=>calculatorTaxBooks.exempt(p,{screenshot:calculatorScreenshot}));
+ if(id==='accounting-calculator')await check(id+' cleared-tax invoice exemptions + totals + return to taxable + independent next rows',()=>calculatorTaxReview.exempt(p,{screenshot:calculatorScreenshot}));
+ if(id==='accounting-calculator')await check(id+' four-column sales/input review + live sequence edit + 24 rows + mobile + no data changes',()=>calculatorTaxReview.review(p,{screenshot:calculatorScreenshot}));
  if(id==='accounting-calculator')await check(id+' guided math forms + menus + preserved drafts + preview + responsive results',()=>calculatorMathForms(p));
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));

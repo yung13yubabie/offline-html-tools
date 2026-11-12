@@ -9,6 +9,11 @@ check(()=>{for(const v of ['-1','1e3','12,34','Infinity','abc','1.001','<script>
 check(()=>assert.equal(p.sum(['0.1','0.2']),.3));
 check(()=>{assert.equal(p.sum(['100.25','200','50']),350.25);assert.equal(p.sum(['','','0']),0);assert.throws(()=>p.sum(['100','bad']))});
 check(()=>{assert.equal(p.format(p.sum(['100.25','200','50'])),'350.25');assert.equal(p.format(p.parse('1234.56').value),'1,234.56')});
+check(()=>assert.deepEqual(p.exemptAmounts('salesTriple','100'),{amount:100,net:100,tax:0,gross:100}));
+check(()=>assert.deepEqual(p.exemptAmounts('salesTwo','105'),{amount:105,net:105,tax:0,gross:105}));
+check(()=>{assert.equal(p.exemptAmounts('salesTriple',''),null);assert.equal(p.exemptAmounts('salesTwo','0').amount,0)});
+check(()=>{for(const id of ['inputReceipt','salesElectronic','salesReturn','salesExempt'])assert.throws(()=>p.exemptAmounts(id,'100'))});
+check(()=>{assert.equal(p.exemptAmounts('salesTriple','100.99').amount,100);for(const n of ['-1','oops','1e3'])assert.throws(()=>p.exemptAmounts('salesTriple',n))});
 const app=fs.readFileSync('apps/accounting-calculator.html','utf8');
 check(()=>{for(const name of ['tax-workspace-core.js','tax-workspace-ui.js','tax-workspace.css'])assert(app.includes(fs.readFileSync('calculator/'+name,'utf8').trim()),name+' must match embedded download')});
-console.log(`${count} calculator tax workspace checks passed (numbering, optional amounts, exact cents, embedded sources).`);
+console.log(`${count} calculator tax workspace checks passed (numbering, row exemptions, blank/zero, exact sums, embedded sources).`);

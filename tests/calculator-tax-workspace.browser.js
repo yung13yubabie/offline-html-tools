@@ -33,15 +33,4 @@ async function presentation(p,{screenshot}){
  await p.locator('#toggleSettingsBtn').click();const labels=await p.locator('#taxSettings [data-enter-default] option').allTextContents();assert(labels.every(x=>/下一筆.*欄位/.test(x)));await p.locator('#toggleSettingsBtn').click();
  await p.emulateMedia({reducedMotion:'reduce'});book=await details(p,triple);assert(await book.isVisible());await finish(p);await p.emulateMedia({reducedMotion:'no-preference'});await screenshot(p,'calculator160-main-desktop');
 }
-async function exempt(p,{screenshot}){
- await p.locator('[data-panel="taxPanel"]').click();const triple=category(p,'salesTriple'),two=category(p,'salesTwo'),direct=category(p,'salesExempt');await ensureOpen(triple);await ensureOpen(two);
- assert.equal(await p.locator('.tax-exempt-input').count(),2);const a=triple.locator('.tax-exempt-input'),b=two.locator('.tax-exempt-input');assert.equal(await a.inputValue(),'');assert.equal(await b.inputValue(),'');assert.equal(await amount(p,'exemptSalesTotal'),0);
- const before=await amount(p,'finalTax');await a.fill('100.25');await b.fill('200');assert.equal(await amount(p,'exemptSalesTotal'),300.25);assert.equal(await amount(p,'finalTax'),before,'Exempt sales do not change taxable tax due');
- let book=await details(p,direct);await book.locator('[data-field="amount"]').fill('50');await finish(p);assert.equal(await amount(p,'exemptSalesTotal'),350.25);
- await triple.locator('.add-book').click();const added=triple.locator('.book').last();await added.locator('.book-detail').click();await added.locator('[data-field="net"]').fill('1000');await finish(p);assert.equal(await amount(p,'exemptSalesTotal'),350.25,'Books do not multiply category exemption');await added.locator('.delete-book').click();assert.equal(await amount(p,'exemptSalesTotal'),350.25);assert.equal(await amount(p,'finalTax'),before);
- await a.fill('-1');assert.equal(await a.getAttribute('aria-invalid'),'true');assert.equal(await p.locator('#exemptSalesTotal').innerText(),'待修正');assert.equal(await amount(p,'finalTax'),before);await a.fill('');assert.equal(await amount(p,'exemptSalesTotal'),250);await b.fill('');assert.equal(await amount(p,'exemptSalesTotal'),50);
- await a.fill('0');assert.equal(await a.inputValue(),'0');assert.equal(await amount(p,'exemptSalesTotal'),50);await a.fill('1e3');assert.equal(await a.getAttribute('aria-invalid'),'true');await a.fill('1,234.56');await a.press('Tab');assert.equal(await a.inputValue(),'1,234.56');assert.equal(await amount(p,'exemptSalesTotal'),1284.56);await screenshot(p,'calculator160-exempt-total-desktop');
- await p.locator('[data-collapse-side="sales"]').click();await ensureOpen(triple);assert.equal(await a.inputValue(),'1,234.56');assert.equal(await amount(p,'exemptSalesTotal'),1284.56);await a.fill('');assert.equal(await a.inputValue(),'');assert.equal(await amount(p,'exemptSalesTotal'),50);
- await p.setViewportSize({width:375,height:844});await p.locator('#sideTabs [data-side="sales"]').click();await screenshot(p,'calculator160-exempt-mobile');await p.setViewportSize({width:1440,height:1000});await p.locator('[data-panel="generalPanel"]').click();
-}
-module.exports={presentation,exempt};
+module.exports={presentation};

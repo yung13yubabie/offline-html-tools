@@ -1,4 +1,4 @@
-/* Tax workspace policy: view numbering and optional exempt sales are separate from tax arithmetic. */
+/* Tax workspace policy: view numbering and per-row exempt sales are separate from normal tax arithmetic. */
 function createTaxWorkspacePolicy(){
  'use strict';
  const order={sales:['salesTriple','salesElectronic','salesTwo','salesReturn','salesZero','salesExempt'],input:['inputReceipt','inputForeign','inputTaxed','inputCustoms','inputReturn']};
@@ -11,7 +11,8 @@ function createTaxWorkspacePolicy(){
   if(n>99999999999999n)throw new Error('金額超出範圍');const cents=Number(n);return {blank:false,cents,value:cents/100};
  }
  function sum(values){let cents=0;for(const value of values){cents+=parse(value).cents;if(!Number.isSafeInteger(cents))throw new Error('免稅合計超出範圍')}return cents/100}
+ function exemptAmounts(id,raw){if(!eligible.includes(id))throw new Error('此發票類型不適用清空稅額轉免稅');const input=parse(raw);if(input.blank)return null;const amount=Math.trunc(input.value);return {amount,net:amount,tax:0,gross:amount};}
  function format(value){return new Intl.NumberFormat('en-US',{maximumFractionDigits:2}).format(value)}
- return {order,eligible,number,code,parse,sum,format};
+ return {order,eligible,number,code,parse,sum,format,exemptAmounts};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createTaxWorkspacePolicy};
