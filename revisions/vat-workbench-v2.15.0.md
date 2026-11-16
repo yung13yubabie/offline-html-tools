@@ -32,4 +32,4 @@
 
 [vat-workbench.html](../apps/vat-workbench.html) 即新版獨立 HTML，在 GitHub 檔案頁按 **Download raw file** 下載後使用。新增來源為 `vat/bulk-work-core.js`、`bulk-work-ui.js`，由 `python3 tools/embed-vat.py` 內嵌；`--check` 核對成品。
 
-43 項批次核心、全部既有純回歸及 56 組本機 Chromium localhost HTTP 檢查通過，瀏覽器檢查封鎖外部網路。已人工檢視桌面與手機畫面；完整紀錄及 GitHub 離線結果見 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用合成資料，未實測其他瀏覽器或真實手機。
+43 項批次核心、全部既有純回歸及 56 組本機 Chromium localhost HTTP 檢查通過。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43793008988) 亦以提交 `81f9362` 完成 **56 組 `file://` 直接離線開檔檢查，56 通過、0 失敗**，瀏覽器檢查封鎖外部網路。已人工檢視桌面與手機畫面；完整紀錄見 [TEST_REPORT.md](../TEST_REPORT.md)。測試使用合成資料，未實測其他瀏覽器或真實手機。

@@ -171,7 +171,7 @@
 
 ## 驗證與使用範圍
 
-**營業稅 v2.15.0** 已通過 43 項批次核心、全部既有純回歸，以及 **56 組本機 Chromium 檢查，全數通過**，涵蓋篩選、批次日期／繳納、零與留底、整批回復、鎖定期別與衝突保護。GitHub 離線結果完成後補入 [TEST_REPORT.md](TEST_REPORT.md)。
+**營業稅 v2.15.0** 已通過 43 項批次核心、全部既有純回歸，以及本機與 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43793008988) 各 **56 組 Chromium 檢查，全數通過**；CI 使用 `file://` 直接離線開檔，涵蓋篩選、批次日期／繳納、零與留底、整批回復、鎖定期別與衝突保護。完整範圍見 [TEST_REPORT.md](TEST_REPORT.md)。
 
 **計算機 v1.8.0** 已通過 21 項核心檢查、全部既有純回歸，以及本機與 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43166123080) 各 **53 組 Chromium 檢查，全數通過**；CI 使用 `file://` 直接離線開檔，涵蓋專心切冊、保留設定清除、分頁覆核與全冊加總。完整範圍見 [TEST_REPORT.md](TEST_REPORT.md)。
 
