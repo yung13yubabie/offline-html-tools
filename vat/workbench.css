@@ -84,3 +84,22 @@
 @media screen and (prefers-reduced-motion:reduce){
  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+/* Batch registration keeps every client identity, current value and draft together. */
+.bulk-work-toolbar215{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;margin-bottom:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.bulk-work-entry215{display:flex;justify-content:flex-end;margin-bottom:12px}
+.bulk-work-modal215{width:min(1080px,calc(100vw - 32px))!important;max-width:none!important;max-height:calc(100dvh - 32px);display:flex;flex-direction:column}
+.bulk-work-modal215 .modal-body{overflow:auto;min-height:0}.bulk-work-modal215 .modal-head,.bulk-work-modal215 .modal-foot{flex-shrink:0}
+.bulk-work-modal215 .input,.bulk-work-modal215 .select{min-height:44px;font-size:16px}.bulk-work-modal215 .btn{min-height:44px}
+.bulk-work-period215{font-size:16px;font-weight:600;margin:0 0 16px}
+.bulk-work-controls215{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));align-items:end;gap:12px;margin-bottom:14px}
+.bulk-work-controls215 .field{margin:0}.bulk-work-controls215 label{font-size:14px}
+.bulk-work-selection215{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px}.bulk-work-selection215 strong{margin-left:auto;font-size:14px;color:var(--muted)}
+.bulk-work-table215 table{width:100%;border-collapse:collapse;table-layout:fixed}.bulk-work-table215 th,.bulk-work-table215 td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;overflow-wrap:anywhere;font-size:16px}
+.bulk-work-table215 th{font-size:14px;background:var(--panel2)}.bulk-work-table215 th:first-child{width:56px}.bulk-work-table215 th:nth-child(2){width:32%}
+.bulk-work-table215 tr[hidden]{display:none!important}.bulk-choice215{width:22px;height:22px;cursor:pointer;accent-color:var(--brand)}.bulk-value215{width:100%;min-width:0}.bulk-value215[aria-invalid=true]{outline:2px solid var(--red);outline-offset:2px}
+.bulk-client-name215{font-size:17px;font-weight:650;line-height:1.5}.bulk-client-code215{font:600 14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted)}.bulk-client-contact215{font-size:15px;line-height:1.6;margin-top:4px}.bulk-work-help215{font-size:14px;line-height:1.7;color:var(--muted);margin:14px 0 0}
+.export-filters215{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}.export-filters215 .field{margin:0}.export-filters215 label{font-size:14px}.export-filters215 p{grid-column:1/-1;margin:0;color:var(--muted);line-height:1.6}
+@media(max-width:650px){.bulk-work-modal215{width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)}.bulk-work-modal215 .modal-body{padding:12px}.bulk-work-controls215{grid-template-columns:minmax(0,1fr)}.bulk-work-selection215 strong{width:100%;margin:0}.bulk-work-table215 thead{display:none}.bulk-work-table215 table,.bulk-work-table215 tbody{display:block}.bulk-work-table215 tr{display:grid;grid-template-columns:48px minmax(0,1fr);border:1px solid var(--line);border-radius:8px;margin:0 0 12px;padding:8px}.bulk-work-table215 td{border:0;padding:5px;font-size:16px}.bulk-work-table215 td:first-child{grid-column:1;grid-row:1/4}.bulk-work-table215 td:not(:first-child){grid-column:2}.bulk-work-toolbar215 .actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.bulk-work-toolbar215 .btn{min-height:44px;padding:8px 5px}.bulk-work-modal215 .modal-foot{display:flex;gap:8px}.bulk-work-modal215 .modal-foot .btn{flex:1}.bulk-work-help215{font-size:15px}}
+
+.bulk-choice-hit215{display:grid;place-items:center;width:44px;min-height:44px;cursor:pointer}
+@media(max-width:650px){#modalRoot:has(.bulk-work-modal215){padding:8px 8px 64px}.bulk-work-modal215{width:100%!important;max-height:calc(100dvh - 80px)}}

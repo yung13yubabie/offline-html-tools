@@ -10,6 +10,7 @@ const calculatorPool=require('./calculator-pool.browser.js');
 const vatCollection=require('./vat-collection.browser.js');
 const vatWorkspace=require('./vat-workspace.browser.js');
 const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
+const vatBulkWork=require('./vat-bulk-work.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorTaxBooks=require('./calculator-tax-workspace.browser.js');
 const calculatorTaxReview=require('./calculator-tax-review.browser.js');
@@ -473,6 +474,9 @@ async function vatPreviewPaperGeometry(p){
  await check('vat revision populated dates + save identity + persistence + locking + mobile',()=>vatRevisionContext(vatUIRevision));
  await check('vat period shared messages + revenue + dirty guards + one-pass variables',()=>vatRevisionContext(p=>vatWorkspace.periodAndRevenue(p,vatNoticeHelpers)));
  await check('vat group payments atomic shares + partial backup closure + restore safety + cancellation',()=>vatRevisionContext(p=>vatWorkspace.groupPayments(p,vatNoticeHelpers)));
+ await check('vat batch export date/tax registration filters + zero/credit + TXT + collection guard',()=>vatRevisionContext(p=>vatBulkWork.exportFilters(p,vatNoticeHelpers)));
+ await check('vat batch dates + shared date + paid customers + individual forms + atomic validation + double click',()=>vatRevisionContext(p=>vatBulkWork.datesAndPaid(p,vatNoticeHelpers)));
+ await check('vat batch tax registration + ledger locks + relock + zero/credit + concurrent edit protection',()=>vatRevisionContext(p=>vatBulkWork.taxAndGuards(p,vatNoticeHelpers)));
  await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
