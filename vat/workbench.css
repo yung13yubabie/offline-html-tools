@@ -85,3 +85,5 @@ body:has(#modalRoot.show .bulk-work-modal215) #toastWrap{z-index:90;pointer-even
 @media screen{
  .app .template-main-column{grid-template-columns:minmax(0,1fr)}.app .template-main-column>.card:first-child>.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px}.app .template-cards{display:flex;flex-wrap:wrap;gap:10px}.app .template-cards>.template-card{flex:0 1 230px;min-width:min(230px,100%)}.app .template-editor{min-width:0}.app .template-main-column>.card:first-child{padding-bottom:14px;border-bottom:1px solid var(--line)}.app .notice-context .context-grid{padding:14px}
 }
+@media screen{.app .task-table210 .task-action-col210{width:92px}.app .task-table210 .btn{white-space:nowrap;min-width:56px}#view-backup .card-h{justify-content:flex-start;gap:0}}
+@media screen and (max-width:799px){.app .type-list>.strong{flex-shrink:0;white-space:nowrap;align-self:center}}
