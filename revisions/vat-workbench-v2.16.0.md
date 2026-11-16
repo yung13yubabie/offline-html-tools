@@ -38,4 +38,4 @@
 
 [vat-workbench.html](../apps/vat-workbench.html) 即新版獨立 HTML，GitHub 檔案頁按 **Download raw file** 下載。新增 `vat/bulk-modules-ui.js`，使用 `python3 tools/embed-vat.py` 內嵌，`--check` 核對成品。沒有新增外部執行依賴、store 或備份版本。
 
-45 項新增核心、原 43 項批次核心、既有純回歸及 59 組本機 Chromium localhost HTTP 檢查通過，瀏覽器檢查封鎖外部網路；最新手動輸入保留流程亦另行通過。已人工檢視桌面與手機畫面，完整範圍見 [TEST_REPORT.md](../TEST_REPORT.md)。使用合成資料，未實測其他瀏覽器或真實手機。
+45 項新增核心、原 43 項批次核心、既有純回歸及 59 組本機 Chromium localhost HTTP 檢查通過。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43799032830) 亦以提交 `3dbc805` 完成 **59 組 `file://` 直接離線開檔檢查，59 通過、0 失敗**，瀏覽器檢查封鎖外部網路；最新手動輸入保留流程亦另行通過。已人工檢視桌面與手機畫面，完整範圍見 [TEST_REPORT.md](../TEST_REPORT.md)。使用合成資料，未實測其他瀏覽器或真實手機。
