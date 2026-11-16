@@ -22,4 +22,4 @@
 
 [下載新版 HTML](../apps/vat-workbench.html)，進 GitHub 檔案頁按 **Download raw file**。所有新來源由 `tools/embed-vat.py` 內嵌到成品，離線不依賴來源檔。DB 3、備份 7、版面格式 1 均維持；稅額、收款、FIFO、關係企業付款及備份還原規則不變，其他三份工具 HTML 不變。
 
-全部既有純回歸與本機 Chromium localhost HTTP 的 **62 組檢查通過、0 失敗**；全域／編輯器三組最後另行重跑通過。驗證及 CI 結果見 [TEST_REPORT.md](../TEST_REPORT.md)。使用合成資料，未實測實體印表機或所有歷史資料。
+全部既有純回歸與本機 Chromium localhost HTTP 的 **62 組檢查通過、0 失敗**；全域／編輯器三組最後另行重跑通過。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43802636884) 以最終程式提交 `744b5f7` 完成 **62 組 Chromium `file://` 離線開檔檢查，62 通過、0 失敗**，全部純回歸及來源內嵌一致檢查亦通過。驗證及 CI 結果見 [TEST_REPORT.md](../TEST_REPORT.md)。使用合成資料，未實測實體印表機或所有歷史資料。

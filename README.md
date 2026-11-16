@@ -73,6 +73,8 @@ PDF 家族的既有轉圖擷取頁面內影像，不保證包含文字、向量�
 
 ## 驗證與維護
 
+**v2.17.0** 已通過本機與 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43802636884) 各 **62 組 Chromium 檢查，全數通過**，以及全部既有純回歸與來源內嵌一致檢查；CI 使用 `file://` 直接離線開啟交付 HTML。
+
 本輪驗證紀錄見 [TEST_REPORT.md](TEST_REPORT.md)，含實際 Chromium 流程、合成資料、PDF 文字／頁面邊界與截圖。沒有把未執行的瀏覽器、實體手機或實體印表機測試列為通過。
 
 `apps/` 為可下載成品；`vat/`、`calculator/`、`feedback/`、`tools/`、`tests/` 為維護來源，不需隨 HTML 下載。無 CDN、外部字體或同目錄執行依賴。
