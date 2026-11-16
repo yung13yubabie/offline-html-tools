@@ -10,6 +10,7 @@ const calculatorPool=require('./calculator-pool.browser.js');
 const vatCollection=require('./vat-collection.browser.js');
 const vatWorkspace=require('./vat-workspace.browser.js');
 const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
+const vatGlobalEditor=require('./vat-global-editor.browser.js');
 const vatBulkWork=require('./vat-bulk-work.browser.js');
 const vatBulkModules=require('./vat-bulk-modules.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
@@ -336,7 +337,7 @@ async function vatUIRevision(p){
  for(const id of ['b','a','b'])await p.locator(`[data-pcid="2026-1::synthetic-${id}"]`).click();
  assert(await save.evaluate((e,old)=>e===old,original),'Moved save control must retain its original DOM identity');assert.match(await save.getAttribute('aria-label'),/乙/);
  await p.locator('[data-work-focus="billing"]').click();assert(await p.locator('[data-focus-panel="billing"] .focus-section-heading').first().evaluate(e=>{const a=getComputedStyle(e.querySelector('.strong')),b=getComputedStyle(e.querySelector('.tiny'));return parseFloat(a.fontSize)>parseFloat(b.fontSize)&&Number(a.fontWeight)>Number(b.fontWeight)}));await p.locator('#wBookkeepingFee').fill('2468');await vatSave(p);await save.waitFor({state:'visible'});
- await p.locator('[data-focus-panel="billing"] [data-work-focus-back]').click();await p.locator('[data-work-focus="notes"]').click();await p.locator('#wNotes').fill('SYNTHETIC B saved notes');await vatSave(p);
+ assert(await p.locator('#workModuleGrid').isVisible(),'Work tabs stay visible inside each panel');await p.locator('[data-work-focus="notes"]').click();await p.locator('#wNotes').fill('SYNTHETIC B saved notes');await vatSave(p);
  await p.waitForFunction(()=>!document.querySelector('#saveWorkBtn').disabled);
  let backup=await vatBackup(p),a=backup.data.periodClients.find(x=>x.id==='2026-1::synthetic-a'),b=backup.data.periodClients.find(x=>x.id==='2026-1::synthetic-b');assert.equal(a.notes,'原始 TEST-A');assert.equal(a.fees[0].amount,1200);assert.equal(b.notes,'SYNTHETIC B saved notes');assert.equal(b.fees.find(x=>x.name==='記帳費').amount,2468);
  await vatReload(p);await p.locator('#topPeriod').selectOption('2026-1');await vatWork(p);await p.locator('[data-pcid="2026-1::synthetic-b"]').click();assert.equal(await p.locator('#wNotes').inputValue(),'SYNTHETIC B saved notes');
@@ -344,7 +345,7 @@ async function vatUIRevision(p){
  await p.locator('#topPeriod').selectOption('2026-3');assert(await save.isDisabled());assert(await save.isHidden());assert.equal(await p.locator('#workSaveParking211 #saveWorkBtn').count(),1);assert.match(await p.locator('#workDetail').innerText(),/選擇客戶/);
  await p.locator('#topPeriod').selectOption('2026-1');await p.locator('#preShipTab').click();assert(await save.isHidden());await p.locator('#workMainTab').click();assert(await save.isVisible());
  await p.setViewportSize({width:390,height:844});await vatScreenshot(p,'vat-revision-populated-work-mobile');await p.locator('#workDetail .detail-head').scrollIntoViewIfNeeded();await vatSettle(p);await p.screenshot({path:path.join(OUT,'vat-revision-customer-header-mobile.png')});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
- const header=await p.locator('#workDetail .detail-head').boundingBox(),button=await save.boundingBox();assert(button&&header&&button.x>=header.x-1&&button.x+button.width<=header.x+header.width+1);
+ const header=await p.locator('#workFooter217').boundingBox(),button=await save.boundingBox();assert(button&&header&&button.x>=header.x-1&&button.x+button.width<=header.x+header.width+1);
 }
 async function vatAccountingRevision(p){
  await p.locator('.nav-btn[data-view="accounting"]').click();const cards=p.locator('#accountingStats > .card');assert.equal(await cards.count(),4);
@@ -352,7 +353,7 @@ async function vatAccountingRevision(p){
  await p.setViewportSize({width:390,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));for(let i=0;i<4;i++)assert(await cards.nth(i).evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1}));await vatScreenshot(p,'vat-revision-accounting-mobile');
 }
 
-async function vatPrintOpen(p){await p.locator('.nav-btn[data-view="pdf"]').click();await p.locator('#pdfScope').selectOption('period');await p.locator('#pdfPeriod').selectOption('2026-1');await p.locator('#pdfLayoutTab212').click();await visible(p,'#pdfLayoutPanel212');}
+async function vatPrintOpen(p){await p.locator('.nav-btn[data-view="pdf"]').click();await p.locator('#pdfScope').selectOption('period');await p.locator('#pdfPeriod').selectOption('2026-1');if(!await p.locator('#pdfAdvanced217').evaluate(e=>e.open))await p.locator('#pdfAdvanced217>summary').click();await p.locator('#pdfLayoutTab212').click();await visible(p,'#pdfLayoutPanel212');}
 async function vatLayoutFooter(p,label){const button=p.locator('#pdfLayoutSave212');await button.scrollIntoViewIfNeeded();await button.click({trial:true});await vatSettle(p);await p.screenshot({path:path.join(OUT,'vat-revision-layout-save-footer-'+label+'.png'),fullPage:false});}
 async function vatLayoutSave(p){await p.locator('#pdfLayoutSave212').click();await p.locator('#pdfLayoutStatus212').filter({hasText:'版面已儲存'}).waitFor();assert(await p.locator('#exportPdfBtn').isEnabled());}
 async function vatPreview(p){await p.locator('#pdfLayoutPreview212').click();await p.locator('#pdfLayoutPreviewBody212 .pdf-page, #pdfLayoutPreviewBody212 .task-report210').first().waitFor();await p.waitForFunction(()=>!document.querySelector('#pdfLayoutPreview212').disabled);return p.locator('#pdfLayoutPreviewBody212').innerHTML();}
@@ -391,7 +392,7 @@ async function vatPrintRevision(p){
  await vatScreenshot(p,'vat-revision-output-settings-desktop');await vatLayoutFooter(p,'desktop');await p.setViewportSize({width:390,height:844});await vatScreenshot(p,'vat-revision-output-settings-mobile');await vatLayoutFooter(p,'mobile');await p.locator('#pdfLayoutPreviewBody212').scrollIntoViewIfNeeded();await vatSettle(p);await p.screenshot({path:path.join(OUT,'vat-revision-saved-preview-mobile.png')});await p.setViewportSize({width:1440,height:1000});
  let backup=await vatBackup(p),saved=backup.data.settings[0].printLayouts212;assert.equal(saved.version,1);assert.equal(saved.profiles.period.version,1);assert.equal(saved.profiles.period.fontSize,11);assert.equal(saved.profiles.period.fields[0].visible,false);
  await vatReload(p);await vatPrintOpen(p);assert.equal(await p.locator('[data-layout-global="fontSize"]').inputValue(),'11');await p.locator('#pdfPeriod').selectOption('2026-2');await vatPrintCapture(p);assert.deepEqual(await p.locator('#printRoot table').first().locator('thead tr').last().locator('th').allTextContents(),headers,'Profile shared by two actual periods');
- await p.locator('[data-layout-global="fontSize"]').selectOption('12');await vatReload(p);await vatPrintOpen(p);assert.equal(await p.locator('[data-layout-global="fontSize"]').inputValue(),'11','Unsaved draft discarded on reload');
+ await p.locator('[data-layout-global="fontSize"]').selectOption('12');p.once('dialog',d=>d.accept());await vatReload(p);await vatPrintOpen(p);assert.equal(await p.locator('[data-layout-global="fontSize"]').inputValue(),'11','Unsaved draft discarded on reload');
  await p.locator('#pdfLayoutReset212').click();assert(await p.locator('#exportPdfBtn').isDisabled());await vatLayoutSave(p);await vatReload(p);await vatPrintOpen(p);assert.equal(await p.locator('[data-layout-global="fontSize"]').inputValue(),'9');await vatPrintCapture(p);assert.deepEqual(await p.locator('#printRoot table').first().locator('thead tr').last().locator('th').allTextContents(),oldHeaders);
  backup=await vatBackup(p);assert(backup.data.settings[0].printLayouts212.profiles.period.fields.every(x=>x.visible));
  // Final period summary intentionally excludes detailed fee notes; use the real billing-detail route for long-content paper QA.
@@ -482,6 +483,7 @@ async function vatPreviewPaperGeometry(p){
  await check('vat batch carry flags + prior eligibility + append/replace/clear notes + completion',()=>vatRevisionContext(p=>vatBulkModules.carryAndNotes(p,vatNoticeHelpers)));
  await check('vat batch individual payments + FIFO + unapplied + group preservation + atomic rollback',()=>vatRevisionContext(p=>vatBulkModules.payments(p,vatNoticeHelpers)));
  await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
+ for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
  await check('vat saved print layout every scope uses actual printer HTML',()=>vatRevisionContext(vatPrintAllScopes));

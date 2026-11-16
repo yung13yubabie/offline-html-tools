@@ -1,5 +1,7 @@
 # 營業稅工作台設計規則
 
+目前 v2.17 的全域規則與紙張編輯設計見 [MASTER.md](vat-2.17/MASTER.md)，[互動線框](vat-2.17/wireframes.html) 可離線開啟。下方保留 v2.14 設計來源紀錄。
+
 本輪使用 [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)；工作區安裝於 `/workspace/.agents/skills/ui-ux-pro-max`，上游提交 `6ae86f61f520d6ca229d2f40e070410638c908c5`。參照 `SKILL.md` 的設計系統、可讀字級、表單標籤、對比、鍵盤及減少動態規則。
 
 設計系統查詢為 `financial admin dashboard`，設定 variance 3、motion 2、density 7。採用已核對符合工具情境的 Minimalism & Swiss Style：以格線、字級、留白和資料標籤建立層級。搜尋同時產出的行銷 Landing 版型不適合本工具，不採用；工作流程仍依實際帳務操作設計。

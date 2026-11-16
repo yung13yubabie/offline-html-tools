@@ -6,7 +6,7 @@ APP=ROOT/'apps/vat-workbench.html'
 parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
 text=APP.read_text()
 css=(ROOT/'vat/workbench.css').read_text().strip()
-parts=[(ROOT/'vat'/name).read_text().strip() for name in ['period-features.js','group-payments.js','workbench-ui.js','bulk-work-core.js','bulk-modules-ui.js','bulk-work-ui.js']]
+parts=[(ROOT/'vat'/name).read_text().strip() for name in ['period-features.js','group-payments.js','workbench-ui.js','bulk-work-core.js','bulk-modules-ui.js','bulk-work-ui.js','global-ui.js','pdf-direct-editor.js']]
 assert '</style' not in css.lower()
 assert all('</script' not in p.lower() for p in parts)
 style='<!-- VAT_WORKSPACE_STYLE_START -->\n<style>\n'+css+'\n</style>\n<!-- VAT_WORKSPACE_STYLE_END -->'
