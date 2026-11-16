@@ -5,57 +5,65 @@
  const dateFields={appointmentDate:'預約收發票日',plannedTaxPayDate:'預計繳稅日'};
  const filters={dateField:'appointmentDate',date:'all',tax:'all'};
  function taxText(pc){if(!policy.hasTax(pc))return '未登記稅額';const value=policy.amount(pc.taxAmount);return value<0?'留底 '+money(-value)+' 元':money(value)+' 元';}
- function completedRecord(pc,p,type,result,at){return {id:uid('done'),periodId:p.id,periodClientId:pc.id,clientName:pc.snapshot?.name||'',periodLabel:periodLabel(p),type,priority:PRIORITY_LABELS[priorityOf(type==='稅款已繳'?'taxUnpaid':'unpaid',p)]||'今天要處理',completedAt:at,result,createdAt:at,updatedAt:at};}
+ function completedRecord(pc,p,type,result,at){const event={稅款已繳:'taxUnpaid',收件完成:'unreceived',本期工作完成:'today'}[type]||'unpaid';return {id:uid('done'),periodId:p.id,periodClientId:pc.id,clientName:pc.snapshot?.name||'',periodLabel:periodLabel(p),type,priority:PRIORITY_LABELS[priorityOf(event,p)]||'今天要處理',completedAt:at,result,createdAt:at,updatedAt:at};}
  function commitBulk(input,initialRows,initialPeriod){return new Promise((resolve,reject)=>{
-  const tr=db.transaction(['periodClients','periods','completed'],'readwrite'),store=tr.objectStore('periodClients'),periodStore=tr.objectStore('periods');let rows,periods,result,failed=false;
+  const needsSettings=input.action==='receipt',tr=db.transaction(['periodClients','periods','completed',...needsSettings?['settings']:[]],'readwrite'),store=tr.objectStore('periodClients'),periodStore=tr.objectStore('periods');let rows,periods,settingsRows,result,failed=false;
   const abort=error=>{failed=true;try{tr.abort()}catch{}reject(error)};
   const build=()=>{
-   if(!rows||!periods||failed)return;const oldRows=state.periodClients,oldPeriods=state.periods;
+   if(!rows||!periods||needsSettings&&!settingsRows||failed)return;const oldRows=state.periodClients,oldPeriods=state.periods,oldSettings=state.settings;
    try{
     const period=periods.find(p=>p.id===input.periodId);if(!period||JSON.stringify(period)!==JSON.stringify(initialPeriod))throw new Error('期別資料已更新，請關閉後重新開啟批次登記');
     for(const entry of input.entries){const current=rows.find(pc=>pc.id===entry.pcId),initial=initialRows.find(pc=>pc.id===entry.pcId);if(!current||JSON.stringify(current)!==JSON.stringify(initial))throw new Error((initial?.snapshot?.name||'客戶')+' 的資料已更新，請關閉後重新開啟，避免覆蓋其他變更');}
-    const at=nowISO();result=policy.plan(input,{periodClients:rows,periods},at);if(!result.changes.length)throw new Error('選取的資料與原資料相同，無需儲存');
+    const at=nowISO(),request={...input,entries:input.entries.map(entry=>({...entry,...input.action==='payment'?{paymentId:uid('pay')}:input.action==='receipt'?{historyId:uid('rsh')}:{}}))};
+    if(needsSettings){const settings=settingsRows[0];if(!settings)throw new Error('設定已不存在，請重新整理');state.settings=settings;}
+    result=policy.plan(request,{periodClients:rows,periods,receiptStatuses:state.settings.receiptStatuses},at);if(!result.changes.length)throw new Error('選取的資料與原資料相同，無需儲存');
     const changed=new Set(result.changes.map(x=>x.next.id)),affectedPeriods=new Set([period.id]),completions=[];
     state.periods=periods;
-    if(input.action==='tax'){
+    if(input.action==='tax'||input.action==='payment'){
      const clientIds=new Set(result.changes.map(x=>x.next.clientId)),beforeLedgers=new Map();state.periodClients=clone(rows);
      for(const clientId of clientIds)beforeLedgers.set(clientId,computeClientLedgerV19(clientId));
      state.periodClients=result.periodClients;
      const originalFees=new Map(rows.map(pc=>[pc.id,JSON.stringify(pc.fees||[])]));
      for(const clientId of clientIds){
-      const ledger=computeClientLedgerV19(clientId);if([...ledger.values()].some(item=>(item.conflicts||[]).length))throw new Error('稅額變更會影響已保存的沖銷來源，整批尚未儲存；請先核對相關付款');
+      const ledger=computeClientLedgerV19(clientId);if([...ledger.values()].some(item=>(item.conflicts||[]).length))throw new Error('本次變更會影響已保存的沖銷來源，整批尚未儲存；請先核對相關付款');
       for(const pc of result.periodClients.filter(pc=>pc.clientId===clientId)){
        const snapshot=ledger.get(pc.id);if(!snapshot)continue;
        if(JSON.stringify(pc.openingSnapshot210||[])!==JSON.stringify(snapshot.openingItems)||originalFees.get(pc.id)!==JSON.stringify(pc.fees||[])){
-        const p=periods.find(x=>x.id===pc.periodId);if(p?.status==='已結束'&&!p.unlocked&&p.id!==period.id)throw new Error('稅額變更會影響已結束後期的承接餘額，請先解鎖該期');
+        const p=periods.find(x=>x.id===pc.periodId);if(p?.status==='已結束'&&!p.unlocked&&p.id!==period.id)throw new Error('本次變更會影響已結束後期的承接餘額，請先解鎖該期');
         pc.openingSnapshot210=clone(snapshot.openingItems);changed.add(pc.id);affectedPeriods.add(pc.periodId);
        }
+       if(input.action==='payment')for(const pay of pc.payments||[])if(request.entries.some(entry=>entry.paymentId===pay.id)){const saved=snapshot.paymentSnapshots.find(item=>item.paymentId===pay.id);if(!saved)throw new Error('找不到本次付款的沖款預覽，整批尚未儲存');pay.allocationRecord={version:1,fingerprint:paymentFingerprint210(pay),confirmedAt:at,legacyBaseline:false,allocations:clone(saved.allocations),itemsBefore:clone(saved.itemsBefore),itemsAfter:clone(saved.itemsAfter),unapplied:saved.unapplied};}
        if(result.changes.some(x=>x.next.id===pc.id)&&(beforeLedgers.get(clientId).get(pc.id)?.currentRemaining||0)>0&&snapshot.currentRemaining===0&&totalDue(pc)>0)completions.push(completedRecord(pc,period,'本期款項收齊','本期應收已沖清',at));
       }
      }
     }
+    state.periodClients=result.periodClients;
+    for(const {old,next}of result.changes){if(input.action==='receipt'&&!isReceiptComplete(old)&&isReceiptComplete(next))completions.push(completedRecord(next,period,'收件完成',receiptStatusName(next),at));if(input.action==='notes'&&!old.caseClosed&&next.caseClosed)completions.push(completedRecord(next,period,'本期工作完成',debt(next)>0?'本期工作已完成；尚欠持續跨期追蹤 '+money(debt(next))+' 元':'已完成',at));}
     for(const id of changed){const next=result.periodClients.find(pc=>pc.id===id),old=rows.find(pc=>pc.id===id);groups.assertUnchanged(old,next);next.updatedAt=at;store.put(preparedPC210(next,old));}
     if(input.action==='paid')for(const {next}of result.changes)completions.push(completedRecord(next,period,'稅款已繳',money(next.taxPaidAmount)+' 元',at));
     for(const record of completions)tr.objectStore('completed').put(record);
     for(const p of periods)if(affectedPeriods.has(p.id)&&p.status==='已結束'&&p.unlocked){const next=clone(p);next.unlocked=false;next.relockedAt=at;const last=next.unlockHistory?.at(-1);if(last&&!last.relockedAt)last.relockedAt=at;periodStore.put(next);}
-   }catch(error){abort(error)}finally{state.periodClients=oldRows;state.periods=oldPeriods}
+   }catch(error){abort(error)}finally{state.periodClients=oldRows;state.periods=oldPeriods;state.settings=oldSettings}
   };
   const rr=store.getAll(),pr=periodStore.getAll();rr.onsuccess=()=>{rows=rr.result;build()};pr.onsuccess=()=>{periods=pr.result;build()};
+  if(needsSettings){const sr=tr.objectStore('settings').getAll();sr.onsuccess=()=>{settingsRows=sr.result;build()};}
   tr.oncomplete=()=>resolve(result.changes.length);tr.onabort=()=>{if(!failed)reject(tr.error||new Error('整批未完成儲存，請保留畫面後重試'))};tr.onerror=()=>{};
  });}
  function workToolbar(){
   if($('#bulkWork215'))return;const anchor=$('#workCommonSettings');if(!anchor)return;
   const bar=vatElement214('section','bulk-work-toolbar215');bar.id='bulkWork215';bar.setAttribute('aria-label','本期批次登記');bar.dataset.reviewId='vat-workbench-bulkWork215';bar.dataset.reviewName='本期批次登記';
-  bar.innerHTML='<strong>批次登記</strong><div class="actions"><button type="button" class="btn" data-bulk-work215="date">建立日期</button><button type="button" class="btn" data-bulk-work215="tax">稅額登記</button><button type="button" class="btn primary" data-bulk-work215="paid">繳納</button></div>';
+  bar.innerHTML='<strong>批次登記</strong><div class="actions">'+[['receipt','收發票'],['date','建立日期'],['tax','稅額登記'],['carry','跨期事項'],['paid','繳納'],['payment','客戶付款'],['notes','補充事項']].map(([action,label])=>`<button type="button" class="btn ${action==='paid'?'primary':''}" data-bulk-work215="${action}">${label}</button>`).join('')+'</div>';
   anchor.insertAdjacentElement('afterend',bar);
  }
  const renderBefore=renderWork;renderWork=function(){renderBefore();workToolbar();};
- for(const [name,action]of [['renderReceiptBody','date'],['renderBillingBody','tax'],['renderTaxPayBody','paid']]){
+ for(const [name,action]of [['renderReceiptBody','receipt'],['renderBillingBody','tax'],['renderTaxPayBody','paid'],['renderCarryoverBody','carry'],['renderPaymentBody','payment']]){
   // Functions live in the original standalone script's lexical scope.
-  const before=name==='renderReceiptBody'?renderReceiptBody:name==='renderBillingBody'?renderBillingBody:renderTaxPayBody;
-  const wrapped=(...args)=>`<div class="bulk-work-entry215"><button type="button" class="btn small" data-bulk-work215="${action}">${action==='date'?'批次建立日期':action==='tax'?'批次登記稅額':'批次登記繳納'}</button></div>`+before(...args);
-  if(name==='renderReceiptBody')renderReceiptBody=wrapped;else if(name==='renderBillingBody')renderBillingBody=wrapped;else renderTaxPayBody=wrapped;
+  const before=name==='renderReceiptBody'?renderReceiptBody:name==='renderBillingBody'?renderBillingBody:name==='renderTaxPayBody'?renderTaxPayBody:name==='renderCarryoverBody'?renderCarryoverBody:renderPaymentBody;
+  const label={receipt:'批次收發票',tax:'批次登記稅額',paid:'批次登記繳納',carry:'批次跨期事項',payment:'批次客戶付款'}[action];
+  const wrapped=(...args)=>`<div class="bulk-work-entry215"><button type="button" class="btn small" data-bulk-work215="${action}">${label}</button></div>`+before(...args);
+  if(name==='renderReceiptBody')renderReceiptBody=wrapped;else if(name==='renderBillingBody')renderBillingBody=wrapped;else if(name==='renderTaxPayBody')renderTaxPayBody=wrapped;else if(name==='renderCarryoverBody')renderCarryoverBody=wrapped;else renderPaymentBody=wrapped;
  }
+ const detailBefore=renderWorkDetail;renderWorkDetail=function(){detailBefore();const panel=$('#workDetail [data-focus-panel="notes"] .section-body');if(panel&&!panel.querySelector('[data-bulk-work215="notes"]'))panel.insertAdjacentHTML('afterbegin','<div class="bulk-work-entry215"><button type="button" class="btn small" data-bulk-work215="notes">批次補充事項</button></div>');};
  function openBulk(action){
   if(!allowPeriodEntry214())return;const p=currentPeriod();if(!p){toast('請先選擇期別');return}if(p.status==='已結束'&&!p.unlocked){toast('此期已結束，請先解鎖再批次登記');return}
   const initialRows=clone(pcForPeriod()),initialPeriod=clone(p),root=$('#modalRoot');let field='appointmentDate',busy=false;
@@ -87,7 +95,7 @@
   };
   dialog.querySelector('#bulkSearch215').focus();
  }
- document.addEventListener('click',event=>{const button=event.target.closest('[data-bulk-work215]');if(button)openBulk(button.dataset.bulkWork215)});
+ document.addEventListener('click',event=>{const button=event.target.closest('[data-bulk-work215]');if(!button)return;const action=button.dataset.bulkWork215;if(['receipt','carry','payment','notes'].includes(action))openBulkModule216(action,{policy,commitBulk});else openBulk(action);});
  function mountExportFilters(){
   if($('#exportFilters215'))return;const search=$('#txtClientSearch');if(!search)return;const box=vatElement214('div','export-filters215');box.id='exportFilters215';
   box.innerHTML=`<div class="field"><label for="exportDateField215">日期欄位</label><select id="exportDateField215" class="select">${Object.entries(dateFields).map(([id,label])=>`<option value="${id}">${label}</option>`).join('')}</select></div><div class="field"><label for="exportDateStatus215">日期狀態</label><select id="exportDateStatus215" class="select"><option value="all">全部日期狀態</option><option value="set">已建立日期</option><option value="missing">未建立日期</option></select></div><div class="field"><label for="exportTaxStatus215">稅額狀態</label><select id="exportTaxStatus215" class="select"><option value="all">全部稅額狀態</option><option value="set">已登記稅額（含 0、留底）</option><option value="missing">未登記稅額</option></select></div><p id="exportFilterCount215" class="small" role="status"></p>`;

@@ -103,3 +103,7 @@
 
 .bulk-choice-hit215{display:grid;place-items:center;width:44px;min-height:44px;cursor:pointer}
 @media(max-width:650px){#modalRoot:has(.bulk-work-modal215){padding:8px 8px 64px}.bulk-work-modal215{width:100%!important;max-height:calc(100dvh - 80px)}}
+.bulk-payment-editor216{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.bulk-payment-editor216 label{display:grid;gap:4px;font-size:14px}.bulk-payment-preview216{font-size:14px;line-height:1.65;color:var(--muted)}
+.bulk-current-note216{font-size:15px;line-height:1.7}.bulk-current-note216 summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--blue)}.bulk-current-note216 div{white-space:pre-wrap;overflow-wrap:anywhere;padding:8px;background:var(--panel2);border-radius:6px}
+.bulk-module-modal216 textarea{width:100%;min-height:90px;resize:vertical;font-size:16px;line-height:1.6}.bulk-module-modal216 [hidden]{display:none!important}
+body:has(#modalRoot.show .bulk-work-modal215) #toastWrap{z-index:90;pointer-events:none}

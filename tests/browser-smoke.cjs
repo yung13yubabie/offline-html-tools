@@ -11,6 +11,7 @@ const vatCollection=require('./vat-collection.browser.js');
 const vatWorkspace=require('./vat-workspace.browser.js');
 const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
 const vatBulkWork=require('./vat-bulk-work.browser.js');
+const vatBulkModules=require('./vat-bulk-modules.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
 const calculatorTaxBooks=require('./calculator-tax-workspace.browser.js');
 const calculatorTaxReview=require('./calculator-tax-review.browser.js');
@@ -477,6 +478,9 @@ async function vatPreviewPaperGeometry(p){
  await check('vat batch export date/tax registration filters + zero/credit + TXT + collection guard',()=>vatRevisionContext(p=>vatBulkWork.exportFilters(p,vatNoticeHelpers)));
  await check('vat batch dates + shared date + paid customers + individual forms + atomic validation + double click',()=>vatRevisionContext(p=>vatBulkWork.datesAndPaid(p,vatNoticeHelpers)));
  await check('vat batch tax registration + ledger locks + relock + zero/credit + concurrent edit protection',()=>vatRevisionContext(p=>vatBulkWork.taxAndGuards(p,vatNoticeHelpers)));
+ await check('vat batch receipt statuses + notes + lead days + appointments + latest settings guard',()=>vatRevisionContext(p=>vatBulkModules.receipt(p,vatNoticeHelpers)));
+ await check('vat batch carry flags + prior eligibility + append/replace/clear notes + completion',()=>vatRevisionContext(p=>vatBulkModules.carryAndNotes(p,vatNoticeHelpers)));
+ await check('vat batch individual payments + FIFO + unapplied + group preservation + atomic rollback',()=>vatRevisionContext(p=>vatBulkModules.payments(p,vatNoticeHelpers)));
  await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
