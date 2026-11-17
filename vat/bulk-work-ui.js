@@ -37,6 +37,7 @@
       }
      }
     }
+    const linked=planPeriodLinks218(rows,result.periodClients,periods,[...changed],at,{baselineRows:rows.map(pc=>initialRows.find(x=>x.id===pc.id)||pc)});result.periodClients=linked.periodClients;for(const id of linked.changedIds)changed.add(id);
     state.periodClients=result.periodClients;
     for(const {old,next}of result.changes){if(input.action==='receipt'&&!isReceiptComplete(old)&&isReceiptComplete(next))completions.push(completedRecord(next,period,'收件完成',receiptStatusName(next),at));if(input.action==='notes'&&!old.caseClosed&&next.caseClosed)completions.push(completedRecord(next,period,'本期工作完成',debt(next)>0?'本期工作已完成；尚欠持續跨期追蹤 '+money(debt(next))+' 元':'已完成',at));}
     for(const id of changed){const next=result.periodClients.find(pc=>pc.id===id),old=rows.find(pc=>pc.id===id);groups.assertUnchanged(old,next);next.updatedAt=at;store.put(preparedPC210(next,old));}

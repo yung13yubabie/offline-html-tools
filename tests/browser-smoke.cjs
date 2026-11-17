@@ -11,6 +11,10 @@ const vatCollection=require('./vat-collection.browser.js');
 const vatWorkspace=require('./vat-workspace.browser.js');
 const vatWorkspaceVisual=require('./vat-workspace-visual.browser.js');
 const vatGlobalEditor=require('./vat-global-editor.browser.js');
+const vatCrossAdversarial=require('./vat-cross-period-adversarial.browser.js');
+const vatAccountingLinksUI=require('./vat-accounting-links-ui.browser.js');
+const vatPaymentLinks=require('./vat-payment-links.browser.js');
+const vatInvoiceLinks=require('./vat-invoice-links.browser.js');
 const vatBulkWork=require('./vat-bulk-work.browser.js');
 const vatBulkModules=require('./vat-bulk-modules.browser.js');
 const calculatorMathForms=require('./calculator-math-forms.browser.js');
@@ -483,6 +487,7 @@ async function vatPreviewPaperGeometry(p){
  await check('vat batch carry flags + prior eligibility + append/replace/clear notes + completion',()=>vatRevisionContext(p=>vatBulkModules.carryAndNotes(p,vatNoticeHelpers)));
  await check('vat batch individual payments + FIFO + unapplied + group preservation + atomic rollback',()=>vatRevisionContext(p=>vatBulkModules.payments(p,vatNoticeHelpers)));
  await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
+ for(const [name,flow] of Object.entries({...vatCrossAdversarial,...vatAccountingLinksUI,...vatPaymentLinks,...vatInvoiceLinks}))await check('vat cross-period '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));

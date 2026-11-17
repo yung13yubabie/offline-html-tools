@@ -87,3 +87,7 @@ body:has(#modalRoot.show .bulk-work-modal215) #toastWrap{z-index:90;pointer-even
 }
 @media screen{.app .task-table210 .task-action-col210{width:92px}.app .task-table210 .btn{white-space:nowrap;min-width:56px}#view-backup .card-h{justify-content:flex-start;gap:0}}
 @media screen and (max-width:799px){.app .type-list>.strong{flex-shrink:0;white-space:nowrap;align-self:center}}
+/* Linked source progress uses the same compact surface as the v2.17 workspace. */
+@media screen{.payment-linked218{padding:16px;margin:0 0 16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.payment-linked218 .payment-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.payment-linked218 .carry-value{font-size:18px}.payment-linked218 .section-mini-head{margin-bottom:12px}.payment-linked218 .notice{margin-bottom:0}}
+@media screen and (max-width:799px){.payment-linked218 .payment-summary{grid-template-columns:1fr}.payment-linked218{padding:14px}}
+@media screen{#taskDialog210:has(#offline-review-host) .task-foot-actions210{padding-right:128px}}
