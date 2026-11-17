@@ -41,3 +41,5 @@ DB 3、備份格式 7、PDF 版面格式 1 維持；新增來源及版本欄位�
 [下載新版 HTML](../apps/vat-workbench.html)，進 GitHub 檔案頁按 **Download raw file**。開發來源由 `python3 tools/embed-vat.py` 內嵌，使用者不用下載 `vat/`。設計見 [跨期資料關聯](../design-system/vat-2.18-cross-period.md)，驗證結果見 [TEST_REPORT.md](../TEST_REPORT.md)。
 
 本機完整 **75 組 Chromium localhost HTTP 檢查全數通過**，新增 **116 項純檢查**及全部既有純回歸亦通過；新增流程包含真正 IndexedDB、兩個頁面、故障回復與備份／列印輸出。完整範圍見 [TEST_REPORT.md](../TEST_REPORT.md)。
+
+[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43997460426) 以程式提交 `c7b6a18` 完成 **75 組 Chromium `file://` 離線開檔檢查，75 通過、0 失敗**；新增 116 項純檢查、既有回歸及來源內嵌一致檢查亦通過。
