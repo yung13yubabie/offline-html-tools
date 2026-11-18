@@ -70,6 +70,10 @@
 .pool-search-scope{font-size:13px;line-height:1.8;color:var(--muted);padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
 .pool-search-scope[data-partial=true],.pool-status[data-state=partial]{color:#765116;background:#fff7e6;border:1px solid #ead5a5;border-radius:8px;padding:12px;line-height:1.8}
 @media(max-width:600px){#poolRows{max-height:420px}}
+
+/* Six peer tools remain equal in the compact navigation. */
+@media(min-width:561px) and (max-width:1280px){.mode-switch{grid-template-columns:repeat(6,minmax(76px,1fr))}}
+@media(max-width:560px){.mode-switch{grid-template-columns:repeat(3,minmax(76px,1fr))}}
 </style>
 <!-- WORKBENCH_STYLE_END -->
 <!-- DATE_TOOLS_STYLE_BEGIN -->
@@ -173,11 +177,31 @@ body.book-focus-mode #taxPanel{animation:none!important;transform:none!important
 @media(max-width:540px){.session-actions{width:100%;justify-content:space-between;gap:8px}.session-actions .session-note{font-size:13px}#taxPanel .book-navigation{grid-template-columns:minmax(0,1fr) minmax(70px,100px)}#taxPanel .book-navigation .btn{width:100%}}
 </style>
 <!-- TAX_WORKSPACE_STYLE_END -->
+<!-- TAX_GROUPS_STYLE_BEGIN -->
+<style>
+/* Multi-row tax worksheet uses only the calculator's existing design tokens. */
+.tax-groups-tool{margin-top:24px!important}.tax-groups-sheet{padding:22px 24px}.tax-groups-controls{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:18px;align-items:start;margin-bottom:22px}.tax-groups-mode{border:0;min-width:0;margin:0;padding:0}.tax-groups-mode legend,.tax-groups-setting{font-size:14px;font-weight:500;line-height:1.65}.tax-groups-mode>div{display:grid;grid-template-columns:1fr 1fr;gap:6px;border:1px solid var(--line);border-radius:9px;padding:4px;margin-top:7px;background:var(--surface-2)}.tax-groups-mode label{display:flex;align-items:center;justify-content:center;gap:8px;min-height:36px;border-radius:6px;cursor:pointer}.tax-groups-mode label:has(input:checked){color:var(--blue-strong);background:var(--surface);box-shadow:0 1px 3px #123b3515}.tax-groups-tool .tax-groups-mode input{width:16px;height:16px;min-height:0;margin:0;padding:0;accent-color:var(--blue)}.tax-groups-setting{display:block;min-width:0}.tax-groups-tool .tax-groups-setting input,.tax-groups-tool .tax-groups-setting select{margin-top:7px}.tax-groups-columns,.tax-groups-row{display:grid;grid-template-columns:30px repeat(4,minmax(0,1fr)) 34px;gap:12px;align-items:start}.tax-groups-columns{padding:0 0 8px;color:var(--muted);font-size:13px}.tax-groups-row{border-top:1px solid var(--line);padding:11px 0}.tax-groups-row-index{font:13px/46px var(--mono);color:var(--muted);text-align:center}.tax-groups-field{display:block;min-width:0}.tax-groups-cell-label{display:none}.tax-groups-tool .tax-groups-input{margin:0;font:16px/1.5 var(--mono);text-align:right;min-height:46px}.tax-groups-result{display:flex;justify-content:flex-end;align-items:center;min-height:46px;padding:10px 11px;font:600 16px/1.5 var(--mono);font-variant-numeric:tabular-nums;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;overflow-wrap:anywhere;word-break:break-word}.tax-groups-remove{width:34px;min-height:46px;border:0;border-radius:7px;background:transparent;color:var(--muted);font-size:22px}.tax-groups-remove:hover{color:var(--danger);background:var(--danger-bg)}.tax-groups-error{font-size:13px;line-height:1.6;color:var(--danger);margin:5px 0 0;display:block;overflow-wrap:anywhere}.tax-groups-error:empty{display:none}.tax-groups-input[aria-invalid=true],#taxGroupsRate[aria-invalid=true]{border-color:var(--danger);background:var(--danger-bg)}.tax-groups-row[data-state=error] .tax-groups-result{color:var(--muted)}.tax-groups-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 22px}.tax-groups-count{font-size:13px;color:var(--muted)}.tax-groups-totals{display:grid;grid-template-columns:1fr repeat(3,minmax(0,1fr));gap:18px;border-top:2px solid var(--line-strong);padding-top:18px;font-size:14px}.tax-groups-totals>div{min-width:0}.tax-groups-totals span,.tax-groups-totals small{display:block;line-height:1.7}.tax-groups-totals small{color:var(--muted);font-size:13px;margin-top:4px}.tax-groups-totals strong{display:block;font:600 21px/1.6 var(--mono);margin-top:5px;color:var(--blue-strong);overflow-wrap:anywhere}.tax-groups-totals[data-state=partial] #taxGroupsTotalNote{color:var(--warn)}
+@media(max-width:720px){.tax-groups-sheet{padding:18px}.tax-groups-controls{grid-template-columns:1fr 1fr;gap:14px}.tax-groups-mode{grid-column:1/-1}.tax-groups-columns{display:none}.tax-groups-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:1px solid var(--line);border-radius:10px;margin-bottom:12px;padding:12px}.tax-groups-row-index{grid-column:1;line-height:32px;text-align:left}.tax-groups-remove{grid-row:1;grid-column:2;justify-self:end;min-height:32px}.tax-groups-cell-label{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}.tax-groups-totals{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.tax-groups-totals>div:first-child{grid-column:1/-1}.tax-groups-totals strong{font-size:18px}}
+@media print{.tax-groups-actions,.tax-groups-remove{display:none!important}.tax-groups-row{break-inside:avoid}}
+</style>
+<!-- TAX_GROUPS_STYLE_END -->
+<!-- ALLOCATION_STYLE_BEGIN -->
+<style>
+/* Scoped calculator allocation workspace: bounded form, aligned results, local typography. */
+#allocationPanel{max-width:1180px;margin:0 auto}.allocation-layout19{display:grid;grid-template-columns:minmax(300px,350px) minmax(0,1fr);align-items:start;gap:22px}.allocation-card19{min-width:0;padding:22px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.allocation-input19{border-top:3px solid var(--blue)}.allocation-heading19{display:flex;align-items:center;gap:10px;margin-bottom:20px}.allocation-heading19 h2{margin:0;font-size:18px;line-height:1.4}.allocation-heading19>.btn{margin-left:auto;white-space:nowrap;min-height:42px}.allocation-fields19{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}.allocation-field19{display:grid;gap:7px;min-width:0;align-content:start;font-size:14px;font-weight:600;color:var(--text)}.allocation-wide19{grid-column:1/-1}.allocation-field19 input,.allocation-field19 select,#allocationCopyFallback19{width:100%;min-width:0;max-width:100%;min-height:44px;padding:10px 11px;border:1px solid var(--line-strong);border-radius:7px;color:var(--text);background:var(--surface);font:16px/1.5 system-ui,"Microsoft JhengHei",sans-serif}.allocation-field19 input:focus,.allocation-field19 select:focus,#allocationCopyFallback19:focus{outline:2px solid var(--blue);outline-offset:2px}.allocation-field19 input[aria-invalid=true],.allocation-field19 select[aria-invalid=true]{border-color:var(--danger,#b42337)}#allocationAmount19{font-family:var(--mono,ui-monospace,monospace);font-size:21px;font-variant-numeric:tabular-nums}.allocation-calculate19{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:46px;margin-top:20px;padding:11px 14px;font-weight:650}.allocation-help19{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:1.75;color:var(--muted)}.allocation-help19>summary{cursor:pointer;min-height:36px;display:list-item;padding:6px 0;color:var(--blue)}.allocation-help19 p{margin:8px 0}.allocation-error19{margin:0;color:var(--danger,#b42337);font-size:14px;font-weight:400;line-height:1.6;overflow-wrap:anywhere}#allocationFormError19{margin-top:14px}.allocation-options19{display:flex;gap:10px 16px;flex-wrap:wrap;min-width:0;margin:0 0 18px;padding:0;border:0;font-size:14px;color:var(--muted)}.allocation-options19 legend{font-size:13px;margin-bottom:8px}.allocation-options19 label{display:flex;align-items:center;gap:7px;min-height:36px;cursor:pointer}.allocation-options19 input{width:18px;height:18px;accent-color:var(--blue)}.allocation-summary19{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr));margin-bottom:18px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}.allocation-summary19>div{min-width:0;padding:12px;border-left:1px solid var(--line)}.allocation-summary19>div:first-child{border:0}.allocation-summary19 strong{display:block;font-size:18px;line-height:1.5;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.allocation-summary19 span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}.allocation-empty19{margin:0;padding:30px 8px;font-size:15px;line-height:1.8;color:var(--muted)}.allocation-result19[data-state=stale]{border-left:3px solid var(--blue);padding-left:12px}.allocation-result19[data-state=error] .allocation-empty19{color:var(--danger,#b42337)}.allocation-rows19{max-height:65vh;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:4px}.allocation-row19{padding:15px 0;border-bottom:1px solid var(--line)}.allocation-row19:first-child{padding-top:0}.allocation-row19:last-child{border-bottom:0}.allocation-row-head19{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:7px}.allocation-row-head19 h3{font-size:15px;line-height:1.6;margin:0;font-weight:650}.allocation-row-head19 span{color:var(--muted);font-size:12px;white-space:nowrap}.allocation-equation19{margin:0;color:var(--blue-strong,var(--blue));font:600 19px/1.7 var(--mono,ui-monospace,monospace);overflow-wrap:anywhere;letter-spacing:-.015em}.allocation-row-dates19{margin:6px 0 0;font-size:14px;line-height:1.7;color:var(--muted);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.allocation-pager19{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:16px;font-size:13px;color:var(--muted)}.allocation-pager19 .btn{min-height:42px;white-space:nowrap}.allocation-copy-status19{font-size:14px;line-height:1.7;color:var(--muted);margin:12px 0 0;overflow-wrap:anywhere}.allocation-copy-status19:empty{display:none}#allocationFallbackWrap19{margin-top:12px;font-size:14px}#allocationFallbackWrap19 label{display:block;margin-bottom:7px}#allocationCopyFallback19{min-height:150px;resize:vertical;font-size:14px;line-height:1.7}.allocation-heading19>.btn:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:1050px){.allocation-layout19{grid-template-columns:minmax(0,1fr)}.allocation-input19 .allocation-fields19{grid-template-columns:repeat(4,minmax(0,1fr))}.allocation-input19 .allocation-wide19{grid-column:span 2}.allocation-calculate19{max-width:300px}.allocation-card19{padding:20px}.allocation-help19{max-width:80ch}}
+@media(max-width:650px){.allocation-input19 .allocation-fields19{grid-template-columns:repeat(2,minmax(0,1fr))}.allocation-input19 .allocation-wide19{grid-column:1/-1}.allocation-card19{padding:16px}.allocation-layout19{gap:16px}.allocation-heading19{gap:8px;flex-wrap:wrap}.allocation-heading19 h2{font-size:17px}.allocation-heading19>.btn{min-height:44px;font-size:14px}.allocation-options19 label{min-height:44px}.allocation-summary19{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.allocation-summary19>div:first-child{grid-column:1/-1;border-bottom:1px solid var(--line)}.allocation-summary19>div:nth-child(2){border-left:0}.allocation-summary19 strong{font-size:18px}.allocation-calculate19{max-width:none}.allocation-equation19{font-size:17px}.allocation-pager19{gap:8px;flex-wrap:wrap}.allocation-pager19 .btn{min-height:44px}.allocation-row-dates19{font-size:14px}.allocation-rows19{max-height:60vh}}
+@media(max-width:360px){.allocation-input19 .allocation-fields19{grid-template-columns:minmax(0,1fr)}.allocation-input19 .allocation-wide19{grid-column:auto}}
+@media print{.allocation-input19,.allocation-options19,#allocationCopy19,.allocation-pager19,.allocation-copy-status19,#allocationFallbackWrap19{display:none!important}.allocation-layout19{display:block}.allocation-card19{padding:0;border:0}.allocation-rows19{overflow:visible;max-height:none}.allocation-row19{break-inside:avoid}}
+
+.allocation-row-amount19{min-width:0;max-width:100%;margin-left:auto;text-align:right}.allocation-row-amount19>span{display:block;font-size:12px;color:var(--muted)}.allocation-row-amount19>strong{display:block;font:650 18px/1.6 var(--mono,ui-monospace,monospace);color:var(--text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+</style>
+<!-- ALLOCATION_STYLE_END -->
 </head>
 <body>
 <div class="app">
 <header class="topbar" data-review-id="accounting-calculator-header-1" data-review-name="頂端操作 1">
-<div class="brand"><span class="brand-symbol" aria-hidden="true">∑</span>離線計算工作台 <span class="brand-version">1.8.0</span></div>
+<div class="brand"><span class="brand-symbol" aria-hidden="true">∑</span>離線計算工作台 <span class="brand-version">1.9.0</span></div>
 <div class="session-actions"><div class="session-note">提醒：計算內容重新整理後會清空。</div><button type="button" class="btn" id="clearCalculationsBtn">清除計算資料</button></div>
 </header>
 <nav class="mode-switch" aria-label="工作模式" data-review-id="accounting-calculator-workspaceNav" data-review-name="工作模式切換">
@@ -185,6 +209,7 @@ body.book-focus-mode #taxPanel{animation:none!important;transform:none!important
 <button class="active" data-panel="generalPanel"><span class="nav-symbol" aria-hidden="true">＋</span><span class="nav-copy">一般計算<small>單次・批量・換算</small></span></button>
 <button data-panel="poolPanel"><span class="nav-symbol" aria-hidden="true">⋮</span><span class="nav-copy">數字池<small>找組合・核對差額</small></span></button>
 <button data-panel="datePanel"><span class="nav-symbol" aria-hidden="true">▦</span><span class="nav-copy">日期帳期<small>相差天數・到期日</small></span></button>
+<button data-panel="allocationPanel"><span class="nav-symbol" aria-hidden="true">÷</span><span class="nav-copy">金額分攤<small>跨年・跨月・天數比例</small></span></button>
 <button data-panel="taxPanel"><span class="nav-symbol" aria-hidden="true">%</span><span class="nav-copy">稅額試算<small>銷項・進項・彙總</small></span></button>
 <button data-panel="insurancePanel"><span class="nav-symbol" aria-hidden="true">⌘</span><span class="nav-copy">勞健保<small>級距・負擔・成本</small></span></button>
 <p class="nav-foot">開啟 HTML 就能使用<br>不需登入，也不需連線</p>
@@ -280,6 +305,22 @@ body.book-focus-mode #taxPanel{animation:none!important;transform:none!important
   </details>
 </section>
 <!-- MATH_FORMS_MARKUP_END -->
+<!-- TAX_GROUPS_MARKUP_BEGIN -->
+<details id="taxGroupsTool" class="math-tool guided-tool tax-groups-tool" open data-review-id="accounting-calculator-taxGroupsTool" data-review-name="多組含稅未稅拆算">
+  <summary><span class="guided-tool-index">03</span><span class="guided-tool-title">多組含稅／未稅拆算</span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+  <div class="tax-groups-sheet">
+    <div class="tax-groups-controls">
+      <fieldset class="tax-groups-mode"><legend>輸入金額</legend><div><label><input type="radio" name="taxGroupsMode" value="gross" checked>含稅</label><label><input type="radio" name="taxGroupsMode" value="net">未稅</label></div></fieldset>
+      <label class="tax-groups-setting" for="taxGroupsRate">稅率（%）<input id="taxGroupsRate" type="text" inputmode="decimal" value="5" maxlength="30" autocomplete="off" aria-describedby="taxGroupsRateError"><span id="taxGroupsRateError" class="tax-groups-error" role="status"></span></label>
+      <label class="tax-groups-setting" for="taxGroupsPrecision">每筆稅額取整<select id="taxGroupsPrecision"><option value="yuan">整元</option><option value="cent">小數 2 位</option></select></label>
+    </div>
+    <div class="tax-groups-columns" aria-hidden="true"><span>#</span><span id="taxGroupsInputHeading">輸入含稅金額</span><span>未稅</span><span>稅額</span><span>含稅</span><span></span></div>
+    <div id="taxGroupsRows" class="tax-groups-rows"></div>
+    <div class="tax-groups-actions"><button type="button" class="btn" id="taxGroupsAddBtn">＋ 新增一組</button><span id="taxGroupsCount" class="tax-groups-count">0 筆有效</span></div>
+    <div id="taxGroupsTotals" class="tax-groups-totals" role="status" aria-live="polite" aria-atomic="true"><div><span id="taxGroupsTotalLabel">總計</span><small id="taxGroupsTotalNote">空白列不計入</small></div><div><span>未稅</span><strong id="taxGroupsNetTotal">—</strong></div><div><span>稅額</span><strong id="taxGroupsTaxTotal">—</strong></div><div><span>含稅</span><strong id="taxGroupsGrossTotal">—</strong></div></div>
+  </div>
+</details>
+<!-- TAX_GROUPS_MARKUP_END -->
 <!-- GUIDED_MATH_ANCHOR -->
 </section>
 <!-- NUMBER_POOL_MARKUP_BEGIN -->
@@ -353,6 +394,36 @@ body.book-focus-mode #taxPanel{animation:none!important;transform:none!important
   </div>
 </section>
 <!-- DATE_TOOLS_MARKUP_END -->
+<!-- ALLOCATION_MARKUP_BEGIN -->
+<section id="allocationPanel" class="panel" data-review-id="accounting-calculator-allocationPanel" data-review-name="跨年跨月金額分攤">
+  <div class="workspace-heading"><div><p class="workspace-kicker">依實際天數分配</p><h1>跨年／跨月分攤</h1><p>輸入整段期間的總金額，按年或按月分配；起日與結束日都計入。</p></div><span class="local-badge">離線可用</span></div>
+  <div class="allocation-layout19">
+    <section class="allocation-card19 allocation-input19" aria-labelledby="allocationInputTitle19" data-review-id="accounting-calculator-allocationInput" data-review-name="分攤條件">
+      <div class="allocation-heading19"><h2 id="allocationInputTitle19">分攤條件</h2></div>
+      <form id="allocationForm19" novalidate>
+        <div class="allocation-fields19">
+          <label class="allocation-field19 allocation-wide19" for="allocationAmount19">整段總金額<input id="allocationAmount19" type="text" inputmode="decimal" maxlength="30" placeholder="例如 1,000" autocomplete="off" aria-describedby="allocationAmountError19"><span class="allocation-error19" id="allocationAmountError19" hidden></span></label>
+          <label class="allocation-field19" for="allocationStart19">起始日期<input id="allocationStart19" type="date" min="0001-01-01" max="9999-12-31" aria-describedby="allocationStartError19"><span class="allocation-error19" id="allocationStartError19" hidden></span></label>
+          <label class="allocation-field19" for="allocationEnd19">結束日期<input id="allocationEnd19" type="date" min="0001-01-01" max="9999-12-31" aria-describedby="allocationEndError19"><span class="allocation-error19" id="allocationEndError19" hidden></span></label>
+          <label class="allocation-field19 allocation-wide19" for="allocationUnit19">分組方式<select id="allocationUnit19" aria-describedby="allocationUnitError19"><option value="year">按年</option><option value="month">按月</option></select><span class="allocation-error19" id="allocationUnitError19" hidden></span></label>
+        </div>
+        <p id="allocationFormError19" class="allocation-error19" role="alert" hidden></p>
+        <button type="submit" class="btn primary allocation-calculate19" id="allocationCalculate19">計算分攤 <span aria-hidden="true">→</span></button>
+      </form>
+      <details class="allocation-help19"><summary>計算與尾差規則</summary><p>以整段實際天數為分母，含起訖；各組先取整數分，再把剩餘分配給餘數較大的組，平手依日期先後，確保合計等於總金額。負數依相同規則分配後還原負號。</p><p>日期支援西元 0001–9999；金額可填 0、負數與正確千分位，最多兩位小數及 999,999,999,999.99。</p></details>
+    </section>
+    <section class="allocation-card19 allocation-output19" aria-labelledby="allocationOutputTitle19" data-review-id="accounting-calculator-allocationOutput" data-review-name="分攤算式與輸出">
+      <div class="allocation-heading19"><h2 id="allocationOutputTitle19">分攤明細</h2><button id="allocationCopy19" class="btn" type="button" disabled>複製文字</button></div>
+      <fieldset class="allocation-options19"><legend>算式與複製內容</legend><label><input id="allocationShowAmount19" type="checkbox" checked>總金額</label><label><input id="allocationShowRatio19" type="checkbox" checked>天數比例</label><label><input id="allocationShowDates19" type="checkbox">日期</label><label><input id="allocationShowResult19" type="checkbox">結果</label></fieldset>
+      <div id="allocationSummary19" class="allocation-summary19" hidden></div>
+      <div id="allocationResult19" class="allocation-result19" data-state="empty" aria-live="polite" aria-atomic="false"><p class="allocation-empty19">填好總金額及起訖日期後，按「計算分攤」。</p></div>
+      <nav id="allocationPager19" class="allocation-pager19" aria-label="分攤明細分頁" hidden><button id="allocationPrev19" class="btn" type="button">上一頁</button><span id="allocationPageLabel19"></span><button id="allocationNext19" class="btn" type="button">下一頁</button></nav>
+      <p id="allocationCopyStatus19" class="allocation-copy-status19" role="status" aria-live="polite"></p>
+      <div id="allocationFallbackWrap19" hidden><label for="allocationCopyFallback19">輸出文字</label><textarea id="allocationCopyFallback19" readonly aria-describedby="allocationCopyStatus19"></textarea></div>
+    </section>
+  </div>
+</section>
+<!-- ALLOCATION_MARKUP_END -->
 <section id="taxPanel" class="panel" data-review-id="accounting-calculator-taxPanel" data-review-name="稅務計算">
 <div class="tax-toolbar" data-review-id="accounting-calculator-tax-toolbar-1" data-review-name="稅務計算工具列"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn" id="toggleSettingsBtn">設定</button><span class="pill">預設稅率 <strong id="rateBadge">5%</strong></span><label class="copy-pref"><input type="checkbox" id="taxCopyComma" checked> 複製含千分位</label></div><div class="muted" style="font-size:12px">退回／折讓一律輸入正數，系統自動作減項</div></div>
 <div class="tax-settings" id="taxSettings" data-review-id="accounting-calculator-taxSettings" data-review-name="預設稅率設定"><div class="settings-grid" id="settingsGrid"></div></div>
@@ -1734,8 +1805,308 @@ if (typeof module !== 'undefined' && module.exports) module.exports = {createMat
 /* CALCULATOR_MATH_UI_END */
 </script>
 <!-- MATH_FORMS_SCRIPT_END -->
+<!-- TAX_GROUPS_SCRIPT_BEGIN -->
+<script>
+/* Exact standalone multi-row tax arithmetic; the existing invoice workspace is unchanged. */
+function createTaxGroupsCore19() {
+  'use strict';
+  const MAX_CENTS = 99999999999999n;
+  const RATE_SCALE = 1000000n; // A 5% rate is represented as 50,000 / 1,000,000.
+  const MAX_ROWS = 1000;
+  function normalized(raw) {
+    if (raw == null) return '';
+    if (typeof raw !== 'string' && typeof raw !== 'number') throw new Error('請填入數字。');
+    return String(raw).normalize('NFKC').trim().replace(/−/g, '-');
+  }
+  function parseAmount(raw) {
+    let text = normalized(raw);
+    if (!text) return null;
+    if (text.length > 80) throw new Error('金額過長。');
+    if (!/^[+-]?(?:(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{0,2})?|\.\d{1,2})$/.test(text)) {
+      throw new Error('金額須為數字，最多 2 位小數；千分位請填 1,000.00。');
+    }
+    const negative = text[0] === '-';
+    text = text.replace(/^[+-]/, '').replace(/,/g, '');
+    const [whole, fraction = ''] = text.split('.');
+    const value = BigInt(whole || '0') * 100n + BigInt(fraction.padEnd(2, '0'));
+    if (value > MAX_CENTS) throw new Error('每筆金額絕對值最多 999,999,999,999.99。');
+    return negative && value ? -value : value;
+  }
+  function parseRate(raw) {
+    const text = normalized(raw);
+    if (!text) throw new Error('請填入稅率。');
+    if (text.length > 30 || !/^\+?(?:\d+(?:\.\d{0,4})?|\.\d{1,4})$/.test(text)) throw new Error('稅率請填 0 至 100，最多 4 位小數，不需輸入 %。');
+    const [whole, fraction = ''] = text.replace(/^\+/, '').split('.');
+    const value = BigInt(whole || '0') * 10000n + BigInt(fraction.padEnd(4, '0'));
+    if (value > RATE_SCALE) throw new Error('稅率請填 0 至 100。');
+    return value;
+  }
+  function readOptions(options = {}) {
+    const {mode = 'gross', rate = '5', precision = 'yuan'} = options;
+    if (mode !== 'gross' && mode !== 'net') throw new Error('請選擇含稅或未稅輸入。');
+    if (precision !== 'yuan' && precision !== 'cent') throw new Error('請選擇稅額取整元或小數 2 位。');
+    return {mode, rateUnits:parseRate(rate), precision};
+  }
+  function divideRounded(numerator, denominator) {
+    // Symmetric half-away-from-zero, including negative credit adjustments.
+    const negative = numerator < 0n, absolute = negative ? -numerator : numerator;
+    let value = absolute / denominator;
+    if ((absolute % denominator) * 2n >= denominator) value++;
+    return negative && value ? -value : value;
+  }
+  function calculateParsed(amountCents, {mode, rateUnits, precision}) {
+    if (amountCents === null) return null;
+    const step = precision === 'yuan' ? 100n : 1n;
+    const denominator = (mode === 'gross' ? RATE_SCALE + rateUnits : RATE_SCALE) * step;
+    const taxCents = divideRounded(amountCents * rateUnits, denominator) * step;
+    const netCents = mode === 'net' ? amountCents : amountCents - taxCents;
+    const grossCents = mode === 'gross' ? amountCents : amountCents + taxCents;
+    return {amountCents, netCents, taxCents, grossCents};
+  }
+  function calculate(options = {}) {
+    const settings = readOptions(options);
+    return calculateParsed(parseAmount(options.amount), settings);
+  }
+  function summarize(rows, options = {}) {
+    if (!Array.isArray(rows) || rows.length > MAX_ROWS) throw new Error('清單最多 ' + MAX_ROWS + ' 筆。');
+    const settings = readOptions(options);
+    const totals = {netCents:0n, taxCents:0n, grossCents:0n};
+    let validCount = 0, blankCount = 0, invalidCount = 0;
+    const results = rows.map((raw, index) => {
+      try {
+        const amounts = calculateParsed(parseAmount(raw), settings);
+        if (!amounts) {blankCount++;return {index, status:'blank'};}
+        validCount++;
+        for (const field of ['netCents','taxCents','grossCents']) totals[field] += amounts[field];
+        return {index, status:'valid', ...amounts};
+      } catch (error) {invalidCount++;return {index, status:'error', error:error.message};}
+    });
+    return {rows:results, totals, validCount, blankCount, invalidCount, complete:invalidCount === 0};
+  }
+  function format(cents) {
+    if (typeof cents !== 'bigint') throw new Error('金額格式錯誤。');
+    const absolute = cents < 0n ? -cents : cents;
+    return (cents < 0n ? '−' : '') + (absolute / 100n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '.' + (absolute % 100n).toString().padStart(2, '0');
+  }
+  return Object.freeze({MAX_CENTS, MAX_ROWS, RATE_SCALE, parseAmount, parseRate, calculate, summarize, format});
+}
+if (typeof module !== 'undefined' && module.exports) module.exports = {createTaxGroupsCore19};
+
+/* Independent general-calculation worksheet; no writes to invoice-book rows or rate settings. */
+(() => {
+  'use strict';
+  const root = document.getElementById('taxGroupsTool');
+  if (!root) return;
+  const E = createTaxGroupsCore19(), rows = document.getElementById('taxGroupsRows');
+  const rate = document.getElementById('taxGroupsRate'), precision = document.getElementById('taxGroupsPrecision');
+  const rateError = document.getElementById('taxGroupsRateError'), totals = document.getElementById('taxGroupsTotals');
+  const fields = ['netCents','taxCents','grossCents'], labels = ['未稅','稅額','含稅'];
+  let sequence = 0;
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function options() {return {mode:root.querySelector('[name="taxGroupsMode"]:checked').value, rate:rate.value, precision:precision.value};}
+  function inputLabel() {return options().mode === 'gross' ? '輸入含稅金額' : '輸入未稅金額';}
+  function renumber() {
+    [...rows.children].forEach((row,index) => {
+      const number = index + 1;
+      row.setAttribute('aria-label','第 ' + number + ' 組稅額拆算');
+      row.querySelector('.tax-groups-row-index').textContent = String(number);
+      row.querySelector('.tax-groups-input-label').textContent = inputLabel();
+      row.querySelector('.tax-groups-input').setAttribute('aria-label','第 ' + number + ' 組' + inputLabel());
+      row.querySelector('.tax-groups-remove').setAttribute('aria-label','刪除第 ' + number + ' 組');
+      fields.forEach((field,i) => row.querySelector('[data-tax-result="' + field + '"]').setAttribute('aria-label','第 ' + number + ' 組' + labels[i]));
+    });
+    document.getElementById('taxGroupsInputHeading').textContent = inputLabel();
+    document.getElementById('taxGroupsAddBtn').disabled = rows.children.length >= E.MAX_ROWS;
+  }
+  function clearOutputs(row) {
+    fields.forEach(field => {row.querySelector('[data-tax-result="' + field + '"]').textContent = '—';});
+  }
+  function setTotals(values, hasValues) {
+    ['taxGroupsNetTotal','taxGroupsTaxTotal','taxGroupsGrossTotal'].forEach((id,index) => {
+      document.getElementById(id).textContent = hasValues ? E.format(values[fields[index]]) : '—';
+    });
+  }
+  function render() {
+    const inputs = [...rows.querySelectorAll('.tax-groups-input')];
+    let data;
+    try {
+      data = E.summarize(inputs.map(input => input.value), options());
+      rate.removeAttribute('aria-invalid'); rateError.textContent = '';
+    } catch (error) {
+      rate.setAttribute('aria-invalid','true'); rateError.textContent = error.message;
+      [...rows.children].forEach((row,index) => {
+        const input = inputs[index], amountError = row.querySelector('.tax-groups-error');
+        clearOutputs(row);
+        try {
+          const amount = E.parseAmount(input.value);
+          input.removeAttribute('aria-invalid'); amountError.textContent = '';
+          row.dataset.state = amount === null ? 'blank' : 'pending';
+        } catch (amountIssue) {
+          input.setAttribute('aria-invalid','true'); amountError.textContent = amountIssue.message;
+          row.dataset.state = 'error';
+        }
+      });
+      totals.dataset.state = 'error'; setTotals(null,false);
+      document.getElementById('taxGroupsTotalLabel').textContent = '總計';
+      document.getElementById('taxGroupsTotalNote').textContent = '請先修正稅率';
+      document.getElementById('taxGroupsCount').textContent = '待修正';
+      return;
+    }
+    data.rows.forEach((result,index) => {
+      const row = rows.children[index], input = inputs[index], error = row.querySelector('.tax-groups-error');
+      row.dataset.state = result.status;
+      if (result.status === 'error') {
+        input.setAttribute('aria-invalid','true'); error.textContent = result.error; clearOutputs(row);
+      } else {
+        input.removeAttribute('aria-invalid'); error.textContent = '';
+        if (result.status === 'blank') clearOutputs(row);
+        else fields.forEach(field => {row.querySelector('[data-tax-result="' + field + '"]').textContent = E.format(result[field]);});
+      }
+    });
+    totals.dataset.state = data.invalidCount ? 'partial' : data.validCount ? 'ready' : 'empty';
+    setTotals(data.totals,data.validCount > 0);
+    document.getElementById('taxGroupsTotalLabel').textContent = data.invalidCount ? '有效列小計' : '總計';
+    document.getElementById('taxGroupsTotalNote').textContent = data.invalidCount ? data.invalidCount + ' 筆待修正，未計入小計' : data.validCount ? '逐筆取稅後加總' : '空白列不計入';
+    document.getElementById('taxGroupsCount').textContent = data.validCount + ' 筆有效' + (data.invalidCount ? ' · ' + data.invalidCount + ' 筆待修正' : '');
+  }
+  function addRow(value = '', focus = false) {
+    if (rows.children.length >= E.MAX_ROWS) return null;
+    const row = element('div','tax-groups-row'); row.setAttribute('role','group');
+    const number = element('span','tax-groups-row-index'); number.setAttribute('aria-hidden','true');
+    const field = element('label','tax-groups-field'), input = element('input','tax-groups-input');
+    input.type = 'text'; input.inputMode = 'decimal'; input.maxLength = 80; input.autocomplete = 'off'; input.value = value; input.placeholder = '填入金額';
+    const error = element('span','tax-groups-error'); error.id = 'tax-groups-error-' + (++sequence); error.setAttribute('role','status');
+    input.setAttribute('aria-describedby',error.id);
+    field.append(element('span','tax-groups-cell-label tax-groups-input-label',inputLabel()),input,error);
+    row.append(number,field);
+    fields.forEach((key,index) => {
+      const cell = element('div','tax-groups-field'), output = element('output','tax-groups-result','—'); output.dataset.taxResult = key;
+      cell.append(element('span','tax-groups-cell-label',labels[index]),output); row.append(cell);
+    });
+    const remove = element('button','tax-groups-remove','×'); remove.type = 'button'; row.append(remove);
+    remove.addEventListener('click',() => {
+      const next = row.nextElementSibling || row.previousElementSibling;
+      row.remove(); if (!rows.children.length) addRow(); renumber(); render();
+      (next || rows.firstElementChild).querySelector('.tax-groups-input').focus();
+    });
+    // Enter advances only within this worksheet; ordinary Tab and editing remain native.
+    input.addEventListener('keydown',event => {
+      if (event.key !== 'Enter' || event.isComposing) return;
+      event.preventDefault();
+      let next = row.nextElementSibling;
+      if (!next) {next=addRow();renumber();render();}
+      next?.querySelector('.tax-groups-input').focus();
+    });
+    rows.append(row); renumber();
+    if (focus) input.focus();
+    return row;
+  }
+  function reset() {rows.replaceChildren();addRow();addRow();addRow();renumber();render();}
+  function setRate(value) {rate.value=String(value ?? '');render();return !rate.hasAttribute('aria-invalid');}
+  function getState() {return {...options(), rows:[...rows.querySelectorAll('.tax-groups-input')].map(input=>input.value)};}
+  rows.addEventListener('input',render);
+  rate.addEventListener('input',render); rate.addEventListener('change',render);
+  precision.addEventListener('change',render);
+  root.querySelectorAll('[name="taxGroupsMode"]').forEach(input => input.addEventListener('change',()=>{renumber();render();}));
+  document.getElementById('taxGroupsAddBtn').addEventListener('click',()=>{addRow('',true);render();});
+  // Read and follow the existing global rate, but never change it from this worksheet.
+  const sharedRate = document.getElementById('taxRateInput');
+  if (sharedRate) rate.value = sharedRate.value;
+  document.addEventListener('change',event => {if (event.target?.id === 'taxRateInput') setRate(event.target.value);});
+  document.addEventListener('calculator:clear-data',reset);
+  window.OfflineTaxGroups19 = Object.freeze({reset,setRate,getState});
+  reset();
+})();
+</script>
+<!-- TAX_GROUPS_SCRIPT_END -->
+<!-- ALLOCATION_SCRIPT_BEGIN -->
+<script>
+/* Exact date-range allocation. Pure civil dates and integer cents; no locale or time-zone dependency. */
+function createAllocationCore19(){
+ 'use strict';
+ const DAY_MS=86400000,MAX_CENTS=99999999999999n;
+ function invalid(field,message){const error=new Error(message);error.field=field;throw error;}
+ function parseAmount(raw){
+  const value=typeof raw==='string'?raw.trim():typeof raw==='number'&&Number.isFinite(raw)?String(raw):'';
+  if(!value)invalid('amount','請填入整段期間的總金額。');
+  if(value.length>40)invalid('amount','總金額超出範圍，最多 999,999,999,999.99。');
+  if(!/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?$/.test(value))invalid('amount','金額請填數字，最多兩位小數；千分位須如 1,234.56。');
+  const negative=value[0]==='-',text=value.replace(/^-/,'').replace(/,/g,''),[whole,fraction='']=text.split('.'),cents=BigInt(whole)*100n+BigInt(fraction.padEnd(2,'0'));
+  if(cents>MAX_CENTS)invalid('amount','總金額超出範圍，最多 999,999,999,999.99。');
+  return negative&&cents!==0n?-cents:cents;
+ }
+ function parseDate(raw,field='date'){
+  const value=typeof raw==='string'?raw.trim():'',match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if(!value)invalid(field,field==='start'?'請填起始日期。':field==='end'?'請填結束日期。':'請填日期。');
+  if(!match)invalid(field,'日期請使用 YYYY-MM-DD 格式。');
+  const year=Number(match[1]),month=Number(match[2]),day=Number(match[3]);
+  if(year<1||year>9999)invalid(field,'年份須介於 0001 至 9999。');
+  const date=new Date(0);date.setUTCHours(0,0,0,0);date.setUTCFullYear(year,month-1,day);
+  if(date.getUTCFullYear()!==year||date.getUTCMonth()!==month-1||date.getUTCDate()!==day)invalid(field,'日期不存在，請檢查月份、天數及閏年。');
+  return {year,month,day,ordinal:date.getTime()/DAY_MS,text:String(year).padStart(4,'0')+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')};
+ }
+ function civilOrdinal(year,month,day){const date=new Date(0);date.setUTCHours(0,0,0,0);date.setUTCFullYear(year,month-1,day);return date.getTime()/DAY_MS;}
+ function dateText(ordinal){const date=new Date(ordinal*DAY_MS);return String(date.getUTCFullYear()).padStart(4,'0')+'-'+String(date.getUTCMonth()+1).padStart(2,'0')+'-'+String(date.getUTCDate()).padStart(2,'0');}
+ function monthDays(year,month){return month===2?(year%4===0&&(year%100!==0||year%400===0)?29:28):[4,6,9,11].includes(month)?30:31;}
+ function allocate(options={}){
+  const {amount,start,end,unit='year'}=options,amountCents=parseAmount(amount),first=parseDate(start,'start'),last=parseDate(end,'end');
+  if(unit!=='year'&&unit!=='month')invalid('unit','請選擇按年或按月分攤。');
+  if(last.ordinal<first.ordinal)invalid('end','結束日期不能早於起始日期。');
+  const totalDays=last.ordinal-first.ordinal+1,denominator=BigInt(totalDays),negative=amountCents<0n,absolute=negative?-amountCents:amountCents,rows=[];
+  let current=first.ordinal,baseSum=0n;
+  while(current<=last.ordinal){const date=new Date(current*DAY_MS),year=date.getUTCFullYear(),month=date.getUTCMonth()+1,groupEnd=unit==='year'?civilOrdinal(year,12,31):civilOrdinal(year,month,monthDays(year,month)),endOrdinal=Math.min(groupEnd,last.ordinal),days=endOrdinal-current+1,numerator=absolute*BigInt(days),base=numerator/denominator,key=String(year).padStart(4,'0')+(unit==='month'?'-'+String(month).padStart(2,'0'):'');
+   rows.push({key,label:String(year).padStart(4,'0')+' 年'+(unit==='month'?' '+String(month).padStart(2,'0')+' 月':''),start:dateText(current),end:dateText(endOrdinal),days,cents:base,baseCents:base,remainder:numerator%denominator});baseSum+=base;current=endOrdinal+1;
+  }
+  const remaining=Number(absolute-baseSum);
+  if(remaining){const order=rows.map((row,index)=>({index,remainder:row.remainder})).sort((a,b)=>a.remainder===b.remainder?a.index-b.index:a.remainder>b.remainder?-1:1);for(let i=0;i<remaining;i++)rows[order[i].index].cents+=1n;}
+  for(const row of rows){row.adjusted=row.cents!==row.baseCents;if(negative){row.cents=-row.cents;row.baseCents=-row.baseCents;}}
+  return {amountCents,totalDays,unit,start:first.text,end:last.text,rows};
+ }
+ function formatCents(cents,{trim=false}={}){if(typeof cents!=='bigint')invalid('amount','金額單位須為整數分。');const negative=cents<0n,absolute=negative?-cents:cents,whole=(absolute/100n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,','),fraction=(absolute%100n).toString().padStart(2,'0');return (negative?'-':'')+whole+(trim&&fraction==='00'?'':'.'+fraction);}
+ function displayOptions(options={}){const out={};for(const key of ['amount','ratio','dates','result']){if(options[key]!=null&&typeof options[key]!=='boolean')invalid('options','顯示項目須為勾選狀態。');out[key]=options[key]==null?key==='amount'||key==='ratio':options[key];}return out;}
+ function expression(data,row,options={}){const show=displayOptions(options),parts=[];if(show.amount)parts.push(formatCents(data.amountCents,{trim:true}));if(show.ratio)parts.push(row.days+'/'+data.totalDays);let out=parts.join(' × ');if(show.result){const result=formatCents(row.cents);out=out?out+(show.amount&&show.ratio?' = ':' → ')+result:result;}return out;}
+ function formatLine(data,row,options={}){const show=displayOptions(options),parts=[expression(data,row,show)];if(show.dates)parts.push(row.start+' ～ '+row.end);const body=parts.filter(Boolean).join('｜');return body?row.label+'｜'+body:'';}
+ function plaintext(data,options={}){const show=displayOptions(options);if(!Object.values(show).some(Boolean))return '';return data.rows.map(row=>formatLine(data,row,show)).join('\n');}
+ return Object.freeze({MAX_CENTS,parseAmount,parseDate,allocate,formatCents,expression,formatLine,plaintext,displayOptions});
+}
+if(typeof module!=='undefined'&&module.exports)module.exports={createAllocationCore19};
+
+/* Standalone allocation UI. All inputs/results are transient, and rendered with text nodes. */
+(()=>{
+ 'use strict';
+ const core=createAllocationCore19(),$=id=>document.getElementById(id),PAGE_SIZE=50,fields={amount:'allocationAmount19',start:'allocationStart19',end:'allocationEnd19',unit:'allocationUnit19'},errors={amount:'allocationAmountError19',start:'allocationStartError19',end:'allocationEndError19',unit:'allocationUnitError19'};
+ let result=null,page=0,generation=0,copyBusy=false;
+ function el(tag,cls,text){const node=document.createElement(tag);if(cls)node.className=cls;if(text!=null)node.textContent=String(text);return node;}
+ function options(){return {amount:$('allocationShowAmount19').checked,ratio:$('allocationShowRatio19').checked,dates:$('allocationShowDates19').checked,result:$('allocationShowResult19').checked};}
+ function clearErrors(){for(const key of Object.keys(fields)){$(fields[key]).removeAttribute('aria-invalid');$(errors[key]).hidden=true;$(errors[key]).textContent='';}$('allocationFormError19').hidden=true;$('allocationFormError19').textContent='';}
+ function clearCopy(){generation++;copyBusy=false;$('allocationCopyStatus19').textContent='';$('allocationCopyFallback19').value='';$('allocationFallbackWrap19').hidden=true;}
+ function invalidate(message='條件已變更，請重新計算。',state='stale'){result=null;page=0;clearCopy();clearErrors();$('allocationSummary19').hidden=true;$('allocationSummary19').replaceChildren();$('allocationPager19').hidden=true;$('allocationResult19').dataset.state=state;$('allocationResult19').replaceChildren(el('p','allocation-empty19',message));$('allocationCopy19').disabled=true;}
+ function render(){
+  if(!result)return;const show=options(),visible=Object.values(show).some(Boolean),count=result.rows.length,totalPages=Math.ceil(count/PAGE_SIZE);page=Math.max(0,Math.min(page,totalPages-1));
+  const summary=$('allocationSummary19');summary.hidden=false;summary.replaceChildren();for(const [value,label]of [[core.formatCents(result.amountCents),'整段總金額'],[result.totalDays.toLocaleString('zh-TW'),'實際總天數'],[count.toLocaleString('zh-TW'),result.unit==='year'?'年度組數':'月份組數']]){const cell=el('div');cell.append(el('strong','',value),el('span','',label));summary.append(cell);}
+  const target=$('allocationResult19');target.dataset.state='success';target.replaceChildren();$('allocationCopy19').disabled=!visible||copyBusy;
+  if(!visible){target.append(el('p','allocation-empty19','已隱藏全部明細欄位；勾選上方項目即可顯示。'));$('allocationPager19').hidden=true;return;}
+  const list=el('div','allocation-rows19');list.setAttribute('aria-label','分攤明細');for(const row of result.rows.slice(page*PAGE_SIZE,(page+1)*PAGE_SIZE)){const item=el('article','allocation-row19');item.dataset.allocationKey=row.key;const heading=el('div','allocation-row-head19');const assigned=el('div','allocation-row-amount19');assigned.append(el('span','','分配金額'),el('strong','',core.formatCents(row.cents)));heading.append(el('h3','',row.label),assigned);item.append(heading);const expression=core.expression(result,row,show);if(expression)item.append(el('p','allocation-equation19',expression));if(show.dates)item.append(el('p','allocation-row-dates19',row.start+' ～ '+row.end));list.append(item);}target.append(list);
+  $('allocationPager19').hidden=count<=PAGE_SIZE;$('allocationPageLabel19').textContent=(page*PAGE_SIZE+1)+'–'+Math.min(count,(page+1)*PAGE_SIZE)+'／'+count+' 筆';$('allocationPrev19').disabled=page===0;$('allocationNext19').disabled=page>=totalPages-1;
+ }
+ function calculate(event){event?.preventDefault();clearCopy();clearErrors();try{result=core.allocate({amount:$('allocationAmount19').value,start:$('allocationStart19').value,end:$('allocationEnd19').value,unit:$('allocationUnit19').value});page=0;render();return result;}catch(error){result=null;page=0;$('allocationSummary19').hidden=true;$('allocationSummary19').replaceChildren();$('allocationPager19').hidden=true;$('allocationCopy19').disabled=true;$('allocationResult19').dataset.state='error';$('allocationResult19').replaceChildren(el('p','allocation-empty19','請修正輸入欄位後重新計算。'));const key=fields[error.field]?error.field:null;if(key){$(fields[key]).setAttribute('aria-invalid','true');$(errors[key]).textContent=error.message;$(errors[key]).hidden=false;$(fields[key]).focus();}$('allocationFormError19').textContent=error.message||'無法計算，請核對輸入。';$('allocationFormError19').hidden=false;return null;}}
+ function exportText(){return result?core.plaintext(result,options()):'';}
+ async function copyText(){const text=exportText();if(!text||copyBusy)return false;const token=generation;copyBusy=true;$('allocationCopy19').disabled=true;$('allocationCopyStatus19').textContent='';try{if(!navigator.clipboard||typeof navigator.clipboard.writeText!=='function')throw new Error('clipboard unavailable');await navigator.clipboard.writeText(text);if(token!==generation)return false;$('allocationCopyStatus19').textContent='已複製 '+result.rows.length+' 筆分攤明細。';$('allocationFallbackWrap19').hidden=true;return true;}catch(error){if(token!==generation)return false;$('allocationCopyFallback19').value=text;$('allocationFallbackWrap19').hidden=false;$('allocationCopyStatus19').textContent='瀏覽器未允許自動複製，可選取下方文字複製。';$('allocationCopyFallback19').focus();$('allocationCopyFallback19').select();return false;}finally{if(token===generation){copyBusy=false;$('allocationCopy19').disabled=!result||!Object.values(options()).some(Boolean);}}}
+ function reset(){for(const key of ['amount','start','end'])$(fields[key]).value='';invalidate('計算資料已清除，請填入新的總金額與日期。','empty');}
+ $('allocationForm19').addEventListener('submit',calculate);for(const id of Object.values(fields))for(const name of ['input','change'])$(id).addEventListener(name,()=>invalidate());
+ for(const id of ['allocationShowAmount19','allocationShowRatio19','allocationShowDates19','allocationShowResult19'])$(id).addEventListener('change',()=>{clearCopy();if(result)render();});
+ $('allocationCopy19').addEventListener('click',copyText);$('allocationPrev19').addEventListener('click',()=>{if(result&&page>0){page--;render();}});$('allocationNext19').addEventListener('click',()=>{if(result&&(page+1)*PAGE_SIZE<result.rows.length){page++;render();}});document.addEventListener('calculator:clear-data',reset);
+ window.OfflineAllocation19=Object.freeze({core,calculate,reset,copyText,exportText,getSnapshot:()=>result?{amountCents:result.amountCents.toString(),totalDays:result.totalDays,start:result.start,end:result.end,unit:result.unit,page,rows:result.rows.map(row=>({...row,cents:row.cents.toString(),baseCents:row.baseCents.toString(),remainder:row.remainder.toString()}))}:null});
+})();
+</script>
+<!-- ALLOCATION_SCRIPT_END -->
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.8.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "accounting-calculator", "appVersion": "1.9.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

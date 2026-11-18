@@ -1,0 +1,14 @@
+<details id="taxGroupsTool" class="math-tool guided-tool tax-groups-tool" open data-review-id="accounting-calculator-taxGroupsTool" data-review-name="多組含稅未稅拆算">
+  <summary><span class="guided-tool-index">03</span><span class="guided-tool-title">多組含稅／未稅拆算</span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+  <div class="tax-groups-sheet">
+    <div class="tax-groups-controls">
+      <fieldset class="tax-groups-mode"><legend>輸入金額</legend><div><label><input type="radio" name="taxGroupsMode" value="gross" checked>含稅</label><label><input type="radio" name="taxGroupsMode" value="net">未稅</label></div></fieldset>
+      <label class="tax-groups-setting" for="taxGroupsRate">稅率（%）<input id="taxGroupsRate" type="text" inputmode="decimal" value="5" maxlength="30" autocomplete="off" aria-describedby="taxGroupsRateError"><span id="taxGroupsRateError" class="tax-groups-error" role="status"></span></label>
+      <label class="tax-groups-setting" for="taxGroupsPrecision">每筆稅額取整<select id="taxGroupsPrecision"><option value="yuan">整元</option><option value="cent">小數 2 位</option></select></label>
+    </div>
+    <div class="tax-groups-columns" aria-hidden="true"><span>#</span><span id="taxGroupsInputHeading">輸入含稅金額</span><span>未稅</span><span>稅額</span><span>含稅</span><span></span></div>
+    <div id="taxGroupsRows" class="tax-groups-rows"></div>
+    <div class="tax-groups-actions"><button type="button" class="btn" id="taxGroupsAddBtn">＋ 新增一組</button><span id="taxGroupsCount" class="tax-groups-count">0 筆有效</span></div>
+    <div id="taxGroupsTotals" class="tax-groups-totals" role="status" aria-live="polite" aria-atomic="true"><div><span id="taxGroupsTotalLabel">總計</span><small id="taxGroupsTotalNote">空白列不計入</small></div><div><span>未稅</span><strong id="taxGroupsNetTotal">—</strong></div><div><span>稅額</span><strong id="taxGroupsTaxTotal">—</strong></div><div><span>含稅</span><strong id="taxGroupsGrossTotal">—</strong></div></div>
+  </div>
+</details>

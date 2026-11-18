@@ -20,3 +20,7 @@
 .pool-search-scope{font-size:13px;line-height:1.8;color:var(--muted);padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
 .pool-search-scope[data-partial=true],.pool-status[data-state=partial]{color:#765116;background:#fff7e6;border:1px solid #ead5a5;border-radius:8px;padding:12px;line-height:1.8}
 @media(max-width:600px){#poolRows{max-height:420px}}
+
+/* Six peer tools remain equal in the compact navigation. */
+@media(min-width:561px) and (max-width:1280px){.mode-switch{grid-template-columns:repeat(6,minmax(76px,1fr))}}
+@media(max-width:560px){.mode-switch{grid-template-columns:repeat(3,minmax(76px,1fr))}}

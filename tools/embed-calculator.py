@@ -19,6 +19,16 @@ def build(text):
         ('NUMBER_POOL_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['number-pool.js', 'number-pool-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
         ('DATE_TOOLS_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['date-tools.js', 'date-tools-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
     ]
+    blocks += [
+        ('TAX_GROUPS_STYLE', (ROOT / 'calculator/tax-groups.css').read_text(), 'style', '</head>'),
+        ('TAX_GROUPS_MARKUP', (ROOT / 'calculator/tax-groups.html').read_text(), None, '<!-- GUIDED_MATH_ANCHOR -->'),
+        ('TAX_GROUPS_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['tax-groups-core.js', 'tax-groups-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
+    ]
+    blocks += [
+        ('ALLOCATION_STYLE', (ROOT / 'calculator/allocation.css').read_text(), 'style', '</head>'),
+        ('ALLOCATION_MARKUP', (ROOT / 'calculator/allocation.html').read_text(), None, '<section id="taxPanel"'),
+        ('ALLOCATION_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['allocation-core.js', 'allocation-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
+    ]
     blocks += [('TAX_WORKSPACE_STYLE', (ROOT / 'calculator/tax-workspace.css').read_text(), 'style', '</head>')]
     for name, contents, tag, before in blocks:
         start, end = '<!-- ' + name + '_BEGIN -->', '<!-- ' + name + '_END -->'

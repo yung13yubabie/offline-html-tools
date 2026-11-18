@@ -22,6 +22,9 @@ const calculatorTaxBooks=require('./calculator-tax-workspace.browser.js');
 const calculatorTaxReview=require('./calculator-tax-review.browser.js');
 const calculatorSession=require('./calculator-session.browser.js');
 const calculatorDateTools=require('./calculator-date-tools.browser.js');
+const calculatorTaxGroups=require('./calculator-tax-groups.browser.js');
+const calculatorAllocation=require('./calculator-allocation.browser.js');
+const vatCases=require('./vat-cases.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
 const BASE=process.env.OFFLINE_TEST_BASE_URL||'';
@@ -465,6 +468,8 @@ async function vatPreviewPaperGeometry(p){
  if(id==='accounting-calculator')await check(id+' guided math forms + menus + preserved drafts + preview + responsive results',()=>calculatorMathForms(p));
  if(id==='accounting-calculator')await check(id+' multiline equations + bidirectional ratios + invalid inputs + unchanged keypad',()=>calculatorMathTools(p));
  if(id==='accounting-calculator')await check(id+' number-pool exact/nearby groups + import + modes + names + mobile + Worker cancellation',()=>calculatorPool(p));
+ if(id==='accounting-calculator')await check(id+' allocation year/month + exact sums + output toggles + clipboard fallback + clear',()=>calculatorAllocation(p,{screenshot:calculatorScreenshot}));
+ if(id==='accounting-calculator')await check(id+' multi-row gross/net tax + rounding + totals + clear + responsive',()=>calculatorTaxGroups(p,{screenshot:calculatorScreenshot}));
  if(id==='accounting-calculator')await check(id+' date differences + business days + offsets + local dates + mobile + stale results',()=>calculatorDateTools(p));
  if(id==='accounting-calculator')await check(id+' focus next book + chosen category + existing books + mobile + preserved entries',()=>calculatorSession.navigation(p,{screenshot:calculatorScreenshot}));
  if(id==='accounting-calculator')await check(id+' clear calculations in place + cancel + preserved settings + hidden drafts + worker cancellation',()=>calculatorSession.clear(p,{screenshot:calculatorScreenshot}));
@@ -488,6 +493,7 @@ async function vatPreviewPaperGeometry(p){
  await check('vat batch individual payments + FIFO + unapplied + group preservation + atomic rollback',()=>vatRevisionContext(p=>vatBulkModules.payments(p,vatNoticeHelpers)));
  await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries({...vatCrossAdversarial,...vatAccountingLinksUI,...vatPaymentLinks,...vatInvoiceLinks}))await check('vat cross-period '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
+ for(const [name,flow] of Object.entries(vatCases))await check('vat cases '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));

@@ -1,0 +1,28 @@
+<section id="allocationPanel" class="panel" data-review-id="accounting-calculator-allocationPanel" data-review-name="跨年跨月金額分攤">
+  <div class="workspace-heading"><div><p class="workspace-kicker">依實際天數分配</p><h1>跨年／跨月分攤</h1><p>輸入整段期間的總金額，按年或按月分配；起日與結束日都計入。</p></div><span class="local-badge">離線可用</span></div>
+  <div class="allocation-layout19">
+    <section class="allocation-card19 allocation-input19" aria-labelledby="allocationInputTitle19" data-review-id="accounting-calculator-allocationInput" data-review-name="分攤條件">
+      <div class="allocation-heading19"><h2 id="allocationInputTitle19">分攤條件</h2></div>
+      <form id="allocationForm19" novalidate>
+        <div class="allocation-fields19">
+          <label class="allocation-field19 allocation-wide19" for="allocationAmount19">整段總金額<input id="allocationAmount19" type="text" inputmode="decimal" maxlength="30" placeholder="例如 1,000" autocomplete="off" aria-describedby="allocationAmountError19"><span class="allocation-error19" id="allocationAmountError19" hidden></span></label>
+          <label class="allocation-field19" for="allocationStart19">起始日期<input id="allocationStart19" type="date" min="0001-01-01" max="9999-12-31" aria-describedby="allocationStartError19"><span class="allocation-error19" id="allocationStartError19" hidden></span></label>
+          <label class="allocation-field19" for="allocationEnd19">結束日期<input id="allocationEnd19" type="date" min="0001-01-01" max="9999-12-31" aria-describedby="allocationEndError19"><span class="allocation-error19" id="allocationEndError19" hidden></span></label>
+          <label class="allocation-field19 allocation-wide19" for="allocationUnit19">分組方式<select id="allocationUnit19" aria-describedby="allocationUnitError19"><option value="year">按年</option><option value="month">按月</option></select><span class="allocation-error19" id="allocationUnitError19" hidden></span></label>
+        </div>
+        <p id="allocationFormError19" class="allocation-error19" role="alert" hidden></p>
+        <button type="submit" class="btn primary allocation-calculate19" id="allocationCalculate19">計算分攤 <span aria-hidden="true">→</span></button>
+      </form>
+      <details class="allocation-help19"><summary>計算與尾差規則</summary><p>以整段實際天數為分母，含起訖；各組先取整數分，再把剩餘分配給餘數較大的組，平手依日期先後，確保合計等於總金額。負數依相同規則分配後還原負號。</p><p>日期支援西元 0001–9999；金額可填 0、負數與正確千分位，最多兩位小數及 999,999,999,999.99。</p></details>
+    </section>
+    <section class="allocation-card19 allocation-output19" aria-labelledby="allocationOutputTitle19" data-review-id="accounting-calculator-allocationOutput" data-review-name="分攤算式與輸出">
+      <div class="allocation-heading19"><h2 id="allocationOutputTitle19">分攤明細</h2><button id="allocationCopy19" class="btn" type="button" disabled>複製文字</button></div>
+      <fieldset class="allocation-options19"><legend>算式與複製內容</legend><label><input id="allocationShowAmount19" type="checkbox" checked>總金額</label><label><input id="allocationShowRatio19" type="checkbox" checked>天數比例</label><label><input id="allocationShowDates19" type="checkbox">日期</label><label><input id="allocationShowResult19" type="checkbox">結果</label></fieldset>
+      <div id="allocationSummary19" class="allocation-summary19" hidden></div>
+      <div id="allocationResult19" class="allocation-result19" data-state="empty" aria-live="polite" aria-atomic="false"><p class="allocation-empty19">填好總金額及起訖日期後，按「計算分攤」。</p></div>
+      <nav id="allocationPager19" class="allocation-pager19" aria-label="分攤明細分頁" hidden><button id="allocationPrev19" class="btn" type="button">上一頁</button><span id="allocationPageLabel19"></span><button id="allocationNext19" class="btn" type="button">下一頁</button></nav>
+      <p id="allocationCopyStatus19" class="allocation-copy-status19" role="status" aria-live="polite"></p>
+      <div id="allocationFallbackWrap19" hidden><label for="allocationCopyFallback19">輸出文字</label><textarea id="allocationCopyFallback19" readonly aria-describedby="allocationCopyStatus19"></textarea></div>
+    </section>
+  </div>
+</section>
