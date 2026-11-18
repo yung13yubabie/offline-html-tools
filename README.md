@@ -108,7 +108,7 @@ PDF 家族的既有轉圖擷取頁面內影像，不保證包含文字、向量�
 
 ## 驗證與維護
 
-**v2.18.0** 已通過本機與 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/43997460426) 各 **75 組 Chromium 檢查，全數通過**，以及新增 **116 項跨期純檢查**與全部既有純回歸；CI 使用 `file://` 直接離線開啟交付 HTML。
+新版已通過來源內嵌一致檢查與純計算回歸。Chromium 以 `file://` 直接開啟交付 HTML，**80 組全數通過**。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/44223323699)。
 
 本輪驗證紀錄見 [TEST_REPORT.md](TEST_REPORT.md)，含實際 Chromium 流程、合成資料、PDF 文字／頁面邊界與截圖。沒有把未執行的瀏覽器、實體手機或實體印表機測試列為通過。
 
@@ -120,4 +120,4 @@ python3 tools/embed-vat.py --check  # 核對成品一致
 python3 tools/embed-calculator.py --check
 ```
 
-變更共用標註模組時，由 `python3 tools/embed-feedback.py` 重新內嵌四份 HTML，再驗證四個工具。本輪只修改營業稅成品，其餘三份 HTML 維持原版。舊版紀錄保留於 [revisions/](revisions/)。
+變更共用標註模組時，由 `python3 tools/embed-feedback.py` 重新內嵌四份 HTML，再驗證四個工具。舊版紀錄保留於 [revisions/](revisions/)。
