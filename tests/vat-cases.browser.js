@@ -113,6 +113,9 @@ async function backupAndReferences(p,h){
  const partial=JSON.parse((await h.download(p,()=>p.locator('#partialExportBtn').click())).toString());
  assert.deepEqual(partial.data.cases.map(row=>row.id),[caseId]);
  assert.deepEqual(partial.data.clients.map(row=>row.id),['synthetic-a']);
+ await p.locator('#partialScope').selectOption('period');
+ const period=JSON.parse((await h.download(p,()=>p.locator('#partialExportBtn').click())).toString());
+ assert.deepEqual(period.data.cases,[],'Period exports exclude cases, which have no period');
  await nav(p,'clients');
  await p.locator('[data-delete-client="synthetic-a"]').click();
  await p.locator('#modalRoot.show').getByRole('button',{name:'刪除',exact:true}).click();
