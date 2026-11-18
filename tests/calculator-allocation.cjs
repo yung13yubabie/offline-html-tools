@@ -14,6 +14,13 @@ assert.equal(engine.plaintext(standard,{amount:false,ratio:false,dates:false,res
 assert.deepEqual(allocate('1','2024-02-28','2024-03-01','month').rows.map(row=>row.days),[2,1]);
 assert.deepEqual(allocate('-0.01','2026-12-31','2027-01-01').rows.map(row=>row.cents),[-1n,0n]);
 assert.equal(allocate('0','0001-01-01','0001-01-01').totalDays,1);
+for(const date of ['2024/2/29','2024-2-29','20240229',' 2024/02/29 ']){
+ assert.equal(engine.parseDate(date).text,'2024-02-29');
+}
+assert.deepEqual(allocate('3','2024/2/28','20240301','month').rows.map(row=>row.cents),[200n,100n]);
+for(const date of ['2/29/2024','2024/02-29','2024029','20230229','2024/2/30','2024/2/']){
+ assert.throws(()=>engine.parseDate(date));
+}
 for(const date of ['0000-01-01','1900-02-29','2026-04-31','2026-13-01'])assert.throws(()=>allocate('0',date,date),{field:'start'});
 assert.throws(()=>allocate('1','2026-12-31','2026-12-30'),{field:'end'});
 for(const invalid of ['1,00','1.002','1000000000000','Infinity',''])assert.throws(()=>allocate(invalid,'2000-01-01','2000-01-01'),{field:'amount'});

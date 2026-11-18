@@ -13,10 +13,12 @@ function createAllocationCore19(){
   return negative&&cents!==0n?-cents:cents;
  }
  function parseDate(raw,field='date'){
-  const value=typeof raw==='string'?raw.trim():'',match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  const value=typeof raw==='string'?raw.trim():'';
   if(!value)invalid(field,field==='start'?'請填起始日期。':field==='end'?'請填結束日期。':'請填日期。');
-  if(!match)invalid(field,'日期請使用 YYYY-MM-DD 格式。');
-  const year=Number(match[1]),month=Number(match[2]),day=Number(match[3]);
+  const separated=/^(\d{4})([-/])(\d{1,2})\2(\d{1,2})$/.exec(value);
+  const compact=/^(\d{4})(\d{2})(\d{2})$/.exec(value);
+  if(!separated&&!compact)invalid(field,'請輸入 YYYY/MM/DD、YYYY-MM-DD 或 YYYYMMDD。');
+  const [year,month,day]=(separated?[separated[1],separated[3],separated[4]]:compact.slice(1)).map(Number);
   if(year<1||year>9999)invalid(field,'年份須介於 0001 至 9999。');
   const date=new Date(0);date.setUTCHours(0,0,0,0);date.setUTCFullYear(year,month-1,day);
   if(date.getUTCFullYear()!==year||date.getUTCMonth()!==month-1||date.getUTCDate()!==day)invalid(field,'日期不存在，請檢查月份、天數及閏年。');
