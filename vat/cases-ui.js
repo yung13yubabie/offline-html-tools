@@ -1,5 +1,5 @@
 /* Customer cases: one source record, live customer lookup and derived local calendar reminders. */
-const caseRuntime219={query:'',clientId:'',status:'active',page:1,size:12,expanded:new Set()},caseAckBusy219=new Set();let caseMinuteTimer219=null;
+const caseRuntime219={query:'',clientId:'',status:'active',page:1,size:12,expanded:new Set(),folders:new Map(),limits:new Map()},caseAckBusy219=new Set();let caseMinuteTimer219=null;
 const CASE_STATUS219={pending:'待處理',inProgress:'進行中',done:'已完成',cancelled:'已取消'};
 function caseEngine219(){return createCasesEngine219();}
 function caseCustomer219(record){return clientById(record.clientId)||null;}
@@ -40,37 +40,67 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  for(const button of $$('#casesStats219 [data-case-filter219]'))button.onclick=()=>{runtime.status=button.dataset.caseFilter219;runtime.page=1;renderCases219()};
  const selectedClient=runtime.clientId;$('#casesClient219').innerHTML='<option value="">全部客戶</option>'+state.clients.slice().sort((a,b)=>String(a.code||a.name||'').localeCompare(String(b.code||b.name||''),'zh-Hant',{numeric:true})).map(customer=>`<option value="${esc(customer.id)}">${esc([customer.code,customer.name].filter(Boolean).join(' · '))}</option>`).join('');if(selectedClient&&!state.clients.some(c=>c.id===selectedClient))runtime.clientId='';$('#casesClient219').value=runtime.clientId;$('#casesStatus219').value=runtime.status;if($('#casesSearch219').value!==runtime.query)$('#casesSearch219').value=runtime.query;
  const filtered=all.filter(record=>{const customer=caseCustomer219(record),text=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):''].join(' ').toLocaleLowerCase();return (!q||text.includes(q))&&(!runtime.clientId||record.clientId===runtime.clientId)&&(runtime.status==='all'||runtime.status==='active'?runtime.status==='all'||engine.active(record.status):record.status===runtime.status)}).sort((a,b)=>{const aClosed=engine.active(a.status)?0:1,bClosed=engine.active(b.status)?0:1;return aClosed-bClosed||(a.dueDate||'9999').localeCompare(b.dueDate||'9999')||String(b.updatedAt||'').localeCompare(String(a.updatedAt||''))||String(a.id).localeCompare(String(b.id));});
- const pages=Math.max(1,Math.ceil(filtered.length/runtime.size));runtime.page=Math.max(1,Math.min(runtime.page,pages));const visible=filtered.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);$('#casesCount219').textContent=`${filtered.length} 件案件`;
  const host=$('#casesCards219');
- const rows=visible.map(record=>{
-  const customer=caseCustomer219(record),overdue=engine.overdue(record,today,clock);
+ const makeRow=record=>{
+  const overdue=engine.overdue(record,today,clock);
   const when=record.dueDate?fmtDate(record.dueDate)+(record.dueTime?' '+record.dueTime:''):fmtDate(record.startDate);
-  const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`:'未啟用';
-  const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':reminder;
-  return {id:record.id,keyAttribute:'data-case-id219',detailLabel:'完整資料',
-   cells:[`<h2>${esc(record.title)}</h2>`,`<strong>${esc(customer?.name||'客戶已移除')}</strong><small>${esc(customer?.code||'')}</small>`,
-    caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
+  const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`.trim():'';
+  const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':'';
+  return {id:record.id,keyAttribute:'data-case-id219',
+   cells:[`<h2>${esc(record.title)}</h2>`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
     `<strong>${esc(when)}</strong><small>${record.dueDate?'截止':'開始'}</small>`,
-    `<button class="btn" type="button" data-open-case219="${esc(record.id)}">查看案件</button><button class="btn record-calendar220" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button>`],
-   facts:[['聯絡人',customer?contactSummary(customer):''],['地址',customer?.address],['開始日期',fmtDate(record.startDate)],['截止日期',record.dueDate?when:''],
-    ['提醒排程',reminder],['提醒狀態',reminderState],['建立時間',fmtDateTime(record.createdAt)],['更新時間',fmtDateTime(record.updatedAt)],
-    ...(record.completedAt?[['完成時間',fmtDateTime(record.completedAt)]]:[]),['備註',record.note]]
+    `<button class="btn" type="button" data-open-case219="${esc(record.id)}">查看案件</button>`],
+   facts:[['開始',fmtDate(record.startDate)],['截止',record.dueDate?when:''],
+    ['提醒',[reminder,reminderState].filter(Boolean).join(' · ')]],
+   detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button></div>`,
+   note:record.note,
+   meta:[['建立',fmtDateTime(record.createdAt)],['更新',fmtDateTime(record.updatedAt)],...(record.completedAt?[['完成',fmtDateTime(record.completedAt)]]:[])]
   };
- });
- host.innerHTML=rows.length?recordList220(['案件','客戶','狀態','日期','操作'],rows,runtime.expanded):
-  `<div class="empty">${all.length?'沒有符合條件的案件':'尚無案件'}</div>`;
- bindRecordDetails220(host,runtime.expanded);
- recordPage220($('#casesPager219'),runtime,filtered.length,renderCases219,'案件');
- bindCaseButtons219($('#view-cases'));
+ };
+ const count=clientFolders222({host,pager:$('#casesPager219'),runtime,matched:filtered,all,kind:'案件',
+  columns:['案件','狀態','日期','操作'],makeRow,render:renderCases219,bind:bindCaseButtons219});
+ $('#casesCount219').textContent=`${count} 位客戶 · ${filtered.length} 件案件`;
 }
 function openCase219(id=null){
  const existing=id?(state.cases||[]).find(record=>record.id===id):null;if(id&&!existing){toast('案件已被刪除，請重新整理');return}const baseline=existing?clone(existing):null,draft=existing?clone(existing):{id:uid('case'),clientId:'',title:'',status:'inProgress',startDate:localDate(),dueDate:'',dueTime:'',reminderEnabled:false,reminderDate:'',reminderTime:'09:00',note:''};
- const options=state.clients.slice().sort((a,b)=>String(a.code||a.name||'').localeCompare(String(b.code||b.name||''),'zh-Hant',{numeric:true})),orphan=!!draft.clientId&&!options.some(customer=>customer.id===draft.clientId);
- showModal(existing?'案件明細':'新增案件',`<form id="caseForm219" class="cases-form219"><div class="field cases-span219"><label for="caseTitle219">案件名稱</label><input id="caseTitle219" class="input" maxlength="200" value="${esc(draft.title)}" required></div><div class="field"><label for="caseClient219">客戶</label><select id="caseClient219" class="select" required><option value="">選擇客戶</option>${orphan?`<option value="${esc(draft.clientId)}">客戶已移除</option>`:''}${options.map(customer=>`<option value="${esc(customer.id)}" ${customer.id===draft.clientId?'selected':''}>${esc([customer.code,customer.name].filter(Boolean).join(' · '))}</option>`).join('')}</select></div><div class="field"><label for="caseStatus219">狀態</label><select id="caseStatus219" class="select">${Object.entries(CASE_STATUS219).map(([key,label])=>`<option value="${key}" ${key===draft.status?'selected':''}>${label}</option>`).join('')}</select></div><div class="cases-master219 cases-span219" id="caseCustomerPreview219" aria-live="polite"></div><div class="field"><label for="caseStart219">開始日期</label><input id="caseStart219" class="input" type="date" value="${esc(draft.startDate)}" required></div><div class="field"><label for="caseDue219">截止日期</label><input id="caseDue219" class="input" type="date" value="${esc(draft.dueDate)}"></div><div class="field"><label for="caseDueTime219">截止時間</label><input id="caseDueTime219" class="input" type="time" value="${esc(draft.dueTime)}" ${draft.dueDate?'':'disabled'}></div><label class="cases-check219"><input id="caseReminder219" type="checkbox" ${draft.reminderEnabled?'checked':''}>啟用提醒</label><div class="cases-reminder-fields219 cases-span219" id="caseReminderFields219" ${draft.reminderEnabled?'':'hidden'}><div class="field"><label for="caseReminderDate219">提醒日期</label><input id="caseReminderDate219" class="input" type="date" value="${esc(draft.reminderDate)}"></div><div class="field"><label for="caseReminderTime219">提醒時間</label><input id="caseReminderTime219" class="input" type="time" value="${esc(draft.reminderTime)}"></div></div><div class="field cases-span219"><label for="caseNote219">備註</label><textarea id="caseNote219" class="textarea" rows="4" maxlength="12000">${esc(draft.note)}</textarea></div><p class="notice warn cases-span219" id="caseError219" role="alert" tabindex="-1" hidden></p>${existing?`<div class="cases-meta219 cases-span219"><span>建立 ${esc(fmtDateTime(existing.createdAt))}</span><span>更新 ${esc(fmtDateTime(existing.updatedAt))}</span>${existing.completedAt?`<span>完成 ${esc(fmtDateTime(existing.completedAt))}</span>`:''}</div>`:''}</form>`,[{text:'取消',value:false},{text:'儲存案件',value:true,cls:'primary'}],()=>{});
- const root=$('#modalRoot'),modal=root.querySelector('.modal'),form=$('#caseForm219');modal.classList.add('cases-modal219');const footer=modal.querySelector('.modal-foot'),cancel=footer.querySelector('button:first-child'),save=footer.querySelector('button:last-child');cancel.id='caseCancel219';save.id='caseSave219';if(orphan)$('#caseClient219').value=draft.clientId;const previewClient=()=>{const customer=clientById($('#caseClient219').value),preview=$('#caseCustomerPreview219');preview.hidden=!customer;preview.innerHTML=customer?`<dl><div><dt>聯絡人</dt><dd>${esc(contactSummary(customer)||'未填聯絡人')}</dd></div><div><dt>地址</dt><dd>${esc(customer.address||'未填地址')}</dd></div></dl>`:'';};$('#caseClient219').onchange=previewClient;previewClient();
+ const orphan=!!draft.clientId&&!clientById(draft.clientId);
+ showModal(existing?'案件明細':'新增案件',`<form id="caseForm219" class="cases-form219 record-form222">
+  <div class="field cases-span219"><label for="caseTitle219">案件名稱</label><input id="caseTitle219" class="input" maxlength="200" value="${esc(draft.title)}" required></div>
+  <div class="field"><label for="caseClient219">客戶</label><select id="caseClient219" class="select" required><option value="">選擇客戶</option>
+   ${orphan?`<option value="${esc(draft.clientId)}">客戶已移除</option>`:''}${recordClientOptions220(draft.clientId)}</select></div>
+  <div class="field"><label for="caseStatus219">狀態</label><select id="caseStatus219" class="select">
+   ${Object.entries(CASE_STATUS219).map(([key,label])=>`<option value="${key}" ${key===draft.status?'selected':''}>${label}</option>`).join('')}</select></div>
+  <div class="record-client-inline222 cases-span219" id="caseCustomerPreview219" aria-live="polite" hidden></div>
+  <div class="field"><label for="caseStart219">開始日期</label><input id="caseStart219" class="input" type="date" value="${esc(draft.startDate)}" required></div>
+  <div class="record-date-pair222"><div class="field"><label for="caseDue219">截止日期</label><input id="caseDue219" class="input" type="date" value="${esc(draft.dueDate)}"></div>
+  <div class="field" id="caseDueTimeField222" ${draft.dueDate?'':'hidden'}><label for="caseDueTime219">截止時間</label>
+   <input id="caseDueTime219" class="input" type="time" value="${esc(draft.dueTime)}"></div></div>
+  <div class="record-settings222 cases-span219">
+   <label class="cases-check219 record-toggle222"><input id="caseReminder219" type="checkbox" ${draft.reminderEnabled?'checked':''}>提醒</label>
+   <div class="cases-reminder-fields219" id="caseReminderFields219" ${draft.reminderEnabled?'':'hidden'}>
+    <div class="field"><label for="caseReminderDate219">日期</label><input id="caseReminderDate219" class="input" type="date" value="${esc(draft.reminderDate)}"></div>
+    <div class="field"><label for="caseReminderTime219">時間</label><input id="caseReminderTime219" class="input" type="time" value="${esc(draft.reminderTime)}"></div>
+   </div>
+  </div>
+  <div class="field cases-span219"><label for="caseNote219">備註</label><textarea id="caseNote219" class="textarea" rows="2" maxlength="12000">${esc(draft.note)}</textarea></div>
+  <p class="notice warn cases-span219" id="caseError219" role="alert" tabindex="-1" hidden></p>
+ </form>`,[{text:'取消',value:false},{text:'儲存案件',value:true,cls:'primary'}],()=>{});
+ const root=$('#modalRoot'),modal=root.querySelector('.modal'),form=$('#caseForm219');
+ modal.classList.add('cases-modal219','record-modal222');
+ const footer=modal.querySelector('.modal-foot'),cancel=footer.querySelector('button:first-child'),save=footer.querySelector('button:last-child');
+ cancel.id='caseCancel219';save.id='caseSave219';
+ if(orphan)$('#caseClient219').value=draft.clientId;
+ const previewClient=()=>{
+  const preview=$('#caseCustomerPreview219');
+  const facts=recordClientFacts222(clientById($('#caseClient219').value));
+  preview.hidden=!facts;
+  preview.innerHTML=facts;
+ };
+ $('#caseClient219').onchange=previewClient;
+ previewClient();
  const collect=()=>({...draft,title:$('#caseTitle219').value,clientId:$('#caseClient219').value,status:$('#caseStatus219').value,startDate:$('#caseStart219').value,dueDate:$('#caseDue219').value,dueTime:$('#caseDueTime219').value,reminderEnabled:$('#caseReminder219').checked,reminderDate:$('#caseReminderDate219').value,reminderTime:$('#caseReminderTime219').value,note:$('#caseNote219').value}),snapshot=()=>JSON.stringify(collect());let initial=snapshot(),busy=false;
  const close=()=>{if(busy)return;if(snapshot()!==initial&&!window.confirm('案件尚未儲存，確定捨棄這次變更？'))return;root.classList.remove('show');root.innerHTML=''};cancel.onclick=close;modal.querySelector('[data-close]').onclick=close;root.onclick=event=>{if(event.target===root)close()};modal.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close()}});
- $('#caseDue219').onchange=()=>{const filled=!!$('#caseDue219').value;$('#caseDueTime219').disabled=!filled;if(!filled)$('#caseDueTime219').value=''};$('#caseReminder219').onchange=()=>{$('#caseReminderFields219').hidden=!$('#caseReminder219').checked};
+ $('#caseDue219').onchange=()=>{const filled=!!$('#caseDue219').value;$('#caseDueTimeField222').hidden=!filled;if(!filled)$('#caseDueTime219').value=''};$('#caseReminder219').onchange=()=>{$('#caseReminderFields219').hidden=!$('#caseReminder219').checked};
  const act=async fn=>{if(busy)return;busy=true;const controls=[...modal.querySelectorAll('input,select,textarea,button')].map(node=>[node,node.disabled]),error=$('#caseError219');controls.forEach(([node])=>node.disabled=true);error.hidden=true;try{await fn();await loadAll();initial=snapshot();if(modal.isConnected){root.classList.remove('show');root.innerHTML=''}renderCases219()}catch(failure){if(error.isConnected){error.hidden=false;error.textContent=failure.message||'案件未能儲存，請保留資料重試';error.focus?.()}else toast(failure.message||'案件未能儲存')}finally{busy=false;for(const[node,disabled]of controls)if(node.isConnected)node.disabled=disabled;}};
  const submit=event=>{event?.preventDefault();const next=collect();act(async()=>{await commitCase219(next,baseline);toast('案件已儲存')})};save.onclick=submit;form.onsubmit=submit;
  if(existing){const remove=vatElement214('button','btn danger','刪除案件');remove.id='caseDelete219';remove.type='button';remove.onclick=()=>{if(busy||!window.confirm('確定刪除這個案件？相關日曆項目會一併移除。'))return;act(async()=>{await deleteCase219(existing.id,baseline);toast('案件已刪除')})};footer.prepend(remove);}

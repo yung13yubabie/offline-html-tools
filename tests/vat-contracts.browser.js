@@ -17,6 +17,11 @@ async function createContract(page){
  await field(page,'task').fill('核對合成續租資料');
  await field(page,'note').fill('兩行合成內容\n這是完整備註');
  assert.match(await page.locator('#contractPreviewDate220').innerText(),/2026\/10\/30/);
+ await field(page,'reminderEnabled').uncheck();
+ assert(!await page.locator('#contractReminderFields222').isVisible());
+ assert.equal(await page.locator('#contractPreviewDate220').innerText(),'');
+ await field(page,'reminderEnabled').check();
+ assert.equal(await field(page,'task').inputValue(),'核對合成續租資料');
  await page.locator('#saveContract220').click();
  await page.locator('#contractForm220').waitFor({state:'detached'});
  await waitToast(page,'合約已儲存');
@@ -28,8 +33,9 @@ async function lifecycle(page,h){
  const row=page.locator('#contractsList220 [data-contract-id220]');
  const id=await row.getAttribute('data-contract-id220');
  assert.match(await row.innerText(),/合成場地租用[\s\S]*有效/);
- await row.locator('summary').click();
- assert.match(await row.innerText(),/合成聯絡人[\s\S]*核對合成續租資料[\s\S]*這是完整備註/);
+ await row.locator('[data-record-toggle222]').click();
+ assert.match(await page.locator('#contractsList220 .folder-contact222').innerText(),/合成聯絡人/);
+ assert.match(await row.innerText(),/核對合成續租資料[\s\S]*這是完整備註/);
  await h.screenshot(page,'vat-contracts-list-desktop');
  await nav(page,'today');
  const strip=page.locator('#contractReminderStrip220');
@@ -48,8 +54,8 @@ async function lifecycle(page,h){
  await page.locator('#contractStatusFilter220').selectOption('upcoming');
  assert.equal(await row.count(),1);
  assert.match(await row.innerText(),/即將到期[\s\S]*待辦已完成/);
- const details=row.locator('details');
- if(!await details.evaluate(el=>el.open))await row.locator('summary').click();
+ const details=row.locator('[data-record-toggle222]');
+ if(await details.getAttribute('aria-expanded')!=='true')await row.locator('[data-record-toggle222]').click();
  await row.getByRole('button',{name:'重開待辦'}).click();
  await waitToast(page,'合約待辦已重開');
  await nav(page,'calendar');
@@ -95,30 +101,61 @@ async function lifecycle(page,h){
 
 async function lists(page,h){
  const base=await h.backup(page),at='2026-10-01T00:00:00.000Z';
- const contracts=Array.from({length:14},(_,i)=>({id:'demo-contract-'+String(i).padStart(2,'0'),version:1,revision:1,
-  clientId:'synthetic-a',categoryId:'lease',title:'合成租約 '+i,startDate:'2026-01-01',endDate:'2027-12-31',
+ const clients=Array.from({length:12},(_,i)=>({
+  id:'folder-demo-'+i,code:'ZZ-'+String(i+1).padStart(2,'0'),name:'合成分組客戶 '+(i+1),address:'',contacts:[],createdAt:at,updatedAt:at
+ }));
+ const clientId=i=>i<14?'synthetic-a':clients[i-14].id;
+ const contracts=Array.from({length:26},(_,i)=>({id:'demo-contract-'+String(i).padStart(2,'0'),version:1,revision:1,
+  clientId:clientId(i),categoryId:'lease',title:'合成租約 '+i,startDate:'2026-01-01',endDate:'2027-12-31',
   closed:i===13,reminderEnabled:true,leadMonths:1,task:'續約確認',note:'第 '+i+' 筆完整合約備註',taskCompletedAt:'',createdAt:at,updatedAt:at}));
- const cases=Array.from({length:14},(_,i)=>({id:'demo-case-'+String(i).padStart(2,'0'),version:1,revision:1,clientId:'synthetic-b',
-  title:'合成案件 '+i,status:'inProgress',startDate:'2026-01-01',dueDate:'2027-12-31',dueTime:'',reminderEnabled:true,
-  reminderDate:'2027-12-25',reminderTime:'09:00',note:'跨分頁完整內容 '+i+'\n第二行文字',createdAt:at,updatedAt:at,
+ const cases=Array.from({length:26},(_,i)=>({id:'demo-case-'+String(i).padStart(2,'0'),version:1,revision:1,clientId:clientId(i),
+  title:'合成案件 '+i,status:'inProgress',startDate:'2026-01-01',dueDate:'2027-12-31',dueTime:'',reminderEnabled:i!==25,
+  reminderDate:'2027-12-25',reminderTime:'09:00',note:i===25?'':'客戶內完整內容 '+i+'\n第二行文字',createdAt:at,updatedAt:at,
   completedAt:'',reminderCompletedAt:''}));
- await page.evaluate(async ({contracts,cases})=>{
+ await page.evaluate(async ({contracts,cases,clients})=>{
   const db=await new Promise((resolve,reject)=>{const req=indexedDB.open('VAT_WORKBENCH_DB');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
   await new Promise((resolve,reject)=>{
-   const tx=db.transaction(['contracts','cases'],'readwrite');
-   for(const [store,rows] of Object.entries({contracts,cases}))for(const row of rows)tx.objectStore(store).put(row);
+   const tx=db.transaction(['contracts','cases','clients'],'readwrite');
+   for(const [store,rows] of Object.entries({contracts,cases,clients}))for(const row of rows)tx.objectStore(store).put(row);
    tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error);
   });db.close();
- },{contracts,cases});
+ },{contracts,cases,clients});
  await h.reload(page);
  for(const [view,selector] of [['contracts','#contractsList220'],['cases','#casesCards219']]){
   await nav(page,view);
-  const list=page.locator(selector);
-  assert.equal(await list.getByRole('listitem').count(),12);
-  await page.locator('#view-'+view+' .record-pager220 select').selectOption('2');
-  assert.equal(await list.getByRole('listitem').count(),2);
-  await list.getByRole('listitem').last().locator('summary').click();
-  assert.match(await list.getByRole('listitem').last().innerText(),view==='contracts'?/第 13 筆完整合約備註/:/跨分頁完整內容 13[\s\S]*第二行文字/);
+  const list=page.locator(selector),folders=list.locator('[data-client-folder222]');
+  const pager=page.locator('#view-'+view+' .record-pager220 select');
+  assert.equal(await folders.count(),12,'Paginate clients');
+  assert.equal(await list.getByRole('listitem').count(),0,'Collapsed folders render no record rows');
+  const first=folders.first(),summary=first.locator(':scope > summary');
+  assert.equal(await first.getAttribute('data-client-folder222'),'synthetic-a');
+  assert.match(await summary.innerText(),view==='contracts'?/14 合約[\s\S]*14 案件/:/14 案件[\s\S]*14 合約/);
+  await summary.press('Enter');
+  const child=first.getByRole('listitem');
+  await child.first().waitFor();
+  assert.equal(await child.count(),12);
+  assert.equal(await first.locator('.folder-contact222').count(),1);
+  await first.getByRole('button',{name:'再顯示 2 筆'}).click();
+  assert.equal(await child.count(),14,'All child records stay in the same folder');
+  await child.last().locator('[data-record-toggle222]').click();
+  assert.match(await child.last().innerText(),view==='contracts'?/第 13 筆完整合約備註/:/客戶內完整內容 13[\s\S]*第二行文字/);
+  await page.emulateMedia({reducedMotion:'reduce'});
+  assert.equal(await summary.evaluate(el=>getComputedStyle(el,'::before').transitionDuration),'0s');
+  await pager.selectOption('2');
+  assert.equal(await folders.count(),1);
+  assert.equal(await folders.first().getAttribute('data-client-folder222'),'folder-demo-11');
+  await folders.first().locator(':scope > summary').press('Space');
+  const lastChild=folders.first().getByRole('listitem');
+  await lastChild.waitFor();
+  if(view==='cases'){
+   await lastChild.locator('[data-record-toggle222]').click();
+   assert.equal(await lastChild.locator('.record-note222').count(),0);
+   assert(!/提醒/.test(await lastChild.locator('.record-detail-body222').innerText()));
+   assert.equal(await folders.first().locator('.folder-contact222').count(),0);
+  }
+  await pager.selectOption('1');
+  await child.last().waitFor();
+  assert.equal(await child.last().locator('[data-record-toggle222]').getAttribute('aria-expanded'),'true','Child expansion survives paging');
   for(const width of [390,320]){
    await page.setViewportSize({width,height:844});
    const active=page.locator('#view-'+view);
@@ -126,12 +163,15 @@ async function lists(page,h){
     animation.playState!=='running'||!Number.isFinite(animation.effect?.getComputedTiming().endTime)));
    assert(await active.evaluate(panel=>panel.scrollWidth<=panel.clientWidth+1),view+' overflows at '+width+'px');
   }
-  await h.screenshot(page,'vat-'+view+'-list-mobile');
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await first.scrollIntoViewIfNeeded();
+  await h.screenshot(page,'vat-'+view+'-folders-mobile');
   await page.setViewportSize({width:1440,height:1000});
  }
  await nav(page,'contracts');
  await page.locator('#contractStatusFilter220').selectOption('closed');
  assert.equal(await page.locator('[data-contract-id220]').count(),1);
+ assert.match(await page.locator('#contractsList220 .folder-count222').innerText(),/1 \/ 14 合約/);
  await page.locator('#contractStatusFilter220').selectOption('all');
  await page.locator('#contractSearch220').fill('第 13 筆完整合約備註');
  assert.equal(await page.locator('[data-contract-id220]').count(),1);
@@ -144,7 +184,7 @@ async function lists(page,h){
  await page.locator('#restoreMergeBtn').click();
  await page.locator('#modalRoot.show').getByRole('button',{name:'合併',exact:true}).click();
  await waitToast(page,'合併完成');
- assert.equal((await h.backup(page)).data.contracts.length,14);
+ assert.equal((await h.backup(page)).data.contracts.length,26);
 }
 
 async function renewal(page,h){
@@ -195,7 +235,7 @@ async function renewal(page,h){
  await page.locator('#contractClearFilter220').click();
  await page.locator('#contractStatusFilter220').selectOption('renewed');
  assert.equal(await all.count(),1);
- await oldRow().locator('summary').click();
+ await oldRow().locator('[data-record-toggle222]').click();
  await oldRow().getByRole('button',{name:'查看續約'}).click();
  assert.equal(await field(page,'endDate').inputValue(),'2027-08-31');
  await page.locator('#cancelContract220').click();

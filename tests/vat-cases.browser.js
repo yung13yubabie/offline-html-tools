@@ -35,6 +35,7 @@ async function create(p,withReminder){
 async function lifecycle(p,h){
  await p.clock.setFixedTime(new Date(2026,9,31,8,59));
  const caseId=await create(p,true);
+ await p.locator('#casesCards219 [data-record-toggle222]').click();
  const link=p.locator('#casesCards219 [data-case-calendar219]');
  await link.click();
  assert.match(await p.locator('#calendarDrawer').innerText(),/案件截止.*合成案件/);

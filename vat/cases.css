@@ -23,3 +23,11 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 @media screen and (max-width:420px){
  #view-cases .cases-stats219{grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr))}
 }
+@media screen{
+ #view-cases .cases-stats219{gap:8px;margin-bottom:12px}
+ .cases-stat219{min-height:54px;padding:9px 12px}
+ .cases-stat219>strong{font-size:22px}
+ .cases-filters219{gap:10px;padding:12px}
+ .cases-result219{margin:12px 0 8px}
+}
+@media screen and (max-width:420px){.cases-stat219{padding:7px 8px}}

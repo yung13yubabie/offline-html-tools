@@ -1,13 +1,11 @@
-.contract-stats220{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:20px}
-.contract-stats220 button{min-height:66px;padding:12px}
-.contract-stats220 strong{font-size:24px}
-.contract-filters220{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr)) auto;align-items:end;gap:14px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.contract-stats220{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.contract-stats220 button{min-height:54px;padding:9px 12px}
+.contract-stats220 strong{font-size:22px}
+.contract-filters220{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr)) auto;align-items:end;gap:10px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
 .contract-filters220 .field{min-width:0}
 .contract-filters220 :is(.input,.select,.btn){width:100%;min-height:44px}
 .contract-field-error220{color:var(--red,#a5352d);font-size:14px}
 .contract-client220{min-width:0}
-.contract-modal220 #contractClientPreview220 .record-facts220{margin:0;padding:0}
-.contract-modal220 #contractClientPreview220 .record-facts220>div{grid-column:auto}
 #deleteContract220{margin-right:auto}
 .contract-reminder-strip220{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
 .contract-reminder-strip220[hidden]{display:none}
@@ -35,6 +33,6 @@
  .contract-stats220{grid-template-columns:repeat(auto-fit,minmax(min(100%,100px),1fr))}
 }
 
-.contract-renew-info221{margin:0}
+.contract-renew-info221{margin:0;color:var(--muted);font-size:13px}
 #renewFromDetail221{min-height:44px;align-self:end}
 #contract-endDate220[readonly]{background:var(--panel2)}

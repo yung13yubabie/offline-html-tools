@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.21.0</title>
+<title>營業稅工作台 v2.22.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -593,66 +593,122 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 @media screen and (max-width:420px){
  #view-cases .cases-stats219{grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr))}
 }
-.record-list220{border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0;overflow:hidden}
-.record-columns220,.record-row220{
- display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(100px,.75fr) minmax(115px,.9fr) minmax(112px,.7fr);
- gap:14px;padding:12px 16px;align-items:center
+@media screen{
+ #view-cases .cases-stats219{gap:8px;margin-bottom:12px}
+ .cases-stat219{min-height:54px;padding:9px 12px}
+ .cases-stat219>strong{font-size:22px}
+ .cases-filters219{gap:10px;padding:12px}
+ .cases-result219{margin:12px 0 8px}
 }
-.record-columns220{color:var(--muted);background:var(--panel2);font-size:13px;font-weight:650}
-.record-item220{border-top:1px solid var(--line);padding-bottom:6px}
-.record-cell220{min-width:0;overflow-wrap:anywhere;line-height:1.55}
-.record-cell220 h2{margin:0;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
-.record-cell220 strong{font-weight:660}
-.record-cell220 small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
-.record-cell220 .btn{min-height:44px;white-space:nowrap}
-.record-cell220 .badge{white-space:nowrap}
-.record-mobile-label220{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.record-details220{margin:0 16px;font-size:14px}
-.record-details220 summary{min-height:44px;padding:11px 0;color:var(--brand);cursor:pointer;max-width:max-content}
-.record-facts220{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin:0 0 8px;padding:16px;background:var(--panel2);border-radius:7px}
-.record-facts220>div{min-width:0}
-.record-facts220>div:last-child{grid-column:1/-1}
-.record-facts220 dt{color:var(--muted);font-size:13px;font-weight:650;margin-bottom:5px}
-.record-facts220 dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
-.record-detail-actions220{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
-.record-detail-actions220>.btn{min-height:44px}
+@media screen and (max-width:420px){.cases-stat219{padding:7px 8px}}
+.record-list220{display:grid;gap:8px;min-width:0;container:record-list / inline-size}
+.client-folder222{min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.client-folder222>summary{list-style:none;cursor:pointer}
+.client-folder222>summary::-webkit-details-marker{display:none}
+.client-folder222>summary{
+ display:grid;grid-template-columns:12px minmax(0,1fr) auto;align-items:center;gap:12px;
+ min-height:58px;padding:10px 14px;border-radius:7px
+}
+.client-folder222>summary::before,.record-detail-toggle222::before{
+ content:'';display:inline-block;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+ transform:rotate(-45deg);transition:transform .145s ease-out;color:var(--muted)
+}
+.client-folder222[open]>summary::before,.record-detail-toggle222[aria-expanded=true]::before{transform:rotate(45deg)}
+.client-folder222[open]>summary{background:var(--panel2);border-radius:7px 7px 0 0}
+.client-folder222>summary:hover{color:var(--brand)}
+.client-folder222>summary:focus-visible,.record-detail-toggle222:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.folder-title222{min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;gap:3px 9px;overflow-wrap:anywhere}
+.folder-title222 strong{font-size:16px;line-height:1.4}
+.folder-title222 small{font-size:12px;color:var(--muted)}
+.folder-counts222{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:4px 8px;font-size:13px}
+.folder-count222{display:inline-flex;padding:3px 7px;border-radius:4px;background:var(--brand-soft);color:var(--brand);font-weight:650;white-space:nowrap}
+.folder-cross-count222{color:var(--muted);white-space:nowrap}
+.folder-body222{border-top:1px solid var(--line)}
+.folder-contact222{padding:9px 16px;border-bottom:1px solid var(--line)}
+.folder-contact222 .record-facts220{margin:0}
+.record-item220+.record-item220{border-top:1px solid var(--line)}
+.record-row220{
+ display:grid;grid-template-columns:minmax(0,1.45fr) minmax(94px,.7fr) minmax(115px,.8fr) minmax(184px,1fr);
+ align-items:center;gap:8px 14px;padding:9px 16px
+}
+.record-cell220{min-width:0;line-height:1.5;overflow-wrap:anywhere}
+.record-cell220 h2{margin:0;font-size:15px;line-height:1.45}
+.record-cell220 small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.record-cell220 .btn{min-height:44px}
+.record-cell220:last-child{display:flex;flex-wrap:wrap;gap:6px}
+.record-label222{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#view-cases .record-detail-toggle222,#view-contracts .record-detail-toggle222{
+ display:inline-flex;align-items:center;gap:8px;padding-inline:8px;border-color:transparent;background:transparent;color:var(--brand)
+}
+.record-detail-body222{padding:10px 12px;margin:0 16px 8px;background:var(--panel2);border-left:2px solid var(--line);border-radius:4px}
+.record-facts220{display:flex;flex-wrap:wrap;gap:6px 20px;margin:0}
+.record-facts220>div{display:flex;align-items:baseline;gap:6px;min-width:0;max-width:100%}
+.record-facts220 dt,.record-note222 strong{flex:none;color:var(--muted);font-size:13px;font-weight:650}
+.record-facts220 dd,.record-note222 p{margin:0;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;font-size:14px}
+.record-note222{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;margin-top:9px}
+.record-audit222{display:flex;flex-wrap:wrap;gap:3px 12px;margin-top:8px;font-size:12px;color:var(--muted)}
+.record-detail-actions220{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.record-detail-actions220>.btn,.folder-more222>.btn{min-height:44px}
+.folder-more222{padding:6px 16px;border-top:1px solid var(--line)}
 .record-pager220{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 0}
 .record-pager220 .btn,.record-pager220 .select{min-height:44px}
 .record-pager220 label{display:flex;align-items:center;gap:6px;color:var(--muted)}
 .record-pager220 .select{width:auto}
-@media(max-width:1060px){
- .record-columns220{display:none}
- .record-row220{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
- .record-mobile-label220{display:block;position:static;width:auto;height:auto;margin:0 0 4px;overflow:visible;clip-path:none;white-space:normal;color:var(--muted);font-size:13px}
- .record-cell220:has(h2){grid-column:1/-1}
- .record-cell220:last-child .record-mobile-label220{display:none}
- .record-facts220{gap:12px 16px}
+@container record-list (max-width:660px){
+ .record-row220{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .record-cell220:first-child,.record-cell220:last-child{grid-column:1/-1}
 }
-@media(max-width:560px){
- .record-row220{padding:12px;align-items:start}
- .record-cell220:last-child{grid-column:1/-1}
- .record-details220{margin:0 12px}
- .record-facts220{grid-template-columns:minmax(0,1fr);padding:12px}
- .record-pager220{gap:7px}
- .record-pager220 .btn{padding-inline:9px}
+@container record-list (max-width:320px){
+ .client-folder222>summary{grid-template-columns:9px minmax(0,1fr);gap:4px 9px;padding:8px 10px}
+ .folder-counts222{grid-column:2;justify-content:flex-start}
+ .record-row220{padding-inline:10px}
+ .record-detail-body222{margin-inline:10px}
+ .folder-contact222{padding-inline:10px}
 }
-.record-calendar220{margin:5px 4px 0 0}
-@media(max-width:560px){.record-calendar220{margin:0 0 0 6px}}
-.record-list220{container:record-list / inline-size}
-@container record-list (max-width:200px){
- .record-row220,.record-facts220{grid-template-columns:minmax(0,1fr)}
- .record-cell220 .btn{max-width:100%;white-space:normal}
+@container record-list (max-width:175px){
+ .record-row220{grid-template-columns:minmax(0,1fr)}
+ .record-facts220>div{flex-wrap:wrap}
 }
-.contract-stats220{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:20px}
-.contract-stats220 button{min-height:66px;padding:12px}
-.contract-stats220 strong{font-size:24px}
-.contract-filters220{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr)) auto;align-items:end;gap:14px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+@media(max-width:560px){.record-pager220{gap:7px}.record-pager220 .btn{padding-inline:9px}}
+@media(prefers-reduced-motion:reduce){.client-folder222>summary::before,.record-detail-toggle222::before{transition:none}}
+[data-motion=reduce] .client-folder222>summary::before,[data-motion=reduce] .record-detail-toggle222::before{transition:none}
+/* Compact form rhythm shared by case, contract and renewal. */
+#modalRoot .record-modal222{width:min(686px,calc(100vw - 26px))}
+.record-modal222 .modal-head{padding:12px 18px}
+.record-modal222 .modal-body{padding:15px 18px}
+.record-modal222 .modal-foot{padding:10px 18px}
+.record-form222.cases-form219{gap:11px 14px}
+.record-form222 .field{gap:4px}
+.record-form222 textarea.textarea{min-height:66px;resize:vertical}
+.record-client-inline222{padding:7px 10px;border-left:2px solid var(--line);background:var(--panel2);border-radius:4px}
+.record-client-inline222 .record-facts220 dd{font-size:13px}
+.record-settings222{min-width:0;padding:2px 10px 8px;border:1px solid var(--line);border-radius:7px;background:var(--panel2)}
+.record-setting-head222{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:8px}
+.record-toggle222.cases-check219{min-height:44px;padding:5px 0;border:0;background:none}
+.record-settings222 .cases-reminder-fields219{gap:8px 10px}
+.record-settings222:has(> .record-toggle222 + [hidden]),.record-settings222:has(> .record-setting-head222 + [hidden]){padding-bottom:2px}
+.record-preview-date222{font-size:13px;font-weight:650;color:var(--muted)}
+.record-preview-date222:empty{display:none}
+.contract-reminder-inputs222{display:grid;grid-template-columns:minmax(92px,.5fr) minmax(0,1fr);gap:8px 10px}
+@media(max-width:480px){
+ #modalRoot .record-modal222{width:calc(100vw - 16px)}
+ .record-modal222 .modal-head,.record-modal222 .modal-foot{padding-inline:12px}
+ .record-modal222 .modal-body{padding:12px}
+ .record-form222.cases-form219{gap:10px}
+ .contract-reminder-inputs222{grid-template-columns:minmax(0,1fr)}
+}
+
+.record-detail-body222[hidden]{display:none}
+.record-date-pair222{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
+.record-date-pair222:has(> :not([hidden]) + :not([hidden])){grid-template-columns:minmax(0,1.17fr) minmax(0,1fr)}
+.contract-stats220{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.contract-stats220 button{min-height:54px;padding:9px 12px}
+.contract-stats220 strong{font-size:22px}
+.contract-filters220{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr)) auto;align-items:end;gap:10px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
 .contract-filters220 .field{min-width:0}
 .contract-filters220 :is(.input,.select,.btn){width:100%;min-height:44px}
 .contract-field-error220{color:var(--red,#a5352d);font-size:14px}
 .contract-client220{min-width:0}
-.contract-modal220 #contractClientPreview220 .record-facts220{margin:0;padding:0}
-.contract-modal220 #contractClientPreview220 .record-facts220>div{grid-column:auto}
 #deleteContract220{margin-right:auto}
 .contract-reminder-strip220{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
 .contract-reminder-strip220[hidden]{display:none}
@@ -680,7 +736,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .contract-stats220{grid-template-columns:repeat(auto-fit,minmax(min(100%,100px),1fr))}
 }
 
-.contract-renew-info221{margin:0}
+.contract-renew-info221{margin:0;color:var(--muted);font-size:13px}
 #renewFromDetail221{min-height:44px;align-self:end}
 #contract-endDate220[readonly]{background:var(--panel2)}
 </style>
@@ -692,7 +748,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.21.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.22.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -900,7 +956,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.21.0', BACKUP_VERSION=10, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=6;
+const APP_VERSION='2.22.0', BACKUP_VERSION=10, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=6;
 const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks','cases','contracts','contractCategories'];
 const PERIOD_SLOTS=[['01','1–2 月',3,15],['02','3–4 月',5,15],['03','5–6 月',7,15],['04','7–8 月',9,15],['05','9–10 月',11,15],['06','11–12 月',1,15]];
 const TEMPLATE_TYPES=[['receiptAsk','詢問收發票時間'],['dispatchReminder','最晚寄出提醒'],['firstBilling','首次請款'],['finalRemit','最後匯款日']];
@@ -3747,32 +3803,120 @@ function createCasesEngine219(){
 function validateCases219(data,options){return createCasesEngine219().validateData(data,options);}
 if(typeof module!=='undefined'&&module.exports)module.exports={createCasesEngine219,validateCases219};
 
-/* Shared row, expandable details and pagination layout for independent records. */
+/* Shared client folders and compact record details for cases and contracts. */
 function recordFacts220(facts) {
- return `<dl class="record-facts220">${facts.map(([label,value])=>
-  `<div><dt>${esc(label)}</dt><dd>${esc(value||'—')}</dd></div>`).join('')}</dl>`;
+ const values=facts.filter(([,value])=>value&&String(value).trim()&&value!=='—');
+ if(!values.length)return '';
+ return `<dl class="record-facts220">${values.map(([label,value])=>
+  `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>`;
 }
-function recordList220(columns,rows,expanded) {
- return `<div class="record-list220">
-  <div class="record-columns220" aria-hidden="true">${columns.map(label=>`<span>${esc(label)}</span>`).join('')}</div>
-  <div role="list">${rows.map(row=>`<article role="listitem" class="record-item220" ${row.keyAttribute}="${esc(row.id)}">
-   <div class="record-row220">${row.cells.map((content,index)=>
-    `<div class="record-cell220"><span class="record-mobile-label220">${esc(columns[index])}</span>${content}</div>`).join('')}</div>
-   <details class="record-details220" data-record-detail220="${esc(row.id)}" ${expanded.has(row.id)?'open':''}>
-    <summary>${esc(row.detailLabel)}</summary>
+function recordClientFacts222(client) {
+ return client?recordFacts220([['聯絡人',contactSummary(client)],['地址',client.address]]):'';
+}
+function buildRecordRows222(rows,columns,expanded,prefix) {
+ return rows.map((row,index)=>{
+  const detailId=prefix+'-detail-'+index,open=expanded.has(row.id);
+  const toggle=`<button class="btn record-detail-toggle222" type="button" data-record-toggle222="${esc(row.id)}" aria-controls="${detailId}" aria-expanded="${open}">明細</button>`;
+  return `<article role="listitem" class="record-item220" ${row.keyAttribute}="${esc(row.id)}">
+   <div class="record-row220">${row.cells.map((content,cell)=>
+    `<div class="record-cell220"><span class="record-label222">${esc(columns[cell])}</span>${content}${cell===row.cells.length-1?toggle:''}</div>`).join('')}</div>
+   <div id="${detailId}" class="record-detail-body222" ${open?'':'hidden'}>
     ${recordFacts220(row.facts)}
+    ${row.note?.trim()?`<div class="record-note222"><strong>備註</strong><p>${esc(row.note)}</p></div>`:''}
+    ${row.meta?.length?`<div class="record-audit222">${row.meta.map(([label,value])=>`<span>${esc(label)} ${esc(value)}</span>`).join('')}</div>`:''}
     ${row.detailActions||''}
-   </details>
-  </article>`).join('')}</div>
- </div>`;
+   </div>
+  </article>`;
+ }).join('');
 }
-function bindRecordDetails220(host,expanded) {
- host.querySelectorAll('[data-record-detail220]').forEach(details=>{
-  details.ontoggle=()=>{if(details.isConnected){
-   if(details.open)expanded.add(details.dataset.recordDetail220);
-   else expanded.delete(details.dataset.recordDetail220);
-  }};
+function recordReveal222(body) {
+ if(!motionEnabled211())return;
+ body.getAnimations().forEach(animation=>animation.cancel());
+ body.animate([{opacity:0.75,transform:'translateY(-3px)'},{opacity:1,transform:'translateY(0)'}],{duration:145,easing:'cubic-bezier(.2,.7,.25,1)'});
+}
+function bindRecordDetails222(host,expanded) {
+ host.querySelectorAll('[data-record-toggle222]').forEach(button=>{
+  const body=document.getElementById(button.getAttribute('aria-controls'));
+  button.onclick=()=>{
+   const open=body.hidden;
+   button.setAttribute('aria-expanded',String(open));
+   body.hidden=!open;
+   if(open){expanded.add(button.dataset.recordToggle222);recordReveal222(body);}
+   else expanded.delete(button.dataset.recordToggle222);
+  };
  });
+}
+function recordCounts222(records) {
+ const counts=new Map();
+ for(const row of records)counts.set(row.clientId,(counts.get(row.clientId)||0)+1);
+ return counts;
+}
+function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,render,bind}) {
+ host.querySelectorAll('[data-client-folder222]').forEach(folder=>{
+  if(folder.open!==(folder.dataset.initialOpen==='true'))runtime.folders.set(folder.dataset.clientFolder222,folder.open);
+ });
+ const groups=new Map();
+ for(const row of matched){
+  if(!groups.has(row.clientId))groups.set(row.clientId,[]);
+  groups.get(row.clientId).push(row);
+ }
+ const clients=new Map(state.clients.map(client=>[client.id,client]));
+ const totals=recordCounts222(all);
+ const otherCounts=recordCounts222(kind==='案件'?state.contracts||[]:state.cases||[]);
+ const otherKind=kind==='案件'?'合約':'案件';
+ const folders=[...groups].sort(([a],[b])=>{
+  const label=id=>clients.get(id)?.code||clients.get(id)?.name||id;
+  return label(a).localeCompare(label(b),'zh-Hant',{numeric:true})||a.localeCompare(b);
+ });
+ runtime.page=Math.max(1,Math.min(runtime.page,Math.ceil(folders.length/runtime.size)));
+ const visible=folders.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);
+ if(!visible.length){
+  host.innerHTML=`<div class="empty">${all.length?'沒有符合條件的'+kind:'尚無'+kind}</div>`;
+ }else{
+  host.innerHTML=`<div class="record-list220" aria-label="${esc(kind)}客戶">
+   ${visible.map(([clientId,rows])=>{
+    const customer=clients.get(clientId),total=totals.get(clientId),other=otherCounts.get(clientId);
+    const count=rows.length===total?String(total):rows.length+' / '+total;
+    const open=runtime.folders.get(clientId)??folders.length===1;
+    return `<details class="client-folder222" data-client-folder222="${esc(clientId)}" data-initial-open="${open}" ${open?'open':''}>
+     <summary><span class="folder-title222"><strong>${esc(customer?.name||'客戶已移除')}</strong>${customer?.code?`<small>${esc(customer.code)}</small>`:''}</span>
+      <span class="folder-counts222"><span class="folder-count222" aria-label="${esc(kind)}符合 ${rows.length} 筆，共 ${total} 筆">${count} ${esc(kind)}</span>
+      ${other?`<span class="folder-cross-count222">${other} ${otherKind}</span>`:''}</span></summary>
+     <div class="folder-body222"></div>
+    </details>`;
+   }).join('')}
+  </div>`;
+ }
+ host.querySelectorAll('[data-client-folder222]').forEach((folder,folderIndex)=>{
+  const clientId=folder.dataset.clientFolder222,records=groups.get(clientId),body=folder.querySelector('.folder-body222');
+  const mount=()=>{
+   if(body.childElementCount)return;
+   const limit=Math.min(runtime.limits.get(clientId)||12,records.length);
+   const contact=recordClientFacts222(clients.get(clientId));
+   body.innerHTML=`${contact?`<div class="folder-contact222">${contact}</div>`:''}
+    <div role="list">${buildRecordRows222(records.slice(0,limit).map(makeRow),columns,runtime.expanded,host.id+'-'+folderIndex)}</div>
+    ${limit<records.length?`<div class="folder-more222"><button class="btn" type="button" data-folder-more222>再顯示 ${Math.min(12,records.length-limit)} 筆</button></div>`:''}`;
+   bindRecordDetails222(body,runtime.expanded);
+   bind(body);
+   const more=body.querySelector('[data-folder-more222]');
+   if(more)more.onclick=()=>{
+    runtime.limits.set(clientId,limit+12);
+    body.replaceChildren();
+    mount();
+    body.querySelectorAll('.record-row220')[limit]?.querySelector('button')?.focus();
+   };
+  };
+  let wasOpen=folder.open;
+  if(wasOpen)mount();
+  folder.ontoggle=()=>{
+   if(!folder.isConnected||folder.open===wasOpen)return;
+   wasOpen=folder.open;
+   runtime.folders.set(clientId,wasOpen);
+   if(wasOpen){mount();recordReveal222(body);}
+  };
+ });
+ recordPage220(pager,runtime,folders.length,render,kind+'客戶');
+ return folders.length;
 }
 function recordPage220(host,runtime,total,render,name) {
  const pages=Math.max(1,Math.ceil(total/runtime.size));
@@ -3802,7 +3946,7 @@ function recordClientOptions220(selected) {
 }
 
 /* Customer cases: one source record, live customer lookup and derived local calendar reminders. */
-const caseRuntime219={query:'',clientId:'',status:'active',page:1,size:12,expanded:new Set()},caseAckBusy219=new Set();let caseMinuteTimer219=null;
+const caseRuntime219={query:'',clientId:'',status:'active',page:1,size:12,expanded:new Set(),folders:new Map(),limits:new Map()},caseAckBusy219=new Set();let caseMinuteTimer219=null;
 const CASE_STATUS219={pending:'待處理',inProgress:'進行中',done:'已完成',cancelled:'已取消'};
 function caseEngine219(){return createCasesEngine219();}
 function caseCustomer219(record){return clientById(record.clientId)||null;}
@@ -3843,37 +3987,67 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  for(const button of $$('#casesStats219 [data-case-filter219]'))button.onclick=()=>{runtime.status=button.dataset.caseFilter219;runtime.page=1;renderCases219()};
  const selectedClient=runtime.clientId;$('#casesClient219').innerHTML='<option value="">全部客戶</option>'+state.clients.slice().sort((a,b)=>String(a.code||a.name||'').localeCompare(String(b.code||b.name||''),'zh-Hant',{numeric:true})).map(customer=>`<option value="${esc(customer.id)}">${esc([customer.code,customer.name].filter(Boolean).join(' · '))}</option>`).join('');if(selectedClient&&!state.clients.some(c=>c.id===selectedClient))runtime.clientId='';$('#casesClient219').value=runtime.clientId;$('#casesStatus219').value=runtime.status;if($('#casesSearch219').value!==runtime.query)$('#casesSearch219').value=runtime.query;
  const filtered=all.filter(record=>{const customer=caseCustomer219(record),text=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):''].join(' ').toLocaleLowerCase();return (!q||text.includes(q))&&(!runtime.clientId||record.clientId===runtime.clientId)&&(runtime.status==='all'||runtime.status==='active'?runtime.status==='all'||engine.active(record.status):record.status===runtime.status)}).sort((a,b)=>{const aClosed=engine.active(a.status)?0:1,bClosed=engine.active(b.status)?0:1;return aClosed-bClosed||(a.dueDate||'9999').localeCompare(b.dueDate||'9999')||String(b.updatedAt||'').localeCompare(String(a.updatedAt||''))||String(a.id).localeCompare(String(b.id));});
- const pages=Math.max(1,Math.ceil(filtered.length/runtime.size));runtime.page=Math.max(1,Math.min(runtime.page,pages));const visible=filtered.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);$('#casesCount219').textContent=`${filtered.length} 件案件`;
  const host=$('#casesCards219');
- const rows=visible.map(record=>{
-  const customer=caseCustomer219(record),overdue=engine.overdue(record,today,clock);
+ const makeRow=record=>{
+  const overdue=engine.overdue(record,today,clock);
   const when=record.dueDate?fmtDate(record.dueDate)+(record.dueTime?' '+record.dueTime:''):fmtDate(record.startDate);
-  const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`:'未啟用';
-  const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':reminder;
-  return {id:record.id,keyAttribute:'data-case-id219',detailLabel:'完整資料',
-   cells:[`<h2>${esc(record.title)}</h2>`,`<strong>${esc(customer?.name||'客戶已移除')}</strong><small>${esc(customer?.code||'')}</small>`,
-    caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
+  const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`.trim():'';
+  const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':'';
+  return {id:record.id,keyAttribute:'data-case-id219',
+   cells:[`<h2>${esc(record.title)}</h2>`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
     `<strong>${esc(when)}</strong><small>${record.dueDate?'截止':'開始'}</small>`,
-    `<button class="btn" type="button" data-open-case219="${esc(record.id)}">查看案件</button><button class="btn record-calendar220" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button>`],
-   facts:[['聯絡人',customer?contactSummary(customer):''],['地址',customer?.address],['開始日期',fmtDate(record.startDate)],['截止日期',record.dueDate?when:''],
-    ['提醒排程',reminder],['提醒狀態',reminderState],['建立時間',fmtDateTime(record.createdAt)],['更新時間',fmtDateTime(record.updatedAt)],
-    ...(record.completedAt?[['完成時間',fmtDateTime(record.completedAt)]]:[]),['備註',record.note]]
+    `<button class="btn" type="button" data-open-case219="${esc(record.id)}">查看案件</button>`],
+   facts:[['開始',fmtDate(record.startDate)],['截止',record.dueDate?when:''],
+    ['提醒',[reminder,reminderState].filter(Boolean).join(' · ')]],
+   detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button></div>`,
+   note:record.note,
+   meta:[['建立',fmtDateTime(record.createdAt)],['更新',fmtDateTime(record.updatedAt)],...(record.completedAt?[['完成',fmtDateTime(record.completedAt)]]:[])]
   };
- });
- host.innerHTML=rows.length?recordList220(['案件','客戶','狀態','日期','操作'],rows,runtime.expanded):
-  `<div class="empty">${all.length?'沒有符合條件的案件':'尚無案件'}</div>`;
- bindRecordDetails220(host,runtime.expanded);
- recordPage220($('#casesPager219'),runtime,filtered.length,renderCases219,'案件');
- bindCaseButtons219($('#view-cases'));
+ };
+ const count=clientFolders222({host,pager:$('#casesPager219'),runtime,matched:filtered,all,kind:'案件',
+  columns:['案件','狀態','日期','操作'],makeRow,render:renderCases219,bind:bindCaseButtons219});
+ $('#casesCount219').textContent=`${count} 位客戶 · ${filtered.length} 件案件`;
 }
 function openCase219(id=null){
  const existing=id?(state.cases||[]).find(record=>record.id===id):null;if(id&&!existing){toast('案件已被刪除，請重新整理');return}const baseline=existing?clone(existing):null,draft=existing?clone(existing):{id:uid('case'),clientId:'',title:'',status:'inProgress',startDate:localDate(),dueDate:'',dueTime:'',reminderEnabled:false,reminderDate:'',reminderTime:'09:00',note:''};
- const options=state.clients.slice().sort((a,b)=>String(a.code||a.name||'').localeCompare(String(b.code||b.name||''),'zh-Hant',{numeric:true})),orphan=!!draft.clientId&&!options.some(customer=>customer.id===draft.clientId);
- showModal(existing?'案件明細':'新增案件',`<form id="caseForm219" class="cases-form219"><div class="field cases-span219"><label for="caseTitle219">案件名稱</label><input id="caseTitle219" class="input" maxlength="200" value="${esc(draft.title)}" required></div><div class="field"><label for="caseClient219">客戶</label><select id="caseClient219" class="select" required><option value="">選擇客戶</option>${orphan?`<option value="${esc(draft.clientId)}">客戶已移除</option>`:''}${options.map(customer=>`<option value="${esc(customer.id)}" ${customer.id===draft.clientId?'selected':''}>${esc([customer.code,customer.name].filter(Boolean).join(' · '))}</option>`).join('')}</select></div><div class="field"><label for="caseStatus219">狀態</label><select id="caseStatus219" class="select">${Object.entries(CASE_STATUS219).map(([key,label])=>`<option value="${key}" ${key===draft.status?'selected':''}>${label}</option>`).join('')}</select></div><div class="cases-master219 cases-span219" id="caseCustomerPreview219" aria-live="polite"></div><div class="field"><label for="caseStart219">開始日期</label><input id="caseStart219" class="input" type="date" value="${esc(draft.startDate)}" required></div><div class="field"><label for="caseDue219">截止日期</label><input id="caseDue219" class="input" type="date" value="${esc(draft.dueDate)}"></div><div class="field"><label for="caseDueTime219">截止時間</label><input id="caseDueTime219" class="input" type="time" value="${esc(draft.dueTime)}" ${draft.dueDate?'':'disabled'}></div><label class="cases-check219"><input id="caseReminder219" type="checkbox" ${draft.reminderEnabled?'checked':''}>啟用提醒</label><div class="cases-reminder-fields219 cases-span219" id="caseReminderFields219" ${draft.reminderEnabled?'':'hidden'}><div class="field"><label for="caseReminderDate219">提醒日期</label><input id="caseReminderDate219" class="input" type="date" value="${esc(draft.reminderDate)}"></div><div class="field"><label for="caseReminderTime219">提醒時間</label><input id="caseReminderTime219" class="input" type="time" value="${esc(draft.reminderTime)}"></div></div><div class="field cases-span219"><label for="caseNote219">備註</label><textarea id="caseNote219" class="textarea" rows="4" maxlength="12000">${esc(draft.note)}</textarea></div><p class="notice warn cases-span219" id="caseError219" role="alert" tabindex="-1" hidden></p>${existing?`<div class="cases-meta219 cases-span219"><span>建立 ${esc(fmtDateTime(existing.createdAt))}</span><span>更新 ${esc(fmtDateTime(existing.updatedAt))}</span>${existing.completedAt?`<span>完成 ${esc(fmtDateTime(existing.completedAt))}</span>`:''}</div>`:''}</form>`,[{text:'取消',value:false},{text:'儲存案件',value:true,cls:'primary'}],()=>{});
- const root=$('#modalRoot'),modal=root.querySelector('.modal'),form=$('#caseForm219');modal.classList.add('cases-modal219');const footer=modal.querySelector('.modal-foot'),cancel=footer.querySelector('button:first-child'),save=footer.querySelector('button:last-child');cancel.id='caseCancel219';save.id='caseSave219';if(orphan)$('#caseClient219').value=draft.clientId;const previewClient=()=>{const customer=clientById($('#caseClient219').value),preview=$('#caseCustomerPreview219');preview.hidden=!customer;preview.innerHTML=customer?`<dl><div><dt>聯絡人</dt><dd>${esc(contactSummary(customer)||'未填聯絡人')}</dd></div><div><dt>地址</dt><dd>${esc(customer.address||'未填地址')}</dd></div></dl>`:'';};$('#caseClient219').onchange=previewClient;previewClient();
+ const orphan=!!draft.clientId&&!clientById(draft.clientId);
+ showModal(existing?'案件明細':'新增案件',`<form id="caseForm219" class="cases-form219 record-form222">
+  <div class="field cases-span219"><label for="caseTitle219">案件名稱</label><input id="caseTitle219" class="input" maxlength="200" value="${esc(draft.title)}" required></div>
+  <div class="field"><label for="caseClient219">客戶</label><select id="caseClient219" class="select" required><option value="">選擇客戶</option>
+   ${orphan?`<option value="${esc(draft.clientId)}">客戶已移除</option>`:''}${recordClientOptions220(draft.clientId)}</select></div>
+  <div class="field"><label for="caseStatus219">狀態</label><select id="caseStatus219" class="select">
+   ${Object.entries(CASE_STATUS219).map(([key,label])=>`<option value="${key}" ${key===draft.status?'selected':''}>${label}</option>`).join('')}</select></div>
+  <div class="record-client-inline222 cases-span219" id="caseCustomerPreview219" aria-live="polite" hidden></div>
+  <div class="field"><label for="caseStart219">開始日期</label><input id="caseStart219" class="input" type="date" value="${esc(draft.startDate)}" required></div>
+  <div class="record-date-pair222"><div class="field"><label for="caseDue219">截止日期</label><input id="caseDue219" class="input" type="date" value="${esc(draft.dueDate)}"></div>
+  <div class="field" id="caseDueTimeField222" ${draft.dueDate?'':'hidden'}><label for="caseDueTime219">截止時間</label>
+   <input id="caseDueTime219" class="input" type="time" value="${esc(draft.dueTime)}"></div></div>
+  <div class="record-settings222 cases-span219">
+   <label class="cases-check219 record-toggle222"><input id="caseReminder219" type="checkbox" ${draft.reminderEnabled?'checked':''}>提醒</label>
+   <div class="cases-reminder-fields219" id="caseReminderFields219" ${draft.reminderEnabled?'':'hidden'}>
+    <div class="field"><label for="caseReminderDate219">日期</label><input id="caseReminderDate219" class="input" type="date" value="${esc(draft.reminderDate)}"></div>
+    <div class="field"><label for="caseReminderTime219">時間</label><input id="caseReminderTime219" class="input" type="time" value="${esc(draft.reminderTime)}"></div>
+   </div>
+  </div>
+  <div class="field cases-span219"><label for="caseNote219">備註</label><textarea id="caseNote219" class="textarea" rows="2" maxlength="12000">${esc(draft.note)}</textarea></div>
+  <p class="notice warn cases-span219" id="caseError219" role="alert" tabindex="-1" hidden></p>
+ </form>`,[{text:'取消',value:false},{text:'儲存案件',value:true,cls:'primary'}],()=>{});
+ const root=$('#modalRoot'),modal=root.querySelector('.modal'),form=$('#caseForm219');
+ modal.classList.add('cases-modal219','record-modal222');
+ const footer=modal.querySelector('.modal-foot'),cancel=footer.querySelector('button:first-child'),save=footer.querySelector('button:last-child');
+ cancel.id='caseCancel219';save.id='caseSave219';
+ if(orphan)$('#caseClient219').value=draft.clientId;
+ const previewClient=()=>{
+  const preview=$('#caseCustomerPreview219');
+  const facts=recordClientFacts222(clientById($('#caseClient219').value));
+  preview.hidden=!facts;
+  preview.innerHTML=facts;
+ };
+ $('#caseClient219').onchange=previewClient;
+ previewClient();
  const collect=()=>({...draft,title:$('#caseTitle219').value,clientId:$('#caseClient219').value,status:$('#caseStatus219').value,startDate:$('#caseStart219').value,dueDate:$('#caseDue219').value,dueTime:$('#caseDueTime219').value,reminderEnabled:$('#caseReminder219').checked,reminderDate:$('#caseReminderDate219').value,reminderTime:$('#caseReminderTime219').value,note:$('#caseNote219').value}),snapshot=()=>JSON.stringify(collect());let initial=snapshot(),busy=false;
  const close=()=>{if(busy)return;if(snapshot()!==initial&&!window.confirm('案件尚未儲存，確定捨棄這次變更？'))return;root.classList.remove('show');root.innerHTML=''};cancel.onclick=close;modal.querySelector('[data-close]').onclick=close;root.onclick=event=>{if(event.target===root)close()};modal.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();close()}});
- $('#caseDue219').onchange=()=>{const filled=!!$('#caseDue219').value;$('#caseDueTime219').disabled=!filled;if(!filled)$('#caseDueTime219').value=''};$('#caseReminder219').onchange=()=>{$('#caseReminderFields219').hidden=!$('#caseReminder219').checked};
+ $('#caseDue219').onchange=()=>{const filled=!!$('#caseDue219').value;$('#caseDueTimeField222').hidden=!filled;if(!filled)$('#caseDueTime219').value=''};$('#caseReminder219').onchange=()=>{$('#caseReminderFields219').hidden=!$('#caseReminder219').checked};
  const act=async fn=>{if(busy)return;busy=true;const controls=[...modal.querySelectorAll('input,select,textarea,button')].map(node=>[node,node.disabled]),error=$('#caseError219');controls.forEach(([node])=>node.disabled=true);error.hidden=true;try{await fn();await loadAll();initial=snapshot();if(modal.isConnected){root.classList.remove('show');root.innerHTML=''}renderCases219()}catch(failure){if(error.isConnected){error.hidden=false;error.textContent=failure.message||'案件未能儲存，請保留資料重試';error.focus?.()}else toast(failure.message||'案件未能儲存')}finally{busy=false;for(const[node,disabled]of controls)if(node.isConnected)node.disabled=disabled;}};
  const submit=event=>{event?.preventDefault();const next=collect();act(async()=>{await commitCase219(next,baseline);toast('案件已儲存')})};save.onclick=submit;form.onsubmit=submit;
  if(existing){const remove=vatElement214('button','btn danger','刪除案件');remove.id='caseDelete219';remove.type='button';remove.onclick=()=>{if(busy||!window.confirm('確定刪除這個案件？相關日曆項目會一併移除。'))return;act(async()=>{await deleteCase219(existing.id,baseline);toast('案件已刪除')})};footer.prepend(remove);}
@@ -4072,7 +4246,7 @@ function createContractsEngine220() {
 if(typeof module!=='undefined'&&module.exports)module.exports={createContractsEngine220};
 
 const contractEngine220=createContractsEngine220();
-const contractRuntime220={query:'',clientId:'',categoryId:'',year:'',status:'all',page:1,size:12,expanded:new Set()};
+const contractRuntime220={query:'',clientId:'',categoryId:'',year:'',status:'all',page:1,size:12,expanded:new Set(),folders:new Map(),limits:new Map()};
 const contractStatus220={
  upcoming:['即將到期','orange'],expired:['已到期','red'],active:['有效','green'],scheduled:['未生效','blue'],closed:['已結案','gray'],renewed:['已續約','blue']
 };
@@ -4213,39 +4387,33 @@ function renderContracts220() {
   const customer=clientById(row.clientId);
   return !query||[row.title,row.note,row.task,contractTypeName220(row.categoryId),customer?.code,customer?.name].join(' ').toLocaleLowerCase().includes(query);
  }).sort((a,b)=>Number(['closed','renewed'].includes(a.status))-Number(['closed','renewed'].includes(b.status))||a.row.endDate.localeCompare(b.row.endDate)||a.row.id.localeCompare(b.row.id));
- runtime.page=Math.min(runtime.page,Math.max(1,Math.ceil(filtered.length/runtime.size)));
- const visible=filtered.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);
- $('#contractCount220').textContent=`共 ${filtered.length} 筆合約`;
- const rows=visible.map(({row,status})=>{
-  const customer=clientById(row.clientId),type=contractTypeName220(row.categoryId);
-  const reminder=row.reminderEnabled?fmtDate(contractReminderDate220(row)):'未啟用';
+ const statusById=new Map(all.map(({row,status})=>[row.id,status]));
+ const makeRow=row=>{
+  const status=statusById.get(row.id),type=contractTypeName220(row.categoryId);
+  const reminder=row.reminderEnabled?fmtDate(contractReminderDate220(row)):'';
   const next=successors.get(row.id),previous=row.previousContractId&&records.find(other=>other.id===row.previousContractId);
   const due=contractDue220(row,!!next);
   const taskStatus=contractTaskLabel220(row,!!next);
   const action=due?`<button class="btn primary" type="button" data-contract-complete220="${esc(row.id)}">完成待辦</button>`:
    row.taskCompletedAt&&!row.closed&&!next&&row.reminderEnabled?`<button class="btn" type="button" data-contract-reopen220="${esc(row.id)}">重開待辦</button>`:'';
-  return {id:row.id,keyAttribute:'data-contract-id220',detailLabel:'完整資料',
+  return {id:row.id,keyAttribute:'data-contract-id220',
    cells:[
     `<h2>${esc(row.title)}</h2><small>${esc(type)}</small>`,
-    `<strong>${esc(customer?.name||'客戶已移除')}</strong><small>${esc(customer?.code||'')}</small>`,
     contractBadge220(status),
     `<strong>${esc(fmtDate(row.endDate))}</strong><small>${esc(next?'下一期 '+fmtDate(next.startDate):due?'待辦未完成':row.taskCompletedAt?'待辦已完成':row.reminderEnabled&&!row.closed?'提醒 '+reminder:'')}</small>`,
     `<button class="btn" type="button" data-open-contract220="${esc(row.id)}">查看合約</button>
-     ${!next&&contractEngine220.shiftDay(row.endDate,1)?`<button class="btn record-calendar220" type="button" data-contract-renew221="${esc(row.id)}">續約</button>`:''}`
+     ${!next&&contractEngine220.shiftDay(row.endDate,1)?`<button class="btn" type="button" data-contract-renew221="${esc(row.id)}">續約</button>`:''}`
    ],
-   facts:[['聯絡人',customer?contactSummary(customer):''],['地址',customer?.address],
-    ['開始日期',row.startDate?fmtDate(row.startDate):''],['到期日',fmtDate(row.endDate)],
-    ['提醒日期',reminder],['待辦狀態',taskStatus],['待辦事項',row.task],
+   facts:[['開始',row.startDate?fmtDate(row.startDate):''],['到期',fmtDate(row.endDate)],
+    ['提醒',row.reminderEnabled?[reminder,taskStatus].filter(Boolean).join(' · '):''],['待辦',row.reminderEnabled?row.task:''],
     ...(previous?[['上期合約',previous.title+' · '+fmtDate(previous.endDate)]]:[]),
-    ...(next?[['續約期間',fmtDate(next.startDate)+' ～ '+fmtDate(next.endDate)]]:[]),['備註',row.note]],
+    ...(next?[['續約期間',fmtDate(next.startDate)+' ～ '+fmtDate(next.endDate)]]:[])],note:row.note,
    detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-contract-calendar220="${esc(row.id)}">查看日曆</button>${previous?`<button class="btn" type="button" data-open-contract220="${esc(previous.id)}">查看上期</button>`:''}${next?`<button class="btn" type="button" data-open-contract220="${esc(next.id)}">查看續約</button>`:''}${action}</div>`
   };
- });
- host.innerHTML=rows.length?recordList220(['合約／類別','客戶','狀態','到期／提醒','操作'],rows,runtime.expanded):
-  `<div class="empty">${all.length?'沒有符合條件的合約':'尚無合約'}</div>`;
- bindRecordDetails220(host,runtime.expanded);
- recordPage220($('#contractPagination220'),runtime,filtered.length,renderContracts220,'合約');
- bindContractActions220(host);
+ };
+ const count=clientFolders222({host,pager:$('#contractPagination220'),runtime,matched:filtered.map(item=>item.row),all:records,kind:'合約',
+  columns:['合約／類別','狀態','到期／提醒','操作'],makeRow,render:renderContracts220,bind:bindContractActions220});
+ $('#contractCount220').textContent=`${count} 位客戶 · ${filtered.length} 筆合約`;
 }
 
 function openContract220(id,renewalFrom=null) {
@@ -4267,32 +4435,43 @@ function openContract220(id,renewalFrom=null) {
  const input=(key,type,value,extra='')=>`<input id="contract-${key}220" class="input" type="${type}" value="${esc(value)}" ${extra}>`;
  const customer=`<select class="select" id="contract-clientId220" required><option value="">選擇客戶</option>${recordClientOptions220(draft.clientId)}</select>`;
  const category=`<select class="select" id="contract-categoryId220">${contractTypeOptions220(draft.categoryId)}<option value="__new">＋ 新增類別</option></select>`;
- showModal(renewalFrom?'續約':existing?'合約明細':'新增合約',`<form id="contractForm220" class="cases-form219" novalidate>
-  ${renewalFrom?`<p class="notice cases-span219 contract-renew-info221">上期到期日 <strong>${esc(fmtDate(renewalFrom.endDate))}</strong></p>`:''}
+ showModal(renewalFrom?'續約':existing?'合約明細':'新增合約',`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
+  ${renewalFrom?`<p class="cases-span219 contract-renew-info221">上期到期日 <strong>${esc(fmtDate(renewalFrom.endDate))}</strong></p>`:''}
   <div class="cases-span219">${field('title','合約名稱',input('title','text',draft.title,'required maxlength="200"'))}</div>
   ${field('clientId','客戶',customer)}${field('categoryId','類別',category)}
   <div class="cases-span219" id="contractNewCategory220" hidden>${field('categoryName','新類別名稱',input('categoryName','text','','maxlength="32"'))}</div>
-  <div class="cases-master219 cases-span219" id="contractClientPreview220" hidden></div>
+  <div class="record-client-inline222 cases-span219" id="contractClientPreview220" hidden></div>
   ${renewalFrom?`<div class="field cases-span219"><label for="contractRenewTerm221">續約期限</label><select class="select" id="contractRenewTerm221">
    <option value="1">1 年</option><option value="2">2 年</option><option value="3">3 年</option><option value="">自訂到期日</option></select></div>`:''}
   ${field('startDate',renewalFrom?'新約開始日期':'開始日期（選填）',input('startDate','date',draft.startDate))}
   ${field('endDate','到期日',input('endDate','date',draft.endDate,'required'))}
-  <label class="cases-check219"><input id="contract-reminderEnabled220" type="checkbox" ${draft.reminderEnabled?'checked':''}>啟用到期提醒與待辦</label>
-  ${field('leadMonths','提前幾個月',input('leadMonths','number',draft.leadMonths,'min="0" max="36" step="1" aria-describedby="contractPreviewDate220"')
-   +'<span class="small muted" id="contractPreviewDate220"></span>')}
-  <div class="cases-span219">${field('task','待辦事項',input('task','text',draft.task,'maxlength="240"'))}</div>
-  <div class="cases-span219 field"><label for="contract-note220">備註</label><textarea class="textarea" id="contract-note220" maxlength="12000" rows="3">${esc(draft.note)}</textarea></div>
+  <div class="record-settings222 cases-span219">
+   <div class="record-setting-head222">
+    <label class="cases-check219 record-toggle222"><input id="contract-reminderEnabled220" type="checkbox" ${draft.reminderEnabled?'checked':''}>到期提醒</label>
+    <span class="record-preview-date222" id="contractPreviewDate220" aria-live="polite"></span>
+   </div>
+   <div class="contract-reminder-inputs222" id="contractReminderFields222" ${draft.reminderEnabled?'':'hidden'}>
+    ${field('leadMonths','提前月數',input('leadMonths','number',draft.leadMonths,'min="0" max="36" step="1" aria-describedby="contractPreviewDate220"'))}
+    ${field('task','待辦事項',input('task','text',draft.task,'maxlength="240"'))}
+   </div>
+  </div>
+  <div class="cases-span219 field"><label for="contract-note220">備註</label><textarea class="textarea" id="contract-note220" maxlength="12000" rows="2">${esc(draft.note)}</textarea></div>
   ${renewalFrom?'<input id="contract-closed220" type="checkbox" hidden>':`<label class="cases-check219"><input id="contract-closed220" type="checkbox" ${draft.closed?'checked':''}>已結案</label>`}
   ${!renewalFrom&&existing&&!nextContract220(existing.id)&&contractEngine220.shiftDay(existing.endDate,1)?'<button class="btn" type="button" id="renewFromDetail221">續約</button>':''}
   <p class="notice warn cases-span219" id="contractError220" role="alert" tabindex="-1" hidden></p>
  </form>`,[{text:'取消',value:false},{text:renewalFrom?'確認續約':'儲存合約',value:true,cls:'primary'}],()=>{});
  const modal=root.querySelector('.modal'),form=$('#contractForm220'),error=$('#contractError220');
- modal.classList.add('cases-modal219','contract-modal220');
+ modal.classList.add('cases-modal219','contract-modal220','record-modal222');
  const footer=modal.querySelector('.modal-foot'),[cancel,save]=footer.querySelectorAll('button');
  save.id='saveContract220';cancel.id='cancelContract220';
  const get=key=>$('#contract-'+key+'220');
+ const leadValue=()=>{
+  const value=get('leadMonths').value;
+  if(get('reminderEnabled').checked)return value;
+  try{return contractEngine220.months(value);}catch{return draft.leadMonths;}
+ };
  const collect=()=>({id:draft.id,title:get('title').value,clientId:get('clientId').value,categoryId:get('categoryId').value,
-  startDate:get('startDate').value,endDate:get('endDate').value,leadMonths:get('leadMonths').value,
+  startDate:get('startDate').value,endDate:get('endDate').value,leadMonths:leadValue(),
   reminderEnabled:get('reminderEnabled').checked,task:get('task').value,closed:get('closed').checked,note:get('note').value});
  const term=$('#contractRenewTerm221');
  if(renewalFrom)get('clientId').disabled=true;
@@ -4312,11 +4491,13 @@ function openContract220(id,renewalFrom=null) {
  function updatePreview(){
   $('#contractNewCategory220').hidden=get('categoryId').value!=='__new';
   const customer=clientById(get('clientId').value),preview=$('#contractClientPreview220');
-  preview.hidden=!customer;
-  preview.innerHTML=customer?recordFacts220([['聯絡人',contactSummary(customer)],['地址',customer.address]]):'';
+  const facts=recordClientFacts222(customer);
+  preview.hidden=!facts;
+  preview.innerHTML=facts;
   let date='';
   try{date=contractEngine220.reminderDate(get('endDate').value,get('leadMonths').value);}catch{}
-  $('#contractPreviewDate220').textContent=get('reminderEnabled').checked&&date?'提醒日 '+fmtDate(date):'0 為到期當日';
+  $('#contractReminderFields222').hidden=!get('reminderEnabled').checked;
+  $('#contractPreviewDate220').textContent=get('reminderEnabled').checked&&date?'提醒日 '+fmtDate(date):'';
  }
  form.addEventListener('input',event=>{
   const key=event.target.id?.match(/^contract-(\w+)220$/)?.[1];
@@ -4618,7 +4799,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.21.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.22.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
