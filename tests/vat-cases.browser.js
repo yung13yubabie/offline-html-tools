@@ -108,7 +108,7 @@ async function lifecycle(p,h){
 async function backupAndReferences(p,h){
  const caseId=await create(p,false);
  const current=await h.backup(p);
- assert.equal(current.backupVersion,9);
+ assert.equal(current.backupVersion,10);
  await p.locator('#partialScope').selectOption('cases');
  const partial=JSON.parse((await h.download(p,()=>p.locator('#partialExportBtn').click())).toString());
  assert.deepEqual(partial.data.cases.map(row=>row.id),[caseId]);
@@ -174,7 +174,7 @@ async function upgrade(p,h){
  },data);
  await h.reload(p);
  const result=await h.backup(p);
- assert.equal(result.backupVersion,9);
+ assert.equal(result.backupVersion,10);
  assert.deepEqual(result.data.cases,data.cases);
  assert.deepEqual(result.data.contracts,[]);
  assert.deepEqual(result.data.contractCategories,[]);

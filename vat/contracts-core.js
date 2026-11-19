@@ -38,14 +38,45 @@ function createContractsEngine220() {
   while(!dates.date(prefix+String(targetDay).padStart(2,'0')))targetDay--;
   return prefix+String(targetDay).padStart(2,'0');
  }
- function status(record,today) {
+ function shiftDay(date,days) {
+  if(!dates.date(date))return '';
+  const instant=new Date(date+'T00:00:00.000Z');
+  instant.setUTCDate(instant.getUTCDate()+days);
+  const result=instant.toISOString().slice(0,10);
+  return dates.date(result)?result:'';
+ }
+ function termEnd(start,years) {
+  if(!dates.date(start)||!Number.isInteger(years)||years<1||years>3)return '';
+  const year=Number(start.slice(0,4))+years;
+  if(year>9999)return '';
+  const anniversary=String(year).padStart(4,'0')+start.slice(4);
+  return dates.date(anniversary)?shiftDay(anniversary,-1):anniversary.slice(0,8)+'28';
+ }
+ function successors(rows) {
+  return new Map(rows.filter(row=>row.previousContractId).map(row=>[row.previousContractId,row]));
+ }
+ function validateLinks(rows,{references=true}={}) {
+  const ids=new Map(rows.map(row=>[row.id,row])),seen=new Set();
+  for(const row of rows){
+   const prior=row.previousContractId;
+   if(prior===undefined||prior==='')continue;
+   if(!idOK(prior)||prior===row.id||seen.has(prior))throw Error('續約關聯格式錯誤或同一合約續約兩次');
+   seen.add(prior);
+   const previous=ids.get(prior);
+   if(!previous){if(references)throw Error('續約缺少上一期合約');continue;}
+   if(previous.clientId!==row.clientId)fail('clientId','續約前後必須是同一客戶');
+   if(!row.startDate||row.startDate<=previous.endDate)fail('startDate','續約開始日須晚於上期到期日');
+  }
+ }
+ function status(record,today,renewed=false) {
+  if(renewed)return 'renewed';
   if(record.closed)return 'closed';
   if(record.endDate<today)return 'expired';
   if(record.startDate&&today<record.startDate)return 'scheduled';
   return reminderDate(record.endDate,record.leadMonths)<=today?'upcoming':'active';
  }
- function isDue(record,today) {
-  return !record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
+ function isDue(record,today,renewed=false) {
+  return !renewed&&!record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
  }
  function normalize(raw,{clients=[],categories=[],references=true}={}) {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');
@@ -72,14 +103,14 @@ function createContractsEngine220() {
   assertBaseline(current,baseline);
   if(current.revision>=Number.MAX_SAFE_INTEGER||at<current.updatedAt)throw Error('合約版本或本機時間無效');
  }
- function save({draft,current=null,baseline=null,clients,categories,at}) {
+ function save({draft,current=null,baseline=null,clients,categories,at,previousContractId=current?.previousContractId}) {
   startWrite(current,baseline,at);
   if(!idOK(draft?.id)||current&&current.id!==draft.id)throw Error('合約編號無效');
   const fields=normalize(draft,{clients,categories});
   const changedSchedule=current&&['endDate','leadMonths','reminderEnabled'].some(key=>current[key]!==fields[key]);
   const restart=current?.closed&&!fields.closed;
   const taskCompletedAt=!current||changedSchedule||restart?'':current.taskCompletedAt;
-  return {id:draft.id,version:1,...fields,taskCompletedAt,revision:(current?.revision||0)+1,createdAt:current?.createdAt||at,updatedAt:at};
+  return {id:draft.id,version:1,...fields,...(previousContractId?{previousContractId}:{}),taskCompletedAt,revision:(current?.revision||0)+1,createdAt:current?.createdAt||at,updatedAt:at};
  }
  function updateTask({current,baseline,at,today,completed}) {
   startWrite(current,baseline,at);
@@ -105,7 +136,8 @@ function createContractsEngine220() {
     throw Error('合約版本或日期紀錄無效');
    }
   }
+  validateLinks(contracts,{references});
  }
- return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate};
+ return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createContractsEngine220};
