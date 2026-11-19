@@ -46,8 +46,11 @@ Object.assign(ctx,{currentPeriod:()=>({id:'p'}),$$:()=>exportTemplates.map(t=>({
 vm.runInContext(line("function exportTemplateTxt(){const p=currentPeriod();if(!p){toast('請先選擇期別');return}const tplIds="),ctx);ctx.exportTemplateTxt();check(()=>assert.equal(downloads.length,2));
 (async()=>{for(const d of downloads){const text=await d.blob.text();check(()=>assert.equal(text.split('----------------------------------------').length,2));check(()=>assert(!/\{[^}]+\}/.test(text)));}
 ctx.state={noticeGroupFilter212:'custom'};vm.runInContext(line('function noticeTypeVisible212(nt)'),ctx);check(()=>assert.equal(ctx.noticeTypeVisible212({noticeGroup212:'legacy-group'}),true));
-const saved=[],edit={id:'custom-edit',typeId:'firstBilling',name:'Before',text:'Before',tone:'自訂語氣'},inputs={'#templateName':{value:'Saved name'},'#templateText':{value:'Synthetic saved body'},'#templateEnabled':{checked:true}};
-Object.assign(ctx,{$:id=>inputs[id],selectedTemplate:()=>edit,put:async(store,row)=>saved.push({store,row:plain(row)}),loadAll:async()=>{},state:{},toast:()=>{}});vm.runInContext(line('async function saveTemplate(){const t=selectedTemplate();'),ctx);await ctx.saveTemplate();
+const saved=[],edit={id:'custom-edit',typeId:'firstBilling',name:'Before',text:'Before',tone:'自訂語氣'},inputs={'#saveTemplateBtn':{disabled:false},'#templateName':{value:'Saved name'},'#templateText':{value:'Synthetic saved body'},'#templateEnabled':{checked:true}};
+Object.assign(ctx,{$:id=>inputs[id],selectedTemplate:()=>edit,put:async(store,row)=>saved.push({store,row:plain(row)}),loadAll:async()=>{},state:{},toast:()=>{}});
+const editor=source.slice(source.indexOf('const templateDrafts223='),source.indexOf('function showTemplateDraft223('));
+const save=source.slice(source.indexOf('async function saveTemplate(){\n'),source.indexOf('async function restoreBuiltInTemplate(){const t=selectedTemplate()'));
+vm.runInContext(editor+save,ctx);await ctx.saveTemplate();
 check(()=>assert.equal(saved[0].row.tone,'自訂語氣'));check(()=>assert.equal(saved[0].row.text,'Synthetic saved body'));
 console.log(`${checks} VAT notice checks passed (synthetic migration/interpolation/TXT/editor; browser QA separate).`);
 })().catch(e=>{console.error(e);process.exitCode=1});

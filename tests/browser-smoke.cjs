@@ -26,6 +26,7 @@ const calculatorTaxGroups=require('./calculator-tax-groups.browser.js');
 const calculatorAllocation=require('./calculator-allocation.browser.js');
 const vatCases=require('./vat-cases.browser.js');
 const vatContracts=require('./vat-contracts.browser.js');
+const vatOperations=require('./vat-operations.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
 const BASE=process.env.OFFLINE_TEST_BASE_URL||'';
@@ -497,6 +498,7 @@ async function vatPreviewPaperGeometry(p){
  for(const [name,flow] of Object.entries(vatContracts))await check('vat contracts '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatCases))await check('vat cases '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
+ for(const [name,flow] of Object.entries(vatOperations))await check('vat workspace '+name+' navigation and edit controls',()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
  await check('vat saved print layout every scope uses actual printer HTML',()=>vatRevisionContext(vatPrintAllScopes));

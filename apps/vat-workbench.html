@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.22.0</title>
+<title>營業稅工作台 v2.23.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -739,6 +739,282 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 .contract-renew-info221{margin:0;color:var(--muted);font-size:13px}
 #renewFromDetail221{min-height:44px;align-self:end}
 #contract-endDate220[readonly]{background:var(--panel2)}
+/* Accounting and notification workspaces */
+@media screen {
+ #view-accounting [hidden],#view-templates [hidden]{display:none!important}
+ :is(#view-accounting,#view-templates) :is(button,summary,select,input,textarea):focus-visible{
+  outline:2px solid var(--brand);outline-offset:2px
+ }
+ :is(#view-accounting,#view-templates) .operations-tabs{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0;
+  padding:5px;border:1px solid var(--line);border-radius:7px;background:var(--panel2)
+ }
+ :is(#view-accounting,#view-templates) .operations-tabs button{
+  display:inline-flex;justify-content:center;align-items:center;gap:6px;min-height:36px;
+  min-width:0;margin:0;padding:6px 10px;border:1px solid transparent;border-radius:5px;
+  background:transparent;color:var(--muted);font-weight:650;white-space:normal
+ }
+ :is(#view-accounting,#view-templates) .operations-tabs button:hover{color:var(--text);background:var(--panel)}
+ :is(#view-accounting,#view-templates) .operations-tabs [aria-pressed="true"]{
+  color:var(--brand);border-color:var(--line);background:var(--panel);box-shadow:0 1px 2px rgba(0,0,0,.06)
+ }
+ .operations-count{padding:0 5px;border-radius:4px;background:var(--panel3);font-variant-numeric:tabular-nums}
+ #view-accounting .accounting-layout{grid-template-columns:minmax(195px,245px) minmax(0,1fr);gap:14px}
+ #view-accounting .accounting-stats{gap:8px;margin-bottom:14px}
+ #view-accounting .accounting-stats>.stat{min-height:74px;padding:8px 11px}
+ #view-accounting .accounting-stats .stat-num{font-variant-numeric:tabular-nums}
+ #view-accounting .accounting-stats .stat-sub{display:none}
+ #view-accounting .accounting-client-pane{display:block;top:14px;padding:0}
+ :is(#accountingPicker223,#noticeLibrary223)>summary{
+  cursor:pointer;padding:10px 12px;min-height:42px;line-height:1.5;
+  overflow-wrap:anywhere;transition:background-color var(--motion-fast211,120ms)
+ }
+ :is(#accountingPicker223,#noticeLibrary223)>summary:hover{background:var(--panel2)}
+ :is(#accountingPicker223,#noticeLibrary223)[open]>summary{border-bottom:1px solid var(--line)}
+ :is(#accountingClientCount223,#noticeLibrarySelection223){
+  color:var(--muted);font-size:12px;margin-inline-start:8px;overflow-wrap:anywhere
+ }
+ #noticeLibrary223[open] #noticeLibrarySelection223{display:none}
+ .accounting-client-filters{display:grid;gap:6px;padding:9px}
+ #view-accounting .accounting-client-list{
+  padding:1px 9px 9px;gap:5px;max-height:min(54dvh,34rem);overflow-y:auto
+ }
+ #view-accounting .accounting-client-card{
+  width:100%;min-width:0;font:inherit;color:var(--text);text-align:left;padding:8px 9px
+ }
+ #view-accounting .accounting-client-card .cc-top{align-items:baseline;flex-wrap:wrap;gap:4px 8px}
+ #view-accounting .accounting-client-card .meta{margin:4px 0 0;gap:4px}
+ #view-accounting .accounting-detail-head{
+  align-items:start;gap:8px;min-width:0;margin-bottom:10px;overflow-wrap:anywhere
+ }
+ #view-accounting .accounting-detail-name{font-size:21px;line-height:1.3}
+ #view-accounting #accountingOverview223{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px
+ }
+ #accountingOverview223>div{display:grid;gap:3px;padding:8px 10px;border-inline-start:2px solid var(--line);overflow-wrap:anywhere}
+ #accountingOverview223>div>span{color:var(--muted);font-size:13px}
+ #view-accounting .accounting-focus{margin-top:10px}
+ #view-accounting .accounting-section{padding:0;border:0;min-width:0}
+ #view-accounting .accounting-section-head{
+  padding:2px 0 8px;border:0;gap:8px;flex-wrap:wrap;margin:0
+ }
+ #view-accounting .accounting-section-head .tiny{display:none}
+ #view-accounting .accounting-section-body{padding:0;min-width:0}
+ #view-accounting .accounting-complete-hero{padding:12px;gap:10px;align-items:end;flex-wrap:wrap}
+ #view-accounting .accounting-batch-actions{
+  align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 8px;padding:7px;background:var(--panel2);border-radius:5px
+ }
+ .accounting-selection223{font-size:13px;color:var(--muted);margin-inline:2px 4px;font-variant-numeric:tabular-nums}
+ #view-accounting .accounting-doc-table{min-width:630px}
+ #view-accounting .accounting-doc-table th,#view-accounting .accounting-doc-table td{padding:6px 8px}
+ #view-accounting .accounting-doc-table td{overflow-wrap:anywhere}
+ #view-accounting .accounting-doc-table td:has(input){text-align:center}
+ #view-accounting input[type=checkbox],#view-templates input[type=checkbox]{accent-color:var(--brand)}
+
+ #view-templates>.operations-tabs{margin-bottom:12px}
+ #view-templates #templateManagePane>.template-workspace,
+ #view-templates #templateReminderPane>.template-workspace{
+  display:grid;grid-template-columns:minmax(215px,250px) minmax(0,1fr);gap:14px;align-items:start
+ }
+ #view-templates .notice-library223,#view-templates .notice-stage223{min-width:0}
+ #view-templates .notice-library223{padding:0}
+ #view-templates #noticeFilters212{display:block;padding:8px 10px;margin:0!important}
+ #noticeFilters212 label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+ #view-templates #noticeFilters212 .select{width:100%}
+ .notice-library-section223{border-top:1px solid var(--line);padding:8px 10px}
+ .notice-section-title223{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;
+  margin-bottom:4px;line-height:1.35
+ }
+ #manageTypeTitle,#manageTypeMeta{display:block;overflow-wrap:anywhere}
+ #manageTypeMeta{font-size:12px}
+ #view-templates .notice-section-title223 .btn,
+ #view-templates .notice-type-options223 .btn{white-space:normal}
+ #view-templates :is(#notificationTypeList,#reminderTypeList,#templateCards){
+  display:grid;grid-template-columns:minmax(0,1fr);gap:3px;max-height:min(36dvh,20rem);
+  overflow:auto;padding:3px
+ }
+ #view-templates .type-list>.strong{
+  padding:6px 4px 2px!important;color:var(--muted);font-size:12px;line-height:1.5
+ }
+ #view-templates :is(.type-item,#templateCards>.template-card){
+  display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;min-height:36px;
+  padding:6px 7px!important;border:1px solid transparent;border-radius:5px;
+  text-align:left;font:inherit;background:var(--panel);color:var(--text);overflow-wrap:anywhere;
+  transition:background-color var(--motion-fast211,120ms),border-color var(--motion-fast211,120ms)
+ }
+ #view-templates :is(.type-item,#templateCards>.template-card):hover{background:var(--panel2)}
+ #view-templates :is(.type-item,#templateCards>.template-card)[aria-pressed="true"]{
+  border-color:var(--brand);background:var(--brand-soft);color:var(--brand);box-shadow:none
+ }
+ #view-templates .type-name,#view-templates .template-card-title{font-size:14px;line-height:1.4}
+ #view-templates .type-meta{font-size:12px;text-align:right;white-space:nowrap}
+ #view-templates .type-item{width:100%;max-width:none}
+ #view-templates .notice-type-options223{
+  display:flex;justify-content:space-between;gap:6px;align-items:center;flex-wrap:wrap;
+  padding:2px 4px;margin-bottom:4px;color:var(--muted)
+ }
+ #view-templates .notice-type-options223 .check-row{min-height:32px}
+ #view-templates #noticeContextBar{margin:0;padding:0}
+ #view-templates #noticeContextBar>.card-b{padding:10px}
+ #view-templates #noticeContextBar .context-grid{
+  display:grid;grid-template-columns:minmax(128px,.55fr) minmax(0,1.45fr);
+  gap:8px;padding:0
+ }
+ #view-templates #mergeClientsField{grid-column:1/-1}
+ #view-templates .merge-picker{background:var(--panel2)}
+ #view-templates .merge-choice{min-height:28px;overflow-wrap:anywhere}
+ #view-templates .template-inline-hint211{margin:0;padding:7px 10px}
+ #view-templates .notice-stage223{display:grid;gap:8px}
+ #view-templates #templateEditorCard{margin:0}
+ #view-templates #templateEditorCard>.card-h{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+  padding:10px 12px
+ }
+ #templateTitle,#templateStatusText{overflow-wrap:anywhere}
+ #templateStatusText{font-weight:400;margin-top:2px}
+ #view-templates #templateEditorCard>.card-b{padding:12px}
+ #view-templates .template-properties211{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:8px;margin-bottom:10px
+ }
+ #view-templates .template-properties211 .field{display:flex;min-width:0;flex-direction:column;align-items:stretch}
+ #view-templates .template-properties211 .field label{white-space:normal}
+ #view-templates .template-variable-tools210{position:relative;justify-self:stretch;min-width:0;margin:0;padding:0;border:0;box-shadow:none}
+ #view-templates .template-variable-tools210>summary,.operations-menu>summary{
+  cursor:pointer;padding:7px 9px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:5px;color:var(--text);min-height:36px;font-weight:650
+ }
+ #view-templates .template-variable-tools210>div,.operations-menu-body{
+  position:absolute;z-index:4;inset-inline-end:0;top:calc(100% + 4px);
+  width:min(29rem,calc(100vw - 110px));max-height:50dvh;overflow:auto;
+  padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:0 8px 22px #0002
+ }
+ #view-templates .template-variable-tools210 .var-chips{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(130px,100%),1fr));gap:6px;margin-top:8px
+ }
+ #view-templates .var-source{font-size:12px;line-height:1.35}
+ #view-templates .template-compose210{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start}
+ #view-templates .template-compose210 .field{min-width:0}
+ #view-templates .notice-compose-tabs223{display:none}
+ #view-templates .template-compose210 label{min-height:1.5em;line-height:1.5}
+ #view-templates .template-compose210 .textarea{
+  display:block;width:100%;min-height:246px!important;padding:9px 10px;line-height:1.65;resize:vertical
+ }
+ #view-templates #templatePreview{background:var(--panel2)}
+ #view-templates .notice-copy-actions223{justify-content:flex-start;margin-top:4px}
+ .operations-menu{position:relative}
+ #modalRoot .modal:has(#tplReminderRows){width:min(680px,calc(100vw - 24px))}
+ #tplReminderRows .rem-row{padding:9px;border:1px solid var(--line);border-radius:6px;margin-bottom:6px}
+ #tplReminderRows .reminder-fields223{grid-template-columns:minmax(112px,1fr) minmax(132px,1.4fr) minmax(86px,.8fr) auto;align-items:end;gap:6px}
+ #tplReminderRows .rem-fixed{grid-column:2/4}
+ #tplReminderRows .rem-del{justify-self:start}
+ .operations-menu-body{display:grid;gap:6px;width:min(12rem,calc(100vw - 105px))}
+ .operations-menu-body .btn{text-align:left;white-space:normal}
+ #view-templates #templateReminderList,#view-templates #templateReminderList .reminder-template{min-width:0}
+ #view-templates #templateReminderList .reminder-template{padding:9px 10px;margin:0 0 6px;overflow-wrap:anywhere}
+ #view-templates #templateReminderList .type-row{flex-wrap:wrap;gap:6px}
+ #view-templates #templateExportPane .export-grid{gap:12px;align-items:start}
+ #view-templates #templateExportPane .card-h{flex-wrap:wrap;padding:9px 12px}
+ #view-templates #templateExportPane .card-b{padding:10px 12px}
+ #view-templates #exportTemplateList,#view-templates .notice-export-clients223{
+  max-height:min(50dvh,28rem);overflow:auto;overscroll-behavior-y:contain;padding:3px
+ }
+ #view-templates #exportTemplateList{padding:8px!important}
+ #view-templates .export-template-group{padding:7px 8px;margin:0 0 5px}
+ #view-templates :is(.notice-export-clients223,#exportTemplateList) .check-row{
+  gap:8px;min-height:34px;padding:5px 7px;border-radius:5px;overflow-wrap:anywhere;font-size:14px
+ }
+ #view-templates :is(.notice-export-clients223,#exportTemplateList) .check-row:has(:checked){background:var(--brand-soft)}
+ #view-templates .notice-export-clients223 .check-row{cursor:pointer}
+ .notice-selection-store223{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}
+ #view-templates #txtClientSearch{margin-bottom:6px}
+ #view-templates #exportFilters215{gap:6px;margin:0 0 7px;padding:8px;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #view-templates #exportFilterCount215{margin:0}
+ #view-templates .collection-filter213{
+  grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:6px 10px;
+  margin:7px 0 0;padding:8px
+ }
+ #view-templates #noticeCollectionExport223:not(:empty){margin-bottom:8px}
+ #view-templates .export-summary-card{margin-top:12px}
+ #view-templates .export-summary-card>.card-b{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  flex-wrap:wrap;overflow-wrap:anywhere
+ }
+ #view-templates #exportFileHint{max-width:68ch}
+ #view-templates #exportTxtBtn{flex:none;margin-inline-end:76px}
+}
+@media screen and (max-width:1100px){
+ #view-templates #templateExportPane #exportFilters215{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media screen and (max-width:940px){
+ #view-templates #templateEditorCard .template-compose210{grid-template-columns:minmax(0,1fr)}
+ #view-templates #templateEditorCard .template-compose210 .textarea{min-height:184px!important}
+}
+@media screen and (max-width:799px){
+ #view-accounting .accounting-layout,
+ #view-templates #templateManagePane>.template-workspace,#view-templates #templateReminderPane>.template-workspace{
+  grid-template-columns:minmax(0,1fr);gap:9px
+ }
+ #view-accounting .accounting-client-pane{position:static}
+ #view-accounting .accounting-stats>.stat{min-height:62px}
+ #view-accounting .accounting-doc-table,#view-accounting .accounting-doc-table tbody{
+  display:block;width:100%;min-width:0
+ }
+ #view-accounting .accounting-doc-table thead{
+  position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden
+ }
+ #view-accounting .accounting-doc-table tbody tr{
+  display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:start;
+  gap:6px 8px;padding:8px
+ }
+ #view-accounting .accounting-doc-table tbody tr+tr{border-top:1px solid var(--line)}
+ #view-accounting .accounting-doc-table td{border:0;padding:0;vertical-align:initial;min-width:0}
+ #view-accounting .accounting-doc-table td:first-child{grid-column:1;grid-row:1}
+ #view-accounting .accounting-doc-name{grid-column:2;grid-row:1}
+ #view-accounting .accounting-row-status{grid-column:3;grid-row:1}
+ #view-accounting :is(.accounting-row-note,.accounting-record-time,.accounting-source,.accounting-row-actions){
+  grid-column:2/-1
+ }
+ #view-accounting :is(.accounting-row-note,.accounting-row-actions):empty{display:none}
+ #view-accounting .accounting-record-time::before{content:"記錄時間 ";color:var(--muted)}
+ #view-accounting .accounting-row-actions{justify-self:end}
+ #view-accounting .accounting-batch-actions:not(:has([data-acct-batch-action]:enabled)) [data-acct-batch-action]{display:none}
+ #view-templates .notice-compose-tabs223{display:flex;margin-bottom:8px}
+ #view-templates #noticeCompose223[data-pane="write"] #noticePreview223,
+ #view-templates #noticeCompose223[data-pane="preview"] #noticeWrite223{display:none}
+ #view-templates .template-compose210 .textarea{height:216px}
+
+ #tplReminderRows .reminder-fields223{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #tplReminderRows .rem-fixed{grid-column:auto}
+ #view-templates #exportTxtBtn{margin-inline-end:0}
+ #view-accounting .accounting-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #view-accounting #accountingOverview223{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #view-accounting #accountingOverview223>div:first-child{grid-column:1/-1}
+ #view-accounting .accounting-client-list,#view-templates #notificationTypeList{max-height:220px}
+ #view-templates #templateCards{max-height:175px}
+ :is(#view-accounting,#view-templates) .operations-tabs button{min-height:44px;flex:1 1 auto;font-size:14px}
+ #view-templates :is(.type-item,#templateCards>.template-card),#view-accounting .accounting-client-card{min-height:44px}
+ #view-templates .operations-menu>summary,#view-templates .template-variable-tools210>summary{
+  display:list-item;min-height:44px;align-content:center
+ }
+ #view-templates .template-compose210 .textarea{font-size:16px}
+ #view-templates .notice-copy-actions223{justify-content:flex-start}
+ #view-templates .notice-export-clients223 .check-row,
+ #view-templates #exportTemplateList .check-row,#view-templates .merge-choice{min-height:44px}
+ #view-templates #templateExportPane .export-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media screen and (max-width:480px){
+ #view-accounting .operations-tabs button{flex:1 1 calc(50% - 6px)}
+ #view-templates #noticeContextBar .context-grid,
+ #view-templates #templateExportPane #exportFilters215,
+ #view-templates #collectionFilter213{grid-template-columns:minmax(0,1fr)}
+ #view-templates .template-properties211{grid-template-columns:minmax(0,1fr)}
+ #view-templates .template-variable-tools210>div{width:100%}
+ #tplReminderRows .reminder-fields223{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+ :is(#view-accounting,#view-templates) :is(.type-item,.template-card,summary){transition:none!important}
+}
 </style>
 <!-- VAT_WORKSPACE_STYLE_END -->
 </head>
@@ -748,7 +1024,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.22.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.23.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -875,39 +1151,84 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 </div>
 </section>
 <section class="view" id="view-accounting" data-review-id="vat-workbench-view-accounting" data-review-name="帳款管理">
-<div class="page-head"><div><h1 class="page-title">帳務處理</h1><div class="page-sub" id="accountingPeriodLabel">與目前期別同步；客戶名單直接沿用本期工作。</div></div><div class="actions"><button class="btn" id="accountingBatchMissingBtn">批量新增欠缺文件</button><button class="btn" id="accountingBatchReturnBtn">批量新增待歸資料</button></div></div>
+<div class="page-head"><div><h1 class="page-title">帳務處理</h1><div class="page-sub" id="accountingPeriodLabel"></div></div><div class="actions accounting-period-actions"><button class="btn" id="accountingBatchMissingBtn">批量新增欠缺文件</button><button class="btn" id="accountingBatchReturnBtn">批量新增待歸資料</button></div></div>
 <div class="grid grid-3 accounting-stats" id="accountingStats" data-review-id="vat-workbench-accountingStats" data-review-name="帳款統計"></div>
 <div class="accounting-layout">
-<aside class="accounting-client-pane" data-review-id="vat-workbench-aside-12" data-review-name="側邊工具 12">
-<div class="card"><div class="card-h"><div><div class="section-title">本期客戶</div><div class="section-subtitle">帳務狀態、缺件與待歸資料一眼查看。</div></div></div><div class="card-b"><input class="input" id="accountingSearch" placeholder="搜尋客戶名稱或代號"/></div></div>
-<div class="accounting-client-list" id="accountingClientList" data-review-id="vat-workbench-accountingClientList" data-review-name="帳款客戶清單"></div>
+<aside class="accounting-client-pane card" data-review-id="vat-workbench-aside-12" data-review-name="側邊工具 12">
+<details id="accountingPicker223" open><summary><strong>本期客戶</strong><span id="accountingClientCount223"></span></summary>
+<div class="accounting-client-filters">
+<input class="input" id="accountingSearch" aria-label="搜尋客戶" placeholder="客戶名稱或代號"/>
+<select class="select" id="accountingStatus223" aria-label="帳務狀態"><option value="">全部狀態</option><option value="open">未完成</option><option value="done">已完成</option><option value="missing">有待補文件</option><option value="return">有待歸資料</option></select>
+</div>
+<div class="accounting-client-list" id="accountingClientList" aria-label="本期客戶" data-review-id="vat-workbench-accountingClientList" data-review-name="帳款客戶清單"></div>
+</details>
 </aside>
 <section class="accounting-detail-pane" data-review-id="vat-workbench-section-13" data-review-name="功能區塊 13"><div id="accountingDetail" data-review-id="vat-workbench-accountingDetail" data-review-name="帳款明細"></div></section>
 </div>
 </section>
 <section class="view" id="view-templates" data-review-id="vat-workbench-view-templates" data-review-name="通知模板">
-<div class="page-head"><div><h1 class="page-title">通知與模板</h1><div class="page-sub">選客戶與模板，確認內容後複製或輸出。</div></div></div>
+<div class="page-head"><div><h1 class="page-title">通知與模板</h1></div></div>
 
-<div class="card notice-context" id="noticeContextBar" data-review-id="vat-workbench-noticeContextBar" data-review-name="通知對象設定"><div class="card-h">目前通知情境</div><div class="card-b"><div class="context-grid"><div class="field"><label>通知模式</label><select class="select" id="noticeMode"><option value="single">單一客戶</option><option value="merge">合併通知</option></select></div><div class="field" id="noticeClientField"><label>套用客戶</label><select class="select" id="noticeClient"></select></div><div class="field hidden" id="mergeSalutationField"><label>共同稱呼</label><input class="input" id="mergeSalutation" list="mergeSalutationList" placeholder="例如 林小姐"/><datalist id="mergeSalutationList"></datalist></div><div class="field hidden" id="mergeClientsField"><label>合併客戶</label><div class="merge-picker" id="mergeClientPicker"></div></div></div><div class="collection-filter213 hidden" id="collectionFilter213" data-review-id="vat-workbench-collectionFilter213" data-review-name="收發票通知日期篩選"><div class="field"><label for="collectionDays213">本機今天起算，幾天後收發票？</label><input class="input" id="collectionDays213" type="number" min="1" max="3650" step="1" value="1" aria-describedby="collectionStatus213"/></div><div class="field"><label>目標收發票日</label><output id="collectionDate213"></output></div><p id="collectionStatus213" class="small muted" role="status" aria-live="polite"></p></div></div></div><p class="template-inline-hint211" hidden="" id="collectionContextHint211" role="status"></p>
-<div class="subtabs"><button class="subtab active" data-template-tab="manage">模板管理</button><button class="subtab" data-template-tab="reminders">提醒設定</button><button class="subtab" data-template-tab="export">批量輸出</button></div>
+<nav class="subtabs operations-tabs" aria-label="通知工作區" data-review-id="vat-workbench-nav-1" data-review-name="功能選單 1"><button class="subtab active" data-template-tab="manage" aria-controls="templateManagePane">模板管理</button><button class="subtab" data-template-tab="reminders" aria-controls="templateReminderPane">提醒設定</button><button class="subtab" data-template-tab="export" aria-controls="templateExportPane">批量輸出</button></nav>
 <div id="templateManagePane">
 <div class="template-workspace">
-<div class="card type-panel"><div class="card-h"><span>通知類型</span><button class="btn small" id="addNotificationTypeBtn">新增</button></div><div class="card-b"><div class="type-list" id="notificationTypeList" data-review-id="vat-workbench-notificationTypeList" data-review-name="通知類型清單"></div></div></div>
-<div class="template-main-column">
-<div class="card"><div class="card-h"><div><div id="manageTypeTitle">通知類型</div><div class="muted small" id="manageTypeMeta" style="font-weight:500;margin-top:2px"></div></div><div class="actions"><label class="check-row" style="min-height:auto"><input id="notificationTypeEnabled" type="checkbox"/>使用此通知</label><button class="btn small" id="editNotificationTypeBtn">重新命名</button><button class="btn small primary" id="addTemplateBtn">新增模板</button></div></div><div class="card-b"><div class="template-cards" id="templateCards" data-review-id="vat-workbench-templateCards" data-review-name="模板清單"></div></div></div>
-<div class="card template-editor hidden" id="templateEditorCard" data-review-id="vat-workbench-templateEditorCard" data-review-name="模板內容編輯"><div class="card-h"><div><span id="templateTitle">模板</span><div class="muted small" id="templateStatusText" style="font-weight:500;margin-top:2px"></div></div><div class="actions"><label class="check-row" style="min-height:auto"><input id="templateEnabled" type="checkbox">可供選用</input></label><button class="btn small hidden" id="restoreTemplateBtn">還原內建</button><button class="btn small" id="templateDuplicateBtn">複製成新模板</button><button class="btn small danger" id="templateDeleteBtn">刪除</button><button class="btn small primary" id="saveTemplateBtn">儲存</button></div></div><div class="card-b"><div class="template-properties211"><div class="field"><label>模板名稱</label><input class="input" id="templateName" style="max-width:380px"/></div><details class="template-variable-tools210"><summary>插入資料</summary><div><div class="field"><label>插入資料</label><input class="input" id="variableSearch" placeholder="搜尋可插入資料"/></div><div class="template-side-note">可先搜尋，再點下方欄位插入到游標位置。</div><div class="var-chips" id="variableChips" style="margin-top:8px"></div></div></details></div>
-
-<div class="template-editor-layout210" style="margin-top:10px"><div class="template-compose210"><div><div class="field"><label>模板內容</label><textarea class="textarea" id="templateText" style=""></textarea></div></div><div><div class="field"><label>通知預覽（可調整本次文字）</label><textarea class="textarea" id="templatePreview" style=""></textarea></div><div class="actions" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="refreshPreviewBtn">重新帶入</button><button class="btn primary" id="copyNoticeBtn">複製訊息並留紀錄</button></div></div></div></div>
-</div></div>
+<aside class="notice-library223 card" data-review-id="vat-workbench-aside-2" data-review-name="側邊工具 2">
+ <details open id="noticeLibrary223"><summary><strong>通知庫</strong><span id="noticeLibrarySelection223"></span></summary>
+ <div id="noticeCategoryManage223"></div>
+ <div class="notice-library-section223">
+  <div class="notice-section-title223"><strong>通知類型</strong><button class="btn small" id="addNotificationTypeBtn">新增類型</button></div>
+  <div class="type-list" id="notificationTypeList" data-review-id="vat-workbench-notificationTypeList" data-review-name="通知類型清單"></div>
+ </div>
+ <div class="notice-library-section223">
+  <div class="notice-section-title223"><div><strong id="manageTypeTitle">模板</strong><span class="muted small" id="manageTypeMeta"></span></div><button class="btn small" id="addTemplateBtn">新增模板</button></div>
+  <div class="notice-type-options223"><label class="check-row"><input id="notificationTypeEnabled" type="checkbox"/>啟用類型</label><button class="btn small" id="editNotificationTypeBtn">重新命名</button></div>
+  <div class="template-cards" id="templateCards" data-review-id="vat-workbench-templateCards" data-review-name="模板清單"></div>
+ </div>
+ </details>
+</aside>
+<div class="notice-stage223">
+<div class="card notice-context" id="noticeContextBar" data-review-id="vat-workbench-noticeContextBar" data-review-name="通知對象設定"><div class="card-b"><div class="context-grid"><div class="field"><label for="noticeMode">通知對象</label><select class="select" id="noticeMode"><option value="single">單一客戶</option><option value="merge">合併通知</option></select></div><div class="field" id="noticeClientField"><label for="noticeClient">客戶</label><select class="select" id="noticeClient"></select></div><div class="field hidden" id="mergeSalutationField"><label for="mergeSalutation">共同稱呼</label><input class="input" id="mergeSalutation" list="mergeSalutationList" placeholder="例如 林小姐"/><datalist id="mergeSalutationList"></datalist></div><div class="field hidden" id="mergeClientsField"><label id="mergeClientsLabel223">合併客戶</label><div class="merge-picker" id="mergeClientPicker" role="group" aria-labelledby="mergeClientsLabel223"></div></div></div><div class="collection-filter213 hidden" id="collectionFilter213" data-review-id="vat-workbench-collectionFilter213" data-review-name="收發票通知日期篩選"><div class="field"><label for="collectionDays213">預約收件｜距今天</label><input class="input" id="collectionDays213" type="number" min="1" max="3650" step="1" value="1" aria-describedby="collectionStatus213"/></div><div class="field"><label for="collectionDate213">收發票日</label><output id="collectionDate213"></output></div><p id="collectionStatus213" class="small muted" role="status" aria-live="polite"></p></div></div></div><p class="template-inline-hint211" hidden="" id="collectionContextHint211" role="status"></p>
+<section class="card template-editor hidden" id="templateEditorCard" data-review-id="vat-workbench-templateEditorCard" data-review-name="模板內容編輯">
+ <header class="card-h" data-review-id="vat-workbench-header-3" data-review-name="頂端操作 3">
+  <div><span id="templateTitle">模板</span><div class="muted small" id="templateStatusText"></div></div>
+  <div class="actions">
+   <span class="badge b-orange" id="templateDraft223" role="status" hidden>未儲存</span>
+   <details class="operations-menu" id="templateActions223"><summary>更多</summary><div class="operations-menu-body">
+    <label class="check-row"><input id="templateEnabled" type="checkbox"/>可供選用</label>
+    <button class="btn small hidden" id="restoreTemplateBtn">還原內建</button>
+    <button class="btn small" id="templateDuplicateBtn">複製成新模板</button>
+    <button class="btn small" id="discardTemplate223" hidden>捨棄草稿</button>
+    <button class="btn small danger" id="templateDeleteBtn">刪除模板</button>
+   </div></details>
+   <button class="btn primary" id="saveTemplateBtn">儲存模板</button>
+  </div>
+ </header>
+ <div class="card-b">
+  <div class="template-properties211">
+   <div class="field"><label for="templateName">模板名稱</label><input class="input" id="templateName"/></div>
+   <details class="template-variable-tools210"><summary>插入資料</summary><div><div class="field"><label for="variableSearch">搜尋可插入資料</label><input class="input" id="variableSearch" placeholder="例如 銷貨收入"/></div><div class="var-chips" id="variableChips"></div></div></details>
+  </div>
+  <nav class="operations-tabs notice-compose-tabs223" aria-label="編輯與預覽">
+   <button type="button" data-notice-compose="write" aria-controls="noticeWrite223" aria-pressed="true">模板內容</button>
+   <button type="button" data-notice-compose="preview" aria-controls="noticePreview223" aria-pressed="false">通知預覽</button>
+  </nav>
+  <div class="template-compose210" id="noticeCompose223" data-pane="write">
+   <div class="field" id="noticeWrite223"><label for="templateText">模板內容</label><textarea class="textarea" id="templateText"></textarea></div>
+   <div class="field" id="noticePreview223"><label for="templatePreview">通知預覽 <span class="muted">可編輯本次訊息</span></label><textarea class="textarea" id="templatePreview"></textarea>
+    <div class="actions notice-copy-actions223"><button class="btn" id="refreshPreviewBtn">重新帶入</button><button class="btn primary" id="copyNoticeBtn">複製訊息並留紀錄</button></div>
+   </div>
+  </div>
+ </div>
+</section>
 </div>
 </div>
 </div>
 <div class="hidden" id="templateReminderPane" data-review-id="vat-workbench-templateReminderPane" data-review-name="通知提醒設定">
-<div class="template-workspace"><div class="card type-panel"><div class="card-h">通知類型</div><div class="card-b"><div class="type-list" id="reminderTypeList"></div></div></div><div class="card"><div class="card-h"><div><span id="reminderTypeTitle">提醒設定</span><div class="muted small" style="font-weight:500;margin-top:2px">管理此通知類型的提醒節點與觸發時間。</div></div></div><div class="card-b"><div id="templateReminderList"></div></div></div></div>
+<div class="template-workspace"><aside class="card notice-library223" data-review-id="vat-workbench-aside-4" data-review-name="側邊工具 4"><div class="card-h">通知類型</div><div id="noticeCategoryReminder223"></div><div class="card-b"><div class="type-list" id="reminderTypeList"></div></div></aside><div class="card"><div class="card-h" id="reminderTypeTitle">提醒設定</div><div class="card-b" id="templateReminderList"></div></div></div>
 </div>
 <div class="hidden" id="templateExportPane" data-review-id="vat-workbench-templateExportPane" data-review-name="通知匯出設定">
-<div class="grid grid-2 export-grid"><div class="card"><div class="card-h"><span>步驟 1：選模板</span><div class="actions"><button class="btn small" id="exportTemplateAllBtn">全選</button><button class="btn small" id="exportTemplateClearBtn">清除</button></div></div><div class="card-b" id="exportTemplateList"></div></div><div class="card"><div class="card-h"><span>步驟 2：選客戶</span><div class="actions"><button class="btn small" id="txtSelectAllBtn">全選</button><button class="btn small" id="txtClearBtn">清除</button></div></div><div class="card-b"><input class="input" id="txtClientSearch" placeholder="搜尋客戶" style="margin-bottom:8px"/><select class="select" id="txtClients" multiple="" size="14"></select></div></div></div>
-<div class="card export-summary-card"><div class="card-h">步驟 3：輸出檢查</div><div class="card-b"><div class="strong" id="exportTemplateSummary"></div><div class="muted small" id="exportFileHint" style="margin-top:3px"></div><div class="actions" style="justify-content:flex-start;margin-top:8px"><button class="btn primary" id="exportTxtBtn">輸出 TXT</button></div></div></div>
+<div class="grid grid-2 export-grid"><div class="card"><div class="card-h"><span>輸出模板</span><div class="actions"><button class="btn small" id="exportTemplateAllBtn">全選</button><button class="btn small" id="exportTemplateClearBtn">清除</button></div></div><div class="card-b" id="exportTemplateList"></div></div><div class="card"><div class="card-h"><span>輸出客戶</span><div class="actions"><button class="btn small" id="txtSelectAllBtn">全選</button><button class="btn small" id="txtClearBtn">清除</button></div></div><div class="card-b"><div id="noticeCollectionExport223"></div><input class="input" id="txtClientSearch" placeholder="搜尋客戶" aria-label="搜尋輸出客戶"/><select id="txtClients" class="notice-selection-store223" multiple aria-hidden="true" tabindex="-1"></select><div id="exportClients223" class="notice-export-clients223" role="group" aria-label="選取輸出客戶"></div></div></div></div>
+<div class="card export-summary-card"><div class="card-b"><div><div class="strong" id="exportTemplateSummary" role="status"></div><div class="muted small" id="exportFileHint"></div></div><button class="btn primary" id="exportTxtBtn">輸出 TXT</button></div></div>
 </div>
 </section>
 <section class="view" id="view-pdf" data-review-id="vat-workbench-view-pdf" data-review-name="列印與 PDF">
@@ -956,7 +1277,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.22.0', BACKUP_VERSION=10, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=6;
+const APP_VERSION='2.23.0', BACKUP_VERSION=10, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=6;
 const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks','cases','contracts','contractCategories'];
 const PERIOD_SLOTS=[['01','1–2 月',3,15],['02','3–4 月',5,15],['03','5–6 月',7,15],['04','7–8 月',9,15],['05','9–10 月',11,15],['06','11–12 月',1,15]];
 const TEMPLATE_TYPES=[['receiptAsk','詢問收發票時間'],['dispatchReminder','最晚寄出提醒'],['firstBilling','首次請款'],['finalRemit','最後匯款日']];
@@ -1083,7 +1404,6 @@ loadAll=async function(){await loadAllV27Base();await normalizeAccountingItemsV2
 accPriorPending=function(){return {pc:null,items:[]}};
 accStatus=function(pc){if(pc?.accountingCompletedAt)return '帳務完成';if(accPendingDocs(pc).length)return '帳務完成一半';return '未完成'};
 accountingStats=function(){const pcs=pcForPeriod(),complete=pcs.filter(x=>!!x.accountingCompletedAt).length,half=pcs.filter(x=>!x.accountingCompletedAt&&accPendingDocs(x).length>0).length,missing=pcs.reduce((a,x)=>a+accPendingDocs(x).length,0),returns=pcs.reduce((a,x)=>a+accPendingReturns(x).length,0);return {total:pcs.length,complete,half,missing,returns}};
-accountingClientCard=function(pc){const active=pc.id===state.accountingPCId,missing=accPendingDocs(pc).length,currentRet=accPendingReturns(pc).length,inherited=accDocs(pc).filter(x=>x.status!=='done'&&accItemIsInherited(x,pc)).length+accReturns(pc).filter(x=>x.status!=='done'&&accItemIsInherited(x,pc)).length,status=pc.accountingCompletedAt?statusBadge('帳務完成','green'):missing?statusBadge('帳務完成一半','blue'):statusBadge('未完成','gray');return `<div class="accounting-client-card ${active?'active':''}" data-accounting-pc="${esc(pc.id)}"><div class="cc-top"><div style="min-width:0"><div class="cc-name">${esc(pc.snapshot?.name||'')}</div><div class="cc-code">${esc(pc.snapshot?.code||'')}</div></div>${status}</div><div class="meta">${missing?statusBadge(`缺件 ${missing}`,'orange'):''}${currentRet?statusBadge(`待歸 ${currentRet}`,'yellow'):''}${inherited?statusBadge(`延續 ${inherited}`,'blue'):''}</div></div>`};
 
 accountingDocRows=function(items,kind,originPcId='',pcOverride=null){const pc=pcOverride||state.periodClients.find(x=>x.id===state.accountingPCId)||null;if(!items.length)return '<div class="accounting-empty-note">目前沒有資料</div>';return `<div class="table-wrap"><table class="accounting-doc-table"><thead><tr><th style="width:38px"></th><th>${kind==='missing'?'欠缺文件':'待歸資料'}</th><th>備註</th><th>狀態</th><th>記錄時間</th><th>來源／延續</th><th></th></tr></thead><tbody>${items.map(x=>{const inherited=accItemIsInherited(x,pc),src=accItemSourceLabel(x,pc);return `<tr><td><input type="checkbox" class="acct-row-check" data-kind="${esc(kind)}" data-id="${esc(x.id)}"></td><td class="accounting-doc-name">${esc(x.name||'')}</td><td>${esc(x.note||'')}</td><td>${x.status==='done'?statusBadge(kind==='missing'?'已補':'已處理','green'):statusBadge(kind==='missing'?'待補':'待處理','yellow')}</td><td class="accounting-record-time">${esc(fmtDateTime(accItemRecordedAt(x)))}</td><td class="accounting-source"><div>${esc(src)}</div>${inherited?'<span class="accounting-independent-note">延續後已獨立</span>':'<span class="badge b-gray">本期建立</span>'}</td><td><button class="btn small" data-acct-edit="${esc(kind)}" data-id="${esc(x.id)}">編輯</button></td></tr>`}).join('')}</tbody></table></div>`};
 
@@ -1093,7 +1413,17 @@ accountingMissingSection=function(pc){const docs=accDocs(pc),pending=accPendingD
 
 accountingReturnSection=function(pc){const cur=accReturns(pc),pending=accPendingReturns(pc).length,inherited=cur.filter(x=>x.status!=='done'&&accItemIsInherited(x,pc)).length;return `<div class="accounting-section"><div class="accounting-section-head"><div><div class="strong">待歸資料</div><div class="tiny muted">不影響帳務完成；未處理明細會在下一期建立獨立延續紀錄。</div></div><div class="actions">${inherited?`<span class="badge b-blue">延續 ${inherited}</span>`:''}<button id="addAccountingReturnBtn" class="btn small primary">新增</button></div></div><div class="accounting-section-body"><div class="accounting-continuation-note">延續後的新紀錄屬於新期別，來源期僅供追溯；前期刪除不會移除本期已建立的待歸資料。</div><div class="accounting-batch-actions"><button class="btn small" data-acct-batch-kind="return" data-acct-batch-action="done">批量標記已處理</button><button class="btn small" data-acct-batch-kind="return" data-acct-batch-action="pending">批量改回待處理</button><button class="btn small danger" data-acct-batch-kind="return" data-acct-batch-action="delete">批量刪除</button></div>${accountingDocRows(cur,'return','',pc)}</div></div>`};
 
-renderAccounting=function(){const p=currentPeriod(),pcs=pcForPeriod();if($('#accountingPeriodLabel'))$('#accountingPeriodLabel').textContent=p?`${periodLabel(p)}｜客戶名單與本期工作同步`:'請先建立或選擇期別';const s=accountingStats();if($('#accountingStats'))$('#accountingStats').innerHTML=`<div class="card stat tone-green"><div class="stat-label">帳務完成</div><div class="stat-num">${s.complete} / ${s.total}</div><div class="stat-sub">已完整完成</div></div><div class="card stat accounting-stat-half"><div class="stat-label">帳務完成一半</div><div class="stat-num">${s.half}</div><div class="stat-sub">仍有待補文件</div></div><div class="card stat tone-orange"><div class="stat-label">待補文件</div><div class="stat-num">${s.missing}</div><div class="stat-sub">含跨期延續明細</div></div><div class="card stat tone-yellow"><div class="stat-label">待歸資料</div><div class="stat-num">${s.returns}</div><div class="stat-sub">尚待處理</div></div>`;const q=String(state.accountingSearch||'').toLowerCase();const list=pcs.filter(pc=>!q||`${pc.snapshot?.name||''} ${pc.snapshot?.code||''}`.toLowerCase().includes(q));if(!state.accountingPCId||!pcs.some(x=>x.id===state.accountingPCId))state.accountingPCId=pcs[0]?.id||null;if($('#accountingClientList'))$('#accountingClientList').innerHTML=list.length?list.map(accountingClientCard).join(''):'<div class="empty">本期沒有客戶</div>';$$('[data-accounting-pc]').forEach(x=>x.onclick=()=>{state.accountingPCId=x.dataset.accountingPc;state.accountingFocus=null;renderAccounting()});renderAccountingDetail();if($('#accountingSearch')){$('#accountingSearch').value=state.accountingSearch||'';$('#accountingSearch').oninput=e=>{state.accountingSearch=e.target.value;renderAccounting()}}if($('#accountingBatchMissingBtn'))$('#accountingBatchMissingBtn').onclick=()=>openAccountingCrossClientAdd('missing');if($('#accountingBatchReturnBtn'))$('#accountingBatchReturnBtn').onclick=()=>openAccountingCrossClientAdd('return')};
+renderAccounting=function(){const p=currentPeriod(),pcs=pcForPeriod();if($('#accountingPeriodLabel'))$('#accountingPeriodLabel').textContent=p?`${periodLabel(p)}`:'請先建立或選擇期別';const s=accountingStats();if($('#accountingStats'))$('#accountingStats').innerHTML=`<div class="card stat tone-green"><div class="stat-label">帳務完成</div><div class="stat-num">${s.complete} / ${s.total}</div><div class="stat-sub">已完整完成</div></div><div class="card stat accounting-stat-half"><div class="stat-label">帳務完成一半</div><div class="stat-num">${s.half}</div><div class="stat-sub">仍有待補文件</div></div><div class="card stat tone-orange"><div class="stat-label">待補文件</div><div class="stat-num">${s.missing}</div><div class="stat-sub">含跨期延續明細</div></div><div class="card stat tone-yellow"><div class="stat-label">待歸資料</div><div class="stat-num">${s.returns}</div><div class="stat-sub">尚待處理</div></div>`;
+ if(!pcs.some(pc=>pc.id===state.accountingPCId)){state.accountingPCId=pcs[0]?.id||null;state.accountingFocus=null}
+ renderAccountingClients223();
+ renderAccountingDetail();
+ const search=$('#accountingSearch');search.value=state.accountingSearch||'';
+ search.oninput=e=>{state.accountingSearch=e.target.value;if(!e.isComposing)renderAccountingClients223()};
+ search.oncompositionend=renderAccountingClients223;
+ $('#accountingStatus223').onchange=renderAccountingClients223;
+ $('#accountingBatchMissingBtn').onclick=()=>openAccountingCrossClientAdd('missing');
+ $('#accountingBatchReturnBtn').onclick=()=>openAccountingCrossClientAdd('return');
+};
 
 openAccountingItemModal=function(pc,kind,item=null){const isMissing=kind==='missing',title=isMissing?'欠缺文件':'待歸資料';showModal(`${item?'編輯':'新增'}${title}`,`<div class="field"><label>${title}</label><input id="acctItemName" class="input" value="${esc(item?.name||'')}"></div><div class="field" style="margin-top:8px"><label>備註</label><textarea id="acctItemNote" class="textarea" style="min-height:80px">${esc(item?.note||'')}</textarea></div><div class="field" style="margin-top:8px"><label>狀態</label><select id="acctItemStatus" class="select"><option value="pending" ${item?.status!=='done'?'selected':''}>${isMissing?'待補':'待處理'}</option><option value="done" ${item?.status==='done'?'selected':''}>${isMissing?'已補':'已處理'}</option></select></div>${item?`<div class="grid grid-2" style="margin-top:8px"><div class="field"><label>記錄時間</label><div class="input" style="background:var(--panel2)">${esc(fmtDateTime(accItemRecordedAt(item)))}</div></div><div class="field"><label>來源</label><div class="input" style="background:var(--panel2)">${esc(accItemSourceLabel(item,pc))}${accItemIsInherited(item,pc)?'｜延續後已獨立':'｜本期建立'}</div></div></div>`:''}`,[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#acctItemName').value.trim();if(!name){toast(`請輸入${title}`);return}const arr=isMissing?(pc.accountingMissingDocs||=[]):(pc.accountingReturnItems||=[]),status=$('#acctItemStatus').value,next=item?arr.find(x=>x.id===item.id):null;if(next){next.name=name;next.note=$('#acctItemNote').value.trim();next.status=status;next.updatedAt=nowISO()}else{const t=nowISO(),id=uid(isMissing?'miss':'ret');arr.push({id,name,note:$('#acctItemNote').value.trim(),status,createdAt:t,updatedAt:t,recordedAt:t,sourcePeriodId:pc.periodId,sourcePeriodLabel:periodLabel(state.periods.find(z=>z.id===pc.periodId)),sourceItemId:id,lineageRootId:id,isCarried:false})}if(isMissing&&status==='pending')pc.accountingCompletedAt='';pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus=kind;toast(`${title}已儲存`)})};
 
@@ -1561,15 +1891,27 @@ function renderTemplates(){
   $$('[data-template-tab]').forEach(b=>b.classList.toggle('active',b.dataset.templateTab===state.templateTab));$('#templateManagePane').classList.toggle('hidden',state.templateTab!=='manage');$('#templateReminderPane').classList.toggle('hidden',state.templateTab!=='reminders');$('#templateExportPane').classList.toggle('hidden',state.templateTab!=='export');
   $('#notificationTypeList').innerHTML=typeListHtml(state.selectedNotificationTypeId);$('#reminderTypeList').innerHTML=typeListHtml(state.selectedNotificationTypeId);$$('[data-select-type]').forEach(x=>x.onclick=()=>{state.selectedNotificationTypeId=x.dataset.selectType;state.selectedTemplateId=noticeVisibleTemplates212(state.selectedNotificationTypeId)[0]?.id||null;renderTemplates()});
   if(type){$('#manageTypeTitle').textContent=type.name;$('#manageTypeMeta').textContent=`${typeTemplates(type.id).length} 個模板${type.builtIn?'｜內建通知':''}`;$('#notificationTypeEnabled').checked=type.enabled!==false;$('#editNotificationTypeBtn').classList.toggle('hidden',type.builtIn===true)}
-  $('#templateCards').innerHTML=list.length?list.map(t=>`<div class="template-card ${t.id===state.selectedTemplateId?'active':''}" data-select-template="${esc(t.id)}"><div class="type-row"><div class="template-card-title">${esc(t.name)}</div>${t.enabled!==false?statusBadge('可供選用','green'):statusBadge('停用','gray')}</div><div class="template-card-preview">${esc((t.text||'').slice(0,180)||'尚未填寫內容')}</div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">這個通知類型還沒有模板</div>';$$('[data-select-template]').forEach(x=>x.onclick=()=>{state.selectedTemplateId=x.dataset.selectTemplate;renderTemplates()});
-  const tpl=selectedTemplate();$('#templateEditorCard').classList.toggle('hidden',!tpl);if(tpl){state.templateType=tpl.typeId;$('#templateTitle').textContent=tpl.name;$('#templateStatusText').textContent=`${notificationTypeName(tpl.typeId)}${tpl.builtIn?'｜內建模板':''}`;$('#templateName').value=tpl.name;$('#templateText').value=tpl.text||'';$('#templateEnabled').checked=tpl.enabled!==false;$('#restoreTemplateBtn').classList.toggle('hidden',!tpl.builtIn);$('#templateDeleteBtn').classList.toggle('hidden',!!tpl.builtIn);renderVariableChips();refreshTemplatePreview()}
+  $('#templateCards').innerHTML=list.length?list.map(t=>`<button type="button" class="template-card ${t.id===state.selectedTemplateId?'active':''}" data-select-template="${esc(t.id)}" aria-pressed="${t.id===state.selectedTemplateId}"><span class="template-card-title">${esc(t.name)}</span>${t.enabled===false?statusBadge('停用','gray'):''}</button>`).join(''):'<div class="empty" style="grid-column:1/-1">這個通知類型還沒有模板</div>';$$('[data-select-template]').forEach(x=>x.onclick=()=>{state.selectedTemplateId=x.dataset.selectTemplate;renderTemplates()});
+  const tpl=selectedTemplate();$('#templateEditorCard').classList.toggle('hidden',!tpl);if(tpl){state.templateType=tpl.typeId;$('#templateTitle').textContent=tpl.name;$('#templateStatusText').textContent=`${notificationTypeName(tpl.typeId)}${tpl.builtIn?'｜內建模板':''}`;loadTemplateEditor223(tpl);$('#restoreTemplateBtn').classList.toggle('hidden',!tpl.builtIn);$('#templateDeleteBtn').classList.toggle('hidden',!!tpl.builtIn);renderVariableChips();refreshTemplatePreview()}
   renderTemplateReminders();renderExportTemplates();
 }
 function renderVariableChips(){const q=($('#variableSearch')?.value||'').trim().toLowerCase();$('#variableChips').innerHTML=VARS.filter(v=>!q||`${v} ${VAR_SOURCE[v]||''}`.toLowerCase().includes(q)).map(v=>`<div class="var-item"><button class="chip" data-var="${esc(v)}">{${v}}</button><div class="var-source">${esc(VAR_SOURCE[v]||'')}</div></div>`).join('')+`<div class="small muted" style="grid-column:1/-1;margin-top:5px">多組「其他項目」與「金額」會依第 1、2、3 筆費用順序帶入。</div>`;$$('[data-var]').forEach(b=>b.onclick=()=>insertAtCursor($('#templateText'),`{${b.dataset.var}}`))}
 function refreshTemplatePreview(){const t=selectedTemplate();if(!t||!$('#templatePreview'))return;$('#templatePreview').value=applyTemplate(t.typeId,$('#templateText')?.value??t.text??'')}
-async function saveTemplate(){const t=selectedTemplate();if(!t)return;t.name=$('#templateName').value.trim()||'未命名模板';t.text=$('#templateText').value;t.enabled=$('#templateEnabled').checked;t.updatedAt=nowISO();await put('templates',t);await loadAll();state.selectedTemplateId=t.id;state.selectedNotificationTypeId=t.typeId;toast('模板已儲存')}
-async function restoreBuiltInTemplate(){const t=selectedTemplate();if(!t?.builtIn)return;if(!await confirm2('還原內建模板',`確定將「${t.name}」還原為內建內容？`,'還原'))return;t.text=BUILTIN_TEMPLATE_TEXT[t.typeId]??'';t.updatedAt=nowISO();await put('templates',t);await loadAll();state.selectedTemplateId=t.id;toast('已還原內建模板')}
-async function deleteTemplate(){const t=selectedTemplate();if(!t||t.builtIn)return;if(!await confirm2('刪除模板',`確定刪除「${t.name}」？`,'刪除'))return;await del('templates',t.id);await loadAll();state.selectedTemplateId=typeTemplates(state.selectedNotificationTypeId)[0]?.id||null;toast('模板已刪除')}
+async function saveTemplate(){
+ const t=selectedTemplate(),save=$('#saveTemplateBtn');
+ if(!t||save.disabled)return;
+ const values=readTemplateEditor223(),next={...t,...values,name:values.name.trim()||'未命名模板',updatedAt:nowISO()};
+ save.disabled=true;
+ try{
+  await put('templates',next);
+  if(sameTemplateDraft223(templateDrafts223.get(t.id),values))templateDrafts223.delete(t.id);
+  await loadAll();
+  toast('模板已儲存');
+ }catch(error){toast(error.message||'未能儲存模板，請重試')}
+ finally{save.disabled=false}
+}
+async function restoreBuiltInTemplate(){const t=selectedTemplate();if(!t?.builtIn)return;if(!await confirm2('還原內建模板',`確定將「${t.name}」還原為內建內容？`,'還原'))return;await put('templates',{...t,text:BUILTIN_TEMPLATE_TEXT[t.typeId]??'',updatedAt:nowISO()});templateDrafts223.delete(t.id);await loadAll();state.selectedTemplateId=t.id;toast('已還原內建模板')}
+async function deleteTemplate(){const t=selectedTemplate();if(!t||t.builtIn)return;if(!await confirm2('刪除模板',`確定刪除「${t.name}」？`,'刪除'))return;await del('templates',t.id);templateDrafts223.delete(t.id);await loadAll();state.selectedTemplateId=typeTemplates(state.selectedNotificationTypeId)[0]?.id||null;toast('模板已刪除')}
 function addNotificationType(){showModal('新增通知類型',`<div class="field"><label>名稱</label><input id="newTypeName" class="input" placeholder="例如：補件提醒"></div>`,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#newTypeName').value.trim();if(!name){toast('請輸入名稱');return}const nt={id:uid('nt'),name,builtIn:false,enabled:true,createdAt:nowISO(),updatedAt:nowISO()};await put('notificationTypes',nt);await loadAll();state.selectedNotificationTypeId=nt.id;state.selectedTemplateId=null;renderTemplates();toast('通知類型已建立')})}
 function editNotificationType(){const nt=notificationTypeById(state.selectedNotificationTypeId);if(!nt||nt.builtIn)return;showModal('重新命名通知類型',`<div class="field"><label>名稱</label><input id="editTypeName" class="input" value="${esc(nt.name)}"></div>`,[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#editTypeName').value.trim();if(!name)return;nt.name=name;nt.updatedAt=nowISO();await put('notificationTypes',nt);await loadAll();state.selectedNotificationTypeId=nt.id;renderTemplates();toast('名稱已更新')})}
 function addTemplate(){const nt=notificationTypeById(state.selectedNotificationTypeId);if(!nt)return;showModal('新增模板',`<div class="field"><label>模板名稱</label><input id="newTemplateName" class="input" placeholder="例如：一般版"></div>`,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#newTemplateName').value.trim();if(!name){toast('請輸入模板名稱');return}const t={id:uid('tpl'),typeId:nt.id,name,text:'',builtIn:false,enabled:true,remindersEnabled:false,reminders:[],createdAt:nowISO(),updatedAt:nowISO()};await put('templates',t);await loadAll();state.selectedNotificationTypeId=nt.id;state.selectedTemplateId=t.id;renderTemplates();toast('模板已建立')})}
@@ -1577,9 +1919,61 @@ function duplicateTemplate(){const src=selectedTemplate();if(!src)return;showMod
 async function copyNotice(){const pc=currentPC(),t=selectedTemplate();if(!pc){toast('請先在「本期工作」選擇客戶');return}if(!t)return;const content=$('#templatePreview').value;try{await navigator.clipboard.writeText(content)}catch{const ta=$('#templatePreview');ta.select();document.execCommand('copy')}const n={id:uid('notice'),periodId:pc.periodId,periodClientId:pc.id,type:t.typeId,typeId:t.typeId,templateId:t.id,content,sentAt:nowISO(),createdAt:nowISO(),updatedAt:nowISO()};await put('notifications',n);await loadAll();state.selectedTemplateId=t.id;state.selectedNotificationTypeId=t.typeId;toast('已複製訊息並保留紀錄')}
 
 function renderTemplateReminders(){const nt=notificationTypeById(state.selectedNotificationTypeId);$('#reminderTypeTitle').textContent=nt?`${nt.name}｜提醒設定`:'提醒設定';const list=noticeVisibleTemplates212(state.selectedNotificationTypeId);$('#templateReminderList').innerHTML=list.length?list.map(t=>`<div class="reminder-template"><div class="type-row"><div><div class="strong">${esc(t.name)}</div><div class="muted small" style="margin-top:2px">${esc(reminderSummary(t))}</div></div><div class="actions">${t.remindersEnabled?statusBadge('加入今日待辦','blue'):statusBadge('不提醒','gray')}<button class="btn small" data-edit-reminders="${esc(t.id)}">設定</button></div></div></div>`).join(''):'<div class="empty">這個通知類型還沒有模板</div>';$$('[data-edit-reminders]').forEach(b=>b.onclick=()=>openTemplateReminderModal(b.dataset.editReminders))}
-function reminderRowHtml(r,i){const mode=r.mode||'relative';return `<div class="rem-row" data-i="${esc(i)}" style="border:1px solid var(--line);border-radius:6px;padding:8px;margin-bottom:7px"><div class="form-grid" style="grid-template-columns:.8fr 1.3fr .7fr auto;align-items:end"><div class="field"><label>方式</label><select class="select rem-mode"><option value="relative" ${mode==='relative'?'selected':''}>提前提醒</option><option value="fixed" ${mode==='fixed'?'selected':''}>固定日期</option></select></div><div class="field rem-relative ${mode==='fixed'?'hidden':''}"><label>依哪個日期</label><select class="select rem-base">${REMINDER_BASES.map(([v,n])=>`<option value="${esc(v)}" ${r.base===v?'selected':''}>${n}</option>`).join('')}</select></div><div class="field rem-relative ${mode==='fixed'?'hidden':''}"><label>提前天數</label><input class="input rem-days" type="number" min="1" value="${esc(Math.max(1,Number(r.days||1)))}"></div><div class="field rem-fixed ${mode!=='fixed'?'hidden':''}" style="grid-column:2/4"><label>日期</label><input class="input rem-date" type="date" value="${esc(r.date||'')}"></div><button class="btn small danger rem-del">刪除</button></div></div>`}
-function openTemplateReminderModal(id){const t=templateById(id);if(!t)return;let rows=clone(t.reminders||[]);const body=()=>`<div class="check-row"><input id="tplReminderEnabled" type="checkbox" ${t.remindersEnabled?'checked':''}><label for="tplReminderEnabled">加入今日待辦</label></div><div id="tplReminderRows" style="margin-top:8px">${rows.map(reminderRowHtml).join('')}</div><button id="addTplReminder" class="btn small">新增提醒時間</button>`;showModal(`提醒設定｜${t.name}`,body(),[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],async ok=>{if(!ok)return;const enabled=$('#tplReminderEnabled').checked,next=[];for(const row of $$('.rem-row')){const mode=row.querySelector('.rem-mode').value;if(mode==='fixed'){const date=row.querySelector('.rem-date').value;if(!date){toast('固定日期不能空白');return}next.push({id:row.dataset.id||uid('rem'),mode:'fixed',date})}else{const days=Number(row.querySelector('.rem-days').value);if(!Number.isFinite(days)||days<1){toast('提醒至少提前 1 天');return}next.push({id:row.dataset.id||uid('rem'),mode:'relative',base:row.querySelector('.rem-base').value,days:Math.floor(days)})}}t.remindersEnabled=enabled;t.reminders=next;t.updatedAt=nowISO();await put('templates',t);await loadAll();state.selectedTemplateId=t.id;state.selectedNotificationTypeId=t.typeId;state.templateTab='reminders';renderTemplates();toast('提醒設定已儲存')});setTimeout(()=>{const redraw=()=>{rows=$$('.rem-row').map(row=>{const mode=row.querySelector('.rem-mode').value;return mode==='fixed'?{id:row.dataset.id||uid('rem'),mode,date:row.querySelector('.rem-date').value}:{id:row.dataset.id||uid('rem'),mode,base:row.querySelector('.rem-base').value,days:Number(row.querySelector('.rem-days').value||1)}});$('#tplReminderRows').innerHTML=rows.map(reminderRowHtml).join('');bindRows()};const bindRows=()=>{$$('.rem-row').forEach((row,i)=>{row.dataset.id=rows[i]?.id||uid('rem');row.querySelector('.rem-mode').onchange=redraw;row.querySelector('.rem-del').onclick=()=>{rows.splice(i,1);$('#tplReminderRows').innerHTML=rows.map(reminderRowHtml).join('');bindRows()}})};bindRows();$('#addTplReminder').onclick=()=>{rows.push({id:uid('rem'),mode:'relative',base:'latestRemitDate',days:1});$('#tplReminderRows').innerHTML=rows.map(reminderRowHtml).join('');bindRows()}},0)}
-
+function reminderRowHtml(row){
+ const mode=row.mode||'relative';
+ return `<div class="rem-row" data-id="${esc(row.id||uid('rem'))}">
+  <div class="form-grid reminder-fields223">
+   <label class="field"><span>方式</span><select class="select rem-mode"><option value="relative" ${mode==='relative'?'selected':''}>提前提醒</option><option value="fixed" ${mode==='fixed'?'selected':''}>固定日期</option></select></label>
+   <label class="field rem-relative ${mode==='fixed'?'hidden':''}"><span>依哪個日期</span><select class="select rem-base">${REMINDER_BASES.map(([value,label])=>`<option value="${esc(value)}" ${row.base===value?'selected':''}>${label}</option>`).join('')}</select></label>
+   <label class="field rem-relative ${mode==='fixed'?'hidden':''}"><span>提前天數</span><input class="input rem-days" type="number" min="1" value="${esc(Math.max(1,Number(row.days||1)))}"></label>
+   <label class="field rem-fixed ${mode!=='fixed'?'hidden':''}"><span>日期</span><input class="input rem-date" type="date" value="${esc(row.date||'')}"></label>
+   <button class="btn small danger rem-del" type="button">移除</button>
+  </div>
+ </div>`;
+}
+function openTemplateReminderModal(id){
+ const template=templateById(id);
+ if(!template)return;
+ guardedWorkspaceModal(`提醒設定｜${template.name}`,`
+  <label class="check-row"><input id="tplReminderEnabled" type="checkbox" ${template.remindersEnabled?'checked':''}>加入今日待辦</label>
+  <div id="tplReminderRows">${(template.reminders||[]).map(reminderRowHtml).join('')}</div>
+  <button id="addTplReminder" class="btn small">新增提醒時間</button>`,async()=>{
+  const reminders=$$('#tplReminderRows .rem-row').map(row=>{
+   if(row.querySelector('.rem-mode').value==='fixed'){
+    const date=row.querySelector('.rem-date').value;
+    if(!date)throw new Error('請填寫固定提醒日期');
+    return {id:row.dataset.id,mode:'fixed',date};
+   }
+   const days=Number(row.querySelector('.rem-days').value);
+   if(!Number.isFinite(days)||days<1)throw new Error('提醒至少提前 1 天');
+   return {id:row.dataset.id,mode:'relative',base:row.querySelector('.rem-base').value,days:Math.floor(days)};
+  });
+  await put('templates',{...template,remindersEnabled:$('#tplReminderEnabled').checked,reminders,updatedAt:nowISO()});
+  await loadAll();
+  state.selectedTemplateId=template.id;
+  state.selectedNotificationTypeId=template.typeId;
+  state.templateTab='reminders';
+  renderTemplates();
+  toast('提醒設定已儲存');
+ },'templateReminderError223');
+ const rows=$('#tplReminderRows'),add=$('#addTplReminder');
+ rows.addEventListener('change',event=>{
+  if(!event.target.matches('.rem-mode'))return;
+  const row=event.target.closest('.rem-row'),fixed=event.target.value==='fixed';
+  row.querySelectorAll('.rem-relative').forEach(field=>field.classList.toggle('hidden',fixed));
+  row.querySelector('.rem-fixed').classList.toggle('hidden',!fixed);
+ });
+ rows.addEventListener('click',event=>{
+  const remove=event.target.closest('.rem-del');
+  if(!remove)return;
+  remove.closest('.rem-row').remove();
+  add.focus();
+ });
+ add.onclick=()=>{
+  rows.insertAdjacentHTML('beforeend',reminderRowHtml({mode:'relative',base:'latestRemitDate',days:1}));
+  rows.lastElementChild.querySelector('.rem-mode').focus();
+ };
+}
 function renderExportTemplates(){if(!$('#exportTemplateList'))return;const selected=new Set($$('.txt-template-choice:checked').map(x=>x.value));const types=state.notificationTypes.filter(nt=>nt.enabled!==false&&typeTemplates(nt.id).some(t=>t.enabled!==false));$('#exportTemplateList').innerHTML=types.map(nt=>`<div class="export-template-group"><div class="strong small" style="margin-bottom:6px">${esc(nt.name)}</div>${typeTemplates(nt.id).filter(t=>t.enabled!==false).map(t=>`<label class="check-row"><input class="txt-template-choice" type="checkbox" value="${esc(t.id)}" ${selected.has(t.id)?'checked':''}>${esc(t.name)}</label>`).join('')}</div>`).join('')||'<div class="empty">目前沒有可供選用的模板</div>';renderTxtClientOptions();$$('.txt-template-choice').forEach(x=>x.onchange=updateExportSummary);updateExportSummary()}
 function renderTxtClientOptions(){const p=currentPeriod(),sel=$('#txtClients');if(!sel)return;const selected=new Set([...sel.selectedOptions].map(o=>o.value)),q=($('#txtClientSearch')?.value||'').trim().toLowerCase();const pcs=p?pcForPeriod(p.id).filter(x=>!x.notApplicable&&(!q||[x.snapshot?.code,x.snapshot?.name].join(' ').toLowerCase().includes(q))):[];sel.innerHTML=pcs.map(pc=>`<option value="${esc(pc.id)}" ${selected.has(pc.id)?'selected':''}>${esc(pc.snapshot?.code||'')}｜${esc(pc.snapshot?.name||'')}</option>`).join('');sel.onchange=updateExportSummary;updateExportSummary()}
 function updateExportSummary(){if(!$('#exportTemplateSummary'))return;const tplIds=$$('.txt-template-choice:checked').map(x=>x.value),clientCount=$('#txtClients')?.selectedOptions?.length||0;$('#exportTemplateSummary').textContent=`已選 ${tplIds.length} 個模板｜${clientCount} 位客戶`;$('#exportFileHint').textContent=tplIds.length?`將產生：${tplIds.map(id=>{const t=templateById(id);return `${notificationTypeName(t?.typeId)}_${t?.name}.txt`}).join('、')}`:'每個模板會各自輸出一個 TXT'}
@@ -1908,18 +2302,47 @@ const bindCalendarNoteActionsV26Base=bindCalendarNoteActions;
 bindCalendarNoteActions=function(){bindCalendarNoteActionsV26Base();$$('[data-calendar-accounting]').forEach(b=>b.onclick=e=>{e.stopPropagation();const item=accountingCompletionCalendarItems().find(x=>x.id===b.dataset.calendarAccounting);if(!item)return;state.periodId=item.periodId;localStorage.setItem('vatCurrentPeriod',item.periodId);state.accountingPCId=item.pcId;closeCalendarDrawer();switchView('accounting')})};
 
 function accountingStats(){const pcs=pcForPeriod(),complete=pcs.filter(x=>!!x.accountingCompletedAt).length,missing=pcs.reduce((a,x)=>a+accPendingDocs(x).length,0),returns=pcs.reduce((a,x)=>a+accPendingReturns(x).length+accPriorPending(x).items.length,0);return {total:pcs.length,complete,missing,returns}}
-function accountingClientCard(pc){const active=pc.id===state.accountingPCId,missing=accPendingDocs(pc).length,prior=accPriorPending(pc).items.length,currentRet=accPendingReturns(pc).length;return `<div class="accounting-client-card ${active?'active':''}" data-accounting-pc="${esc(pc.id)}"><div class="cc-top"><div style="min-width:0"><div class="cc-name">${esc(pc.snapshot?.name||'')}</div><div class="cc-code">${esc(pc.snapshot?.code||'')}</div></div>${pc.accountingCompletedAt?statusBadge('帳務完成','green'):statusBadge('未完成','gray')}</div><div class="meta">${missing?statusBadge(`缺件 ${missing}`,'orange'):''}${currentRet?statusBadge(`待歸 ${currentRet}`,'yellow'):''}${prior?statusBadge(`上期待歸 ${prior}`,'blue'):''}</div></div>`}
-function accountingModuleCard(id,title,num,sub,tone='blue'){return `<button type="button" class="accounting-module-card ${state.accountingFocus===id?'active':''}" data-account-focus="${esc(id)}"><div class="accounting-module-title">${title}</div><div class="accounting-module-number">${num}</div><div class="accounting-module-sub">${sub}</div></button>`}
+function accountingClientCard(pc){
+ const active=pc.id===state.accountingPCId,docs=accPendingDocs(pc),returns=accPendingReturns(pc);
+ const prior=accPriorPending(pc).items.length,inherited=[...docs,...returns].filter(item=>accItemIsInherited(item,pc)).length;
+ return `<button type="button" class="accounting-client-card ${active?'active':''}" aria-pressed="${active}" data-accounting-pc="${esc(pc.id)}">
+   <span class="cc-top"><span class="cc-name">${esc(pc.snapshot?.name||'')}</span><span class="cc-code">${esc(pc.snapshot?.code||'')}</span></span>
+   <span class="meta">${accountingStatusBadge223(pc,docs.length)}${docs.length?statusBadge(`待補 ${docs.length}`,'orange'):''}${returns.length+prior?statusBadge(`待歸 ${returns.length+prior}`,'yellow'):''}${inherited?statusBadge(`延續 ${inherited}`,'blue'):''}</span>
+ </button>`;
+}
 function accountingDocRows(items,kind,originPcId=''){if(!items.length)return '<div class="accounting-empty-note">目前沒有資料</div>';return `<div class="table-wrap"><table class="accounting-doc-table"><thead><tr><th style="width:38px"></th><th>${kind==='missing'?'欠缺文件':'待歸資料'}</th><th>備註</th><th>狀態</th><th></th></tr></thead><tbody>${items.map(x=>`<tr><td><input type="checkbox" class="acct-row-check" data-kind="${esc(kind)}" data-id="${esc(x.id)}" ${originPcId?`data-origin-pc="${esc(originPcId)}"`:''}></td><td class="accounting-doc-name">${esc(x.name||'')}</td><td>${esc(x.note||'')}</td><td>${x.status==='done'?statusBadge(kind==='missing'?'已補':'已處理','green'):statusBadge(kind==='missing'?'待補':'待處理','yellow')}</td><td>${originPcId?'':`<button class="btn small" data-acct-edit="${esc(kind)}" data-id="${esc(x.id)}">編輯</button>`}</td></tr>`).join('')}</tbody></table></div>`}
 function accountingCompletionSection(pc){const pending=accPendingDocs(pc).length,completed=!!pc.accountingCompletedAt;return `<div class="accounting-section"><div class="accounting-section-head"><div><div class="strong">帳務完成</div><div class="tiny muted">只要還有待補文件，就不能標記帳務完成。</div></div>${completed?statusBadge('已完成','green'):statusBadge('未完成','gray')}</div><div class="accounting-section-body"><div class="accounting-complete-hero"><div><div class="strong">${completed?`完成時間：${fmtDateTime(pc.accountingCompletedAt)}`:pending?`尚有 ${pending} 筆欠缺文件待補`:'目前可標記帳務完成'}</div>${completed?`<div class="field" style="max-width:260px;margin-top:8px"><label>完成時間可修改</label><input id="accountingCompletedAtInput" class="input" type="datetime-local" value="${esc(accCompletedLocalValue(pc.accountingCompletedAt))}"></div>`:''}</div><div class="actions">${completed?'<button id="saveAccountingTimeBtn" class="btn">儲存時間</button><button id="cancelAccountingCompleteBtn" class="btn danger">取消完成</button>':`<button id="markAccountingCompleteBtn" class="btn primary" ${pending?'disabled':''}>標記帳務完成</button>`}</div></div></div></div>`}
 function accountingMissingSection(pc){const docs=accDocs(pc),pending=accPendingDocs(pc).length;return `<div class="accounting-section"><div class="accounting-section-head"><div><div class="strong">欠缺文件</div><div class="tiny muted">待補文件會阻止帳務完成；新增待補文件時，既有完成狀態會自動取消。</div></div><div class="actions"><span class="badge ${pending?'b-orange':'b-green'}">待補 ${pending}</span><button id="addAccountingMissingBtn" class="btn small primary">新增</button></div></div><div class="accounting-section-body"><div class="accounting-batch-actions"><button class="btn small" data-acct-batch-kind="missing" data-acct-batch-action="done">批量標記已補</button><button class="btn small" data-acct-batch-kind="missing" data-acct-batch-action="pending">批量改回待補</button><button class="btn small danger" data-acct-batch-kind="missing" data-acct-batch-action="delete">批量刪除</button><button class="btn small" id="goMissingNoticeBtn">開啟缺件通知模板</button></div>${accountingDocRows(docs,'missing')}</div></div>`}
 function accountingReturnSection(pc){const cur=accReturns(pc),prior=accPriorPending(pc);return `<div class="accounting-section"><div class="accounting-section-head"><div><div class="strong">待歸資料</div><div class="tiny muted">不影響帳務完成；未處理明細會在下一期自動形成上期待歸提醒。</div></div><button id="addAccountingReturnBtn" class="btn small primary">新增</button></div><div class="accounting-section-body">${prior.items.length?`<div class="accounting-prior-box"><div class="strong">上期待歸提醒｜${esc(periodLabel(state.periods.find(p=>p.id===prior.pc.periodId)))}</div><div class="tiny muted" style="margin:3px 0 8px">只顯示上期仍未處理的明細；全部處理完後提醒自動消失。</div>${accountingDocRows(prior.items,'return',prior.pc.id)}<div class="actions" style="justify-content:flex-start;margin-top:8px"><button class="btn small" id="markPriorReturnDoneBtn">將勾選項目標記已處理</button></div></div>`:''}<div class="accounting-batch-actions"><button class="btn small" data-acct-batch-kind="return" data-acct-batch-action="done">批量標記已處理</button><button class="btn small" data-acct-batch-kind="return" data-acct-batch-action="pending">批量改回待處理</button><button class="btn small danger" data-acct-batch-kind="return" data-acct-batch-action="delete">批量刪除</button></div>${accountingDocRows(cur,'return')}</div></div>`}
-function renderAccountingDetail(){const pc=state.periodClients.find(x=>x.id===state.accountingPCId&&x.periodId===state.periodId);if(!pc){$('#accountingDetail').innerHTML='<div class="card"><div class="empty">請從左側選擇客戶</div></div>';return}const missing=accPendingDocs(pc).length,returns=accPendingReturns(pc).length+accPriorPending(pc).items.length;$('#accountingDetail').innerHTML=`<div class="card"><div class="card-b"><div class="accounting-detail-head"><div><div class="accounting-detail-name">${esc(pc.snapshot?.name||'')}</div><div class="muted small">${esc(pc.snapshot?.code||'')}｜${esc(periodLabel(currentPeriod()))}</div><div class="accounting-tag-row">${pc.accountingCompletedAt?statusBadge('帳務完成','green'):statusBadge('帳務未完成','gray')}${missing?statusBadge(`缺件 ${missing}`,'orange'):statusBadge('無待補缺件','green')}${returns?statusBadge(`待歸 ${returns}`,'yellow'):''}</div></div>${state.accountingFocus?'<button class="btn" id="accountingFocusBackBtn">返回總覽</button>':''}</div>${state.accountingFocus?'':`<div class="accounting-module-grid">${accountingModuleCard('complete','帳務完成',pc.accountingCompletedAt?'完成':'未完成',pc.accountingCompletedAt?fmtDateTime(pc.accountingCompletedAt):missing?`尚有 ${missing} 筆待補`:'可完成','green')}${accountingModuleCard('missing','欠缺文件',missing,missing?'仍待客戶提供':'目前無待補','orange')}${accountingModuleCard('return','待歸資料',returns,returns?'仍有資料待處理':'目前無待歸','yellow')}</div>`}<div class="accounting-focus ${state.accountingFocus==='complete'?'active':''}" data-acct-panel="complete">${accountingCompletionSection(pc)}</div><div class="accounting-focus ${state.accountingFocus==='missing'?'active':''}" data-acct-panel="missing">${accountingMissingSection(pc)}</div><div class="accounting-focus ${state.accountingFocus==='return'?'active':''}" data-acct-panel="return">${accountingReturnSection(pc)}</div></div></div>`;bindAccountingDetail(pc)}
+function renderAccountingDetail(){
+ const root=$('#accountingDetail'),pc=state.periodClients.find(x=>x.id===state.accountingPCId&&x.periodId===state.periodId);
+ if(!pc){root.innerHTML='<div class="card empty">本期沒有客戶</div>';return}
+ const missing=accPendingDocs(pc).length,returns=accPendingReturns(pc).length+accPriorPending(pc).items.length,completed=!!pc.accountingCompletedAt;
+ root.innerHTML=`<div class="card"><div class="card-b">
+ <div class="accounting-detail-head" tabindex="-1"><div><div class="accounting-detail-name">${esc(pc.snapshot?.name||'')}</div><div class="muted small">${esc(pc.snapshot?.code||'')}</div></div>${accountingStatusBadge223(pc,missing)}</div>
+ <nav class="operations-tabs" aria-label="帳務工作區">
+  <button type="button" class="btn" id="accountingFocusBackBtn" aria-controls="accountingOverview223">總覽</button>
+  <button type="button" class="btn" data-account-focus="complete" aria-controls="accountingPanelComplete223">帳務完成</button>
+  <button type="button" class="btn" data-account-focus="missing" aria-controls="accountingPanelMissing223">欠缺文件 <span class="operations-count">${missing}</span></button>
+  <button type="button" class="btn" data-account-focus="return" aria-controls="accountingPanelReturn223">待歸資料 <span class="operations-count">${returns}</span></button>
+ </nav>
+ <div id="accountingOverview223" class="accounting-overview">
+  <div><span>帳務狀態</span><strong>${completed?esc(fmtDateTime(pc.accountingCompletedAt)):missing?'待補文件':'可標記完成'}</strong></div>
+  <div><span>待補文件</span><strong>${missing} 筆</strong></div>
+  <div><span>待歸資料</span><strong>${returns} 筆</strong></div>
+ </div>
+ <div class="accounting-focus" id="accountingPanelComplete223" data-acct-panel="complete">${accountingCompletionSection(pc)}</div>
+ <div class="accounting-focus" id="accountingPanelMissing223" data-acct-panel="missing">${accountingMissingSection(pc)}</div>
+ <div class="accounting-focus" id="accountingPanelReturn223" data-acct-panel="return">${accountingReturnSection(pc)}</div>
+ </div></div>`;
+ bindAccountingDetail(pc);
+ setAccountingPanel223(state.accountingFocus);
+}
 function renderAccounting(){const p=currentPeriod(),pcs=pcForPeriod();if($('#accountingPeriodLabel'))$('#accountingPeriodLabel').textContent=p?`${periodLabel(p)}｜客戶名單與本期工作同步`:'請先建立或選擇期別';const s=accountingStats();if($('#accountingStats'))$('#accountingStats').innerHTML=`<div class="card stat tone-green"><div class="stat-label">帳務完成</div><div class="stat-num">${s.complete} / ${s.total}</div><div class="stat-sub">已完成客戶</div></div><div class="card stat tone-orange"><div class="stat-label">待補文件</div><div class="stat-num">${s.missing}</div><div class="stat-sub">所有客戶待補明細</div></div><div class="card stat tone-yellow"><div class="stat-label">待歸資料</div><div class="stat-num">${s.returns}</div><div class="stat-sub">含上期仍未處理</div></div>`;const q=String(state.accountingSearch||'').toLowerCase();const list=pcs.filter(pc=>!q||`${pc.snapshot?.name||''} ${pc.snapshot?.code||''}`.toLowerCase().includes(q));if(!state.accountingPCId||!pcs.some(x=>x.id===state.accountingPCId))state.accountingPCId=pcs[0]?.id||null;if($('#accountingClientList'))$('#accountingClientList').innerHTML=list.length?list.map(accountingClientCard).join(''):'<div class="empty">本期沒有客戶</div>';$$('[data-accounting-pc]').forEach(x=>x.onclick=()=>{state.accountingPCId=x.dataset.accountingPc;state.accountingFocus=null;renderAccounting()});renderAccountingDetail();if($('#accountingSearch')){$('#accountingSearch').value=state.accountingSearch||'';$('#accountingSearch').oninput=e=>{state.accountingSearch=e.target.value;renderAccounting()}}if($('#accountingBatchMissingBtn'))$('#accountingBatchMissingBtn').onclick=()=>openAccountingCrossClientAdd('missing');if($('#accountingBatchReturnBtn'))$('#accountingBatchReturnBtn').onclick=()=>openAccountingCrossClientAdd('return')}
 
 function openAccountingItemModal(pc,kind,item=null){const isMissing=kind==='missing',title=isMissing?'欠缺文件':'待歸資料';showModal(`${item?'編輯':'新增'}${title}`,`<div class="field"><label>${title}</label><input id="acctItemName" class="input" value="${esc(item?.name||'')}"></div><div class="field" style="margin-top:8px"><label>備註</label><textarea id="acctItemNote" class="textarea" style="min-height:80px">${esc(item?.note||'')}</textarea></div><div class="field" style="margin-top:8px"><label>狀態</label><select id="acctItemStatus" class="select"><option value="pending" ${item?.status!=='done'?'selected':''}>${isMissing?'待補':'待處理'}</option><option value="done" ${item?.status==='done'?'selected':''}>${isMissing?'已補':'已處理'}</option></select></div>`,[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#acctItemName').value.trim();if(!name){toast(`請輸入${title}`);return}const arr=isMissing?(pc.accountingMissingDocs||=[]):(pc.accountingReturnItems||=[]),status=$('#acctItemStatus').value,next=item?arr.find(x=>x.id===item.id):null;if(next){next.name=name;next.note=$('#acctItemNote').value.trim();next.status=status;next.updatedAt=nowISO()}else arr.push({id:uid(isMissing?'miss':'ret'),name,note:$('#acctItemNote').value.trim(),status,createdAt:nowISO(),updatedAt:nowISO()});if(isMissing&&status==='pending')pc.accountingCompletedAt='';pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus=kind;toast(`${title}已儲存`)})}
 async function accountingBatchAction(pc,kind,action){const checks=$$('.acct-row-check:checked').filter(x=>x.dataset.kind===kind&&!x.dataset.originPc);if(!checks.length){toast('請先勾選明細');return}const ids=new Set(checks.map(x=>x.dataset.id)),arr=kind==='missing'?(pc.accountingMissingDocs||=[]):(pc.accountingReturnItems||=[]);if(action==='delete'){for(let i=arr.length-1;i>=0;i--)if(ids.has(arr[i].id))arr.splice(i,1)}else for(const x of arr)if(ids.has(x.id)){x.status=action==='done'?'done':'pending';x.updatedAt=nowISO()}if(kind==='missing'&&action==='pending')pc.accountingCompletedAt='';pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus=kind}
-function bindAccountingDetail(pc){$$('[data-account-focus]').forEach(b=>b.onclick=()=>{state.accountingFocus=b.dataset.accountFocus;renderAccountingDetail()});$('#accountingFocusBackBtn')?.addEventListener('click',()=>{state.accountingFocus=null;renderAccountingDetail()});$('#markAccountingCompleteBtn')?.addEventListener('click',async()=>{if(accPendingDocs(pc).length){toast('仍有欠缺文件待補，不能完成');return}pc.accountingCompletedAt=nowISO();pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus='complete'});$('#saveAccountingTimeBtn')?.addEventListener('click',async()=>{const v=$('#accountingCompletedAtInput').value;if(!v){toast('請輸入完成時間');return}pc.accountingCompletedAt=new Date(v).toISOString();pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus='complete';toast('完成時間已更新')});$('#cancelAccountingCompleteBtn')?.addEventListener('click',async()=>{pc.accountingCompletedAt='';pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus='complete'});$('#addAccountingMissingBtn')?.addEventListener('click',()=>openAccountingItemModal(pc,'missing'));$('#addAccountingReturnBtn')?.addEventListener('click',()=>openAccountingItemModal(pc,'return'));$$('[data-acct-edit]').forEach(b=>b.onclick=()=>{const kind=b.dataset.acctEdit,arr=kind==='missing'?accDocs(pc):accReturns(pc);openAccountingItemModal(pc,kind,arr.find(x=>x.id===b.dataset.id))});$$('[data-acct-batch-kind]').forEach(b=>b.onclick=()=>accountingBatchAction(pc,b.dataset.acctBatchKind,b.dataset.acctBatchAction));$('#markPriorReturnDoneBtn')?.addEventListener('click',async()=>{const checked=$$('.acct-row-check:checked').filter(x=>x.dataset.originPc);if(!checked.length){toast('請先勾選上期待歸明細');return}const byPc={};for(const c of checked)(byPc[c.dataset.originPc]??=[]).push(c.dataset.id);for(const [pcid,ids] of Object.entries(byPc)){const origin=state.periodClients.find(x=>x.id===pcid);if(!origin)continue;for(const x of origin.accountingReturnItems||[])if(ids.includes(x.id)){x.status='done';x.updatedAt=nowISO()}origin.updatedAt=nowISO();await put('periodClients',origin)}await loadAll();state.accountingPCId=pc.id;state.accountingFocus='return';toast('上期待歸明細已處理')});$('#goMissingNoticeBtn')?.addEventListener('click',()=>{state.templatePCId=pc.id;state.noticeMode='single';state.selectedNotificationTypeId=ACCOUNT_MISSING_TYPE;state.selectedTemplateId=ACCOUNT_MISSING_TEMPLATE;state.templateTab='manage';switchView('templates')})}
+function bindAccountingDetail(pc){$$('[data-account-focus]').forEach(b=>b.onclick=()=>setAccountingPanel223(b.dataset.accountFocus));$('#accountingFocusBackBtn').onclick=()=>setAccountingPanel223(null);$('#markAccountingCompleteBtn')?.addEventListener('click',async()=>{if(accPendingDocs(pc).length){toast('仍有欠缺文件待補，不能完成');return}pc.accountingCompletedAt=nowISO();pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus='complete'});$('#saveAccountingTimeBtn')?.addEventListener('click',async()=>{const v=$('#accountingCompletedAtInput').value;if(!v){toast('請輸入完成時間');return}pc.accountingCompletedAt=new Date(v).toISOString();pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus='complete';toast('完成時間已更新')});$('#cancelAccountingCompleteBtn')?.addEventListener('click',async()=>{pc.accountingCompletedAt='';pc.updatedAt=nowISO();await put('periodClients',pc);await loadAll();state.accountingPCId=pc.id;state.accountingFocus='complete'});$('#addAccountingMissingBtn')?.addEventListener('click',()=>openAccountingItemModal(pc,'missing'));$('#addAccountingReturnBtn')?.addEventListener('click',()=>openAccountingItemModal(pc,'return'));$$('[data-acct-edit]').forEach(b=>b.onclick=()=>{const kind=b.dataset.acctEdit,arr=kind==='missing'?accDocs(pc):accReturns(pc);openAccountingItemModal(pc,kind,arr.find(x=>x.id===b.dataset.id))});$$('[data-acct-batch-kind]').forEach(b=>b.onclick=()=>accountingBatchAction(pc,b.dataset.acctBatchKind,b.dataset.acctBatchAction));$('#markPriorReturnDoneBtn')?.addEventListener('click',async()=>{const checked=$$('.acct-row-check:checked').filter(x=>x.dataset.originPc);if(!checked.length){toast('請先勾選上期待歸明細');return}const byPc={};for(const c of checked)(byPc[c.dataset.originPc]??=[]).push(c.dataset.id);for(const [pcid,ids] of Object.entries(byPc)){const origin=state.periodClients.find(x=>x.id===pcid);if(!origin)continue;for(const x of origin.accountingReturnItems||[])if(ids.includes(x.id)){x.status='done';x.updatedAt=nowISO()}origin.updatedAt=nowISO();await put('periodClients',origin)}await loadAll();state.accountingPCId=pc.id;state.accountingFocus='return';toast('上期待歸明細已處理')});$('#goMissingNoticeBtn')?.addEventListener('click',()=>{state.templatePCId=pc.id;state.noticeMode='single';state.selectedNotificationTypeId=ACCOUNT_MISSING_TYPE;state.selectedTemplateId=ACCOUNT_MISSING_TEMPLATE;state.templateTab='manage';switchView('templates')})}
 function openAccountingCrossClientAdd(kind){const pcs=pcForPeriod(),isMissing=kind==='missing',title=isMissing?'欠缺文件':'待歸資料';showModal(`批量新增${title}`,`<div class="field"><label>${title}</label><input id="acctBatchName" class="input"></div><div class="field" style="margin-top:8px"><label>備註</label><textarea id="acctBatchNote" class="textarea" style="min-height:70px"></textarea></div><div class="hr"></div><div class="strong small" style="margin-bottom:6px">選擇客戶</div><div style="max-height:330px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px">${pcs.map(pc=>`<label class="check-row"><input class="acct-batch-client" type="checkbox" value="${esc(pc.id)}">${esc(pc.snapshot?.name||'')} <span class="muted">${esc(pc.snapshot?.code||'')}</span></label>`).join('')}</div>`,[{text:'取消',value:false},{text:'批量新增',value:true,cls:'primary'}],async ok=>{if(!ok)return;const name=$('#acctBatchName').value.trim(),ids=$$('.acct-batch-client:checked').map(x=>x.value);if(!name){toast(`請輸入${title}`);return}if(!ids.length){toast('請至少選擇一位客戶');return}for(const id of ids){const pc=state.periodClients.find(x=>x.id===id);if(!pc)continue;const arr=isMissing?(pc.accountingMissingDocs||=[]):(pc.accountingReturnItems||=[]);arr.push({id:uid(isMissing?'miss':'ret'),name,note:$('#acctBatchNote').value.trim(),status:'pending',createdAt:nowISO(),updatedAt:nowISO()});if(isMissing)pc.accountingCompletedAt='';pc.updatedAt=nowISO();await put('periodClients',pc)}await loadAll();toast(`已為 ${ids.length} 位客戶新增${title}`)})}
 
 function accountingSummaryPage(p,pcs,page,total){return `<div class="pdf-page">${pdfHead(p,page,total,'帳務處理總表')}<table class="pdf-table"><thead><tr><th>代號</th><th>客戶</th><th>帳務狀態</th><th>完成時間</th><th>待補文件</th><th>待歸資料</th></tr></thead><tbody>${pcs.map(pc=>`<tr class="pdf-row"><td>${esc(pc.snapshot?.code||'')}</td><td>${esc(pc.snapshot?.name||'')}</td><td>${esc(accStatus(pc))}</td><td>${pc.accountingCompletedAt?esc(fmtDateTime(pc.accountingCompletedAt)):'—'}</td><td>${accPendingDocs(pc).length}</td><td>${accPendingReturns(pc).length+accPriorPending(pc).items.length}</td></tr>`).join('')}</tbody></table><div class="pdf-foot"><span>${esc(periodLabel(p))}</span><span>${page} / ${total}</span></div></div>`}
@@ -2604,7 +3027,7 @@ const loadNoticesBefore212=loadAll;
 loadAll=async function(){await loadNoticesBefore212();let ops=noticeMigration212(state.notificationTypes,state.templates,state.settings);if(ops.length){await writeBatch210(ops);state.notificationTypes=await getAll('notificationTypes');state.settings=(await getAll('settings'))[0];}ops=noticeOriginalMigration213(state.templates,state.settings);if(ops.length){await writeBatch210(ops);state.templates=await getAll('templates');state.settings=(await getAll('settings'))[0];}renderTemplates();renderToday();};
 function noticeVisibleTemplates212(id){return typeTemplates(id)}
 function noticeTypeVisible212(nt){const group=noticeGroup212(nt),category=NOTICE_GROUPS212.some(x=>x[0]===group)?group:'custom';return !state.noticeGroupFilter212||category===state.noticeGroupFilter212}
-typeListHtml=function(selectedId){return NOTICE_GROUPS212.map(([group,label])=>{const types=state.notificationTypes.filter(nt=>noticeTypeVisible212(nt)&&(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===group).sort((a,b)=>(a.noticeOrder212??99)-(b.noticeOrder212??99));return types.length?`<div class="strong small" style="padding:10px 8px 5px">${esc(label)}</div>`+types.map(nt=>`<button type="button" style="text-align:left;font:inherit;color:inherit" class="type-item ${selectedId===nt.id?'active':''}" data-select-type="${esc(nt.id)}"><span class="type-name" style="display:block">${esc(nt.name)}</span><span class="type-meta" style="display:block">${noticeVisibleTemplates212(nt.id).length} 個模板${nt.enabled===false?' · 停用':''}</span></button>`).join(''):''}).join('');};
+typeListHtml=function(selectedId){return NOTICE_GROUPS212.map(([group,label])=>{const types=state.notificationTypes.filter(nt=>noticeTypeVisible212(nt)&&(NOTICE_GROUPS212.some(x=>x[0]===noticeGroup212(nt))?noticeGroup212(nt):'custom')===group).sort((a,b)=>(a.noticeOrder212??99)-(b.noticeOrder212??99));return types.length?`<div class="strong small" style="padding:10px 8px 5px">${esc(label)}</div>`+types.map(nt=>`<button type="button" style="text-align:left;font:inherit;color:inherit" class="type-item ${selectedId===nt.id?'active':''}" data-select-type="${esc(nt.id)}" aria-pressed="${selectedId===nt.id}"><span class="type-name" style="display:block">${esc(nt.name)}</span><span class="type-meta" style="display:block">${noticeVisibleTemplates212(nt.id).length} 個模板${nt.enabled===false?' · 停用':''}</span></button>`).join(''):''}).join('');};
 const renderNoticesBefore212=renderTemplates;
 renderTemplates=function(){
  const current=notificationTypeById(state.selectedNotificationTypeId);if(current&&!noticeTypeVisible212(current))state.noticeGroupFilter212='';
@@ -2643,7 +3066,7 @@ renderNoticeContext=function(){
  const box=$('#collectionFilter213');if(!box)return;box.classList.toggle('hidden',!active&&!(state.templateTab==='export'&&collectionExport213()));
  const input=$('#collectionDays213');if(input.value!==collectionState213.days)input.value=collectionState213.days;input.setAttribute('aria-invalid',String(!target));
  $('#collectionDate213').textContent=target?fmtDateWeekday(target):'—';
- $('#collectionStatus213').textContent=!target?'請輸入 1～3650 的整數天數。':`本機今天 ${fmtDate(localDate())} ＋ ${Number(collectionState213.days)} 天；目前期別 ${rows.length} 位符合。只列出預約日相同、本期適用且尚未收齊發票的客戶。${rows.length?'合併通知已預選符合客戶，可自行取消勾選。':'沒有符合客戶，請調整天數或確認預約收發票日。'}`;
+ $('#collectionStatus213').textContent=!target?'請輸入 1～3650 的整數天數。':rows.length?`${rows.length} 位符合預約日且尚未收齊`:'沒有符合客戶';
  input.oninput=()=>{collectionState213.days=input.value;renderNoticeContext();renderTxtClientOptions();refreshTemplatePreview()};
 };
 const refreshCollectionBefore213=refreshTemplatePreview;
@@ -3672,7 +4095,7 @@ function accountingLinkNote218(pc,item,kind){
 accountingDocRows=function(items,kind,originPcId='',pcOverride=null){
  const pc=pcOverride||state.periodClients.find(x=>x.id===state.accountingPCId)||null;if(!items.length)return '<div class="accounting-empty-note">目前沒有資料</div>';
  const locked=accountingPeriodLocked218(pc),field=kind==='missing'?'accountingMissingDocs':'accountingReturnItems';
- return `<div class="table-wrap"><table class="accounting-doc-table"><thead><tr><th style="width:38px"></th><th>${kind==='missing'?'欠缺文件':'待歸資料'}</th><th>備註</th><th style="width:68px">狀態</th><th style="width:116px">記錄時間</th><th style="width:148px">來源／聯動</th><th style="width:80px"></th></tr></thead><tbody>${items.map(item=>`<tr data-accounting-link218="${esc(accountingLinkKey218(pc,item,field))}"><td><input type="checkbox" class="acct-row-check" data-kind="${esc(kind)}" data-id="${esc(item.id)}" ${originPcId?`data-origin-pc="${esc(originPcId)}"`:''} ${locked?'disabled':''}></td><td class="accounting-doc-name">${esc(item.name||'')}</td><td>${esc(item.note||'')}</td><td>${item.status==='done'?statusBadge(kind==='missing'?'已補':'已處理','green'):statusBadge(kind==='missing'?'待補':'待處理','yellow')}</td><td class="accounting-record-time">${esc(fmtDateTime(accItemRecordedAt(item)))}</td><td class="accounting-source"><div>${esc(accItemSourceLabel(item,pc))}</div><div class="small muted accounting-link-note218">${esc(accountingLinkNote218(pc,item,kind))}</div>${item.accountingLink218?.changedAt?`<div class="small muted">${esc(fmtDateTime(item.accountingLink218.changedAt))}</div>`:''}</td><td>${originPcId?'':`<button class="btn small" style="white-space:nowrap" data-acct-edit="${esc(kind)}" data-id="${esc(item.id)}" ${locked?'disabled':''}>編輯</button>`}</td></tr>`).join('')}</tbody></table></div>`;
+ return `<div class="table-wrap"><table class="accounting-doc-table" role="table"><thead role="rowgroup"><tr role="row"><th role="columnheader" style="width:38px"></th><th role="columnheader">${kind==='missing'?'欠缺文件':'待歸資料'}</th><th role="columnheader">備註</th><th role="columnheader" style="width:68px">狀態</th><th role="columnheader" style="width:116px">記錄時間</th><th role="columnheader" style="width:148px">來源／聯動</th><th role="columnheader" style="width:80px"></th></tr></thead><tbody role="rowgroup">${items.map(item=>`<tr role="row" data-accounting-link218="${esc(accountingLinkKey218(pc,item,field))}"><td role="cell"><input type="checkbox" class="acct-row-check" data-kind="${esc(kind)}" data-id="${esc(item.id)}" ${originPcId?`data-origin-pc="${esc(originPcId)}"`:''} ${locked?'disabled':''}></td><td role="cell" class="accounting-doc-name">${esc(item.name||'')}</td><td role="cell" class="accounting-row-note">${esc(item.note||'')}</td><td role="cell" class="accounting-row-status">${item.status==='done'?statusBadge(kind==='missing'?'已補':'已處理','green'):statusBadge(kind==='missing'?'待補':'待處理','yellow')}</td><td role="cell" class="accounting-record-time">${esc(fmtDateTime(accItemRecordedAt(item)))}</td><td role="cell" class="accounting-source"><div>${esc(accItemSourceLabel(item,pc))}</div><div class="small muted accounting-link-note218">${esc(accountingLinkNote218(pc,item,kind))}</div>${item.accountingLink218?.changedAt?`<div class="small muted">${esc(fmtDateTime(item.accountingLink218.changedAt))}</div>`:''}</td><td role="cell" class="accounting-row-actions">${originPcId?'':`<button class="btn small" style="white-space:nowrap" data-acct-edit="${esc(kind)}" data-id="${esc(item.id)}" ${locked?'disabled':''}>編輯</button>`}</td></tr>`).join('')}</tbody></table></div>`;
 };
 accountingMissingSection=function(pc){
  const docs=accDocs(pc),pending=accPendingDocs(pc).length,locked=accountingPeriodLocked218(pc);
@@ -3682,18 +4105,18 @@ accountingReturnSection=function(pc){
  const items=accReturns(pc),locked=accountingPeriodLocked218(pc);
  return `<div class="accounting-section"><div class="accounting-section-head"><div><div class="strong">待歸資料</div><div class="tiny muted">跨期完成或改回待處理時，同一來源會一併更新。</div></div><button id="addAccountingReturnBtn" class="btn small primary" ${locked?'disabled':''}>新增</button></div><div class="accounting-section-body"><div class="accounting-batch-actions"><button class="btn small" data-acct-batch-kind="return" data-acct-batch-action="done" ${locked?'disabled':''}>批量標記已處理</button><button class="btn small" data-acct-batch-kind="return" data-acct-batch-action="pending" ${locked?'disabled':''}>批量改回待處理</button><button class="btn small danger" data-acct-batch-kind="return" data-acct-batch-action="delete" ${locked?'disabled':''}>批量刪除</button></div>${accountingDocRows(items,'return','',pc)}</div></div>`;
 };
-function guardedAccountingModal218(title,html,save){
+function guardedWorkspaceModal(title,html,save,errorId='accountingItemError218'){
  showModal(title,html,[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],()=>{});
  const root=$('#modalRoot'),dialog=root.querySelector('.modal'),snapshot=()=>JSON.stringify([...dialog.querySelectorAll('input,textarea,select')].map(n=>n.type==='checkbox'?n.checked:n.value));let baseline=snapshot(),busy=false;
- const error=vatElement214('p','notice warn');error.id='accountingItemError218';error.hidden=true;error.setAttribute('role','alert');dialog.querySelector('.modal-body').append(error);
- const close=()=>{if(busy)return;if(snapshot()!==baseline&&!window.confirm('帳務資料尚未儲存，確定捨棄這次變更？'))return;root.classList.remove('show');root.innerHTML=''};
+ const error=vatElement214('p','notice warn');error.id=errorId;error.hidden=true;error.setAttribute('role','alert');dialog.querySelector('.modal-body').append(error);
+ const close=()=>{if(busy)return;if(snapshot()!==baseline&&!window.confirm('資料尚未儲存，確定捨棄這次變更？'))return;root.classList.remove('show');root.innerHTML=''};
  root.querySelector('[data-close]').onclick=close;root.querySelector('.modal-foot button').onclick=close;root.onclick=e=>{if(e.target===root)close()};dialog.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close()}});
  root.querySelector('.modal-foot button:last-child').onclick=async()=>{if(busy)return;busy=true;const controls=[...dialog.querySelectorAll('input,textarea,select,button')].map(n=>[n,n.disabled]);controls.forEach(([n])=>n.disabled=true);error.hidden=true;try{await save();baseline=snapshot();if(dialog.isConnected){root.classList.remove('show');root.innerHTML=''}}catch(e){if(error.isConnected){error.hidden=false;error.textContent=e.message||'儲存失敗，請保留目前資料重試'}else toast(e.message||'儲存失敗')}finally{busy=false;controls.forEach(([n,disabled])=>{if(n.isConnected)n.disabled=disabled})}};
 }
 openAccountingItemModal=function(pc,kind,item=null){
  if(!accountingCanEdit218(pc))return;const draft=clone(pc),missing=kind==='missing',field=missing?'accountingMissingDocs':'accountingReturnItems',original=item?(draft[field]||[]).find(x=>x.id===item.id):null,title=missing?'欠缺文件':'待歸資料';
  if(item&&!original){toast('來源資料已變更，請重新整理');return}
- guardedAccountingModal218(`${original?'編輯':'新增'}${title}`,`<div class="field"><label for="acctItemName">${title}</label><input id="acctItemName" class="input" value="${esc(original?.name||'')}"></div><div class="field" style="margin-top:12px"><label for="acctItemNote">備註</label><textarea id="acctItemNote" class="textarea" style="min-height:80px">${esc(original?.note||'')}</textarea></div><div class="field" style="margin-top:12px"><label for="acctItemStatus">狀態</label><select id="acctItemStatus" class="select"><option value="pending" ${original?.status!=='done'?'selected':''}>${missing?'待補':'待處理'}</option><option value="done" ${original?.status==='done'?'selected':''}>${missing?'已補':'已處理'}</option></select></div>${original?`<div class="small muted" style="margin-top:12px">來源：${esc(accItemSourceLabel(original,draft))} · ${esc(accountingLinkNote218(draft,original,kind))}</div>`:''}`,async()=>{
+ guardedWorkspaceModal(`${original?'編輯':'新增'}${title}`,`<div class="field"><label for="acctItemName">${title}</label><input id="acctItemName" class="input" value="${esc(original?.name||'')}"></div><div class="field" style="margin-top:12px"><label for="acctItemNote">備註</label><textarea id="acctItemNote" class="textarea" style="min-height:80px">${esc(original?.note||'')}</textarea></div><div class="field" style="margin-top:12px"><label for="acctItemStatus">狀態</label><select id="acctItemStatus" class="select"><option value="pending" ${original?.status!=='done'?'selected':''}>${missing?'待補':'待處理'}</option><option value="done" ${original?.status==='done'?'selected':''}>${missing?'已補':'已處理'}</option></select></div>${original?`<div class="small muted" style="margin-top:12px">來源：${esc(accItemSourceLabel(original,draft))} · ${esc(accountingLinkNote218(draft,original,kind))}</div>`:''}`,async()=>{
   const name=$('#acctItemName').value.trim(),note=$('#acctItemNote').value.trim(),status=$('#acctItemStatus').value;if(!name)throw new Error(`請輸入${title}`);if(!['pending','done'].includes(status))throw new Error('請選擇有效狀態');
   const next=clone(draft),items=next[field]||=[],t=nowISO();if(original){const edited=items.find(x=>x.id===original.id);edited.name=name;edited.note=note;edited.status=status;edited.updatedAt=t;}else{const id=uid(missing?'miss':'ret');items.push({id,name,note,status,createdAt:t,updatedAt:t,recordedAt:t,sourcePeriodId:next.periodId,sourcePeriodLabel:taskPeriodLabel210(next.periodId),sourceItemId:id,lineageRootId:id,isCarried:false});}
   next[field]=items;if(missing&&status==='pending')next.accountingCompletedAt='';next.updatedAt=t;await put('periodClients',next);await loadAll();state.accountingPCId=next.id;state.accountingFocus=kind;renderAccounting();toast(`${title}已儲存`);
@@ -3704,7 +4127,7 @@ accountingBatchAction=async function(pc,kind,action){if(!accountingCanEdit218(pc
 openAccountingCrossClientAdd=function(kind){
  const period=currentPeriod();if(!period||period.status==='已結束'&&!period.unlocked){toast('本期已結束，請先解鎖再新增帳務資料');return}
  const pcs=clone(pcForPeriod()),missing=kind==='missing',title=missing?'欠缺文件':'待歸資料';
- guardedAccountingModal218(`批量新增${title}`,`<div class="field"><label for="acctBatchName">${title}</label><input id="acctBatchName" class="input"></div><div class="field" style="margin-top:12px"><label for="acctBatchNote">備註</label><textarea id="acctBatchNote" class="textarea" style="min-height:70px"></textarea></div><div class="hr"></div><div class="strong small" style="margin-bottom:8px">選擇客戶</div><div style="max-height:330px;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:8px">${pcs.map(pc=>`<label class="check-row"><input class="acct-batch-client" type="checkbox" value="${esc(pc.id)}">${esc(pc.snapshot?.name||'')} <span class="muted">${esc(pc.snapshot?.code||'')}</span></label>`).join('')}</div>`,async()=>{
+ guardedWorkspaceModal(`批量新增${title}`,`<div class="field"><label for="acctBatchName">${title}</label><input id="acctBatchName" class="input"></div><div class="field" style="margin-top:12px"><label for="acctBatchNote">備註</label><textarea id="acctBatchNote" class="textarea" style="min-height:70px"></textarea></div><div class="hr"></div><div class="strong small" style="margin-bottom:8px">選擇客戶</div><div style="max-height:330px;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:8px">${pcs.map(pc=>`<label class="check-row"><input class="acct-batch-client" type="checkbox" value="${esc(pc.id)}">${esc(pc.snapshot?.name||'')} <span class="muted">${esc(pc.snapshot?.code||'')}</span></label>`).join('')}</div>`,async()=>{
   const name=$('#acctBatchName').value.trim(),note=$('#acctBatchNote').value.trim(),ids=$$('.acct-batch-client:checked').map(n=>n.value);if(!name)throw new Error(`請輸入${title}`);if(!ids.length)throw new Error('請至少選擇一位客戶');
   const field=missing?'accountingMissingDocs':'accountingReturnItems',t=nowISO(),ops=[];for(const id of ids){const pc=pcs.find(x=>x.id===id);if(!pc)throw new Error('客戶資料已變更');const next=clone(pc),itemId=uid(missing?'miss':'ret');(next[field]||=[]).push({id:itemId,name,note,status:'pending',createdAt:t,updatedAt:t,recordedAt:t,sourcePeriodId:next.periodId,sourcePeriodLabel:taskPeriodLabel210(next.periodId),sourceItemId:itemId,lineageRootId:itemId,isCarried:false});if(missing)next.accountingCompletedAt='';next.updatedAt=t;ops.push({store:'periodClients',value:preparedPC210(next,pc)});}
   await writeBatch210(ops);await loadAll();renderAccounting();toast(`已為 ${ids.length} 位客戶新增${title}`);
@@ -4791,6 +5214,229 @@ renderBackup=function(){
   $('#backupSummary .kpi-row')?.append(node);
  }
 };
+
+/* VAT 2.23: accounting and notice workspace controls. */
+function accountingStatusBadge223(pc,missing){
+ if(pc.accountingCompletedAt)return statusBadge('已完成','green');
+ return missing?statusBadge('帳務完成一半','blue'):statusBadge('未完成','gray');
+}
+const operationsCompact223=matchMedia('(max-width: 799px)');
+function updateOperationsDisclosures223(){
+ for(const id of ['accountingPicker223','noticeLibrary223'])$('#'+id).open=!operationsCompact223.matches;
+}
+updateOperationsDisclosures223();
+operationsCompact223.addEventListener('change',updateOperationsDisclosures223);
+
+function renderAccountingClients223(){
+ const pcs=pcForPeriod(),list=$('#accountingClientList'),query=String(state.accountingSearch||'').trim().toLowerCase();
+ const status=$('#accountingStatus223').value;
+ function matches(pc){
+  if(query&&!`${pc.snapshot?.name||''} ${pc.snapshot?.code||''}`.toLowerCase().includes(query))return false;
+  if(status==='open')return !pc.accountingCompletedAt;
+  if(status==='done')return !!pc.accountingCompletedAt;
+  if(status==='missing')return !!accPendingDocs(pc).length;
+  if(status==='return')return !!(accPendingReturns(pc).length||accPriorPending(pc).items.length);
+  return true;
+ }
+ const visible=pcs.filter(matches);
+ $('#accountingClientCount223').textContent=`${visible.length} / ${pcs.length} 家`;
+ list.innerHTML=visible.length?visible.map(accountingClientCard).join(''):`<div class="empty">${pcs.length?'沒有符合的客戶':'本期沒有客戶'}</div>`;
+ list.querySelectorAll('[data-accounting-pc]').forEach(button=>button.onclick=()=>{
+  const previous=list.querySelector('[aria-pressed="true"]');
+  previous?.classList.remove('active');
+  previous?.setAttribute('aria-pressed','false');
+  button.classList.add('active');
+  button.setAttribute('aria-pressed','true');
+  if(state.accountingPCId!==button.dataset.accountingPc){
+   state.accountingPCId=button.dataset.accountingPc;
+   renderAccountingDetail();
+  }
+  if(operationsCompact223.matches){
+   $('#accountingPicker223').open=false;
+   $('#accountingDetail .accounting-detail-head')?.focus();
+  }
+ });
+}
+function setAccountingPanel223(panel){
+ state.accountingFocus=panel;
+ const root=$('#accountingDetail');
+ root.querySelectorAll('[data-account-focus],#accountingFocusBackBtn').forEach(button=>{
+  button.setAttribute('aria-pressed',String((button.dataset.accountFocus||null)===panel));
+ });
+ root.querySelectorAll('[data-acct-panel]').forEach(section=>{
+  const active=section.dataset.acctPanel===panel;
+  section.classList.toggle('active',active);
+  section.hidden=!active;
+ });
+ $('#accountingOverview223').hidden=!!panel;
+}
+const bindAccountingBefore223=bindAccountingDetail;
+bindAccountingDetail=function(pc){
+ bindAccountingBefore223(pc);
+ const root=$('#accountingDetail'),locked=accountingPeriodLocked218(pc);
+ for(const kind of ['missing','return']){
+  const panel=root.querySelector(`[data-acct-panel="${kind}"]`);
+  const actions=panel.querySelector('.accounting-batch-actions');
+  if(!actions)continue;
+  const selected=vatElement214('span','accounting-selection223');
+  selected.setAttribute('role','status');
+  actions.prepend(selected);
+  const all=[...panel.querySelectorAll('.acct-row-check:not([data-origin-pc])')];
+  const buttons=actions.querySelectorAll('[data-acct-batch-action]');
+  const update=()=>{
+   const count=all.filter(input=>input.checked).length;
+   selected.textContent=`已選 ${count} 筆`;
+   buttons.forEach(button=>button.disabled=locked||!count);
+  };
+  all.forEach(input=>input.addEventListener('change',update));
+  update();
+ }
+ root.querySelectorAll('input.acct-row-check').forEach(input=>{
+  input.setAttribute('aria-label',`選取 ${input.closest('tr').querySelector('.accounting-doc-name')?.textContent||'項目'}`);
+ });
+ const completion=$('#accountingCompletedAtInput');
+ if(completion)completion.closest('.field').querySelector('label').htmlFor=completion.id;
+};
+
+function setNoticeCompose223(pane){
+ $('#noticeCompose223').dataset.pane=pane;
+ $$('[data-notice-compose]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.noticeCompose===pane)));
+}
+$$('[data-notice-compose]').forEach(button=>button.onclick=()=>setNoticeCompose223(button.dataset.noticeCompose));
+
+const templateDrafts223=new Map();
+function templateFields223(template){
+ return {name:template.name||'',text:template.text||'',enabled:template.enabled!==false};
+}
+function readTemplateEditor223(){
+ return {name:$('#templateName').value,text:$('#templateText').value,enabled:$('#templateEnabled').checked};
+}
+function sameTemplateDraft223(a,b){
+ return !!a&&a.name===b.name&&a.text===b.text&&a.enabled===b.enabled;
+}
+function showTemplateDraft223(id){
+ const dirty=templateDrafts223.has(id);
+ $('#templateDraft223').hidden=!dirty;
+ $('#discardTemplate223').hidden=!dirty;
+}
+function loadTemplateEditor223(template){
+ const stored=templateFields223(template),draft=templateDrafts223.get(template.id);
+ if(sameTemplateDraft223(draft,stored))templateDrafts223.delete(template.id);
+ const values=templateDrafts223.get(template.id)||stored,editor=$('#templateEditorCard');
+ if(editor.dataset.templateId!==template.id){
+  setNoticeCompose223('write');
+  $('#templateActions223').open=false;
+  editor.querySelector('.template-variable-tools210').open=false;
+  $('#variableSearch').value='';
+ }
+ editor.dataset.templateId=template.id;
+ // Avoid moving the caret during updates that leave the same draft loaded.
+ if($('#templateName').value!==values.name)$('#templateName').value=values.name;
+ if($('#templateText').value!==values.text)$('#templateText').value=values.text;
+ $('#templateEnabled').checked=values.enabled;
+ showTemplateDraft223(template.id);
+}
+for(const [id,event] of [['templateName','input'],['templateText','input'],['templateEnabled','change']]){
+ $('#'+id).addEventListener(event,()=>{
+  const template=templateById($('#templateEditorCard').dataset.templateId);
+  if(!template)return;
+  const draft=readTemplateEditor223();
+  if(sameTemplateDraft223(draft,templateFields223(template)))templateDrafts223.delete(template.id);
+  else templateDrafts223.set(template.id,draft);
+  showTemplateDraft223(template.id);
+ });
+}
+$('#discardTemplate223').onclick=()=>{
+ const template=selectedTemplate();
+ if(!template)return;
+ templateDrafts223.delete(template.id);
+ loadTemplateEditor223(template);
+ $('#templateActions223').open=false;
+ $('#templateActions223 summary').focus();
+ refreshTemplatePreview();
+};
+
+function placeCollectionControl223(){
+ const exportMode=state.templateTab==='export';
+ const box=$('#collectionFilter213');
+ const dock=$(exportMode?'#noticeCollectionExport223':'#noticeContextBar .card-b');
+ if(box.parentNode!==dock)dock.append(box);
+ box.classList.toggle('hidden',!(exportMode?collectionExport213():collectionActive213()));
+}
+const renderNoticeContextBefore223=renderNoticeContext;
+renderNoticeContext=function(){
+ renderNoticeContextBefore223();
+ placeCollectionControl223();
+};
+const renderTemplatesBefore223=renderTemplates;
+renderTemplates=function(){
+ const active=document.activeElement,templateId=active?.dataset.selectTemplate,typeId=active?.dataset.selectType;
+ const focusedFilter=active?.id==='noticeGroup212';
+ renderTemplatesBefore223();
+ const mode=state.templateTab,category=$('#noticeFilters212');
+ $(mode==='reminders'?'#noticeCategoryReminder223':'#noticeCategoryManage223').append(category);
+ const type=notificationTypeById(state.selectedNotificationTypeId),template=selectedTemplate();
+ $('#noticeLibrarySelection223').textContent=[type?.name,template?.name].filter(Boolean).join('／');
+ $$('[data-template-tab]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.templateTab===mode)));
+ if(focusedFilter)$('#noticeGroup212').focus({preventScroll:true});
+ if(templateId||typeId){
+  const pane=mode==='reminders'?'#templateReminderPane':'#templateManagePane';
+  const replacement=$(pane).querySelector(templateId?`[data-select-template="${CSS.escape(templateId)}"]`:`[data-select-type="${CSS.escape(typeId)}"]`);
+  replacement?.focus({preventScroll:true});
+ }
+};
+$('#templateCards').addEventListener('click',event=>{
+ if(event.target.closest('[data-select-template]')&&operationsCompact223.matches){
+  $('#noticeLibrary223').open=false;
+  $('#templateName').focus();
+ }
+});
+
+$('#variableChips').addEventListener('click',event=>{
+ if(event.target.closest('[data-var]'))event.currentTarget.closest('details').open=false;
+});
+$('#variableChips').addEventListener('click',event=>{
+ if(event.target.closest('[data-var]'))setNoticeCompose223('write');
+},{capture:true});
+
+function renderExportChoices223(){
+ const list=$('#exportClients223'),options=[...$('#txtClients').options];
+ const focused=list.contains(document.activeElement)?document.activeElement.value:null;
+ const scroll=list.scrollTop;
+ list.replaceChildren();
+ if(!options.length){list.append(vatElement214('div','empty','沒有符合的客戶'));return}
+ const fragment=document.createDocumentFragment();
+ for(const option of options){
+  const label=vatElement214('label','check-row'),checkbox=document.createElement('input');
+  checkbox.type='checkbox';
+  checkbox.value=option.value;
+  checkbox.checked=option.selected;
+  checkbox.onchange=()=>{
+   option.selected=checkbox.checked;
+   updateExportSummary();
+  };
+  label.append(checkbox,vatElement214('span','',option.textContent));
+  fragment.append(label);
+ }
+ list.append(fragment);
+ list.scrollTop=scroll;
+ if(focused)list.querySelector(`input[value="${CSS.escape(focused)}"]`)?.focus({preventScroll:true});
+}
+const renderTxtClientOptionsBefore223=renderTxtClientOptions;
+renderTxtClientOptions=function(){
+ renderTxtClientOptionsBefore223();
+ placeCollectionControl223();
+ renderExportChoices223();
+};
+const updateExportSummaryBefore223=updateExportSummary;
+updateExportSummary=function(){
+ updateExportSummaryBefore223();
+ const select=$('#txtClients');
+ const selected=new Set([...select.selectedOptions].map(option=>option.value));
+ $('#exportClients223').querySelectorAll('input').forEach(input=>input.checked=selected.has(input.value));
+ const count=$('#exportFilterCount215');
+ if(count)count.textContent=`符合 ${select.options.length} 家 · 已選 ${selected.size} 家`;
+};
 /* VAT_WORKSPACE_SCRIPT_END */
 
 boot();
@@ -4799,7 +5445,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.22.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.23.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
