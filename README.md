@@ -136,6 +136,8 @@ PDF 家族的既有轉圖擷取頁面內影像，不保證包含文字、向量�
 
 ## 驗證與維護
 
+營業稅 v2.22.0 的本機 Chromium 回歸 **83 組全數通過**，包含客戶分組、分頁、鍵盤收合與 320px 版面。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/44473107398)
+
 營業稅 v2.20.0 的交付 HTML 以 Chromium `file://` 直接開啟驗證，**82 組全數通過**。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/44452602441)
 
 計算機 v1.9.1 已通過來源內嵌一致檢查、純計算回歸及 Chromium 的日期輸入、分攤與手機版測試。營業稅 v2.19.0 與計算機 v1.9.0 的離線開檔紀錄見 [GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/44223323699)。
