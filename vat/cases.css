@@ -20,3 +20,6 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .cases-stat219>span{white-space:nowrap}
  .cases-stat219>strong{font-size:22px}
 }
+@media screen and (max-width:420px){
+ #view-cases .cases-stats219{grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr))}
+}

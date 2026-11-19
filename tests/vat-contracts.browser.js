@@ -121,7 +121,10 @@ async function lists(page,h){
   assert.match(await list.getByRole('listitem').last().innerText(),view==='contracts'?/第 13 筆完整合約備註/:/跨分頁完整內容 13[\s\S]*第二行文字/);
   for(const width of [390,320]){
    await page.setViewportSize({width,height:844});
-   assert(await page.locator('#view-'+view).evaluate(view=>view.scrollWidth<=view.clientWidth+1));
+   const active=page.locator('#view-'+view);
+   await page.waitForFunction(()=>document.getAnimations().every(animation=>
+    animation.playState!=='running'||!Number.isFinite(animation.effect?.getComputedTiming().endTime)));
+   assert(await active.evaluate(panel=>panel.scrollWidth<=panel.clientWidth+1),view+' overflows at '+width+'px');
   }
   await h.screenshot(page,'vat-'+view+'-list-mobile');
   await page.setViewportSize({width:1440,height:1000});

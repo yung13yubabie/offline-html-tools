@@ -590,6 +590,9 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .cases-stat219>span{white-space:nowrap}
  .cases-stat219>strong{font-size:22px}
 }
+@media screen and (max-width:420px){
+ #view-cases .cases-stats219{grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr))}
+}
 .record-list220{border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0;overflow:hidden}
 .record-columns220,.record-row220{
  display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(100px,.75fr) minmax(115px,.9fr) minmax(112px,.7fr);
@@ -635,6 +638,11 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 }
 .record-calendar220{margin:5px 4px 0 0}
 @media(max-width:560px){.record-calendar220{margin:0 0 0 6px}}
+.record-list220{container:record-list / inline-size}
+@container record-list (max-width:200px){
+ .record-row220,.record-facts220{grid-template-columns:minmax(0,1fr)}
+ .record-cell220 .btn{max-width:100%;white-space:normal}
+}
 .contract-stats220{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
 .contract-stats220 button{min-height:66px;padding:12px}
 .contract-stats220 strong{font-size:24px}
@@ -667,6 +675,9 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 @media(max-width:420px){
  .contract-stats220 button{gap:4px}
  .contract-stats220 .badge{padding-inline:4px;white-space:nowrap}
+}
+@media(max-width:420px){
+ .contract-stats220{grid-template-columns:repeat(auto-fit,minmax(min(100%,100px),1fr))}
 }
 </style>
 <!-- VAT_WORKSPACE_STYLE_END -->

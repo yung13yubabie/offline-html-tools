@@ -31,3 +31,6 @@
  .contract-stats220 button{gap:4px}
  .contract-stats220 .badge{padding-inline:4px;white-space:nowrap}
 }
+@media(max-width:420px){
+ .contract-stats220{grid-template-columns:repeat(auto-fit,minmax(min(100%,100px),1fr))}
+}

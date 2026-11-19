@@ -43,3 +43,8 @@
 }
 .record-calendar220{margin:5px 4px 0 0}
 @media(max-width:560px){.record-calendar220{margin:0 0 0 6px}}
+.record-list220{container:record-list / inline-size}
+@container record-list (max-width:200px){
+ .record-row220,.record-facts220{grid-template-columns:minmax(0,1fr)}
+ .record-cell220 .btn{max-width:100%;white-space:normal}
+}
