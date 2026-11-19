@@ -29,7 +29,7 @@ applyWorkFocusV24=function(id,scroll=true){
 };
 function vatGlobalMount217(){
  document.body.classList.add('vat-ui217');
- const nav=$('.sidebar'),groups=[['每日處理',['today','calendar','cases','work','accounting']],['資料與輸出',['clients','templates','pdf']],['管理',['backup','settings']]];
+ const nav=$('.sidebar'),groups=[['每日處理',['today','calendar','cases','contracts','work','accounting']],['資料與輸出',['clients','templates','pdf']],['管理',['backup','settings']]];
  const nodes=new Map($$('.sidebar .nav-btn').map(b=>[b.dataset.view,b]));nodes.get('pdf').querySelector('span:last-child').textContent='列印編輯';
  nav.querySelectorAll('.nav-section-label,.side-divider').forEach(n=>n.remove());
  for(const [name,ids]of groups){nav.append(vatElement214('div','nav-section-label',name));for(const id of ids){const b=nodes.get(id);if(b){b.setAttribute('aria-label',b.textContent.trim());b.title=b.textContent.trim();nav.append(b);}}}

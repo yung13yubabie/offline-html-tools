@@ -25,7 +25,7 @@ writeBatch210=function(ops,options={}){
  const baselineRows=clone(options.baselineRows||crossPeriodBaseline218||state.periodClients||[]),cleared=ops.some(o=>o.store==='periodClients'&&o.action==='clear'),maintenance=crossPeriodLoading218||options.linkMode218==='seed'||options.linkMode218==='restore'||cleared,mode=maintenance?'seed':'edit';
  return new Promise((resolve,reject)=>{
   let tr,rows,periods,result,failure,casesReady=false;const fail=e=>{failure=e;try{tr.abort()}catch{}reject(e)};
-  try{tr=db.transaction([...new Set([...ops.map(o=>o.store),'periodClients','periods',...(caseBatchTouches219(ops)?['clients','cases']:[])])],'readwrite')}catch(e){reject(e);return}
+  try{tr=db.transaction([...new Set([...ops.map(o=>o.store),'periodClients','periods',...(needsRecordReferenceCheck220(ops)?recordReferenceStores220:[])])],'readwrite')}catch(e){reject(e);return}
   const store=tr.objectStore('periodClients'),pr=tr.objectStore('periods').getAll(),rr=store.getAll();
   const build=()=>{if(!rows||!periods||failure||!casesReady)return;try{
    const nextPeriods=applyRowOps218(periods,ops,'periods'),proposed=applyRowOps218(rows,ops,'periodClients'),directIds=ops.filter(o=>o.store==='periodClients'&&!o.action).map(o=>o.value.id);
@@ -37,7 +37,7 @@ writeBatch210=function(ops,options={}){
    result.periods=nextPeriods;
   }catch(e){fail(e)}};
   rr.onsuccess=()=>{rows=rr.result;build()};pr.onsuccess=()=>{periods=pr.result;build()};
-  caseBatchGuard219(tr,ops,()=>{casesReady=true;build()},fail);
+  guardRecordReferences220(tr,ops,()=>{casesReady=true;build()},fail);
   tr.oncomplete=()=>{crossPeriodBaseline218=clone(result.periodClients);resolve(result)};tr.onerror=()=>{};tr.onabort=()=>reject(failure||tr.error||new Error('跨期聯動未完成，所有變更已取消'));
  });
 };

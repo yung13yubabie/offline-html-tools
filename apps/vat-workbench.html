@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.19.0</title>
+<title>營業稅工作台 v2.20.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -573,17 +573,101 @@ body:has(#modalRoot.show .bulk-work-modal215) #toastWrap{z-index:90;pointer-even
  #view-cases .cases-stats219{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
  .cases-stat219{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;min-height:84px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);padding:16px;text-align:left}.cases-stat219>span{font-size:14px;font-weight:600;color:var(--muted)}.cases-stat219>strong{font-size:27px;line-height:1.3;font-variant-numeric:tabular-nums}.cases-stat219.active{border-color:var(--brand);background:var(--brand-soft)}
  .cases-filters219{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:end;gap:16px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.cases-filters219 .input,.cases-filters219 .select,.cases-filters219>.btn{width:100%;min-height:44px}.cases-result219{font-size:14px;color:var(--muted);margin:16px 0 12px}
- .cases-grid219{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;align-items:stretch;gap:16px}.case-card219{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:300px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.case-card219.is-overdue{border-left:3px solid var(--orange)}.case-card219>header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-height:54px}.case-card219 h2{font-size:17px;font-weight:750;line-height:1.55;margin:0;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.case-card219>header>.badge{flex-shrink:0;white-space:nowrap}.case-customer219{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:28px}.case-customer219 strong{font-size:16px;overflow-wrap:anywhere}.case-customer219>span{font:600 13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted)}.case-contact219{min-height:42px;font-size:14px;color:var(--muted);line-height:1.5;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.case-card219 dl{display:grid;gap:8px;margin:0}.case-card219 dl>div{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px}.case-card219 dt{font-size:13px;color:var(--muted);line-height:1.6}.case-card219 dd{font-size:14px;line-height:1.6;margin:0;overflow-wrap:anywhere}.case-note219{margin:0;min-height:44px;font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.case-card219>footer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}.case-card219>footer>.btn{width:100%;min-height:44px;white-space:nowrap}.cases-empty219{grid-column:1/-1}.cases-pager219{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:20px}
  #modalRoot .cases-modal219{width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px);display:flex;flex-direction:column}.cases-modal219 .modal-body{overflow:auto;min-height:0}.cases-modal219 .modal-head,.cases-modal219 .modal-foot{flex-shrink:0}.cases-form219{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.cases-span219{grid-column:1/-1}.cases-form219 .input,.cases-form219 .select{width:100%;min-height:44px}.cases-form219 .textarea{width:100%;min-height:110px}.cases-form219 .field{min-width:0}.cases-form219 [hidden]{display:none!important}.cases-reminder-fields219{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.cases-check219{display:flex;align-items:center;gap:10px;align-self:end;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--panel);font-size:14px}.cases-check219>input{width:18px;height:18px}.cases-master219{padding:12px 14px;background:var(--panel2);border:1px solid var(--line);border-radius:6px}.cases-master219 dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0}.cases-master219 dl>div{min-width:0}.cases-master219 dt{font-size:13px;color:var(--muted);margin-bottom:4px}.cases-master219 dd{font-size:14px;line-height:1.6;margin:0;overflow-wrap:anywhere}.cases-meta219{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;line-height:1.6;color:var(--muted)}.cases-modal219 .modal-foot{display:flex;justify-content:flex-end;gap:8px}.cases-modal219 .modal-foot>.btn{min-height:44px}#caseDelete219{margin-right:auto}.case-calendar219 .note-actions .btn{min-height:44px}.case-calendar219 .note-content{white-space:pre-wrap;overflow-wrap:anywhere}.case-calendar219 .badge{margin-top:6px}
 }
-@media screen and (max-width:1200px){.cases-grid219{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media screen and (max-width:799px){#view-cases .cases-stats219{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cases-stat219{min-height:76px;padding:12px}.cases-filters219{grid-template-columns:minmax(0,1fr);padding:14px;gap:12px}.cases-grid219{grid-template-columns:minmax(0,1fr)}.case-card219{padding:14px}.cases-form219,.cases-reminder-fields219{grid-template-columns:minmax(0,1fr)}.cases-span219{grid-column:1}.cases-form219 .input,.cases-form219 .select,.cases-form219 .textarea{font-size:16px}#modalRoot .cases-modal219{width:calc(100vw - 16px);max-height:calc(100dvh - 80px)}#modalRoot:has(.cases-modal219){padding:8px 8px 64px}.cases-modal219 .modal-foot{flex-wrap:wrap}.cases-modal219 .modal-foot>.btn{flex:1 1 auto}.cases-master219 dl{grid-template-columns:1fr;gap:12px}.cases-master219 dd{font-size:16px}.cases-meta219{font-size:14px}.cases-pager219{justify-content:center}}
+@media screen and (max-width:799px){#view-cases .cases-stats219{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cases-stat219{min-height:76px;padding:12px}.cases-filters219{grid-template-columns:minmax(0,1fr);padding:14px;gap:12px}.cases-form219,.cases-reminder-fields219{grid-template-columns:minmax(0,1fr)}.cases-span219{grid-column:1}.cases-form219 .input,.cases-form219 .select,.cases-form219 .textarea{font-size:16px}#modalRoot .cases-modal219{width:calc(100vw - 16px);max-height:calc(100dvh - 80px)}#modalRoot:has(.cases-modal219){padding:8px 8px 64px}.cases-modal219 .modal-foot{flex-wrap:wrap}.cases-modal219 .modal-foot>.btn{flex:1 1 auto}.cases-master219 dl{grid-template-columns:1fr;gap:12px}.cases-master219 dd{font-size:16px}.cases-meta219{font-size:14px}}
 
 .case-reminder-strip219{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius,8px);background:var(--panel)}
 .case-reminder-strip219[hidden]{display:none}
 .case-reminder-actions219{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
 .case-reminder-actions219 button{max-width:100%;overflow-wrap:anywhere;text-align:left}
 body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:none}
+@media screen and (max-width:799px){
+ .cases-filters219{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .cases-filters219>.field:first-child,.cases-filters219>.btn{grid-column:1/-1}
+ .cases-filters219 .field{min-width:0}
+ .cases-stat219{min-height:58px;gap:6px;padding:10px}
+ .cases-stat219>span{white-space:nowrap}
+ .cases-stat219>strong{font-size:22px}
+}
+.record-list220{border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0;overflow:hidden}
+.record-columns220,.record-row220{
+ display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(100px,.75fr) minmax(115px,.9fr) minmax(112px,.7fr);
+ gap:14px;padding:12px 16px;align-items:center
+}
+.record-columns220{color:var(--muted);background:var(--panel2);font-size:13px;font-weight:650}
+.record-item220{border-top:1px solid var(--line);padding-bottom:6px}
+.record-cell220{min-width:0;overflow-wrap:anywhere;line-height:1.55}
+.record-cell220 h2{margin:0;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.record-cell220 strong{font-weight:660}
+.record-cell220 small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.record-cell220 .btn{min-height:44px;white-space:nowrap}
+.record-cell220 .badge{white-space:nowrap}
+.record-mobile-label220{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.record-details220{margin:0 16px;font-size:14px}
+.record-details220 summary{min-height:44px;padding:11px 0;color:var(--brand);cursor:pointer;max-width:max-content}
+.record-facts220{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin:0 0 8px;padding:16px;background:var(--panel2);border-radius:7px}
+.record-facts220>div{min-width:0}
+.record-facts220>div:last-child{grid-column:1/-1}
+.record-facts220 dt{color:var(--muted);font-size:13px;font-weight:650;margin-bottom:5px}
+.record-facts220 dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.record-detail-actions220{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.record-detail-actions220>.btn{min-height:44px}
+.record-pager220{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 0}
+.record-pager220 .btn,.record-pager220 .select{min-height:44px}
+.record-pager220 label{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.record-pager220 .select{width:auto}
+@media(max-width:1060px){
+ .record-columns220{display:none}
+ .record-row220{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
+ .record-mobile-label220{display:block;position:static;width:auto;height:auto;margin:0 0 4px;overflow:visible;clip-path:none;white-space:normal;color:var(--muted);font-size:13px}
+ .record-cell220:has(h2){grid-column:1/-1}
+ .record-cell220:last-child .record-mobile-label220{display:none}
+ .record-facts220{gap:12px 16px}
+}
+@media(max-width:560px){
+ .record-row220{padding:12px;align-items:start}
+ .record-cell220:last-child{grid-column:1/-1}
+ .record-details220{margin:0 12px}
+ .record-facts220{grid-template-columns:minmax(0,1fr);padding:12px}
+ .record-pager220{gap:7px}
+ .record-pager220 .btn{padding-inline:9px}
+}
+.record-calendar220{margin:5px 4px 0 0}
+@media(max-width:560px){.record-calendar220{margin:0 0 0 6px}}
+.contract-stats220{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.contract-stats220 button{min-height:66px;padding:12px}
+.contract-stats220 strong{font-size:24px}
+.contract-filters220{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr)) auto;align-items:end;gap:14px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.contract-filters220 .field{min-width:0}
+.contract-filters220 :is(.input,.select,.btn){width:100%;min-height:44px}
+.contract-field-error220{color:var(--red,#a5352d);font-size:14px}
+.contract-client220{min-width:0}
+.contract-modal220 #contractClientPreview220 .record-facts220{margin:0;padding:0}
+.contract-modal220 #contractClientPreview220 .record-facts220>div{grid-column:auto}
+#deleteContract220{margin-right:auto}
+.contract-reminder-strip220{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.contract-reminder-strip220[hidden]{display:none}
+.contract-todo-heading220,.contract-todo-row220{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:12px 14px}
+.contract-todo-row220{border-top:1px solid var(--line);overflow-wrap:anywhere}
+.contract-todo-row220>.actions{flex:none;max-width:100%}
+.contract-todo-row220 .btn{min-height:44px}
+@media(max-width:1060px){
+ .contract-stats220{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .contract-filters220{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .contract-stats220{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .contract-stats220 button{min-height:56px;padding:8px}
+ .contract-stats220 strong{font-size:20px}
+ .contract-filters220{gap:10px;padding:12px}
+ .contract-filters220>.field:first-child,.contract-filters220>.btn{grid-column:1/-1}
+ .contract-filters220 .select{padding-inline:6px}
+}
+@media(max-width:420px){
+ .contract-stats220 button{gap:4px}
+ .contract-stats220 .badge{padding-inline:4px;white-space:nowrap}
+}
 </style>
 <!-- VAT_WORKSPACE_STYLE_END -->
 </head>
@@ -593,7 +677,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.19.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.20.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -613,6 +697,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <button class="nav-btn active" data-view="today"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="18"><path d="m9 12 2 2 4-4"></path><rect height="18" rx="2" width="16" x="4" y="3"></rect></svg></span><span>今日待辦</span></button>
 <button class="nav-btn" data-view="calendar"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="18"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M16 3v4M8 3v4M3 11h18"></path></svg></span><span>日曆記事</span></button>
 <button class="nav-btn" data-view="cases" aria-label="案件"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="18"><rect x="4" y="4" width="16" height="17" rx="2"></rect><path d="M8 9h8M8 13h8M8 17h5"></path></svg></span><span>案件</span></button>
+<button class="nav-btn" data-view="contracts" aria-label="租約與合約"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="18"><path d="M8 3h7l4 4v14H5V3h3M14 3v5h5M8 12h8M8 16h5"/></svg></span><span>租約與合約</span></button>
 <button class="nav-btn" data-view="clients"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="18"><circle cx="9" cy="8" r="3"></circle><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 5a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-3-5"></path></svg></span><span>客戶庫</span></button>
 <button class="nav-btn" data-view="work"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="18"><rect height="14" rx="2" width="18" x="3" y="7"></rect><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"></path></svg></span><span>本期工作</span></button>
 <button class="nav-btn" data-view="accounting"><span class="nav-icon"><svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="18"><rect height="20" rx="2" width="14" x="5" y="2"></rect><path d="M8 6h8M8 11h1M12 11h1M16 11h.1M8 15h1M12 15h1M16 15h.1M8 19h1M12 19h1M16 19h.1"></path></svg></span><span>帳務處理</span></button>
@@ -664,6 +749,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 </div>
 <aside aria-hidden="true" class="drawer" id="calendarDrawer" data-review-id="vat-workbench-calendarDrawer" data-review-name="日曆記事詳情"><div class="drawer-head"><div><div class="strong" id="calendarDrawerTitle"></div><div class="muted small" id="calendarDrawerCount"></div></div><div class="actions"><button class="btn small primary" id="calendarDrawerAdd">新增</button><button class="btn small" id="calendarDrawerClose">關閉</button></div></div><div class="drawer-body" id="calendarDrawerBody"></div></aside>
 </section>
+<section id="view-contracts" class="view" data-review-id="vat-workbench-view-contracts" data-review-name="租約與合約"></section>
 <section id="view-cases" class="view" data-review-id="vat-workbench-cases" data-review-name="案件"></section>
 <section class="view" id="view-clients" data-review-id="vat-workbench-view-clients" data-review-name="客戶資料">
 <div class="page-head"><div><h1 class="page-title">客戶庫</h1><div class="page-sub">管理客戶資料、聯絡人與快遞方式。</div></div><div class="actions"><button class="btn" id="downloadTemplateBtn">下載 Excel 範本</button><button class="btn" id="bulkImportBtn">批量新增</button><button class="btn primary" id="addClientBtn">新增客戶</button></div></div>
@@ -758,7 +844,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="grid grid-2">
 <div class="card"><div class="card-h">輸出範圍</div><div class="card-b">
 <div class="field" id="pdfPeriodField"><label>期別</label><select class="select" id="pdfPeriod"></select></div>
-<div class="field" style="margin-top:9px"><label>範圍</label><select class="select" id="pdfScope"><option value="workTasks">工作待辦清單</option><option selected="" value="period">某一期全部客戶總表</option><option value="preShip">前期寄送</option><option value="client">單一客戶</option><option value="status">某類狀態客戶</option><option value="section">某功能區塊</option><option value="calendar">日曆記事</option><option value="cases">案件</option></select></div>
+<div class="field" style="margin-top:9px"><label>範圍</label><select class="select" id="pdfScope"><option value="workTasks">工作待辦清單</option><option selected="" value="period">某一期全部客戶總表</option><option value="preShip">前期寄送</option><option value="client">單一客戶</option><option value="status">某類狀態客戶</option><option value="section">某功能區塊</option><option value="calendar">日曆記事</option><option value="cases">案件</option><option value="contracts">租約與合約</option></select></div>
 <div class="hidden" id="pdfTaskOptions210" style="margin-top:10px" data-review-id="vat-workbench-pdfTaskOptions210" data-review-name="待辦列印選項"><div class="form-grid two"><div class="field"><label for="pdfTaskStatus210">待辦狀態</label><select class="select" id="pdfTaskStatus210"><option value="pending">待處理</option><option value="done">已完成</option><option value="all">全部</option></select></div><div class="field"><label for="pdfTaskKind210">類型</label><select class="select" id="pdfTaskKind210"><option value="">全部類型</option><option value="missing">欠缺文件</option><option value="return">待歸資料</option><option value="manual">其他待辦</option></select></div></div><p class="small muted">預計與實際完成時間分開列示，採 A4 橫式。</p></div><div class="hidden" id="pdfClientField" style="margin-top:9px"><div class="field"><label>客戶</label><select class="select" id="pdfClient"></select></div><div class="field" style="margin-top:9px"><label>單一客戶內容</label><select class="select" id="pdfClientMode"><option value="basic">客戶基本資料</option><option selected="" value="period">某一期完整紀錄</option><option value="yearTable">全年度六期總表</option><option value="yearBlocks">全年度每期分區</option></select></div></div>
 <div class="field hidden" id="pdfStatusField" style="margin-top:9px"><label>狀態</label><select class="select" id="pdfStatus" multiple="" size="6"><option value="unreceived">尚未收到發票</option><option value="partial">部分收到</option><option value="unpaid">尚未全額付款</option><option value="paidTaxUnpaid">已付款未繳納</option><option value="open">尚未結案</option><option value="overdue">已逾期／滯納</option></select></div>
 <div class="field hidden" id="pdfSectionField" style="margin-top:9px"><label>功能區塊</label><select class="select" id="pdfSection"><option value="client">客戶基本資料</option><option value="receipt">收發票追蹤</option><option value="billing">本期款項／請款</option><option value="accountingSummary">帳務處理總表</option><option value="accountingMissing">本期欠缺文件清單</option><option value="accountingReturn">本期待歸資料清單</option><option value="carryCurrent">本期跨期發票清單</option><option value="carry">跨期／尚欠完整表</option><option value="payment">收款／沖銷</option><option value="taxpay">繳稅／應繳清單</option><option value="late">逾期／滯納金／利息</option><option value="notices">通知歷史</option></select></div>
@@ -775,7 +861,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="grid grid-3">
 <div class="card"><div class="card-h">完整備份</div><div class="card-b"><p class="small muted">包含客戶、期別、工作紀錄、通知、模板與設定。</p><button class="btn primary" id="fullBackupBtn">下載完整備份</button></div></div>
 <div class="card"><div class="card-h">完整還原</div><div class="card-b"><div class="field"><label>選擇備份檔</label><input accept=".taxbackup,.json" class="input" id="restoreFile" type="file"/></div><div class="actions" style="justify-content:flex-start;margin-top:9px"><button class="btn" id="restoreMergeBtn">合併</button><button class="btn danger" id="restoreOverwriteBtn">完整覆蓋</button></div></div></div>
-<div class="card"><div class="card-h">部分資料</div><div class="card-b"><div class="field"><label>匯出範圍</label><select class="select" id="partialScope"><option value="clients">客戶庫</option><option value="year">某年度</option><option value="period">目前期別</option><option value="client">目前選定客戶</option><option value="status">目前篩選結果</option><option value="section">某功能區塊</option><option value="calendar">日曆記事</option><option value="cases">案件</option></select></div><div class="field hidden" id="partialYearField" style="margin-top:7px"><label>年度</label><select class="select" id="partialYear"></select></div><div class="field hidden" id="partialSectionField" style="margin-top:7px"><label>功能區塊</label><select class="select" id="partialSection"><option value="receipt">收發票追蹤</option><option value="billing">款項／請款</option><option value="payment">付款紀錄</option><option value="taxpay">繳納紀錄</option><option value="late">逾期／滯納金／利息</option><option value="notices">通知歷史</option><option value="preShip">前期寄送</option></select></div><div class="actions" style="justify-content:flex-start;margin-top:9px"><button class="btn" id="partialExportBtn">匯出部分資料</button><label class="btn" for="partialImportFile">匯入部分資料</label><input accept=".taxbackup,.json" hidden="" id="partialImportFile" type="file"/></div></div></div>
+<div class="card"><div class="card-h">部分資料</div><div class="card-b"><div class="field"><label>匯出範圍</label><select class="select" id="partialScope"><option value="clients">客戶庫</option><option value="year">某年度</option><option value="period">目前期別</option><option value="client">目前選定客戶</option><option value="status">目前篩選結果</option><option value="section">某功能區塊</option><option value="calendar">日曆記事</option><option value="cases">案件</option><option value="contracts">租約與合約</option></select></div><div class="field hidden" id="partialYearField" style="margin-top:7px"><label>年度</label><select class="select" id="partialYear"></select></div><div class="field hidden" id="partialSectionField" style="margin-top:7px"><label>功能區塊</label><select class="select" id="partialSection"><option value="receipt">收發票追蹤</option><option value="billing">款項／請款</option><option value="payment">付款紀錄</option><option value="taxpay">繳納紀錄</option><option value="late">逾期／滯納金／利息</option><option value="notices">通知歷史</option><option value="preShip">前期寄送</option></select></div><div class="actions" style="justify-content:flex-start;margin-top:9px"><button class="btn" id="partialExportBtn">匯出部分資料</button><label class="btn" for="partialImportFile">匯入部分資料</label><input accept=".taxbackup,.json" hidden="" id="partialImportFile" type="file"/></div></div></div>
 </div>
 <div class="card" id="backupInfo" style="margin-top:12px" data-review-id="vat-workbench-backupInfo" data-review-name="備份狀態"><div class="card-h">目前資料摘要</div><div class="card-b" id="backupSummary"></div></div>
 </section>
@@ -799,8 +885,8 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.19.0', BACKUP_VERSION=8, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=4;
-const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks','cases'];
+const APP_VERSION='2.20.0', BACKUP_VERSION=9, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=5;
+const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks','cases','contracts','contractCategories'];
 const PERIOD_SLOTS=[['01','1–2 月',3,15],['02','3–4 月',5,15],['03','5–6 月',7,15],['04','7–8 月',9,15],['05','9–10 月',11,15],['06','11–12 月',1,15]];
 const TEMPLATE_TYPES=[['receiptAsk','詢問收發票時間'],['dispatchReminder','最晚寄出提醒'],['firstBilling','首次請款'],['finalRemit','最後匯款日']];
 const EVENT_LABELS={appointment:'今天預約收發票',dispatch:'今天是最晚寄出日',unreceived:'到預約日仍未收到發票',firstBilling:'今天需要發首次請款通知',reminder:'今天是款項提醒節點',remitDue:'今天是最晚匯款日',unpaid:'尚未全額付款',taxUnpaid:'尚未繳納營業稅',overdue:'已經逾期',lateCharge:'已產生滯納金／利息'};
@@ -813,7 +899,7 @@ const DEFAULT_FIRST=`{聯繫人}您好：\n{客戶} {年度}年{期別}請款明
 const DEFAULT_FINAL=`[請設定事務所名稱]\n{客戶} {聯繫人}您好：\n請核對本期尚欠款項：{尚欠金額}\n銀行：[請設定銀行與分行]\n帳號：[請設定匯款帳號]\n戶名：[請設定收款戶名]\n聯絡電話：[請設定聯絡電話]`;
 let db=null;
 function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
-const state={view:'today',periodId:null,selectedPCId:null,templateType:'receiptAsk',selectedNotificationTypeId:'receiptAsk',selectedTemplateId:null,templateTab:'manage',clients:[],periods:[],periodClients:[],notificationTypes:[],templates:[],notifications:[],cases:[],calendarNotes:[],calendarHistory:[],completed:[],settings:null,laws:[],workDraft:null,workFilters:[],workTab:'main',clientSort:{key:'code',dir:'asc'},clientFilters:{shipType:'',addressSource:'',recipientSource:'',status:''},preShipSort:{key:'code',dir:'asc'},preShipFilters:{shipType:'',sent:'',date:''},calendarView:'month',calendarMonth:localDate().slice(0,7),calendarSelectedDate:localDate(),calendarFilters:{q:'',clientId:'',from:'',to:''},calendarSort:'desc',templatePCId:null,noticeMode:'single',mergeClientIds:[],mergeSalutation:'',accountingPCId:null,accountingFocus:null,accountingSearch:'',todoPages:{urgent:1,today:1,tracking:1},todoCollapsed:{urgent:false,today:false,tracking:false},donePage:1,doneCollapsed:true};
+const state={view:'today',periodId:null,selectedPCId:null,templateType:'receiptAsk',selectedNotificationTypeId:'receiptAsk',selectedTemplateId:null,templateTab:'manage',clients:[],periods:[],periodClients:[],notificationTypes:[],templates:[],notifications:[],cases:[],contracts:[],contractCategories:[],calendarNotes:[],calendarHistory:[],completed:[],settings:null,laws:[],workDraft:null,workFilters:[],workTab:'main',clientSort:{key:'code',dir:'asc'},clientFilters:{shipType:'',addressSource:'',recipientSource:'',status:''},preShipSort:{key:'code',dir:'asc'},preShipFilters:{shipType:'',sent:'',date:''},calendarView:'month',calendarMonth:localDate().slice(0,7),calendarSelectedDate:localDate(),calendarFilters:{q:'',clientId:'',from:'',to:''},calendarSort:'desc',templatePCId:null,noticeMode:'single',mergeClientIds:[],mergeSalutation:'',accountingPCId:null,accountingFocus:null,accountingSearch:'',todoPages:{urgent:1,today:1,tracking:1},todoCollapsed:{urgent:false,today:false,tracking:false},donePage:1,doneCollapsed:true};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const nowISO=()=>new Date().toISOString();
 const currentDateMode=()=>state.settings?.dateMode||localStorage.getItem('vatDateMode')||'gregorian';
@@ -1256,6 +1342,7 @@ async function mergeBackup(b){const conflicts=[];for(const s of STORES){const cu
 async function partialExport(){const scope=$('#partialScope').value,b=await backupData('partial'),pid=state.periodId,pc=currentPC();for(const s of STORES)b.data[s]=[];if(scope==='clients')b.data.clients=state.clients;else if(scope==='year'){const y=Number($('#partialYear').value),periods=state.periods.filter(x=>Number(x.year)===y),ids=new Set(periods.map(x=>x.id)),pcs=state.periodClients.filter(x=>ids.has(x.periodId));b.data.periods=periods;b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));b.data.notifications=state.notifications.filter(n=>ids.has(n.periodId));b.data.completed=state.completed.filter(n=>ids.has(n.periodId));b.meta={year:y}}else if(scope==='period'){b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcForPeriod(pid);b.data.notifications=state.notifications.filter(n=>n.periodId===pid);b.data.completed=state.completed.filter(n=>n.periodId===pid);b.data.clients=state.clients.filter(c=>b.data.periodClients.some(x=>x.clientId===c.id))}else if(scope==='client'&&pc){b.data.clients=state.clients.filter(c=>c.id===pc.clientId);b.data.periods=state.periods.filter(x=>x.id===pc.periodId);b.data.periodClients=[pc];b.data.notifications=state.notifications.filter(n=>n.periodClientId===pc.id);b.data.completed=state.completed.filter(n=>n.periodClientId===pc.id)}else if(scope==='status'){const pcs=filteredWorkPCs();b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));b.data.notifications=state.notifications.filter(n=>pcs.some(x=>x.id===n.periodClientId));b.data.completed=state.completed.filter(n=>pcs.some(x=>x.id===n.periodClientId));b.meta={filters:clone(state.workFilters||[])}}else if(scope==='section'){const sec=$('#partialSection').value,pcs=pcForPeriod(pid);b.data.periods=state.periods.filter(x=>x.id===pid);b.data.periodClients=pcs;b.data.clients=state.clients.filter(c=>pcs.some(x=>x.clientId===c.id));if(sec==='notices')b.data.notifications=state.notifications.filter(n=>n.periodId===pid);b.meta={section:sec}}if(scope==='calendar'){b.data.calendarNotes=clone(state.calendarNotes);b.data.calendarHistory=clone(state.calendarHistory);b.data.periodClients=clone(state.periodClients);b.data.periods=clone(state.periods);b.data.clients=clone(state.clients);b.data.workTasks=clone(state.workTasks||[])}else if(scope==='period'||scope==='section'||scope==='status'){b.data.workTasks=clone((state.workTasks||[]).filter(x=>x.periodId===pid))}else if(scope==='year'){const ids=new Set(b.data.periods.map(x=>x.id));b.data.workTasks=clone((state.workTasks||[]).filter(x=>ids.has(x.periodId)))}else if(scope==='client'&&pc){b.data.workTasks=clone((state.workTasks||[]).filter(x=>x.clientId===pc.clientId&&x.periodId===pc.periodId))}if(scope==='cases'){b.data.cases=clone(state.cases||[]);const ids=new Set(b.data.cases.map(row=>row.clientId));b.data.clients=clone(state.clients.filter(client=>ids.has(client.id)))}
 else if(scope==='calendar')b.data.cases=clone(state.cases||[]);
 else if(scope==='clients'||scope==='client'){const ids=new Set(b.data.clients.map(client=>client.id));b.data.cases=clone((state.cases||[]).filter(row=>ids.has(row.clientId)))}
+addContractPartial220(b.data,scope);
 b.data.settings=clone([state.settings]);const selectedCount214=b.data.periodClients.length;try{b.data=closeGroupBackup214(b.data)}catch(e){toast(e.message);return}if(b.data.periodClients.length>selectedCount214)toast('已連同跨期／合併付款關聯資料匯出，共 '+b.data.periodClients.length+' 筆工作紀錄');downloadBlob(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}),`營業稅部分資料_${localDate()}.taxbackup`)}
 function renderSettings(){const s=state.settings;syncDateMode();$('#setDispatchDays').value=s.dispatchLeadDays??'';$('#billingCompleteMode').value=s.billingCompleteMode||'amount';$('#receiptStatusSettings').innerHTML=(s.receiptStatuses||[]).map((x,i)=>`<div class="form-grid" style="grid-template-columns:1fr auto auto auto;align-items:end;margin-bottom:6px"><div class="field"><label>狀態</label><input class="input rs-name" data-i="${esc(i)}" value="${esc(x.name)}"></div><label class="check-row"><input class="rs-active" data-i="${esc(i)}" type="checkbox" ${x.active!==false?'checked':''}>啟用</label><label class="check-row"><input class="rs-complete" data-i="${esc(i)}" type="checkbox" ${x.complete?'checked':''}>視為完成</label><button class="btn small danger rs-del" data-i="${esc(i)}">刪除</button></div>`).join('');$('#reminderDaysSettings').innerHTML=(s.reminderDays||[]).map((n,i)=>`<div class="form-grid two" style="align-items:end;margin-bottom:6px"><div class="field"><label>提前天數</label><input class="input rd-val" data-i="${esc(i)}" type="number" min="1" value="${esc(n)}"></div><button class="btn small danger rd-del" data-i="${esc(i)}">刪除</button></div>`).join('');$('#courierSettings').innerHTML=(s.couriers||[]).map((x,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px"><input class="input courier-val" data-i="${esc(i)}" value="${esc(x)}"><button class="btn small danger courier-del" data-i="${esc(i)}">刪除</button></div>`).join('');const law=state.laws.find(l=>Number(l.year)===new Date().getFullYear())||state.laws[0]||{};$('#lawYear').value=law.year||new Date().getFullYear();$('#lawInterest').value=law.interest??'';$('#lawDays').value=law.lateEveryDays??3;$('#lawPct').value=law.latePct??1;$('#lawMax').value=law.lateMaxPct??10;$('#lawPeriod').value=law.latePeriodDays??30;$('#prioritySettings').innerHTML=Object.entries(EVENT_LABELS).map(([k,n])=>`<div class="form-grid two" style="align-items:end;margin-bottom:6px"><div class="small">${esc(n)}</div><select class="select pri-val" data-k="${esc(k)}"><option value="urgent" ${s.priorities[k]==='urgent'?'selected':''}>緊急</option><option value="today" ${s.priorities[k]==='today'?'selected':''}>今天要處理</option><option value="tracking" ${s.priorities[k]==='tracking'?'selected':''}>持續追蹤</option></select></div>`).join('');const cfNames={code:'客戶代號',name:'客戶名稱',receipt:'收件狀態',appointment:'預約收件日',payment:'付款狀態',debt:'尚欠金額',taxPaid:'繳納狀態',closed:'結案狀態',priority:'今日優先級'};$('#cardFieldSettings').innerHTML=Object.entries(cfNames).map(([k,n])=>`<label class="check-row"><input class="card-field-opt" data-k="${esc(k)}" type="checkbox" ${s.cardFields[k]!==false?'checked':''}>${n}</label>`).join('');bindSettingsRows()}
 function bindSettingsRows(){$$('.rs-del').forEach(b=>b.onclick=async()=>{if(await confirm2('刪除收件狀態','刪除後舊紀錄中的這個狀態也不再保留。','刪除')){const i=Number(b.dataset.i),deleted=state.settings.receiptStatuses[i];state.settings.receiptStatuses.splice(i,1);for(const pc of state.periodClients)if(pc.receiptStatusId===deleted.id){pc.receiptStatusId='';pc.receiptStatusText='';await put('periodClients',pc)}renderSettings()}});$$('.rd-del').forEach(b=>b.onclick=()=>{state.settings.reminderDays.splice(Number(b.dataset.i),1);renderSettings()});$$('.courier-del').forEach(b=>b.onclick=()=>{state.settings.couriers.splice(Number(b.dataset.i),1);renderSettings()})}
@@ -1349,10 +1436,11 @@ async function completeCalendarReminder(noteId){const n=state.calendarNotes.find
 
 function renderToday(){
   const ev=todoEvents(),groups={urgent:[],today:[],tracking:[]};ev.forEach(e=>(groups[e.priority]||groups.today).push(e));
-  groups.today.sort((a,b)=>Number(b.source==='case')-Number(a.source==='case'));
+  const reminderOrder={contract:2,case:1};
+  groups.today.sort((a,b)=>(reminderOrder[b.source]||0)-(reminderOrder[a.source]||0));
   $('#todayLabel').textContent=`${fmtDate(localDate())}｜${periodLabel(currentPeriod())}`;const unpaidSum=pcForPeriod().reduce((a,pc)=>a+latestOutstanding218(pc),0);
   $('#todayStats').innerHTML=`<div class="card stat tone-orange"><div class="stat-label">緊急</div><div class="stat-num">${groups.urgent.length}</div><div class="stat-sub">需要優先處理</div></div><div class="card stat tone-blue"><div class="stat-label">今天要處理</div><div class="stat-num">${groups.today.length}</div><div class="stat-sub">本日工作</div></div><div class="card stat tone-yellow"><div class="stat-label">持續追蹤</div><div class="stat-num">${groups.tracking.length}</div><div class="stat-sub">尚未完成</div></div><div class="card stat"><div class="stat-label">本期尚欠</div><div class="stat-num mono">${money(unpaidSum)}</div><div class="stat-sub">元</div></div>`;
-  const item=e=>{const action=e.source==='case'?`<button class="btn small" data-open-case219="${esc(e.caseId)}">查看案件</button>`:e.source==='workTask'?`<button class="btn small" data-task-open210="${esc(e.taskKey)}">處理待辦</button>`:e.source==='calendar'?`<button class="btn small primary" data-complete-calendar="${esc(e.calendarNoteId)}">完成</button>`:e.source==='templateReminder'?`<button class="btn small" data-open-template="${esc(e.templateId)}" data-template-pc="${esc(e.pcId||'')}">前往模板</button>`:'';const open=e.source==='case'?'':e.source==='workTask'?'':e.source==='calendar'?`data-open-calendar-note="${esc(e.calendarNoteId)}"`:e.source==='templateReminder'?'':`data-open-pc="${esc(e.pcId||'')}"`;return `<div class="todo-item" ${open}><span class="todo-dot" style="background:var(--${e.tone})"></span><div class="todo-main"><div class="todo-title">${esc(e.client)}｜${esc(e.label)}</div><div class="todo-meta"><span>${esc(e.code||'')}</span><span>${esc(e.detail||'')}</span></div></div>${action}</div>`};
+  const item=e=>{const action=e.source==='contract'?`<button class="btn small" data-open-contract220="${esc(e.contractId)}">查看合約</button>`:e.source==='case'?`<button class="btn small" data-open-case219="${esc(e.caseId)}">查看案件</button>`:e.source==='workTask'?`<button class="btn small" data-task-open210="${esc(e.taskKey)}">處理待辦</button>`:e.source==='calendar'?`<button class="btn small primary" data-complete-calendar="${esc(e.calendarNoteId)}">完成</button>`:e.source==='templateReminder'?`<button class="btn small" data-open-template="${esc(e.templateId)}" data-template-pc="${esc(e.pcId||'')}">前往模板</button>`:'';const open=['case','contract'].includes(e.source)?'':e.source==='workTask'?'':e.source==='calendar'?`data-open-calendar-note="${esc(e.calendarNoteId)}"`:e.source==='templateReminder'?'':`data-open-pc="${esc(e.pcId||'')}"`;return `<div class="todo-item" ${open}><span class="todo-dot" style="background:var(--${e.tone})"></span><div class="todo-main"><div class="todo-title">${esc(e.client)}｜${esc(e.label)}</div><div class="todo-meta"><span>${esc(e.code||'')}</span><span>${esc(e.detail||'')}</span></div></div>${action}</div>`};
   const col=(key,title)=>{const all=groups[key],size=5,pages=Math.max(1,Math.ceil(all.length/size));state.todoPages[key]=Math.min(Math.max(1,state.todoPages[key]||1),pages);const start=(state.todoPages[key]-1)*size,visible=all.slice(start,start+size),collapsed=!!state.todoCollapsed[key];return `<div class="card todo-section ${collapsed?'collapsed':''}" data-todo-section="${esc(key)}"><div class="card-h"><span>${title} <span class="badge b-gray">${all.length}</span></span><div class="todo-section-tools"><button class="btn small" data-toggle-todo="${esc(key)}">${collapsed?'展開':'收合'}</button></div></div><div class="card-b"><div class="todo-list">${visible.length?visible.map(item).join(''):'<div class="empty">目前沒有項目</div>'}</div>${all.length?`<div class="pager"><span>每頁 5 筆</span><div class="pager-center"><button class="btn small" data-todo-page="${key}:prev" ${state.todoPages[key]<=1?'disabled':''}>上一頁</button><span>${state.todoPages[key]} / ${pages}</span><button class="btn small" data-todo-page="${key}:next" ${state.todoPages[key]>=pages?'disabled':''}>下一頁</button></div></div>`:''}</div></div>`};
   $('#todayTodos').innerHTML=col('urgent','緊急')+col('today','今天要處理')+col('tracking','持續追蹤');
   $$('[data-toggle-todo]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggleTodo;state.todoCollapsed[k]=!state.todoCollapsed[k];renderToday()});
@@ -2190,7 +2278,7 @@ async function commitBackupMerge211(b,choice){
  validateBackupReferences211(data);await writeBatch210(ops,{linkMode218:'restore'});
 }
 
-restoreFile=async function(mode){const f=$('#restoreFile').files[0];if(!f){toast('請先選擇備份檔');return}let b;try{b=await fileJson(f);validateBackup210(b)}catch(e){toast(e.message||'無法讀取備份');return}if(mode!=='overwrite')return mergeBackup(b);if(b.kind!=='full'){toast('部分資料不能完整覆蓋，請使用「合併」或選擇完整備份');return}if(!await confirm2('完整覆蓋',`將以備份取代目前資料，包含工作待辦、客戶、期別與通知。備份內自訂待辦 ${(b.data.workTasks||[]).length} 筆、案件 ${(b.data.cases||[]).length} 筆。`,'繼續'))return;await downloadBackup('覆蓋前安全備份');if(!await confirm2('請確認安全備份已保存','請確認剛下載的安全備份已保存在電腦，再繼續覆蓋。舊版完整備份沒有自訂待辦或案件時，還原後對應資料為空。','確認已保存並覆蓋'))return;const ops=[];for(const s of STORES){ops.push({store:s,action:'clear'});for(const x of b.data[s]||[])ops.push({store:s,value:x})}try{await writeBatch210(ops);await loadAll();toast('完整還原完成')}catch(e){toast('還原未完成，交易已取消；請保留安全備份');console.error(e)}};
+restoreFile=async function(mode){const f=$('#restoreFile').files[0];if(!f){toast('請先選擇備份檔');return}let b;try{b=await fileJson(f);validateBackup210(b)}catch(e){toast(e.message||'無法讀取備份');return}if(mode!=='overwrite')return mergeBackup(b);if(b.kind!=='full'){toast('部分資料不能完整覆蓋，請使用「合併」或選擇完整備份');return}if(!await confirm2('完整覆蓋',`將以備份取代目前資料，包含工作待辦、客戶、期別與通知。備份內自訂待辦 ${(b.data.workTasks||[]).length} 筆、案件 ${(b.data.cases||[]).length} 筆、合約 ${(b.data.contracts||[]).length} 筆。`,'繼續'))return;await downloadBackup('覆蓋前安全備份');if(!await confirm2('請確認安全備份已保存','請確認剛下載的安全備份已保存在電腦，再繼續覆蓋。舊版完整備份若沒有案件、合約或自訂待辦，還原後該區會清空。','確認已保存並覆蓋'))return;const ops=[];for(const s of STORES){ops.push({store:s,action:'clear'});for(const x of b.data[s]||[])ops.push({store:s,value:x})}try{await writeBatch210(ops);await loadAll();toast('完整還原完成')}catch(e){toast('還原未完成，交易已取消；請保留安全備份');console.error(e)}};
 const originalMerge210=mergeBackup;
 mergeBackup=async function(b){try{validateBackup210(b)}catch(e){toast(e.message);return}return originalMerge210(b)};
 
@@ -3037,7 +3125,7 @@ applyWorkFocusV24=function(id,scroll=true){
 };
 function vatGlobalMount217(){
  document.body.classList.add('vat-ui217');
- const nav=$('.sidebar'),groups=[['每日處理',['today','calendar','cases','work','accounting']],['資料與輸出',['clients','templates','pdf']],['管理',['backup','settings']]];
+ const nav=$('.sidebar'),groups=[['每日處理',['today','calendar','cases','contracts','work','accounting']],['資料與輸出',['clients','templates','pdf']],['管理',['backup','settings']]];
  const nodes=new Map($$('.sidebar .nav-btn').map(b=>[b.dataset.view,b]));nodes.get('pdf').querySelector('span:last-child').textContent='列印編輯';
  nav.querySelectorAll('.nav-section-label,.side-divider').forEach(n=>n.remove());
  for(const [name,ids]of groups){nav.append(vatElement214('div','nav-section-label',name));for(const id of ids){const b=nodes.get(id);if(b){b.setAttribute('aria-label',b.textContent.trim());b.title=b.textContent.trim();nav.append(b);}}}
@@ -3417,7 +3505,7 @@ writeBatch210=function(ops,options={}){
  const baselineRows=clone(options.baselineRows||crossPeriodBaseline218||state.periodClients||[]),cleared=ops.some(o=>o.store==='periodClients'&&o.action==='clear'),maintenance=crossPeriodLoading218||options.linkMode218==='seed'||options.linkMode218==='restore'||cleared,mode=maintenance?'seed':'edit';
  return new Promise((resolve,reject)=>{
   let tr,rows,periods,result,failure,casesReady=false;const fail=e=>{failure=e;try{tr.abort()}catch{}reject(e)};
-  try{tr=db.transaction([...new Set([...ops.map(o=>o.store),'periodClients','periods',...(caseBatchTouches219(ops)?['clients','cases']:[])])],'readwrite')}catch(e){reject(e);return}
+  try{tr=db.transaction([...new Set([...ops.map(o=>o.store),'periodClients','periods',...(needsRecordReferenceCheck220(ops)?recordReferenceStores220:[])])],'readwrite')}catch(e){reject(e);return}
   const store=tr.objectStore('periodClients'),pr=tr.objectStore('periods').getAll(),rr=store.getAll();
   const build=()=>{if(!rows||!periods||failure||!casesReady)return;try{
    const nextPeriods=applyRowOps218(periods,ops,'periods'),proposed=applyRowOps218(rows,ops,'periodClients'),directIds=ops.filter(o=>o.store==='periodClients'&&!o.action).map(o=>o.value.id);
@@ -3429,7 +3517,7 @@ writeBatch210=function(ops,options={}){
    result.periods=nextPeriods;
   }catch(e){fail(e)}};
   rr.onsuccess=()=>{rows=rr.result;build()};pr.onsuccess=()=>{periods=pr.result;build()};
-  caseBatchGuard219(tr,ops,()=>{casesReady=true;build()},fail);
+  guardRecordReferences220(tr,ops,()=>{casesReady=true;build()},fail);
   tr.oncomplete=()=>{crossPeriodBaseline218=clone(result.periodClients);resolve(result)};tr.onerror=()=>{};tr.onabort=()=>reject(failure||tr.error||new Error('跨期聯動未完成，所有變更已取消'));
  });
 };
@@ -3644,8 +3732,62 @@ function createCasesEngine219(){
 function validateCases219(data,options){return createCasesEngine219().validateData(data,options);}
 if(typeof module!=='undefined'&&module.exports)module.exports={createCasesEngine219,validateCases219};
 
+/* Shared row, expandable details and pagination layout for independent records. */
+function recordFacts220(facts) {
+ return `<dl class="record-facts220">${facts.map(([label,value])=>
+  `<div><dt>${esc(label)}</dt><dd>${esc(value||'—')}</dd></div>`).join('')}</dl>`;
+}
+function recordList220(columns,rows,expanded) {
+ return `<div class="record-list220">
+  <div class="record-columns220" aria-hidden="true">${columns.map(label=>`<span>${esc(label)}</span>`).join('')}</div>
+  <div role="list">${rows.map(row=>`<article role="listitem" class="record-item220" ${row.keyAttribute}="${esc(row.id)}">
+   <div class="record-row220">${row.cells.map((content,index)=>
+    `<div class="record-cell220"><span class="record-mobile-label220">${esc(columns[index])}</span>${content}</div>`).join('')}</div>
+   <details class="record-details220" data-record-detail220="${esc(row.id)}" ${expanded.has(row.id)?'open':''}>
+    <summary>${esc(row.detailLabel)}</summary>
+    ${recordFacts220(row.facts)}
+    ${row.detailActions||''}
+   </details>
+  </article>`).join('')}</div>
+ </div>`;
+}
+function bindRecordDetails220(host,expanded) {
+ host.querySelectorAll('[data-record-detail220]').forEach(details=>{
+  details.ontoggle=()=>{if(details.isConnected){
+   if(details.open)expanded.add(details.dataset.recordDetail220);
+   else expanded.delete(details.dataset.recordDetail220);
+  }};
+ });
+}
+function recordPage220(host,runtime,total,render,name) {
+ const pages=Math.max(1,Math.ceil(total/runtime.size));
+ if(pages===1){host.replaceChildren();return;}
+ const page=runtime.page;
+ host.innerHTML=`<nav class="record-pager220" aria-label="${esc(name)}分頁">
+  <button class="btn" type="button" data-record-page220="prev" ${page===1?'disabled':''}>上一頁</button>
+  <label>第 <select class="select" aria-label="${esc(name)}頁碼">${Array.from({length:pages},(_,index)=>
+   `<option value="${index+1}" ${index+1===page?'selected':''}>${index+1}</option>`).join('')}</select> ／ ${pages} 頁</label>
+  <button class="btn" type="button" data-record-page220="next" ${page===pages?'disabled':''}>下一頁</button></nav>`;
+ const select=host.querySelector('select');
+ const change=(value,selector)=>{
+  runtime.page=value;
+  render();
+  const requested=host.querySelector(selector);
+  (requested&&!requested.disabled?requested:host.querySelector('select'))?.focus();
+ };
+ select.onchange=()=>change(Number(select.value),'select');
+ host.querySelectorAll('[data-record-page220]').forEach(button=>{
+  const direction=button.dataset.recordPage220;
+  button.onclick=()=>change(page+(direction==='next'?1:-1),`[data-record-page220="${direction}"]`);
+ });
+}
+function recordClientOptions220(selected) {
+ return state.clients.slice().sort((a,b)=>String(a.code||a.name||'').localeCompare(String(b.code||b.name||''),'zh-Hant',{numeric:true}))
+  .map(client=>`<option value="${esc(client.id)}" ${client.id===selected?'selected':''}>${esc([client.code,client.name].filter(Boolean).join(' · '))}</option>`).join('');
+}
+
 /* Customer cases: one source record, live customer lookup and derived local calendar reminders. */
-const caseRuntime219={query:'',clientId:'',status:'active',page:1,size:12},caseAckBusy219=new Set();let caseMinuteTimer219=null;
+const caseRuntime219={query:'',clientId:'',status:'active',page:1,size:12,expanded:new Set()},caseAckBusy219=new Set();let caseMinuteTimer219=null;
 const CASE_STATUS219={pending:'待處理',inProgress:'進行中',done:'已完成',cancelled:'已取消'};
 function caseEngine219(){return createCasesEngine219();}
 function caseCustomer219(record){return clientById(record.clientId)||null;}
@@ -3678,7 +3820,7 @@ function calendarCaseItems219(){
 function caseReminderEvents219(){const engine=caseEngine219(),now=new Date();return (state.cases||[]).filter(record=>engine.reminderDue(record,now)).map(record=>{const customer=caseCustomer219(record);return {id:'case-reminder:'+record.id,source:'case',caseId:record.id,type:'caseReminder',label:'案件提醒',client:customer?.name||'客戶已移除',code:customer?.code||'',detail:record.title,priority:'today',tone:'blue'};});}
 function mountCases219(){let view=$('#view-cases');if(!view){view=document.createElement('section');view.id='view-cases';view.className='view';$('.main')?.append(view)}if(!view||$('#casesCards219'))return;
  view.setAttribute('aria-label','案件');view.dataset.reviewId='vat-workbench-view-cases';view.dataset.reviewName='案件';
- view.innerHTML='<div class="page-head"><div><h1 class="page-title">案件</h1></div><div class="actions"><button class="btn primary" id="newCase219">新增案件</button></div></div><div class="cases-stats219" id="casesStats219" aria-label="案件狀態"></div><div class="cases-filters219"><div class="field"><label for="casesSearch219">搜尋案件</label><input class="input" id="casesSearch219" type="search" placeholder="案件、客戶、聯絡人或備註"></div><div class="field"><label for="casesClient219">客戶</label><select class="select" id="casesClient219"></select></div><div class="field"><label for="casesStatus219">狀態</label><select class="select" id="casesStatus219"><option value="active">未結案</option><option value="all">全部狀態</option><option value="inProgress">進行中</option><option value="pending">待處理</option><option value="done">已完成</option><option value="cancelled">已取消</option></select></div><button class="btn" id="clearCases219">清除條件</button></div><div class="cases-result219" id="casesCount219" aria-live="polite"></div><div class="cases-grid219" id="casesCards219"></div><div class="cases-pager219" id="casesPager219"></div>';
+ view.innerHTML='<div class="page-head"><div><h1 class="page-title">案件</h1></div><div class="actions"><button class="btn primary" id="newCase219">新增案件</button></div></div><div class="cases-stats219" id="casesStats219" aria-label="案件狀態"></div><div class="cases-filters219"><div class="field"><label for="casesSearch219">搜尋案件</label><input class="input" id="casesSearch219" type="search" placeholder="案件、客戶、聯絡人或備註"></div><div class="field"><label for="casesClient219">客戶</label><select class="select" id="casesClient219"></select></div><div class="field"><label for="casesStatus219">狀態</label><select class="select" id="casesStatus219"><option value="active">未結案</option><option value="all">全部狀態</option><option value="inProgress">進行中</option><option value="pending">待處理</option><option value="done">已完成</option><option value="cancelled">已取消</option></select></div><button class="btn" id="clearCases219">清除條件</button></div><div class="cases-result219" id="casesCount219" aria-live="polite"></div><div id="casesCards219"></div><div id="casesPager219"></div>';
  $('#newCase219').onclick=()=>openCase219();$('#casesSearch219').oninput=e=>{caseRuntime219.query=e.target.value;caseRuntime219.page=1;renderCases219()};$('#casesClient219').onchange=e=>{caseRuntime219.clientId=e.target.value;caseRuntime219.page=1;renderCases219()};$('#casesStatus219').onchange=e=>{caseRuntime219.status=e.target.value;caseRuntime219.page=1;renderCases219()};$('#clearCases219').onclick=()=>{Object.assign(caseRuntime219,{query:'',clientId:'',status:'active',page:1});renderCases219()};
 }
 function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const runtime=caseRuntime219,engine=caseEngine219(),all=Array.isArray(state.cases)?state.cases:[],now=new Date(),today=localDate(),clock=now.toTimeString().slice(0,5),q=runtime.query.trim().toLocaleLowerCase();
@@ -3687,8 +3829,27 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  const selectedClient=runtime.clientId;$('#casesClient219').innerHTML='<option value="">全部客戶</option>'+state.clients.slice().sort((a,b)=>String(a.code||a.name||'').localeCompare(String(b.code||b.name||''),'zh-Hant',{numeric:true})).map(customer=>`<option value="${esc(customer.id)}">${esc([customer.code,customer.name].filter(Boolean).join(' · '))}</option>`).join('');if(selectedClient&&!state.clients.some(c=>c.id===selectedClient))runtime.clientId='';$('#casesClient219').value=runtime.clientId;$('#casesStatus219').value=runtime.status;if($('#casesSearch219').value!==runtime.query)$('#casesSearch219').value=runtime.query;
  const filtered=all.filter(record=>{const customer=caseCustomer219(record),text=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):''].join(' ').toLocaleLowerCase();return (!q||text.includes(q))&&(!runtime.clientId||record.clientId===runtime.clientId)&&(runtime.status==='all'||runtime.status==='active'?runtime.status==='all'||engine.active(record.status):record.status===runtime.status)}).sort((a,b)=>{const aClosed=engine.active(a.status)?0:1,bClosed=engine.active(b.status)?0:1;return aClosed-bClosed||(a.dueDate||'9999').localeCompare(b.dueDate||'9999')||String(b.updatedAt||'').localeCompare(String(a.updatedAt||''))||String(a.id).localeCompare(String(b.id));});
  const pages=Math.max(1,Math.ceil(filtered.length/runtime.size));runtime.page=Math.max(1,Math.min(runtime.page,pages));const visible=filtered.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);$('#casesCount219').textContent=`${filtered.length} 件案件`;
- $('#casesCards219').innerHTML=visible.length?visible.map(record=>{const customer=caseCustomer219(record),overdue=engine.overdue(record,today,clock),when=record.dueDate?fmtDate(record.dueDate)+(record.dueTime?' '+record.dueTime:''):fmtDate(record.startDate),reminder=record.reminderEnabled&&engine.active(record.status)?record.reminderCompletedAt?'提醒已確認':fmtDate(record.reminderDate)+' '+(record.reminderTime||''):'未啟用';return `<article class="case-card219 ${overdue?'is-overdue':''}" data-case-id219="${esc(record.id)}"><header><h2>${esc(record.title)}</h2>${caseStatusBadge219(record.status)}</header><div class="case-customer219"><strong>${esc(customer?.name||'客戶已移除')}</strong><span>${esc(customer?.code||'')}</span></div><div class="case-contact219">${esc(customer?contactSummary(customer)||'未填聯絡人':'請改選有效客戶')}</div><dl><div><dt>${record.dueDate?'截止':'開始'}</dt><dd>${esc(when)}${overdue?' <span class="badge b-orange">已逾期</span>':''}</dd></div><div><dt>提醒</dt><dd>${esc(reminder)}</dd></div></dl><p class="case-note219">${esc(record.note||'無備註')}</p><footer><button class="btn" data-open-case219="${esc(record.id)}">查看案件</button><button class="btn" data-case-calendar219="${esc(record.id)}">查看日曆</button></footer></article>`;}).join(''):'<div class="empty cases-empty219">'+(all.length?'沒有符合條件的案件':'尚無案件')+'</div>';
- $('#casesPager219').innerHTML=filtered.length>runtime.size?`<button class="btn" id="casesPrev219" ${runtime.page===1?'disabled':''}>上一頁</button><span>${runtime.page} / ${pages}</span><button class="btn" id="casesNext219" ${runtime.page===pages?'disabled':''}>下一頁</button>`:'';if($('#casesPrev219'))$('#casesPrev219').onclick=()=>{runtime.page--;renderCases219()};if($('#casesNext219'))$('#casesNext219').onclick=()=>{runtime.page++;renderCases219()};bindCaseButtons219($('#view-cases'));
+ const host=$('#casesCards219');
+ const rows=visible.map(record=>{
+  const customer=caseCustomer219(record),overdue=engine.overdue(record,today,clock);
+  const when=record.dueDate?fmtDate(record.dueDate)+(record.dueTime?' '+record.dueTime:''):fmtDate(record.startDate);
+  const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`:'未啟用';
+  const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':reminder;
+  return {id:record.id,keyAttribute:'data-case-id219',detailLabel:'完整資料',
+   cells:[`<h2>${esc(record.title)}</h2>`,`<strong>${esc(customer?.name||'客戶已移除')}</strong><small>${esc(customer?.code||'')}</small>`,
+    caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
+    `<strong>${esc(when)}</strong><small>${record.dueDate?'截止':'開始'}</small>`,
+    `<button class="btn" type="button" data-open-case219="${esc(record.id)}">查看案件</button><button class="btn record-calendar220" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button>`],
+   facts:[['聯絡人',customer?contactSummary(customer):''],['地址',customer?.address],['開始日期',fmtDate(record.startDate)],['截止日期',record.dueDate?when:''],
+    ['提醒排程',reminder],['提醒狀態',reminderState],['建立時間',fmtDateTime(record.createdAt)],['更新時間',fmtDateTime(record.updatedAt)],
+    ...(record.completedAt?[['完成時間',fmtDateTime(record.completedAt)]]:[]),['備註',record.note]]
+  };
+ });
+ host.innerHTML=rows.length?recordList220(['案件','客戶','狀態','日期','操作'],rows,runtime.expanded):
+  `<div class="empty">${all.length?'沒有符合條件的案件':'尚無案件'}</div>`;
+ bindRecordDetails220(host,runtime.expanded);
+ recordPage220($('#casesPager219'),runtime,filtered.length,renderCases219,'案件');
+ bindCaseButtons219($('#view-cases'));
 }
 function openCase219(id=null){
  const existing=id?(state.cases||[]).find(record=>record.id===id):null;if(id&&!existing){toast('案件已被刪除，請重新整理');return}const baseline=existing?clone(existing):null,draft=existing?clone(existing):{id:uid('case'),clientId:'',title:'',status:'inProgress',startDate:localDate(),dueDate:'',dueTime:'',reminderEnabled:false,reminderDate:'',reminderTime:'09:00',note:''};
@@ -3701,7 +3862,7 @@ function openCase219(id=null){
  const act=async fn=>{if(busy)return;busy=true;const controls=[...modal.querySelectorAll('input,select,textarea,button')].map(node=>[node,node.disabled]),error=$('#caseError219');controls.forEach(([node])=>node.disabled=true);error.hidden=true;try{await fn();await loadAll();initial=snapshot();if(modal.isConnected){root.classList.remove('show');root.innerHTML=''}renderCases219()}catch(failure){if(error.isConnected){error.hidden=false;error.textContent=failure.message||'案件未能儲存，請保留資料重試';error.focus?.()}else toast(failure.message||'案件未能儲存')}finally{busy=false;for(const[node,disabled]of controls)if(node.isConnected)node.disabled=disabled;}};
  const submit=event=>{event?.preventDefault();const next=collect();act(async()=>{await commitCase219(next,baseline);toast('案件已儲存')})};save.onclick=submit;form.onsubmit=submit;
  if(existing){const remove=vatElement214('button','btn danger','刪除案件');remove.id='caseDelete219';remove.type='button';remove.onclick=()=>{if(busy||!window.confirm('確定刪除這個案件？相關日曆項目會一併移除。'))return;act(async()=>{await deleteCase219(existing.id,baseline);toast('案件已刪除')})};footer.prepend(remove);}
- requestAnimationFrame(()=>$('#caseTitle219')?.focus());
+ $('#caseTitle219')?.focus();
 }
 async function confirmCaseReminder219(id){if(caseAckBusy219.has(id))return;const baseline=(state.cases||[]).find(record=>record.id===id);if(!baseline){toast('案件已被刪除');return}caseAckBusy219.add(id);const buttons=$$('[data-case-reminder219]').filter(button=>button.dataset.caseReminder219===id);buttons.forEach(button=>button.disabled=true);try{await ackCaseReminder219(id,baseline);await loadAll();if($('#calendarDrawer')?.classList.contains('show'))openCalendarDrawer(state.calendarSelectedDate);toast('案件提醒已確認')}catch(error){toast(error.message||'提醒未能儲存，請重試')}finally{caseAckBusy219.delete(id);buttons.forEach(button=>{if(button.isConnected)button.disabled=false})}}
 function openCaseCalendar219(id){const record=(state.cases||[]).find(item=>item.id===id),event=calendarCaseItems219().find(item=>item.caseId===id&&item.eventKind==='planned');if(!record||!event){toast('案件排程已不存在');return}state.calendarFilters={q:'',clientId:record.clientId,from:'',to:''};state.calendarMonth=event.date.slice(0,7);state.calendarSelectedDate=event.date;switchView('calendar');renderCalendar();openCalendarDrawer(event.date);}
@@ -3749,51 +3910,590 @@ switchView=function(view){const result=caseSwitchBefore219(view);if(state.view==
 const caseWireBefore219=wire;
 wire=function(){caseWireBefore219();mountCases219();renderCases219();if(caseMinuteTimer219==null){caseMinuteTimer219=setInterval(refreshCaseReminders219,60000);document.addEventListener('visibilitychange',refreshCaseReminders219);}};
 
-function refreshCaseReminders219(){if(document.hidden||!['today','cases'].includes(state.view)||caseAckBusy219.size||$('#modalRoot.show')||document.querySelector('dialog[open]'))return;const focus=document.activeElement;if(focus&&(focus.matches('input,select,textarea,[contenteditable=true]')||focus.closest('[contenteditable=true]')))return;if(state.view==='today')renderToday();else renderCases219();}
+function refreshCaseReminders219(){if(document.hidden||!['today','cases','contracts'].includes(state.view)||caseAckBusy219.size||$('#modalRoot.show')||document.querySelector('dialog[open]'))return;const focus=document.activeElement;if(focus&&(focus.matches('input,select,textarea,[contenteditable=true]')||focus.closest('[contenteditable=true],.record-list220,.record-pager220,.contract-stats220,#casesStats219')))return;if(state.view==='today')renderToday();else if(state.view==='cases')renderCases219();else renderContracts220();}
 
-/* Case references are checked against fresh rows inside the same write transaction. */
-function caseBatchTouches219(ops){return ops.some(o=>o.store==='cases'||o.store==='clients'&&['clear','delete'].includes(o.action));}
-function caseBatchGuard219(tr,ops,ready,fail){
- if(!caseBatchTouches219(ops)){ready();return;}
- let clients,cases;
- const build=()=>{
-  if(!clients||!cases)return;
-  try{
-   const nextClients=applyRowOps218(clients,ops,'clients');
-   const nextCases=applyRowOps218(cases,ops,'cases');
-   const deletesClient=ops.some(op=>op.store==='clients'&&op.action==='delete');
-   if(deletesClient){
-    const ids=new Set(nextClients.map(client=>client.id));
-    if(nextCases.some(row=>!ids.has(row.clientId)))throw new Error('此客戶仍有案件，請先改選案件的客戶或刪除案件');
+/* Contract terms, calendar-month deadlines and one task per saved contract. */
+function createContractsEngine220() {
+ const dates = (typeof module !== 'undefined' && module.exports
+  ? require('./cases-core.js').createCasesEngine219 : createCasesEngine219)();
+ const builtins = [{id:'lease',name:'租約'},{id:'other',name:'其他'}];
+ const idOK = value => typeof value === 'string' && /^[^<>"'\x00-\x1f]{1,300}$/.test(value) && value.trim() === value;
+ const fail = (field,message) => {const error=new Error(message);error.field=field;throw error;};
+
+ function text(raw,field,label,max,required=false) {
+  if(typeof raw!=='string')fail(field,label+'格式錯誤');
+  const value=raw.trim();
+  if(required&&!value)fail(field,'請填寫'+label);
+  if(value.length>max)fail(field,label+'最多 '+max+' 字');
+  return value;
+ }
+ function categoryFor(raw) {
+  const name=text(raw,'categoryName','類別名稱',32,true);
+  const key=name.normalize('NFKC').toLowerCase();
+  const existing=builtins.find(row=>row.name.normalize('NFKC')===key);
+  if(existing)return {...existing};
+  const id='ct:'+Array.from(key,char=>char.codePointAt(0).toString(16)).join('-');
+  if(!idOK(id))fail('categoryName','類別名稱過長，請縮短後重試');
+  return {id,name};
+ }
+ function months(raw) {
+  if(typeof raw==='string'&&/^\d{1,2}$/.test(raw))raw=Number(raw);
+  if(!Number.isInteger(raw)||raw<0||raw>36)fail('leadMonths','請輸入 0 至 36 個月的整數');
+  return raw;
+ }
+ function reminderDate(endDate,leadMonths) {
+  if(!dates.date(endDate))return '';
+  const [year,month,day]=endDate.split('-').map(Number);
+  const index=(year-1)*12+month-1-months(leadMonths);
+  if(index<0)return '0001-01-01';
+  const targetYear=Math.floor(index/12)+1,targetMonth=index%12+1;
+  const prefix=String(targetYear).padStart(4,'0')+'-'+String(targetMonth).padStart(2,'0')+'-';
+  let targetDay=day;
+  while(!dates.date(prefix+String(targetDay).padStart(2,'0')))targetDay--;
+  return prefix+String(targetDay).padStart(2,'0');
+ }
+ function status(record,today) {
+  if(record.closed)return 'closed';
+  if(record.endDate<today)return 'expired';
+  if(record.startDate&&today<record.startDate)return 'scheduled';
+  return reminderDate(record.endDate,record.leadMonths)<=today?'upcoming':'active';
+ }
+ function isDue(record,today) {
+  return !record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
+ }
+ function normalize(raw,{clients=[],categories=[],references=true}={}) {
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');
+  const {clientId,categoryId,startDate,endDate,closed,reminderEnabled}=raw;
+  if(!idOK(clientId)||references&&!clients.some(row=>row.id===clientId))fail('clientId','請選擇客戶庫中的有效客戶');
+  if(!idOK(categoryId)||references&&![...builtins,...categories].some(row=>row.id===categoryId))fail('categoryId','請選擇有效合約類別');
+  if(startDate!==''&&!dates.date(startDate))fail('startDate','請核對開始日期');
+  if(!dates.date(endDate))fail('endDate','請填寫有效到期日');
+  if(startDate&&startDate>endDate)fail('endDate','到期日不可早於開始日期');
+  if(typeof closed!=='boolean'||typeof reminderEnabled!=='boolean')fail('closed','合約狀態或提醒設定格式錯誤');
+  const leadMonths=months(raw.leadMonths);
+  return {clientId,categoryId,startDate,endDate,closed,reminderEnabled,leadMonths,
+   title:text(raw.title,'title','合約名稱',200,true),
+   task:text(raw.task,'task','待辦事項',240,reminderEnabled),
+   note:text(raw.note,'note','備註',12000)};
+ }
+ function assertBaseline(current,baseline) {
+  if(!current)throw Error('合約已被刪除，請重新整理');
+  if(!baseline||current.revision!==baseline.revision||JSON.stringify(current)!==JSON.stringify(baseline))throw Error('合約已由其他分頁更新，請重新開啟後再儲存');
+ }
+ function startWrite(current,baseline,at) {
+  if(!dates.iso(at))throw Error('合約操作時間無效');
+  if(!current&&!baseline)return;
+  assertBaseline(current,baseline);
+  if(current.revision>=Number.MAX_SAFE_INTEGER||at<current.updatedAt)throw Error('合約版本或本機時間無效');
+ }
+ function save({draft,current=null,baseline=null,clients,categories,at}) {
+  startWrite(current,baseline,at);
+  if(!idOK(draft?.id)||current&&current.id!==draft.id)throw Error('合約編號無效');
+  const fields=normalize(draft,{clients,categories});
+  const changedSchedule=current&&['endDate','leadMonths','reminderEnabled'].some(key=>current[key]!==fields[key]);
+  const restart=current?.closed&&!fields.closed;
+  const taskCompletedAt=!current||changedSchedule||restart?'':current.taskCompletedAt;
+  return {id:draft.id,version:1,...fields,taskCompletedAt,revision:(current?.revision||0)+1,createdAt:current?.createdAt||at,updatedAt:at};
+ }
+ function updateTask({current,baseline,at,today,completed}) {
+  startWrite(current,baseline,at);
+  if(!current||!current.reminderEnabled||current.closed)throw Error('合約目前無啟用中的待辦');
+  if(completed&&!isDue(current,today))throw Error('待辦尚未到提醒日或已完成');
+  return {...current,taskCompletedAt:completed?at:'',revision:current.revision+1,updatedAt:at};
+ }
+ function validate(data,{references=true}={}) {
+  const {contracts=[],contractCategories=[],clients=[]}=data;
+  if(!Array.isArray(contracts)||!Array.isArray(contractCategories))throw Error('合約或類別資料格式錯誤');
+  const types=new Set(),ids=new Set();
+  for(const row of contractCategories){
+   if(!row||!idOK(row.id)||builtins.some(type=>row.id===type.id)||categoryFor(row.name).id!==row.id||types.has(row.id))throw Error('合約類別重複或無效');
+   types.add(row.id);
+  }
+  for(const row of contracts){
+   if(!row||!idOK(row.id)||ids.has(row.id))throw Error('合約編號重複或無效');
+   ids.add(row.id);
+   normalize(row,{clients,categories:contractCategories,references});
+   if(row.version!==1||!Number.isSafeInteger(row.revision)||row.revision<1||
+    !dates.iso(row.createdAt)||!dates.iso(row.updatedAt)||row.updatedAt<row.createdAt||
+    (row.taskCompletedAt!==''&&(!dates.iso(row.taskCompletedAt)||row.taskCompletedAt<row.createdAt||row.taskCompletedAt>row.updatedAt))){
+    throw Error('合約版本或日期紀錄無效');
    }
-   validateCases219({clients:nextClients,cases:nextCases});
-   ready();
-  }catch(e){fail(e);}
- };
- const cr=tr.objectStore('clients').getAll(),kr=tr.objectStore('cases').getAll();cr.onsuccess=()=>{clients=cr.result;build()};kr.onsuccess=()=>{cases=kr.result;build()};
+  }
+ }
+ return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate};
 }
-const writeCasesBefore219=writeBatch210;
+if(typeof module!=='undefined'&&module.exports)module.exports={createContractsEngine220};
+
+const contractEngine220=createContractsEngine220();
+const contractRuntime220={query:'',clientId:'',categoryId:'',status:'all',page:1,size:12,expanded:new Set()};
+const contractStatus220={
+ upcoming:['即將到期','orange'],expired:['已到期','red'],active:['有效','green'],scheduled:['未生效','blue'],closed:['已結案','gray']
+};
+const contracts220=()=>state.contracts||[];
+const customContractTypes220=()=>state.contractCategories||[];
+const contractTypes220=()=>[...contractEngine220.builtins,...customContractTypes220().slice().sort((a,b)=>a.name.localeCompare(b.name,'zh-Hant'))];
+const contractTypeName220=id=>contractTypes220().find(type=>type.id===id)?.name||'類別待核對';
+const contractBadge220=status=>statusBadge(...contractStatus220[status]);
+const contractID220=id=>contracts220().find(row=>row.id===id);
+const contractReminderDate220=row=>contractEngine220.reminderDate(row.endDate,row.leadMonths);
+const contractDue220=row=>contractEngine220.isDue(row,localDate());
+
+function writeContract220({id,draft,baseline=null,categoryName='',action='save'}) {
+ return new Promise((resolve,reject)=>{
+  let transaction;
+  try{transaction=db.transaction(['contracts','clients','contractCategories'],'readwrite');}
+  catch(error){reject(error);return;}
+  let failure,result,written=false;
+  const contracts=transaction.objectStore('contracts'),types=transaction.objectStore('contractCategories');
+  const current=contracts.get(id),clients=transaction.objectStore('clients').getAll(),categories=types.getAll();
+  const write=()=>{
+   if(written||[current,clients,categories].some(request=>request.readyState!=='done'))return;
+   written=true;
+   try{
+    const before=current.result||null;
+    if(action==='delete'){
+     contractEngine220.assertBaseline(before,baseline);
+     contracts.delete(id);
+     return;
+    }
+    const at=nowISO();
+    if(action==='complete'||action==='reopen'){
+     result=contractEngine220.updateTask({current:before,baseline,at,today:localDate(),completed:action==='complete'});
+    }else{
+     if(before&&!baseline)throw Error('合約編號已存在，請重新新增');
+     const options=categories.result;
+     const next={...draft,id};
+     if(categoryName){
+      const type=contractEngine220.categoryFor(categoryName);
+      next.categoryId=type.id;
+      if(!contractEngine220.builtins.some(row=>row.id===type.id)&&!options.some(row=>row.id===type.id)){
+       options.push(type);
+       types.add(type);
+      }
+     }
+     result=contractEngine220.save({draft:next,current:before,baseline,clients:clients.result,categories:options,at});
+    }
+    contracts.put(result);
+   }catch(error){failure=error;transaction.abort();}
+  };
+  for(const request of [current,clients,categories])request.onsuccess=write;
+  transaction.oncomplete=()=>resolve(result);
+  transaction.onabort=()=>reject(failure||transaction.error||Error('合約資料未儲存'));
+ });
+}
+
+function contractTypeOptions220(selected='') {
+ return contractTypes220().map(type=>`<option value="${esc(type.id)}" ${type.id===selected?'selected':''}>${esc(type.name)}</option>`).join('');
+}
+function mountContracts220() {
+ const view=$('#view-contracts');
+ if(!view||$('#contractsList220'))return;
+ view.innerHTML=`<div class="page-head"><h1 class="page-title">租約與合約</h1>
+  <div class="actions"><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
+ <div class="contract-stats220" id="contractStats220" aria-label="合約狀態"></div>
+ <div class="contract-filters220">
+  <div class="field"><label for="contractSearch220">搜尋</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
+  <div class="field"><label for="contractClientFilter220">客戶</label><select id="contractClientFilter220" class="select"></select></div>
+  <div class="field"><label for="contractCategoryFilter220">類別</label><select id="contractCategoryFilter220" class="select"></select></div>
+  <div class="field"><label for="contractStatusFilter220">狀態</label><select id="contractStatusFilter220" class="select"><option value="all">全部狀態</option>
+   ${Object.entries(contractStatus220).map(([key,[label]])=>`<option value="${key}">${label}</option>`).join('')}</select></div>
+  <button class="btn" type="button" id="contractClearFilter220">清除條件</button>
+ </div>
+ <div class="cases-result219" id="contractCount220" aria-live="polite"></div>
+ <div id="contractsList220"></div><div id="contractPagination220"></div>`;
+ $('#newContract220').onclick=()=>openContract220();
+ for(const [selector,key,event] of [['#contractSearch220','query','input'],['#contractClientFilter220','clientId','change'],
+  ['#contractCategoryFilter220','categoryId','change'],['#contractStatusFilter220','status','change']]){
+  $(selector).addEventListener(event,ev=>{Object.assign(contractRuntime220,{[key]:ev.target.value,page:1});renderContracts220();});
+ }
+ $('#contractClearFilter220').onclick=()=>{
+  Object.assign(contractRuntime220,{query:'',clientId:'',categoryId:'',status:'all',page:1});
+  $('#contractSearch220').value='';
+  renderContracts220();
+ };
+}
+function contractTaskLabel220(row) {
+ if(!row.reminderEnabled)return '未啟用';
+ if(row.taskCompletedAt)return '已完成 '+fmtDateTime(row.taskCompletedAt);
+ if(row.closed)return '已停止';
+ return contractDue220(row)?'待處理':'尚未到提醒日';
+}
+function renderContracts220() {
+ mountContracts220();
+ const host=$('#contractsList220');
+ if(!host)return;
+ const runtime=contractRuntime220,today=localDate(),query=runtime.query.trim().toLocaleLowerCase();
+ if(runtime.clientId&&!clientById(runtime.clientId))runtime.clientId='';
+ if(runtime.categoryId&&!contractTypes220().some(type=>type.id===runtime.categoryId))runtime.categoryId='';
+ const all=contracts220().map(row=>({row,status:contractEngine220.status(row,today)}));
+ const counts=Object.fromEntries(Object.keys(contractStatus220).map(key=>[key,0]));
+ for(const item of all)counts[item.status]++;
+ const stats=$('#contractStats220');
+ stats.innerHTML=Object.entries(contractStatus220).map(([key,[label,tone]])=>
+  `<button class="cases-stat219 ${runtime.status===key?'active':''}" type="button" data-contract-status220="${key}" aria-pressed="${runtime.status===key}">${statusBadge(label,tone)}<strong>${counts[key]}</strong></button>`).join('');
+ stats.querySelectorAll('[data-contract-status220]').forEach(button=>button.onclick=()=>{
+  const key=button.dataset.contractStatus220;
+  Object.assign(runtime,{status:runtime.status===key?'all':key,page:1});
+  renderContracts220();
+  stats.querySelector(`[data-contract-status220="${key}"]`)?.focus();
+ });
+ const clientFilter=$('#contractClientFilter220'),categoryFilter=$('#contractCategoryFilter220');
+ clientFilter.innerHTML='<option value="">全部客戶</option>'+recordClientOptions220(runtime.clientId);
+ categoryFilter.innerHTML='<option value="">全部類別</option>'+contractTypeOptions220(runtime.categoryId);
+ $('#contractStatusFilter220').value=runtime.status;
+ const filtered=all.filter(({row,status})=>{
+  if(runtime.status!=='all'&&runtime.status!==status)return false;
+  if(runtime.clientId&&runtime.clientId!==row.clientId)return false;
+  if(runtime.categoryId&&runtime.categoryId!==row.categoryId)return false;
+  const customer=clientById(row.clientId);
+  return !query||[row.title,row.note,row.task,contractTypeName220(row.categoryId),customer?.code,customer?.name].join(' ').toLocaleLowerCase().includes(query);
+ }).sort((a,b)=>Number(a.status==='closed')-Number(b.status==='closed')||a.row.endDate.localeCompare(b.row.endDate)||a.row.id.localeCompare(b.row.id));
+ runtime.page=Math.min(runtime.page,Math.max(1,Math.ceil(filtered.length/runtime.size)));
+ const visible=filtered.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);
+ $('#contractCount220').textContent=`共 ${filtered.length} 筆合約`;
+ const rows=visible.map(({row,status})=>{
+  const customer=clientById(row.clientId),type=contractTypeName220(row.categoryId);
+  const reminder=row.reminderEnabled?fmtDate(contractReminderDate220(row)):'未啟用';
+  const taskStatus=contractTaskLabel220(row);
+  const action=contractDue220(row)?`<button class="btn primary" type="button" data-contract-complete220="${esc(row.id)}">完成待辦</button>`:
+   row.taskCompletedAt&&!row.closed&&row.reminderEnabled?`<button class="btn" type="button" data-contract-reopen220="${esc(row.id)}">重開待辦</button>`:'';
+  return {id:row.id,keyAttribute:'data-contract-id220',detailLabel:'完整資料',
+   cells:[
+    `<h2>${esc(row.title)}</h2><small>${esc(type)}</small>`,
+    `<strong>${esc(customer?.name||'客戶已移除')}</strong><small>${esc(customer?.code||'')}</small>`,
+    contractBadge220(status),
+    `<strong>${esc(fmtDate(row.endDate))}</strong><small>${esc(contractDue220(row)?'待辦未完成':row.taskCompletedAt?'待辦已完成':row.reminderEnabled&&!row.closed?'提醒 '+reminder:'')}</small>`,
+    `<button class="btn" type="button" data-open-contract220="${esc(row.id)}">查看合約</button>`
+   ],
+   facts:[['聯絡人',customer?contactSummary(customer):''],['地址',customer?.address],
+    ['開始日期',row.startDate?fmtDate(row.startDate):''],['到期日',fmtDate(row.endDate)],
+    ['提醒日期',reminder],['待辦狀態',taskStatus],['待辦事項',row.task],['備註',row.note]],
+   detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-contract-calendar220="${esc(row.id)}">查看日曆</button>${action}</div>`
+  };
+ });
+ host.innerHTML=rows.length?recordList220(['合約／類別','客戶','狀態','到期／提醒','操作'],rows,runtime.expanded):
+  `<div class="empty">${all.length?'沒有符合條件的合約':'尚無合約'}</div>`;
+ bindRecordDetails220(host,runtime.expanded);
+ recordPage220($('#contractPagination220'),runtime,filtered.length,renderContracts220,'合約');
+ bindContractActions220(host);
+}
+
+function openContract220(id) {
+ const existing=id?contractID220(id):null;
+ if(id&&!existing){toast('合約已被刪除，請重新整理');return;}
+ if(!existing&&!state.clients.length){toast('請先在客戶庫新增客戶');return;}
+ const draft=existing?clone(existing):{id:uid('contract'),clientId:'',categoryId:'lease',title:'',startDate:'',endDate:'',leadMonths:1,
+  closed:false,reminderEnabled:true,task:'確認續約或結案',note:''};
+ const root=$('#modalRoot');
+ const field=(key,label,contents)=>`<div class="field"><label for="contract-${key}220">${label}</label>${contents}
+  <span class="contract-field-error220" data-contract-field-error220="${key}" hidden></span></div>`;
+ const input=(key,type,value,extra='')=>`<input id="contract-${key}220" class="input" type="${type}" value="${esc(value)}" ${extra}>`;
+ const customer=`<select class="select" id="contract-clientId220" required><option value="">選擇客戶</option>${recordClientOptions220(draft.clientId)}</select>`;
+ const category=`<select class="select" id="contract-categoryId220">${contractTypeOptions220(draft.categoryId)}<option value="__new">＋ 新增類別</option></select>`;
+ showModal(existing?'合約明細':'新增合約',`<form id="contractForm220" class="cases-form219" novalidate>
+  <div class="cases-span219">${field('title','合約名稱',input('title','text',draft.title,'required maxlength="200"'))}</div>
+  ${field('clientId','客戶',customer)}${field('categoryId','類別',category)}
+  <div class="cases-span219" id="contractNewCategory220" hidden>${field('categoryName','新類別名稱',input('categoryName','text','','maxlength="32"'))}</div>
+  <div class="cases-master219 cases-span219" id="contractClientPreview220" hidden></div>
+  ${field('startDate','開始日期（選填）',input('startDate','date',draft.startDate))}
+  ${field('endDate','到期日',input('endDate','date',draft.endDate,'required'))}
+  <label class="cases-check219"><input id="contract-reminderEnabled220" type="checkbox" ${draft.reminderEnabled?'checked':''}>啟用到期提醒與待辦</label>
+  ${field('leadMonths','提前幾個月',input('leadMonths','number',draft.leadMonths,'min="0" max="36" step="1" aria-describedby="contractPreviewDate220"')
+   +'<span class="small muted" id="contractPreviewDate220"></span>')}
+  <div class="cases-span219">${field('task','待辦事項',input('task','text',draft.task,'maxlength="240"'))}</div>
+  <div class="cases-span219 field"><label for="contract-note220">備註</label><textarea class="textarea" id="contract-note220" maxlength="12000" rows="3">${esc(draft.note)}</textarea></div>
+  <label class="cases-check219"><input id="contract-closed220" type="checkbox" ${draft.closed?'checked':''}>已結案</label>
+  <p class="notice warn cases-span219" id="contractError220" role="alert" tabindex="-1" hidden></p>
+ </form>`,[{text:'取消',value:false},{text:'儲存合約',value:true,cls:'primary'}],()=>{});
+ const modal=root.querySelector('.modal'),form=$('#contractForm220'),error=$('#contractError220');
+ modal.classList.add('cases-modal219','contract-modal220');
+ const footer=modal.querySelector('.modal-foot'),[cancel,save]=footer.querySelectorAll('button');
+ save.id='saveContract220';cancel.id='cancelContract220';
+ const get=key=>$('#contract-'+key+'220');
+ const collect=()=>({id:draft.id,title:get('title').value,clientId:get('clientId').value,categoryId:get('categoryId').value,
+  startDate:get('startDate').value,endDate:get('endDate').value,leadMonths:get('leadMonths').value,
+  reminderEnabled:get('reminderEnabled').checked,task:get('task').value,closed:get('closed').checked,note:get('note').value});
+ const snapshot=()=>JSON.stringify([collect(),get('categoryName').value]);
+ const initial=snapshot(),origin=document.activeElement;
+ let busy=false;
+ function updatePreview(){
+  $('#contractNewCategory220').hidden=get('categoryId').value!=='__new';
+  const customer=clientById(get('clientId').value),preview=$('#contractClientPreview220');
+  preview.hidden=!customer;
+  preview.innerHTML=customer?recordFacts220([['聯絡人',contactSummary(customer)],['地址',customer.address]]):'';
+  let date='';
+  try{date=contractEngine220.reminderDate(get('endDate').value,get('leadMonths').value);}catch{}
+  $('#contractPreviewDate220').textContent=get('reminderEnabled').checked&&date?'提醒日 '+fmtDate(date):'0 為到期當日';
+ }
+ form.addEventListener('input',updatePreview);
+ form.addEventListener('change',updatePreview);
+ updatePreview();
+ function close(){
+  root.classList.remove('show');root.innerHTML='';
+  if(origin?.isConnected)origin.focus();
+ }
+ function cancelEdit(){
+  if(busy)return;
+  if(snapshot()!==initial&&!window.confirm('合約尚未儲存，確定捨棄變更？'))return;
+  close();
+ }
+ cancel.onclick=cancelEdit;
+ modal.querySelector('[data-close]').onclick=cancelEdit;
+ root.onclick=event=>{if(event.target===root)cancelEdit();};
+ modal.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();cancelEdit();}});
+ async function commit(action) {
+  if(busy)return;
+  busy=true;
+  error.hidden=true;
+  for(const node of form.querySelectorAll('[data-contract-field-error220]')){node.hidden=true;node.textContent='';}
+  form.querySelectorAll('[aria-invalid]').forEach(node=>node.removeAttribute('aria-invalid'));
+  const fields=collect();
+  const categoryName=fields.categoryId==='__new'?get('categoryName').value:'';
+  const controls=[...modal.querySelectorAll('input,textarea,select,button')];
+  controls.forEach(node=>node.disabled=true);
+  try{
+   if(action==='save'&&fields.categoryId==='__new')contractEngine220.categoryFor(categoryName);
+   await writeContract220({id:draft.id,draft:fields,baseline:existing,categoryName,action});
+  }catch(failure){
+   busy=false;controls.forEach(node=>node.disabled=false);
+   const key=failure.field,target=key?get(key):null;
+   const hint=key?form.querySelector(`[data-contract-field-error220="${key}"]`):null;
+   if(target&&hint){
+    hint.textContent=failure.message;hint.hidden=false;hint.id='contract-field-error-'+key+'220';
+    target.setAttribute('aria-invalid','true');target.setAttribute('aria-errormessage',hint.id);target.focus();
+   }else{error.textContent=failure.message||'合約未能儲存';error.hidden=false;error.focus();}
+   return;
+  }
+  close();
+  try{
+   await loadAll();
+   if(state.view==='contracts'&&!origin?.isConnected){
+    const next=$$('#contractsList220 [data-open-contract220]').find(button=>button.dataset.openContract220===draft.id);
+    (next||$('#newContract220'))?.focus({preventScroll:true});
+   }
+   toast(action==='delete'?'已刪除合約':'合約已儲存');
+  }
+  catch{toast('變更已儲存，請重新整理工作台');}
+ }
+ save.onclick=()=>commit('save');
+ form.onsubmit=event=>{event.preventDefault();commit('save');};
+ if(existing){
+  const remove=vatElement214('button','btn danger','刪除合約');
+  remove.type='button';remove.id='deleteContract220';
+  remove.onclick=()=>{if(!busy&&window.confirm('確定刪除合約及其到期提醒？'))commit('delete');};
+  footer.prepend(remove);
+ }
+ get('title')?.focus();
+}
+
+function contractReminderEvents220() {
+ const today=localDate();
+ return contracts220().filter(row=>contractEngine220.isDue(row,today))
+  .sort((a,b)=>a.endDate.localeCompare(b.endDate)||a.id.localeCompare(b.id))
+  .map(row=>{
+   const customer=clientById(row.clientId);
+   return {id:'contract-task:'+row.id,source:'contract',contractId:row.id,label:'合約到期待辦',client:customer?.name||'客戶已移除',
+    code:customer?.code||'',detail:row.title+' · '+row.task,priority:'today',tone:'orange'};
+  });
+}
+function contractCalendarItems220() {
+ const rows=[];
+ for(const contract of contracts220()){
+  const base={source:'contract',contractId:contract.id,clientId:contract.clientId,contractStatus:contractEngine220.status(contract,localDate()),time:''};
+  const reminderDate=contractReminderDate220(contract);
+  const schedule={reminderEnabled:contract.reminderEnabled&&!contract.closed,reminderDate,reminderCompletedAt:contract.taskCompletedAt};
+  const sameDay=contract.endDate===reminderDate;
+  const suffix=contract.closed?'（已結案）':'';
+  rows.push({...base,...schedule,id:'contract-end:'+contract.id,date:contract.endDate,
+   reminderEnabled:sameDay&&schedule.reminderEnabled,content:'合約到期｜'+contract.title+suffix});
+  if(schedule.reminderEnabled&&!sameDay)rows.push({...base,...schedule,id:'contract-reminder:'+contract.id,date:reminderDate,
+   content:'合約提醒｜'+contract.title+' · '+contract.task});
+ }
+ return rows;
+}
+function openContractCalendar220(id) {
+ const contract=contractID220(id);
+ if(!contract)return;
+ switchView('calendar');
+ if(state.view!=='calendar')return;
+ state.calendarFilters={q:'',clientId:contract.clientId,from:'',to:''};
+ state.calendarMonth=contract.endDate.slice(0,7);
+ renderCalendar();
+ openCalendarDrawer(contract.endDate);
+}
+const contractTaskBusy220=new Set();
+async function updateContractTask220(id,action) {
+ const before=contractID220(id);
+ if(!before||contractTaskBusy220.has(id))return;
+ contractTaskBusy220.add(id);
+ const toggleButtons=disabled=>$$('[data-contract-complete220],[data-contract-reopen220]').forEach(button=>{
+  if((button.dataset.contractComplete220||button.dataset.contractReopen220)===id)button.disabled=disabled;
+ });
+ toggleButtons(true);
+ try{
+  await writeContract220({id,baseline:before,action});
+  await loadAll();
+  if($('#calendarDrawer')?.classList.contains('show'))openCalendarDrawer(state.calendarSelectedDate);
+  toast(action==='complete'?'合約待辦已完成':'合約待辦已重開');
+ }catch(error){toast(error.message||'待辦未能儲存');}
+ finally{contractTaskBusy220.delete(id);toggleButtons(false);}
+}
+function bindContractActions220(root) {
+ if(!root)return;
+ for(const [attr,action] of [
+  ['openContract220',id=>openContract220(id)],['contractCalendar220',id=>openContractCalendar220(id)],
+  ['contractComplete220',id=>updateContractTask220(id,'complete')],['contractReopen220',id=>updateContractTask220(id,'reopen')]
+ ]){
+  const selector='[data-'+attr.replace(/[A-Z]/g,char=>'-'+char.toLowerCase())+']';
+  root.querySelectorAll(selector).forEach(button=>button.onclick=event=>{event.stopPropagation();action(button.dataset[attr]);});
+ }
+}
+function renderContractReminderStrip220() {
+ const pane=$('#workTaskPane210'),tabs=$('.today-view-tabs210');
+ if(!pane||!tabs)return;
+ let strip=$('#contractReminderStrip220');
+ if(!strip){
+  strip=document.createElement('section');
+  strip.id='contractReminderStrip220';strip.className='contract-reminder-strip220';
+  strip.setAttribute('aria-label','合約到期待辦');
+  ($('#caseReminderStrip219')||tabs).after(strip);
+ }
+ const due=contractReminderEvents220();
+ strip.hidden=pane.hidden||!due.length;
+ if(strip.hidden){strip.replaceChildren();return;}
+ strip.innerHTML=`<div class="contract-todo-heading220"><strong>合約到期待辦 <span class="badge b-orange">${due.length}</span></strong>
+  ${due.length>3?'<button class="btn small" id="allContractTodos220" type="button">查看全部</button>':''}</div>
+  ${due.slice(0,3).map(event=>`<div class="contract-todo-row220"><div><strong>${esc(event.client)}</strong><div>${esc(event.detail)}</div></div>
+  <div class="actions"><button class="btn small" type="button" data-open-contract220="${esc(event.contractId)}">查看合約</button>
+  <button class="btn small primary" type="button" data-contract-complete220="${esc(event.contractId)}">完成待辦</button></div></div>`).join('')}`;
+ $('#allContractTodos220')?.addEventListener('click',()=>$('#todaySystemTab210')?.click());
+}
+
+const calendarItemsBefore220=calendarAllItems;
+calendarAllItems=function(){return [...calendarItemsBefore220(),...contractCalendarItems220()];};
+const calendarClientBefore220=calendarItemClient;
+calendarItemClient=function(event){return event?.source==='contract'?clientById(event.clientId)||{name:'客戶已移除',code:''}:calendarClientBefore220(event);};
+const noteCardBefore220=noteCardHtml;
+noteCardHtml=function(event){
+ if(event.source!=='contract')return noteCardBefore220(event);
+ const customer=calendarItemClient(event),contract=contractID220(event.contractId);
+ return `<div class="note-card case-calendar219 ${calendarReminderClass(event)}" data-contract-calendar-item220="${esc(event.id)}">
+  <div class="note-time">整日</div><div><div class="note-client">${esc(customer.name)} <span class="work-linked-tag">合約</span></div>
+  <div class="note-content">${esc(event.content)}</div>${contractBadge220(event.contractStatus)}
+  ${event.reminderEnabled?`<div class="small muted">${esc(contractTaskLabel220(contract))}</div>`:''}</div>
+  <div class="note-actions"><button class="btn small" type="button" data-open-contract220="${esc(contract.id)}">查看合約</button>
+  ${event.reminderEnabled&&contractDue220(contract)?`<button class="btn small" type="button" data-contract-complete220="${esc(contract.id)}">完成待辦</button>`:''}</div></div>`;
+};
+const bindCalendarBefore220=bindCalendarNoteActions;
+bindCalendarNoteActions=function(){bindCalendarBefore220();bindContractActions220($('#view-calendar'));};
+const reminderEventsBefore220=calendarReminderEvents;
+calendarReminderEvents=function(){return [...reminderEventsBefore220(),...contractReminderEvents220()];};
+const todayBefore220=renderToday;
+renderToday=function(){const result=todayBefore220();renderContractReminderStrip220();bindContractActions220($('#view-today'));return result;};
+const renderBefore220=renderAll;
+renderAll=function(){const result=renderBefore220();if(state.view==='contracts')renderContracts220();return result;};
+const switchBefore220=switchView;
+switchView=function(view){const result=switchBefore220(view);if(state.view==='contracts')renderContracts220();return result;};
+
+/* Independent records share one fresh reference check with client deletion and restore. */
+const recordReferenceStores220=['clients','cases','contracts','contractCategories'];
+function needsRecordReferenceCheck220(ops){
+ return ops.some(op=>recordReferenceStores220.includes(op.store)&&
+  (op.store!=='clients'||['clear','delete'].includes(op.action)));
+}
+function guardRecordReferences220(transaction,ops,ready,fail){
+ if(!needsRecordReferenceCheck220(ops)){ready();return;}
+ const requests=recordReferenceStores220.map(store=>transaction.objectStore(store).getAll());
+ let checked=false;
+ const check=()=>{
+  if(checked||requests.some(request=>request.readyState!=='done'))return;
+  checked=true;
+  try{
+   const data=Object.fromEntries(recordReferenceStores220.map((store,index)=>[store,applyRowOps218(requests[index].result,ops,store)]));
+   if(ops.some(op=>op.store==='clients'&&op.action==='delete')){
+    const ids=new Set(data.clients.map(client=>client.id));
+    if(data.cases.some(row=>!ids.has(row.clientId)))throw Error('此客戶仍有案件，請先改選案件的客戶或刪除案件');
+    if(data.contracts.some(row=>!ids.has(row.clientId)))throw Error('此客戶仍有合約，請先改選合約的客戶或刪除合約');
+   }
+   validateCases219(data);
+   contractEngine220.validate(data);
+   ready();
+  }catch(error){fail(error);}
+ };
+ requests.forEach(request=>request.onsuccess=check);
+}
+const writeRecordsBefore220=writeBatch210;
 writeBatch210=function(ops,options={}){
- if(ops.some(o=>o.store==='periodClients')||!caseBatchTouches219(ops))return writeCasesBefore219(ops,options);
- return new Promise((resolve,reject)=>{let tr,failure;try{tr=db.transaction([...new Set([...ops.map(o=>o.store),'clients','cases'])],'readwrite');}catch(e){reject(e);return;}
- const fail=e=>{failure=e;try{tr.abort()}catch{}};
- caseBatchGuard219(tr,ops,()=>{try{for(const op of ops){const store=tr.objectStore(op.store);if(op.action==='clear')store.clear();else if(op.action==='delete')store.delete(op.id);else store.put(op.value);}}catch(e){fail(e)}},fail);
- tr.oncomplete=()=>resolve();tr.onerror=()=>{};tr.onabort=()=>reject(failure||tr.error||new Error('案件資料未儲存，變更已取消'));
+ if(ops.some(op=>op.store==='periodClients')||!needsRecordReferenceCheck220(ops))return writeRecordsBefore220(ops,options);
+ return new Promise((resolve,reject)=>{
+  let transaction,failure;
+  try{transaction=db.transaction([...new Set([...ops.map(op=>op.store),...recordReferenceStores220])],'readwrite');}
+  catch(error){reject(error);return;}
+  const fail=error=>{failure=error;transaction.abort();};
+  guardRecordReferences220(transaction,ops,()=>{
+   for(const op of ops){
+    const store=transaction.objectStore(op.store);
+    if(op.action==='clear')store.clear();
+    else if(op.action==='delete')store.delete(op.id);
+    else store.put(op.value);
+   }
+  },fail);
+  transaction.oncomplete=()=>resolve();
+  transaction.onabort=()=>reject(failure||transaction.error||Error('案件或合約資料未儲存，變更已取消'));
  });
 };
-const deleteBeforeCases219=del;
-del=function(store,id){return store==='clients'?writeBatch210([{store,action:'delete',id}]):deleteBeforeCases219(store,id);};
-const clearBeforeCases219=clearStore;
-clearStore=function(store){return ['clients','cases'].includes(store)?writeBatch210([{store,action:'clear'}]):clearBeforeCases219(store);};
-const backupReferencesBefore219=validateBackupReferences211;
-validateBackupReferences211=function(data){backupReferencesBefore219(data);validateCases219(data);};
-const backupValidationBefore219=validateBackup210;
-validateBackup210=function(b){backupValidationBefore219(b);validateCases219(b.data,{references:b.kind==='full'});};
-const closeBackupBefore219=closeGroupBackup214;
-closeGroupBackup214=function(data){const result=closeBackupBefore219(data);const ids=new Set((result.clients||[]).map(x=>x.id));for(const row of result.cases||[]){if(ids.has(row.clientId))continue;const client=state.clients.find(c=>c.id===row.clientId);if(!client)throw new Error('案件缺少來源客戶，請先核對客戶庫');result.clients.push(clone(client));ids.add(client.id);}validateCases219(result);return result;};
-
-const renderBackupBeforeCases219=renderBackup;
-renderBackup=function(){renderBackupBeforeCases219();const node=document.createElement('span');node.className='kpi';node.textContent='案件 '+(state.cases||[]).length;$('#backupSummary .kpi-row')?.append(node);};
+const deleteBeforeRecords220=del;
+del=function(store,id){return store==='clients'?writeBatch210([{store,action:'delete',id}]):deleteBeforeRecords220(store,id);};
+const clearBeforeRecords220=clearStore;
+clearStore=function(store){return recordReferenceStores220.includes(store)?writeBatch210([{store,action:'clear'}]):clearBeforeRecords220(store);};
+const backupReferencesBefore220=validateBackupReferences211;
+validateBackupReferences211=function(data){
+ backupReferencesBefore220(data);
+ validateCases219(data);
+ contractEngine220.validate(data);
+};
+const backupValidationBefore220=validateBackup210;
+validateBackup210=function(backup){
+ backupValidationBefore220(backup);
+ if(backup.kind!=='full'){
+  validateCases219(backup.data,{references:false});
+  contractEngine220.validate(backup.data,{references:false});
+ }
+};
+const closeBackupBefore220=closeGroupBackup214;
+closeGroupBackup214=function(data){
+ const result=closeBackupBefore220(data);
+ const ids=new Set((result.clients||[]).map(row=>row.id));
+ for(const row of [...(result.cases||[]),...(result.contracts||[])]){
+  if(ids.has(row.clientId))continue;
+  const client=state.clients.find(customer=>customer.id===row.clientId);
+  if(!client)throw Error('案件或合約缺少來源客戶，請先核對客戶庫');
+  result.clients.push(clone(client));ids.add(client.id);
+ }
+ validateCases219(result);
+ contractEngine220.validate(result);
+ return result;
+};
+function addContractPartial220(data,scope){
+ if(scope==='contracts'||scope==='calendar'){
+  data.contracts=clone(contracts220());
+  data.contractCategories=clone(customContractTypes220());
+ }else if(scope==='clients'||scope==='client'){
+  const clients=new Set(data.clients.map(client=>client.id));
+  data.contracts=clone(contracts220().filter(row=>clients.has(row.clientId)));
+  const types=new Set(data.contracts.map(row=>row.categoryId));
+  data.contractCategories=clone(customContractTypes220().filter(row=>types.has(row.id)));
+ }
+}
+const renderBackupBefore220=renderBackup;
+renderBackup=function(){
+ renderBackupBefore220();
+ for(const label of ['案件 '+(state.cases||[]).length,'合約 '+contracts220().length]){
+  const node=document.createElement('span');
+  node.className='kpi';node.textContent=label;
+  $('#backupSummary .kpi-row')?.append(node);
+ }
+};
 /* VAT_WORKSPACE_SCRIPT_END */
 
 boot();
@@ -3802,7 +4502,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.19.0"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.20.0"};</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

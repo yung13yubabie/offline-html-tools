@@ -25,6 +25,7 @@ const calculatorDateTools=require('./calculator-date-tools.browser.js');
 const calculatorTaxGroups=require('./calculator-tax-groups.browser.js');
 const calculatorAllocation=require('./calculator-allocation.browser.js');
 const vatCases=require('./vat-cases.browser.js');
+const vatContracts=require('./vat-contracts.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
 const BASE=process.env.OFFLINE_TEST_BASE_URL||'';
@@ -493,6 +494,7 @@ async function vatPreviewPaperGeometry(p){
  await check('vat batch individual payments + FIFO + unapplied + group preservation + atomic rollback',()=>vatRevisionContext(p=>vatBulkModules.payments(p,vatNoticeHelpers)));
  await check('vat unified workspace metadata + both themes + responsive views + reduced motion',()=>vatRevisionContext(p=>vatWorkspaceVisual(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries({...vatCrossAdversarial,...vatAccountingLinksUI,...vatPaymentLinks,...vatInvoiceLinks}))await check('vat cross-period '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
+ for(const [name,flow] of Object.entries(vatContracts))await check('vat contracts '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatCases))await check('vat cases '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));

@@ -1,0 +1,45 @@
+.record-list220{border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0;overflow:hidden}
+.record-columns220,.record-row220{
+ display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr) minmax(100px,.75fr) minmax(115px,.9fr) minmax(112px,.7fr);
+ gap:14px;padding:12px 16px;align-items:center
+}
+.record-columns220{color:var(--muted);background:var(--panel2);font-size:13px;font-weight:650}
+.record-item220{border-top:1px solid var(--line);padding-bottom:6px}
+.record-cell220{min-width:0;overflow-wrap:anywhere;line-height:1.55}
+.record-cell220 h2{margin:0;font-size:16px;line-height:1.45;overflow-wrap:anywhere}
+.record-cell220 strong{font-weight:660}
+.record-cell220 small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.record-cell220 .btn{min-height:44px;white-space:nowrap}
+.record-cell220 .badge{white-space:nowrap}
+.record-mobile-label220{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.record-details220{margin:0 16px;font-size:14px}
+.record-details220 summary{min-height:44px;padding:11px 0;color:var(--brand);cursor:pointer;max-width:max-content}
+.record-facts220{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin:0 0 8px;padding:16px;background:var(--panel2);border-radius:7px}
+.record-facts220>div{min-width:0}
+.record-facts220>div:last-child{grid-column:1/-1}
+.record-facts220 dt{color:var(--muted);font-size:13px;font-weight:650;margin-bottom:5px}
+.record-facts220 dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}
+.record-detail-actions220{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.record-detail-actions220>.btn{min-height:44px}
+.record-pager220{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 0}
+.record-pager220 .btn,.record-pager220 .select{min-height:44px}
+.record-pager220 label{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.record-pager220 .select{width:auto}
+@media(max-width:1060px){
+ .record-columns220{display:none}
+ .record-row220{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
+ .record-mobile-label220{display:block;position:static;width:auto;height:auto;margin:0 0 4px;overflow:visible;clip-path:none;white-space:normal;color:var(--muted);font-size:13px}
+ .record-cell220:has(h2){grid-column:1/-1}
+ .record-cell220:last-child .record-mobile-label220{display:none}
+ .record-facts220{gap:12px 16px}
+}
+@media(max-width:560px){
+ .record-row220{padding:12px;align-items:start}
+ .record-cell220:last-child{grid-column:1/-1}
+ .record-details220{margin:0 12px}
+ .record-facts220{grid-template-columns:minmax(0,1fr);padding:12px}
+ .record-pager220{gap:7px}
+ .record-pager220 .btn{padding-inline:9px}
+}
+.record-calendar220{margin:5px 4px 0 0}
+@media(max-width:560px){.record-calendar220{margin:0 0 0 6px}}

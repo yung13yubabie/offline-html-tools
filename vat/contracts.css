@@ -1,0 +1,33 @@
+.contract-stats220{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.contract-stats220 button{min-height:66px;padding:12px}
+.contract-stats220 strong{font-size:24px}
+.contract-filters220{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr)) auto;align-items:end;gap:14px;padding:16px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.contract-filters220 .field{min-width:0}
+.contract-filters220 :is(.input,.select,.btn){width:100%;min-height:44px}
+.contract-field-error220{color:var(--red,#a5352d);font-size:14px}
+.contract-client220{min-width:0}
+.contract-modal220 #contractClientPreview220 .record-facts220{margin:0;padding:0}
+.contract-modal220 #contractClientPreview220 .record-facts220>div{grid-column:auto}
+#deleteContract220{margin-right:auto}
+.contract-reminder-strip220{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.contract-reminder-strip220[hidden]{display:none}
+.contract-todo-heading220,.contract-todo-row220{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:12px 14px}
+.contract-todo-row220{border-top:1px solid var(--line);overflow-wrap:anywhere}
+.contract-todo-row220>.actions{flex:none;max-width:100%}
+.contract-todo-row220 .btn{min-height:44px}
+@media(max-width:1060px){
+ .contract-stats220{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .contract-filters220{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .contract-stats220{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .contract-stats220 button{min-height:56px;padding:8px}
+ .contract-stats220 strong{font-size:20px}
+ .contract-filters220{gap:10px;padding:12px}
+ .contract-filters220>.field:first-child,.contract-filters220>.btn{grid-column:1/-1}
+ .contract-filters220 .select{padding-inline:6px}
+}
+@media(max-width:420px){
+ .contract-stats220 button{gap:4px}
+ .contract-stats220 .badge{padding-inline:4px;white-space:nowrap}
+}

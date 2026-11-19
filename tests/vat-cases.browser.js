@@ -108,7 +108,7 @@ async function lifecycle(p,h){
 async function backupAndReferences(p,h){
  const caseId=await create(p,false);
  const current=await h.backup(p);
- assert.equal(current.backupVersion,8);
+ assert.equal(current.backupVersion,9);
  await p.locator('#partialScope').selectOption('cases');
  const partial=JSON.parse((await h.download(p,()=>p.locator('#partialExportBtn').click())).toString());
  assert.deepEqual(partial.data.cases.map(row=>row.id),[caseId]);
@@ -125,6 +125,8 @@ async function backupAndReferences(p,h){
  const old=structuredClone(current);
  old.backupVersion=7;
  delete old.data.cases;
+ delete old.data.contracts;
+ delete old.data.contractCategories;
  await nav(p,'backup');
  await upload(p,old);
  await p.locator('#restoreMergeBtn').click();
@@ -148,6 +150,7 @@ async function backupAndReferences(p,h){
 }
 
 async function upgrade(p,h){
+ await create(p,false);
  const data=(await h.backup(p)).data;
  await p.evaluate(async snapshot=>{
   const name='VAT_WORKBENCH_DB';
@@ -157,10 +160,10 @@ async function upgrade(p,h){
    request.onerror=()=>reject(request.error);
   });
   await new Promise((resolve,reject)=>{
-   const request=indexedDB.open(name,3);
+   const request=indexedDB.open(name,4);
    request.onupgradeneeded=()=>{
     for(const [store,rows] of Object.entries(snapshot)){
-     if(store==='cases')continue;
+     if(['contracts','contractCategories'].includes(store))continue;
      const table=request.result.createObjectStore(store,{keyPath:'id'});
      for(const row of rows)table.put(row);
     }
@@ -171,11 +174,13 @@ async function upgrade(p,h){
  },data);
  await h.reload(p);
  const result=await h.backup(p);
- assert.equal(result.backupVersion,8);
- assert.deepEqual(result.data.cases,[]);
+ assert.equal(result.backupVersion,9);
+ assert.deepEqual(result.data.cases,data.cases);
+ assert.deepEqual(result.data.contracts,[]);
+ assert.deepEqual(result.data.contractCategories,[]);
  assert.deepEqual(result.data.clients.map(row=>row.id),data.clients.map(row=>row.id));
  assert.deepEqual(result.data.periodClients.map(row=>row.id),data.periodClients.map(row=>row.id));
- await create(p,false);
- assert.equal((await h.backup(p)).data.cases.length,1);
+ await nav(p,'cases');
+ assert.equal(await p.locator('#casesCards219 [data-case-id219]').count(),1);
 }
 module.exports={lifecycle,backupAndReferences,upgrade};
