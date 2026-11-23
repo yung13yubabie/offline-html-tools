@@ -120,22 +120,17 @@ bindCalendarNoteActions=function(){caseCalendarBindBefore219();bindCaseButtons21
 const caseReminderBefore219=calendarReminderEvents;
 calendarReminderEvents=function(){return [...caseReminderBefore219(),...caseReminderEvents219()];};
 function renderCaseReminderStrip219(){
- const pane=$('#workTaskPane210'),tabs=$('.today-view-tabs210');
- if(!pane||!tabs)return;
- let strip=$('#caseReminderStrip219');
- if(!strip){
-  strip=document.createElement('section');
-  strip.id='caseReminderStrip219';
-  strip.className='case-reminder-strip219';
-  strip.setAttribute('aria-label','到期案件提醒');
-  tabs.after(strip);
- }
+ const strip=$('#caseReminderStrip219');
+ if(!strip)return;
  const due=caseReminderEvents219();
- strip.hidden=pane.hidden||!due.length;
- if(strip.hidden){strip.replaceChildren();return;}
- strip.innerHTML=`<strong>案件提醒 <span class="badge b-blue">${due.length}</span></strong>
-  <div class="case-reminder-actions219">${due.slice(0,3).map(event=>`<button type="button" class="btn small" data-open-case219="${esc(event.caseId)}">${esc(event.client)} · ${esc(event.detail)}</button>`).join('')}
-  ${due.length>3?'<button type="button" class="btn small" id="showAllCaseReminders219">查看全部</button>':''}</div>`;
+ strip.innerHTML=`<header class="today-reminder-heading226">
+  <h2 id="todayCasesTitle226">案件提醒 <span class="badge b-blue">${due.length}</span></h2>
+  ${due.length>3?'<button type="button" class="today-link226" id="showAllCaseReminders219">查看全部</button>':''}
+ </header>
+ ${due.length?`<ul class="today-reminder-list226">${due.slice(0,3).map(event=>`<li>
+  <button type="button" class="today-case-row226" data-open-case219="${esc(event.caseId)}">
+   <span class="today-reminder-client226">${esc(event.client)}</span><span class="today-case-topic226">${esc(event.detail)}</span>
+  </button></li>`).join('')}</ul>`:'<p class="today-reminder-empty226">目前沒有案件提醒</p>'}`;
  $('#showAllCaseReminders219')?.addEventListener('click',()=>$('#todaySystemTab210')?.click());
 }
 const caseTodayBefore219=renderToday;

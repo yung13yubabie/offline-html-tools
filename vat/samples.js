@@ -47,7 +47,13 @@ function mountVatSampleBar(){
  if(!view)return;
  const header=view.querySelector('.page-head');
  if(header){
-  if(vatSampleBar.parentNode!==header)header.append(vatSampleBar);
+  let actions=header.querySelector(':scope > .actions');
+  if(!actions){
+   actions=document.createElement('div');
+   actions.className='actions';
+   header.append(actions);
+  }
+  if(vatSampleBar.parentNode!==actions)actions.prepend(vatSampleBar);
  }else if(vatSampleBar.parentNode!==view)view.prepend(vatSampleBar);
 }
 function showVatSampleLoading(){

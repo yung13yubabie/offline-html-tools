@@ -77,7 +77,7 @@ function mountContracts220() {
   <div class="actions"><button class="btn" type="button" id="leaseRatesBtn224">年度郵政利率</button><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
  <div class="contract-stats220" id="contractStats220" aria-label="合約狀態"></div>
  <div class="contract-filters220">
-  <div class="field"><label for="contractSearch220">搜尋</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
+  <div class="field"><label for="contractSearch220">搜尋合約</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
   <div class="field"><label for="contractClientFilter220">客戶</label><select id="contractClientFilter220" class="select"></select></div>
   <div class="field"><label for="contractCategoryFilter220">類別</label><select id="contractCategoryFilter220" class="select"></select></div>
   <div class="field"><label for="contractStatusFilter220">狀態</label><select id="contractStatusFilter220" class="select"><option value="all">全部狀態</option>
@@ -368,7 +368,7 @@ function contractReminderEvents220() {
   .sort((a,b)=>a.endDate.localeCompare(b.endDate)||a.id.localeCompare(b.id))
   .map(row=>{
    const customer=clientById(row.clientId);
-   return {id:'contract-task:'+row.id,source:'contract',contractId:row.id,label:'合約到期待辦',client:customer?.name||'客戶已移除',
+   return {id:'contract-task:'+row.id,source:'contract',contractId:row.id,clientId:row.clientId,label:'合約到期待辦',client:customer?.name||'客戶已移除',
     code:customer?.code||'',detail:row.title+' · '+row.task,priority:'today',tone:'orange'};
   });
 }
@@ -425,24 +425,26 @@ function bindContractActions220(root) {
   root.querySelectorAll(selector).forEach(button=>button.onclick=event=>{event.stopPropagation();action(button.dataset[attr]);});
  }
 }
-function renderContractReminderStrip220() {
- const pane=$('#workTaskPane210'),tabs=$('.today-view-tabs210');
- if(!pane||!tabs)return;
- let strip=$('#contractReminderStrip220');
- if(!strip){
-  strip=document.createElement('section');
-  strip.id='contractReminderStrip220';strip.className='contract-reminder-strip220';
-  strip.setAttribute('aria-label','合約到期待辦');
-  ($('#caseReminderStrip219')||tabs).after(strip);
+function renderContractReminderStrip220(){
+ const strip=$('#contractReminderStrip220');
+ if(!strip)return;
+ const due=contractReminderEvents220(),groups=new Map();
+ for(const event of due.slice(0,3)){
+  if(!groups.has(event.clientId))groups.set(event.clientId,{name:event.client,items:[]});
+  groups.get(event.clientId).items.push(contractID220(event.contractId));
  }
- const due=contractReminderEvents220();
- strip.hidden=pane.hidden||!due.length;
- if(strip.hidden){strip.replaceChildren();return;}
- strip.innerHTML=`<div class="contract-todo-heading220"><strong>合約到期待辦 <span class="badge b-orange">${due.length}</span></strong>
-  ${due.length>3?'<button class="btn small" id="allContractTodos220" type="button">查看全部</button>':''}</div>
-  ${due.slice(0,3).map(event=>`<div class="contract-todo-row220"><div><strong>${esc(event.client)}</strong><div>${esc(event.detail)}</div></div>
-  <div class="actions"><button class="btn small" type="button" data-open-contract220="${esc(event.contractId)}">查看合約</button>
-  <button class="btn small primary" type="button" data-contract-complete220="${esc(event.contractId)}">完成待辦</button></div></div>`).join('')}`;
+ strip.innerHTML=`<header class="today-reminder-heading226">
+  <h2 id="todayContractsTitle226">合約到期待辦 <span class="badge b-orange">${due.length}</span></h2>
+  ${due.length>3?'<button class="today-link226" id="allContractTodos220" type="button">查看全部</button>':''}
+ </header>
+ ${groups.size?`<ul class="today-reminder-list226">${[...groups.values()].map(group=>`<li class="today-contract-group226">
+  <strong class="today-reminder-client226">${esc(group.name)}</strong>
+  <ul>${group.items.map(contract=>`<li class="today-contract-row226">
+   <div class="today-contract-caption226"><span>${esc(contract.title)}</span><time datetime="${esc(contract.endDate)}">${esc(fmtDate(contract.endDate))}</time></div>
+   <button type="button" class="today-link226" data-open-contract220="${esc(contract.id)}" aria-label="查看合約 · ${esc(contract.title)}">查看 <span aria-hidden="true">›</span></button>
+   <button type="button" class="today-complete226" data-contract-complete220="${esc(contract.id)}" aria-label="完成待辦 · ${esc(contract.title)}" title="完成待辦"><span aria-hidden="true">✓</span></button>
+  </li>`).join('')}</ul>
+ </li>`).join('')}</ul>`:'<p class="today-reminder-empty226">目前沒有合約到期待辦</p>'}`;
  $('#allContractTodos220')?.addEventListener('click',()=>$('#todaySystemTab210')?.click());
 }
 

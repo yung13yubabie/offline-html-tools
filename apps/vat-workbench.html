@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.25.0</title>
+<title>營業稅工作台 v2.26.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -577,10 +577,6 @@ body:has(#modalRoot.show .bulk-work-modal215) #toastWrap{z-index:90;pointer-even
 }
 @media screen and (max-width:799px){#view-cases .cases-stats219{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cases-stat219{min-height:76px;padding:12px}.cases-filters219{grid-template-columns:minmax(0,1fr);padding:14px;gap:12px}.cases-form219,.cases-reminder-fields219{grid-template-columns:minmax(0,1fr)}.cases-span219{grid-column:1}.cases-form219 .input,.cases-form219 .select,.cases-form219 .textarea{font-size:16px}#modalRoot .cases-modal219{width:calc(100vw - 16px);max-height:calc(100dvh - 80px)}#modalRoot:has(.cases-modal219){padding:8px 8px 64px}.cases-modal219 .modal-foot{flex-wrap:wrap}.cases-modal219 .modal-foot>.btn{flex:1 1 auto}.cases-master219 dl{grid-template-columns:1fr;gap:12px}.cases-master219 dd{font-size:16px}.cases-meta219{font-size:14px}}
 
-.case-reminder-strip219{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius,8px);background:var(--panel)}
-.case-reminder-strip219[hidden]{display:none}
-.case-reminder-actions219{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
-.case-reminder-actions219 button{max-width:100%;overflow-wrap:anywhere;text-align:left}
 body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:none}
 @media screen and (max-width:799px){
  .cases-filters219{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -710,12 +706,6 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 .contract-field-error220{color:var(--red,#a5352d);font-size:14px}
 .contract-client220{min-width:0}
 #deleteContract220{margin-right:auto}
-.contract-reminder-strip220{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
-.contract-reminder-strip220[hidden]{display:none}
-.contract-todo-heading220,.contract-todo-row220{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:12px 14px}
-.contract-todo-row220{border-top:1px solid var(--line);overflow-wrap:anywhere}
-.contract-todo-row220>.actions{flex:none;max-width:100%}
-.contract-todo-row220 .btn{min-height:44px}
 @media(max-width:1060px){
  .contract-stats220{grid-template-columns:repeat(3,minmax(0,1fr))}
  .contract-filters220{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1198,6 +1188,112 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .vat-sample-choice{padding:8px 5px;text-align:center}
 }
 @media print {.vat-sample-bar{display:none!important}}
+@media screen{
+ .app .topbar>.top-period{
+  display:flex;flex:0 1 355px;width:auto;min-width:270px;max-width:355px;gap:8px;align-items:center
+ }
+ .app .top-period #topPeriod{width:100%;min-width:0}
+ .app .topbar>.top-spacer{display:block;flex:1;min-width:0}
+ .app #globalSearchLaunch{flex:none;white-space:nowrap;color:var(--brand)}
+ #customerJump226{
+  width:min(540px,calc(100vw - 24px));max-height:78dvh;padding:0;
+  border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)
+ }
+ #customerJump226::backdrop{background:#10191f91}
+ #customerJump226>header{
+  display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line)
+ }
+ #customerJump226 h2{margin:0;font-size:18px}
+ .customer-jump-body226{padding:12px 14px;min-width:0}
+ #customerJumpCount226{margin:5px 0}
+ #customerJumpResults226{list-style:none;margin:0;padding:1px;max-height:45dvh;overflow:auto}
+ #customerJumpResults226 li+li{border-top:1px solid var(--line)}
+ #customerJumpResults226 button{
+  width:100%;padding:7px 6px;min-height:44px;display:flex;justify-content:space-between;align-items:center;
+  gap:6px;border:0;background:transparent;color:var(--text);text-align:left;font:inherit;overflow-wrap:anywhere;cursor:pointer
+ }
+ #customerJumpResults226 button:hover{background:var(--panel2)}
+ #customerJumpResults226 button>span:last-child{flex:none;color:var(--brand);font-size:13px}
+ #customerJumpResults226 small{display:block;color:var(--muted)}
+ .app .page-head>.actions{min-width:0;max-width:100%}
+ .app .page-head>.actions>.vat-sample-bar{max-width:100%;min-width:0}
+ #view-today>.page-head{margin-bottom:12px;padding-bottom:12px}
+ #view-today .today-title-actions226 .btn:not(.primary){background:var(--panel)}
+ #view-today .task-context210{display:block;margin-bottom:10px;padding:0}
+ #view-today .today-view-tabs210{display:flex;flex-direction:row;gap:18px;align-items:center;flex-wrap:nowrap}
+ #view-today .today-view-tabs210>button{min-height:40px;padding-inline:3px;white-space:nowrap}
+ #workTaskPane210{container:today-work / inline-size}
+ .today-reminders226{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:10px;margin-bottom:12px}
+ .today-reminder-card226{display:flex;flex-direction:column;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+ .today-reminder-heading226{
+  min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;border-bottom:1px solid var(--line)
+ }
+ .today-reminder-heading226 h2{margin:0;display:flex;align-items:center;gap:6px;font-size:15px}
+ .today-reminder-list226,.today-contract-group226 ul{list-style:none;margin:0;padding:0}
+ .today-reminder-list226>li+li{border-top:1px solid var(--line)}
+ #caseReminderStrip219>.today-reminder-list226:has(>li:nth-child(2)){display:grid;grid-auto-rows:1fr;flex:1}
+ #caseReminderStrip219>.today-reminder-list226:has(>li:nth-child(2)) .today-case-row226{height:100%}
+ .today-case-row226{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:8px;align-items:center;min-height:44px;width:100%;
+  padding:6px 10px;border:0;background:transparent;color:var(--text);text-align:left;font:inherit;cursor:pointer
+ }
+ .today-case-row226:hover{background:var(--panel2)}
+ .today-reminder-client226{font-weight:700;min-width:0;overflow-wrap:anywhere}
+ .today-case-topic226{
+  justify-self:start;max-width:100%;padding:2px 6px;border-radius:4px;background:var(--brand-soft);color:var(--brand);
+  font-size:13px;line-height:1.45;overflow-wrap:anywhere
+ }
+ .today-contract-group226{padding:6px 10px}
+ .today-contract-row226{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px 7px}
+ .today-contract-row226+.today-contract-row226{border-top:1px solid var(--line)}
+ .today-contract-caption226{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;line-height:1.45;font-size:13px;overflow-wrap:anywhere}
+ .today-contract-caption226 time{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+ .today-link226,.today-complete226{
+  border:1px solid transparent;border-radius:5px;background:transparent;color:var(--brand);min-height:32px;padding:3px 5px;
+  font:inherit;font-size:13px;font-weight:650;white-space:nowrap;cursor:pointer
+ }
+ .today-link226:hover,.today-complete226:hover{background:var(--brand-soft)}
+ .today-complete226{min-width:32px;font-size:17px;border-color:var(--line)}
+ .today-complete226:disabled{cursor:wait;opacity:.55}
+ .today-reminder-empty226{margin:0;padding:8px 10px;color:var(--muted)}
+ #view-today .task-filter-bar210{grid-template-columns:minmax(180px,1.55fr) minmax(120px,1fr) repeat(2,minmax(105px,.7fr)) auto}
+ #view-today .task-table-scroll210{min-height:0}
+ :is(#view-cases,#view-contracts) :is(.cases-filters219,.contract-filters220){padding:0 0 10px;border:0;border-bottom:1px solid var(--line);background:transparent;border-radius:0}
+}
+@container today-work (max-width:680px){
+ #view-today .task-filter-bar210{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #view-today #taskSearch210{grid-column:1/-1}
+ .today-reminders226{grid-template-columns:minmax(0,1fr)}
+}
+@container today-work (max-width:410px){
+ #view-today .task-filter-bar210{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .today-case-topic226{font-size:13px}
+}
+@media screen and (max-width:799px){
+ :root{--top:94px}
+ .app{grid-template-rows:var(--top) minmax(0,1fr)!important}
+ .app .topbar{
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;grid-template-rows:40px 43px;
+  height:var(--top)!important;min-height:var(--top)!important;gap:2px 6px!important;align-content:center
+ }
+ .app .topbar>.top-spacer{display:none}
+ .app .topbar>.top-period{
+  grid-row:2;grid-column:1/-1;width:100%;max-width:none;min-width:0
+ }
+ .app .topbar>.top-period .top-label{display:block!important;font-size:12px}
+ .app .topbar #topPeriod{min-height:38px;padding-inline:6px;font-size:14px}
+ .app .topbar>.top-utilities{grid-row:1;grid-column:3}
+ .app .topbar>#globalSearchLaunch{grid-row:1;grid-column:2}
+ .app .sidebar{top:var(--top)!important;height:calc(100dvh - var(--top))!important}
+ .today-link226,.today-complete226{min-height:44px}
+ .today-complete226{min-width:44px}
+}
+@media screen and (max-width:520px){
+ #view-today .today-title-actions226{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));justify-items:stretch}
+ #view-today .today-title-actions226>.vat-sample-bar{grid-column:1/-1}
+ #view-today .today-title-actions226>.btn{justify-content:center;white-space:nowrap;font-size:14px;padding-inline:6px}
+}
+@media print{#customerJump226{display:none!important}}
 </style>
 <!-- VAT_WORKSPACE_STYLE_END -->
 </head>
@@ -1207,7 +1303,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.25.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.26.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -1215,7 +1311,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <label class="top-label" for="topPeriod">目前期別</label>
 <select aria-label="目前期別" class="select" id="topPeriod"></select>
 </div>
-<div class="top-search"><input id="globalSearch" placeholder="搜尋客戶名稱、代號、聯絡人、地址"/></div>
+<button type="button" class="btn small" id="globalSearchLaunch" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">找客戶</button>
 <div class="top-spacer"></div>
 <div class="top-utilities">
 <button class="btn small" id="dateModeBtn" title="切換西元／民國日期顯示">西元</button>
@@ -1250,13 +1346,18 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 </div>
 <main class="main" data-review-id="vat-workbench-main-3" data-review-name="主要工作區 3">
 <section class="view active" id="view-today" data-review-id="vat-workbench-view-today" data-review-name="今日工作">
-<div class="page-head"><div><h1 class="page-title">今日待辦</h1><div class="page-sub" id="todayLabel"></div></div><div class="actions"><button class="btn small" data-go="accounting">帳務處理</button></div></div>
+<div class="page-head"><div><h1 class="page-title">今日待辦</h1><div class="page-sub" id="todayLabel"></div></div>
+<div class="actions today-title-actions226"><button class="btn" id="printWorkTasks210">列印目前結果</button><button class="btn primary" id="newWorkTask210">＋ 新增待辦</button></div></div>
 <div class="task-context210">
 <div aria-label="待辦檢視" class="today-view-tabs210" role="tablist"><button aria-controls="workTaskPane210" aria-selected="true" class="active" data-today-tab210="work" id="todayWorkTab210" role="tab" tabindex="0">工作待辦</button><button aria-controls="systemTaskPane210" aria-selected="false" data-today-tab210="system" id="todaySystemTab210" role="tab" tabindex="-1">系統提醒</button></div>
-<div class="task-top-actions210"><button class="btn small" id="printWorkTasks210">列印目前結果</button><button class="btn small primary" id="newWorkTask210">＋ 新增待辦</button></div>
+
 </div>
 <div aria-labelledby="todayWorkTab210" class="work-task-pane210" id="workTaskPane210" role="tabpanel" data-review-id="vat-workbench-workTaskPane210" data-review-name="待辦工作清單">
-<div class="task-filter-bar210"><input aria-label="搜尋工作待辦" class="input" id="taskSearch210" placeholder="搜尋客戶、待辦、備註" type="search"/><select aria-label="篩選客戶" class="select" id="taskClient210"><option value="">全部客戶</option></select><select aria-label="篩選類型" class="select" id="taskKind210"><option value="">全部類型</option><option value="missing">欠缺文件</option><option value="return">待歸資料</option><option value="manual">其他待辦</option></select><select aria-label="篩選期別範圍" class="select" id="taskScope210"><option value="current">目前期別</option><option value="all">全部期別</option></select><button class="btn small" data-task-clear210="">清除</button></div>
+<div class="today-reminders226" aria-label="到期提醒">
+<section id="caseReminderStrip219" class="today-reminder-card226" aria-labelledby="todayCasesTitle226" data-review-id="vat-workbench-caseReminderStrip219" data-review-name="功能區塊 1"></section>
+<section id="contractReminderStrip220" class="today-reminder-card226" aria-labelledby="todayContractsTitle226" data-review-id="vat-workbench-contractReminderStrip220" data-review-name="功能區塊 2"></section>
+</div>
+<div class="task-filter-bar210"><input aria-label="篩選待辦清單" class="input" id="taskSearch210" placeholder="篩選待辦、客戶或備註" type="search"/><select aria-label="篩選客戶" class="select" id="taskClient210"><option value="">全部客戶</option></select><select aria-label="篩選類型" class="select" id="taskKind210"><option value="">全部類型</option><option value="missing">欠缺文件</option><option value="return">待歸資料</option><option value="manual">其他待辦</option></select><select aria-label="篩選期別範圍" class="select" id="taskScope210"><option value="current">目前期別</option><option value="all">全部期別</option></select><button class="btn small" data-task-clear210="">清除</button></div>
 <div class="task-status-bar210"><div aria-label="工作狀態" role="group"><button aria-pressed="true" class="active" data-task-status210="open">待處理 <span>0</span></button><button aria-pressed="false" data-task-status210="scheduled">已安排 <span>0</span></button><button aria-pressed="false" data-task-status210="done">已完成 <span>0</span></button><button aria-pressed="false" data-task-status210="all">全部 <span>0</span></button></div><span aria-live="polite" class="task-secondary210" id="taskResultCount210"></span></div>
 <div class="task-table-scroll210"><table class="task-table210"><colgroup><col class="task-check-col210"/><col class="task-client-col210"/><col class="task-title-col210"/><col class="task-kind-col210"/><col class="task-date-col210"/><col class="task-state-col210"/><col class="task-action-col210"/></colgroup><thead><tr><th><input aria-label="選取本頁全部待辦" id="taskCheckPage210" type="checkbox"/></th><th>客戶／期別</th><th>待辦事項</th><th>類型</th><th>安排／完成</th><th>狀態</th><th>操作</th></tr></thead><tbody id="taskTableBody210"></tbody></table></div>
 <div class="task-bottom210"><span aria-live="polite" id="taskPaging210"></span><div><label for="taskPageSize210">每頁</label><select class="select" id="taskPageSize210"><option value="12">12 筆</option><option value="24">24 筆</option><option value="48">48 筆</option></select><button aria-label="上一頁" class="btn small" id="taskPrev210">上一頁</button><button aria-label="下一頁" class="btn small" id="taskNext210">下一頁</button></div></div>
@@ -1283,7 +1384,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <section id="view-cases" class="view" data-review-id="vat-workbench-cases" data-review-name="案件"></section>
 <section class="view" id="view-clients" data-review-id="vat-workbench-view-clients" data-review-name="客戶資料">
 <div class="page-head"><div><h1 class="page-title">客戶庫</h1><div class="page-sub">管理客戶資料、聯絡人與快遞方式。</div></div><div class="actions"><button class="btn" id="downloadTemplateBtn">下載 Excel 範本</button><button class="btn" id="bulkImportBtn">批量新增</button><button class="btn primary" id="addClientBtn">新增客戶</button></div></div>
-<div class="toolbar"><input class="input" id="clientSearch" placeholder="搜尋名稱、代號、聯絡人、地址" style="max-width:360px"/><span class="muted small" id="clientCount"></span></div>
+<div class="toolbar"><input class="input" id="clientSearch" aria-label="搜尋客戶庫" placeholder="搜尋客戶庫名稱、代號或聯絡人" style="max-width:360px"/><span class="muted small" id="clientCount"></span></div>
 <div class="table-wrap" id="clientTable" data-review-id="vat-workbench-clientTable" data-review-name="客戶清單"></div>
 </section>
 <section class="view" id="view-work" data-review-id="vat-workbench-view-work" data-review-name="本期工作">
@@ -1297,7 +1398,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="card work-list-card">
 <div class="card-h"><div><div class="section-title">客戶清單</div><div class="section-subtitle">先從左側選客戶，再在右側處理本期工作、款項與補充事項。</div></div></div>
 <div class="card-b">
-<div class="work-list-toolbar"><input class="input" id="workSearch" placeholder="搜尋本期客戶"/><button class="btn" id="workFilterBtn">篩選 <span class="badge b-gray" id="workFilterCount">0</span></button><select class="select" id="workSort"><option value="code">代號</option><option value="name">名稱</option><option value="appointment">預約收件日</option><option value="remit">最晚匯款日</option><option value="debt">尚欠金額</option><option value="priority">優先級</option></select></div>
+<div class="work-list-toolbar"><input class="input" id="workSearch" aria-label="搜尋本期客戶" placeholder="搜尋本期客戶"/><button class="btn" id="workFilterBtn">篩選 <span class="badge b-gray" id="workFilterCount">0</span></button><select class="select" id="workSort"><option value="code">代號</option><option value="name">名稱</option><option value="appointment">預約收件日</option><option value="remit">最晚匯款日</option><option value="debt">尚欠金額</option><option value="priority">優先級</option></select></div>
 
 </div>
 </div>
@@ -1340,7 +1441,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <aside class="accounting-client-pane card" data-review-id="vat-workbench-aside-12" data-review-name="側邊工具 12">
 <details id="accountingPicker223" open><summary><strong>本期客戶</strong><span id="accountingClientCount223"></span></summary>
 <div class="accounting-client-filters">
-<input class="input" id="accountingSearch" aria-label="搜尋客戶" placeholder="客戶名稱或代號"/>
+<input class="input" id="accountingSearch" aria-label="搜尋本期帳務客戶" placeholder="搜尋本期帳務客戶"/>
 <select class="select" id="accountingStatus223" aria-label="帳務狀態"><option value="">全部狀態</option><option value="open">未完成</option><option value="done">已完成</option><option value="missing">有待補文件</option><option value="return">有待歸資料</option></select>
 </div>
 <div class="accounting-client-list" id="accountingClientList" aria-label="本期客戶" data-review-id="vat-workbench-accountingClientList" data-review-name="帳款客戶清單"></div>
@@ -1457,10 +1558,17 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="modal-backdrop" id="modalRoot" data-review-id="vat-workbench-modalRoot" data-review-name="操作對話框"></div>
 <dialog aria-labelledby="taskDialogTitle210" id="taskDialog210" data-review-id="vat-workbench-taskDialog210" data-review-name="待辦編輯視窗"></dialog>
 <dialog aria-labelledby="taskBulkTitle210" id="taskBulkDialog210" data-review-id="vat-workbench-taskBulkDialog210" data-review-name="批次待辦視窗"></dialog>
+<dialog aria-labelledby="customerJumpTitle226" id="customerJump226" data-review-id="vat-workbench-customerJump226" data-review-name="快速跳轉客戶">
+ <header data-review-id="vat-workbench-header-3" data-review-name="頂端操作 3"><h2 id="customerJumpTitle226">快速跳轉客戶</h2><button class="btn" type="button" id="closeCustomerJump226" aria-label="關閉快速跳轉">×</button></header>
+ <div class="customer-jump-body226">
+  <input class="input" id="globalSearch" type="search" autocomplete="off" aria-label="搜尋全部客戶" placeholder="名稱、代號、聯絡人或地址"/>
+  <p class="small muted" id="customerJumpCount226" role="status"></p><ul id="customerJumpResults226"></ul>
+ </div>
+</dialog>
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.25.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.26.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
 const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
 const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
 const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
@@ -1951,7 +2059,6 @@ function openPeriodSettings(p){if(!p)return;const html=`<div class="form-grid tw
 function openNewPeriodModal(){const y=new Date().getFullYear(),showYear=displayYearNumber(y),yearText=currentDateMode()==='roc'?'民國年度':'西元年度';const html=`<div class="form-grid two"><div class="field"><label>${yearText}</label><input id="npYear" class="input" type="number" value="${esc(showYear)}"></div><div class="field"><label>期別</label><select id="npSlot" class="select">${PERIOD_SLOTS.map((x,i)=>`<option value="0${i+1}">${x[1]}</option>`).join('')}</select></div><div class="field"><label>本期共用最晚匯款日</label><input id="npRemit" class="input" type="date"><div class="tiny muted" style="margin-top:5px">本期共用。</div></div><div class="field"><label>本期最晚寄出日</label><input id="npDispatchDate" class="input" type="date"><div class="tiny muted" style="margin-top:5px">本期共用；個別客戶可再提前。</div></div><div class="field"><label>未填最晚寄出日時，自動往前幾天（可留空）</label><input id="npDispatch" class="input" type="number" min="0" placeholder="沿用平常設定"><div class="tiny muted" style="margin-top:5px">最晚寄出日留空時才使用。</div></div><div class="field"><label>法定繳款日</label><input id="npDue" class="input" type="date"></div></div>`;showModal('建立新一期',html,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;if(!$('#npRemit').value){toast('請設定本期最晚匯款日');return}const year=currentDateMode()==='roc'?Number($('#npYear').value)+1911:Number($('#npYear').value),slot=$('#npSlot').value,id=`${year}-${slot}`;if(state.periods.some(p=>p.id===id)){toast('這一期已存在');return}const t=nowISO(),p={id,year,slot,status:'尚未開始',latestRemitDate:$('#npRemit').value,latestDispatchDate:$('#npDispatchDate').value,dispatchLeadDaysOverride:$('#npDispatch').value===''?null:Number($('#npDispatch').value),dueDate:$('#npDue').value||statutoryDueDate(year,slot),priorityOverrides:{},unlockHistory:[],createdAt:t,updatedAt:t};await put('periods',p);let added=0,skipped=0;for(const c of state.clients){if(await addClientToPeriod(c,p))added++;else skipped++}state.periodId=id;vatPrefs.setItem('vatCurrentPeriod',id);await loadAll();toast(`新期別已建立｜加入 ${added} 位${skipped?`，略過暫停 ${skipped} 位`:''}`)});setTimeout(()=>{const sync=()=>{const yy=currentDateMode()==='roc'?Number($('#npYear').value)+1911:Number($('#npYear').value);$('#npDue').value=statutoryDueDate(yy,$('#npSlot').value)};$('#npYear').onchange=sync;$('#npSlot').onchange=sync;sync()},0)}
 async function attemptClosePeriod(id){const p=state.periods.find(x=>x.id===id),pcs=state.periodClients.filter(x=>x.periodId===id&&!x.notApplicable),open=pcs.filter(x=>!x.caseClosed);if(open.length){toast(`還有 ${open.length} 位適用客戶尚未結案`);return}if(await confirm2('結束本期',`全部適用客戶皆已結案。是否將「${periodLabel(p)}」標記為已結束並鎖定？`,'結束本期')){p.status='已結束';p.closedAt=nowISO();p.updatedAt=nowISO();await put('periods',p);await loadAll();toast('本期已結束')}}
 function switchView(v){if(v!=='work')closePreShipFilter291();state.view=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='templates')renderTemplates();if(v==='work')renderWork();if(v==='today')renderToday()}
-function openGlobalSearch(){const q=$('#globalSearch').value.trim().toLowerCase();if(!q)return;const matches=state.clients.filter(c=>[c.name,c.code,c.address,...(c.contacts||[]).flatMap(x=>[x.name,x.contact])].join(' ').toLowerCase().includes(q));const html=matches.length?`<div class="table-wrap"><table><thead><tr><th>代號</th><th>客戶</th><th>地址／聯絡</th><th></th></tr></thead><tbody>${matches.map(c=>`<tr><td>${esc(c.code)}</td><td>${esc(c.name)}</td><td>${esc(c.address||'')}<br>${(c.contacts||[]).map(x=>`${esc(x.name||'')} ${esc(x.contact||'')}`).join('；')}</td><td><button class="btn small" data-g-client="${esc(c.id)}">查看本期</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">找不到符合資料</div>';showModal(`搜尋「${q}」`,html,[{text:'關閉',value:true}],()=>{});setTimeout(()=>$$('[data-g-client]').forEach(b=>b.onclick=()=>{const pc=pcForPeriod().find(x=>x.clientId===b.dataset.gClient);if(pc){state.selectedPCId=pc.id;$('#modalRoot').classList.remove('show');switchView('work')}else toast('這位客戶不在目前期別')}),0)}
 // Minimal XLSX reader/writer (single-sheet, supports normal Excel-saved XLSX and CSV)
 const crcTable=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
 function crc32(u8){let c=0xffffffff;for(const b of u8)c=crcTable[(c^b)&255]^(c>>>8);return(c^0xffffffff)>>>0}
@@ -2560,7 +2667,7 @@ function wire(){
   $('#dateModeBtn').onclick=async()=>{state.settings.dateMode=currentDateMode()==='roc'?'gregorian':'roc';vatPrefs.setItem('vatDateMode',state.settings.dateMode);await saveSettingsQuiet();syncDateMode();renderAll()};
   $('#themeBtn').onclick=async()=>{state.settings.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';vatPrefs.setItem('vatTheme',state.settings.theme);await saveSettingsQuiet();syncTheme()};
   $('#topPeriod').onchange=()=>{state.periodId=$('#topPeriod').value;vatPrefs.setItem('vatCurrentPeriod',state.periodId);state.selectedPCId=null;state.workFilters=[];renderAll()};
-  $('#globalSearch').onkeydown=e=>{if(e.key==='Enter')openGlobalSearch()};
+  bindGlobalSearch226();
   $('#clientSearch').oninput=renderClients;$('#addClientBtn').onclick=()=>openClientModal();$('#bulkImportBtn').onclick=openBulkImport;$('#downloadTemplateBtn').onclick=xlsxTemplate;
   $('#workMainTab').onclick=()=>switchWorkTab('main');$('#preShipTab').onclick=()=>{switchWorkTab('preShip');renderPreShipping()};$('#preShipSearch').oninput=e=>{if(!e.isComposing)renderPreShipping()};$('#preShipSearch').oncompositionend=renderPreShipping;$('#workSearch').oninput=renderWork;$('#workFilterBtn').onclick=openWorkFilterModal;$('#workSort').onchange=renderWork;$('#saveWorkBtn').onclick=saveWorkDraft;$('#periodManageBtn').onclick=openPeriodManager;
   $('#doneTypeFilter').onchange=()=>{state.donePage=1;renderDoneList()};$('#doneClientFilter').oninput=()=>{state.donePage=1;renderDoneList()};$('#doneYearFilter').onchange=()=>{state.donePage=1;$('#donePeriodFilter').value='';renderToday()};$('#donePeriodFilter').onchange=()=>{state.donePage=1;renderDoneList()};$('#toggleDoneCard').onclick=()=>{state.doneCollapsed=!state.doneCollapsed;renderToday()};$('#doneClearFilter').onclick=()=>{$('#doneClientFilter').value='';$('#doneYearFilter').value='';$('#donePeriodFilter').value='';$('#doneTypeFilter').value='';state.donePage=1;renderToday()};
@@ -3137,7 +3244,7 @@ wire=function(){wireBefore211();if(uiWired211)return;uiWired211=true;enhanceWork
  $('#feeClear211').onclick=()=>{resetFeeQuery211();renderFeeSearch211();$('#feeQuery211').focus()};$('#feePrev211').onclick=()=>{feeQuery211.page--;renderFeeSearch211()};$('#feeNext211').onclick=()=>{feeQuery211.page++;renderFeeSearch211()};$('#feeSize211').onchange=e=>{feeQuery211.size=Number(e.target.value);feeQuery211.page=1;renderFeeSearch211()};$('#feeRows211').onclick=e=>{const b=e.target.closest('[data-fee-open211]');if(b)openFeeSource211(b.dataset.feeOpen211)};$('#printFee211').onclick=printFeeSearch211;
  const after=window.onafterprint;window.onafterprint=()=>{after?.();$('#feePrintStyle211')?.remove()};
  const currentPdf=buildPdf;buildPdf=function(prepareOnly=false){ $('#feePrintStyle211')?.remove();return currentPdf(prepareOnly);};$('#exportPdfBtn').onclick=buildPdf;
- document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#globalSearch')?.focus()}if(e.key==='Escape'&&!$('#taskDialog210')?.open&&!$('#modalRoot')?.classList.contains('show')&&$('#calendarDrawer')?.classList.contains('show'))closeCalendarDrawer()});
+ document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openGlobalSearch()}if(e.key==='Escape'&&!$('#taskDialog210')?.open&&!$('#modalRoot')?.classList.contains('show')&&$('#calendarDrawer')?.classList.contains('show'))closeCalendarDrawer()});
  const periodChange=$('#topPeriod').onchange;$('#topPeriod').onchange=e=>{const old=state.periodId;periodChange?.call(e.target,e);if(state.periodId!==old){resetFeeQuery211();renderFeeSearch211()}};
  // Late-bound function call: replaces handlers that captured the original functions before upgrade.
  $('#copyNoticeBtn').onclick=copyNotice;$('#refreshPreviewBtn').onclick=refreshTemplatePreview;$('#templateText').oninput=refreshTemplatePreview;
@@ -4851,22 +4958,17 @@ bindCalendarNoteActions=function(){caseCalendarBindBefore219();bindCaseButtons21
 const caseReminderBefore219=calendarReminderEvents;
 calendarReminderEvents=function(){return [...caseReminderBefore219(),...caseReminderEvents219()];};
 function renderCaseReminderStrip219(){
- const pane=$('#workTaskPane210'),tabs=$('.today-view-tabs210');
- if(!pane||!tabs)return;
- let strip=$('#caseReminderStrip219');
- if(!strip){
-  strip=document.createElement('section');
-  strip.id='caseReminderStrip219';
-  strip.className='case-reminder-strip219';
-  strip.setAttribute('aria-label','到期案件提醒');
-  tabs.after(strip);
- }
+ const strip=$('#caseReminderStrip219');
+ if(!strip)return;
  const due=caseReminderEvents219();
- strip.hidden=pane.hidden||!due.length;
- if(strip.hidden){strip.replaceChildren();return;}
- strip.innerHTML=`<strong>案件提醒 <span class="badge b-blue">${due.length}</span></strong>
-  <div class="case-reminder-actions219">${due.slice(0,3).map(event=>`<button type="button" class="btn small" data-open-case219="${esc(event.caseId)}">${esc(event.client)} · ${esc(event.detail)}</button>`).join('')}
-  ${due.length>3?'<button type="button" class="btn small" id="showAllCaseReminders219">查看全部</button>':''}</div>`;
+ strip.innerHTML=`<header class="today-reminder-heading226">
+  <h2 id="todayCasesTitle226">案件提醒 <span class="badge b-blue">${due.length}</span></h2>
+  ${due.length>3?'<button type="button" class="today-link226" id="showAllCaseReminders219">查看全部</button>':''}
+ </header>
+ ${due.length?`<ul class="today-reminder-list226">${due.slice(0,3).map(event=>`<li>
+  <button type="button" class="today-case-row226" data-open-case219="${esc(event.caseId)}">
+   <span class="today-reminder-client226">${esc(event.client)}</span><span class="today-case-topic226">${esc(event.detail)}</span>
+  </button></li>`).join('')}</ul>`:'<p class="today-reminder-empty226">目前沒有案件提醒</p>'}`;
  $('#showAllCaseReminders219')?.addEventListener('click',()=>$('#todaySystemTab210')?.click());
 }
 const caseTodayBefore219=renderToday;
@@ -5111,7 +5213,7 @@ function mountContracts220() {
   <div class="actions"><button class="btn" type="button" id="leaseRatesBtn224">年度郵政利率</button><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
  <div class="contract-stats220" id="contractStats220" aria-label="合約狀態"></div>
  <div class="contract-filters220">
-  <div class="field"><label for="contractSearch220">搜尋</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
+  <div class="field"><label for="contractSearch220">搜尋合約</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
   <div class="field"><label for="contractClientFilter220">客戶</label><select id="contractClientFilter220" class="select"></select></div>
   <div class="field"><label for="contractCategoryFilter220">類別</label><select id="contractCategoryFilter220" class="select"></select></div>
   <div class="field"><label for="contractStatusFilter220">狀態</label><select id="contractStatusFilter220" class="select"><option value="all">全部狀態</option>
@@ -5402,7 +5504,7 @@ function contractReminderEvents220() {
   .sort((a,b)=>a.endDate.localeCompare(b.endDate)||a.id.localeCompare(b.id))
   .map(row=>{
    const customer=clientById(row.clientId);
-   return {id:'contract-task:'+row.id,source:'contract',contractId:row.id,label:'合約到期待辦',client:customer?.name||'客戶已移除',
+   return {id:'contract-task:'+row.id,source:'contract',contractId:row.id,clientId:row.clientId,label:'合約到期待辦',client:customer?.name||'客戶已移除',
     code:customer?.code||'',detail:row.title+' · '+row.task,priority:'today',tone:'orange'};
   });
 }
@@ -5459,24 +5561,26 @@ function bindContractActions220(root) {
   root.querySelectorAll(selector).forEach(button=>button.onclick=event=>{event.stopPropagation();action(button.dataset[attr]);});
  }
 }
-function renderContractReminderStrip220() {
- const pane=$('#workTaskPane210'),tabs=$('.today-view-tabs210');
- if(!pane||!tabs)return;
- let strip=$('#contractReminderStrip220');
- if(!strip){
-  strip=document.createElement('section');
-  strip.id='contractReminderStrip220';strip.className='contract-reminder-strip220';
-  strip.setAttribute('aria-label','合約到期待辦');
-  ($('#caseReminderStrip219')||tabs).after(strip);
+function renderContractReminderStrip220(){
+ const strip=$('#contractReminderStrip220');
+ if(!strip)return;
+ const due=contractReminderEvents220(),groups=new Map();
+ for(const event of due.slice(0,3)){
+  if(!groups.has(event.clientId))groups.set(event.clientId,{name:event.client,items:[]});
+  groups.get(event.clientId).items.push(contractID220(event.contractId));
  }
- const due=contractReminderEvents220();
- strip.hidden=pane.hidden||!due.length;
- if(strip.hidden){strip.replaceChildren();return;}
- strip.innerHTML=`<div class="contract-todo-heading220"><strong>合約到期待辦 <span class="badge b-orange">${due.length}</span></strong>
-  ${due.length>3?'<button class="btn small" id="allContractTodos220" type="button">查看全部</button>':''}</div>
-  ${due.slice(0,3).map(event=>`<div class="contract-todo-row220"><div><strong>${esc(event.client)}</strong><div>${esc(event.detail)}</div></div>
-  <div class="actions"><button class="btn small" type="button" data-open-contract220="${esc(event.contractId)}">查看合約</button>
-  <button class="btn small primary" type="button" data-contract-complete220="${esc(event.contractId)}">完成待辦</button></div></div>`).join('')}`;
+ strip.innerHTML=`<header class="today-reminder-heading226">
+  <h2 id="todayContractsTitle226">合約到期待辦 <span class="badge b-orange">${due.length}</span></h2>
+  ${due.length>3?'<button class="today-link226" id="allContractTodos220" type="button">查看全部</button>':''}
+ </header>
+ ${groups.size?`<ul class="today-reminder-list226">${[...groups.values()].map(group=>`<li class="today-contract-group226">
+  <strong class="today-reminder-client226">${esc(group.name)}</strong>
+  <ul>${group.items.map(contract=>`<li class="today-contract-row226">
+   <div class="today-contract-caption226"><span>${esc(contract.title)}</span><time datetime="${esc(contract.endDate)}">${esc(fmtDate(contract.endDate))}</time></div>
+   <button type="button" class="today-link226" data-open-contract220="${esc(contract.id)}" aria-label="查看合約 · ${esc(contract.title)}">查看 <span aria-hidden="true">›</span></button>
+   <button type="button" class="today-complete226" data-contract-complete220="${esc(contract.id)}" aria-label="完成待辦 · ${esc(contract.title)}" title="完成待辦"><span aria-hidden="true">✓</span></button>
+  </li>`).join('')}</ul>
+ </li>`).join('')}</ul>`:'<p class="today-reminder-empty226">目前沒有合約到期待辦</p>'}`;
  $('#allContractTodos220')?.addEventListener('click',()=>$('#todaySystemTab210')?.click());
 }
 
@@ -6333,7 +6437,13 @@ function mountVatSampleBar(){
  if(!view)return;
  const header=view.querySelector('.page-head');
  if(header){
-  if(vatSampleBar.parentNode!==header)header.append(vatSampleBar);
+  let actions=header.querySelector(':scope > .actions');
+  if(!actions){
+   actions=document.createElement('div');
+   actions.className='actions';
+   header.append(actions);
+  }
+  if(vatSampleBar.parentNode!==actions)actions.prepend(vatSampleBar);
  }else if(vatSampleBar.parentNode!==view)view.prepend(vatSampleBar);
 }
 function showVatSampleLoading(){
@@ -6509,6 +6619,67 @@ async function seedVatSamples(){
  });
  state.periodId=current.id;
 }
+
+/* Customer jump is available from every view, including the narrow header. */
+function openGlobalSearch(){
+ const dialog=$('#customerJump226');
+ if(dialog.open){$('#globalSearch').focus();return;}
+ if($('#modalRoot.show')||document.querySelector('dialog[open]'))return;
+ dialog.showModal();
+ renderCustomerJump226();
+ $('#globalSearch').focus();
+ $('#globalSearch').select();
+}
+function renderCustomerJump226(){
+ const query=$('#globalSearch').value.trim().toLocaleLowerCase();
+ const matches=state.clients.filter(client=>!query||[client.name,client.code,client.address,
+  ...(client.contacts||[]).flatMap(contact=>[contact.name,contact.contact])].join(' ').toLocaleLowerCase().includes(query));
+ const visible=matches.slice(0,30),members=new Set(pcForPeriod().map(row=>row.clientId));
+ $('#customerJumpCount226').textContent=`符合 ${matches.length} 位${matches.length>visible.length?' · 顯示前 '+visible.length+' 位':''}`;
+ $('#customerJumpResults226').innerHTML=visible.map(client=>`<li>
+  <button type="button" data-g-client="${esc(client.id)}">
+   <span><strong>${esc(client.name)}</strong><small>${esc(client.code||'')}</small></span>
+   <span>${members.has(client.id)?'本期工作':'客戶資料'} <span aria-hidden="true">›</span></span>
+  </button>
+ </li>`).join('');
+}
+function bindGlobalSearch226(){
+ const dialog=$('#customerJump226'),input=$('#globalSearch'),results=$('#customerJumpResults226');
+ $('#globalSearchLaunch').onclick=openGlobalSearch;
+ $('#closeCustomerJump226').onclick=()=>dialog.close();
+ dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+ dialog.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&!event.isComposing){event.preventDefault();dialog.close();}
+ });
+ input.oninput=event=>{if(!event.isComposing)renderCustomerJump226();};
+ input.oncompositionend=renderCustomerJump226;
+ input.onkeydown=event=>{
+  if(event.isComposing)return;
+  const first=results.querySelector('button');
+  if(event.key==='ArrowDown'&&first){event.preventDefault();first.focus();}
+  if(event.key==='Enter'&&first){event.preventDefault();first.click();}
+ };
+ results.onclick=event=>{
+  const button=event.target.closest('[data-g-client]');
+  if(!button)return;
+  const client=clientById(button.dataset.gClient),pc=pcForPeriod().find(row=>row.clientId===client?.id);
+  if(!client)return;
+  if(pc&&state.view==='work'&&pc.id===state.selectedPCId){dialog.close();return;}
+  if(!allowDiscard210())return;
+  if(state.view==='work')state.workDraft=null;
+  dialog.close();
+  if(!pc){
+   if(state.view==='work')renderWork();
+   openClientModal(client);
+   return;
+  }
+  state.selectedPCId=pc.id;
+  state.workFilters=[];
+  $('#workSearch').value='';
+  state.workTab='main';
+  switchView('work');
+ };
+}
 /* VAT_WORKSPACE_SCRIPT_END */
 
 boot();
@@ -6517,7 +6688,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.25.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.26.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

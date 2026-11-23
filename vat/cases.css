@@ -7,10 +7,6 @@
 }
 @media screen and (max-width:799px){#view-cases .cases-stats219{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.cases-stat219{min-height:76px;padding:12px}.cases-filters219{grid-template-columns:minmax(0,1fr);padding:14px;gap:12px}.cases-form219,.cases-reminder-fields219{grid-template-columns:minmax(0,1fr)}.cases-span219{grid-column:1}.cases-form219 .input,.cases-form219 .select,.cases-form219 .textarea{font-size:16px}#modalRoot .cases-modal219{width:calc(100vw - 16px);max-height:calc(100dvh - 80px)}#modalRoot:has(.cases-modal219){padding:8px 8px 64px}.cases-modal219 .modal-foot{flex-wrap:wrap}.cases-modal219 .modal-foot>.btn{flex:1 1 auto}.cases-master219 dl{grid-template-columns:1fr;gap:12px}.cases-master219 dd{font-size:16px}.cases-meta219{font-size:14px}}
 
-.case-reminder-strip219{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--radius,8px);background:var(--panel)}
-.case-reminder-strip219[hidden]{display:none}
-.case-reminder-actions219{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
-.case-reminder-actions219 button{max-width:100%;overflow-wrap:anywhere;text-align:left}
 body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:none}
 @media screen and (max-width:799px){
  .cases-filters219{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}

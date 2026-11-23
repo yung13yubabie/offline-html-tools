@@ -7,12 +7,6 @@
 .contract-field-error220{color:var(--red,#a5352d);font-size:14px}
 .contract-client220{min-width:0}
 #deleteContract220{margin-right:auto}
-.contract-reminder-strip220{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
-.contract-reminder-strip220[hidden]{display:none}
-.contract-todo-heading220,.contract-todo-row220{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:12px 14px}
-.contract-todo-row220{border-top:1px solid var(--line);overflow-wrap:anywhere}
-.contract-todo-row220>.actions{flex:none;max-width:100%}
-.contract-todo-row220 .btn{min-height:44px}
 @media(max-width:1060px){
  .contract-stats220{grid-template-columns:repeat(3,minmax(0,1fr))}
  .contract-filters220{grid-template-columns:repeat(2,minmax(0,1fr))}

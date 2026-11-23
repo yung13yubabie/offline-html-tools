@@ -39,17 +39,17 @@ async function lifecycle(page,h){
  await h.screenshot(page,'vat-contracts-list-desktop');
  await nav(page,'today');
  const strip=page.locator('#contractReminderStrip220');
- assert(!await strip.isVisible());
+ assert.equal(await strip.locator('[data-contract-complete220]').count(),0);
  await page.clock.setFixedTime(formatDate(2026,10,30));
  await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
- await strip.waitFor();
- assert.match(await strip.innerText(),/核對合成續租資料/);
+ await strip.locator('[data-contract-complete220]').waitFor();
+ assert.match(await strip.innerText(),/合成辦公室租用/);
  await page.locator('#todaySystemTab210').click();
  await page.locator('#todayTodos [data-open-contract220]').waitFor();
  await page.locator('#todayWorkTab210').click();
  await strip.getByRole('button',{name:'完成待辦'}).click();
  await waitToast(page,'合約待辦已完成');
- assert(!await strip.isVisible());
+ assert.equal(await strip.locator('[data-contract-complete220]').count(),0);
  await nav(page,'contracts');
  await page.locator('#contractStatusFilter220').selectOption('upcoming');
  assert.equal(await row.count(),1);
@@ -74,7 +74,7 @@ async function lifecycle(page,h){
  await page.locator('#saveContract220').click();
  await waitToast(page,'合約已儲存');
  await nav(page,'today');
- assert(!await strip.isVisible());
+ assert.equal(await strip.locator('[data-contract-complete220]').count(),0);
  const backup=await h.backup(page);
  assert.equal(backup.backupVersion,11);
  assert.equal(backup.data.contracts[0].id,id);
@@ -194,7 +194,7 @@ async function renewal(page,h){
  const source=await all.getAttribute('data-contract-id220');
  const oldRow=()=>page.locator('[data-contract-id220="'+source+'"]');
  const strip=page.locator('#contractReminderStrip220');
- await nav(page,'today');await strip.waitFor();await nav(page,'contracts');
+ await nav(page,'today');await strip.locator('[data-contract-complete220]').waitFor();await nav(page,'contracts');
  const peer=await page.context().newPage();
  try{
   await peer.clock.setFixedTime(formatDate(2026,10,31));
