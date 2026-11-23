@@ -6,7 +6,7 @@
 
 批量測試涵蓋頁首入口、收合客戶群組的客戶預填、複製與刪除列、共通設定與零押金。輸入一筆超過 100 年的租期時，從另一分頁核對整批寫入零筆，修正後確認兩筆及各自的押金都已保存。320px、390px 和桌面檢查表單及儲存區，另用大量樣本驗證縮窄時客戶群組不溢出。公開下載 HTML 與本機成品逐位元一致。
 
-提交 `ffc6935` 在本機 Chromium 和 GitHub 的 `file://` 離線開檔回歸皆為 **92 組通過、0 失敗**。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/45195869625)
+提交 `ffc6935` 的本機 Chromium 透過 localhost 開啟，GitHub CI 直接以 `file://` 開檔。兩次完整回歸皆為 **92 組通過、0 失敗**。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/45195869625)
 
 ## 營業稅 v2.27.0（2026-11-23）
 
