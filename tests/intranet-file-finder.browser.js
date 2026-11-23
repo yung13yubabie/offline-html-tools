@@ -16,7 +16,8 @@ module.exports = async function intranetFinder(browser, appURL) {
     writeFileSync(join(fixtureFolder, "目錄測試.txt"), "Synthetic browser test");
     const requested = [];
     const blocked = [];
-    await context.route(/^https?:/i, route => {
+    const requestsWithSensitiveHeaders = [];
+    await context.route(/^https?:/i, async route => {
       const url = new URL(route.request().url());
       if (url.origin === new URL(appURL).origin) return route.continue();
       if (url.origin !== "https://folder.test") {
@@ -24,8 +25,10 @@ module.exports = async function intranetFinder(browser, appURL) {
         return route.abort();
       }
       requested.push(url.pathname);
+      const headers = await route.request().allHeaders();
+      if (headers.cookie || headers.referer || headers.authorization) requestsWithSensitiveHeaders.push(url.pathname);
       const index = {
-        "/docs/": '<h1>Index of /docs/</h1><a href="../">Parent Directory</a><a href="sub/">sub</a><a href="https://elsewhere.test/">Other</a>',
+        "/docs/": '<h1>Index of /docs/</h1><a href="../">Parent Directory</a><a href="sub/">sub</a><a href="https://elsewhere.test/">Other</a><img src="https://elsewhere.test/pixel"><script>document.body.dataset.leaked = "yes"</script>',
         "/docs/sub/": '<h1>Index of /docs/sub/</h1><a href="../">Parent Directory</a><a href="Q4%20%23.xlsx">Q4 #.xlsx</a>'
       }[url.pathname];
       return route.fulfill({
@@ -39,7 +42,16 @@ module.exports = async function intranetFinder(browser, appURL) {
     const errors = [];
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(() => {
-      const file = name => ({ kind: "file", name });
+      const file = name => ({
+        kind: "file", name, getFile() { throw new Error("Directory scans must not open file contents"); }
+      });
+      window.directoryRequests = [];
+      const nativeFetch = window.fetch.bind(window);
+      window.fetch = (url, options) => {
+        const { credentials, referrerPolicy, cache, redirect } = options;
+        window.directoryRequests.push({ credentials, referrerPolicy, cache, redirect });
+        return nativeFetch(url, options);
+      };
       const folder = (name, children = []) => ({
         kind: "directory", name, async *values() { yield* children; }
       });
@@ -109,12 +121,58 @@ module.exports = async function intranetFinder(browser, appURL) {
     assert((await listNames()).every(name => !name.endsWith(".pdf")));
     await page.getByRole("button", { name: "清除搜尋" }).click();
 
+    assert.equal(await page.locator("time.created-label").count(), 0);
+    const importDates = async (root, files) => {
+      await page.locator("#dateFile").setInputFiles({
+        name: "dates.json", mimeType: "application/json",
+        buffer: Buffer.from(JSON.stringify({ version: 1, root, files }))
+      });
+    };
+    await page.getByRole("button", { name: "匯入日期" }).click();
+    const dateDialog = page.getByRole("dialog", { name: "匯入建立日期" });
+    await dateDialog.getByText("Windows 產生日期清單").click();
+    const command = await dateDialog.getByRole("textbox", { name: "Windows PowerShell 指令" }).inputValue();
+    assert.match(command, /\.CreationTime\.ToString/);
+    assert(!command.includes(base), "The copied command must not embed the private path");
+    await dateDialog.getByRole("button", { name: "複製指令" }).click();
+    await dateDialog.getByText("已複製指令。").waitFor();
+    await importDates("其他資料", [{ path: "首頁.txt", created: "2026-04-04" }]);
+    await dateDialog.getByText("日期清單應對應「範例資料」。").waitFor();
+    await importDates("範例資料", [{ path: "首頁.txt", created: "2026-02-30" }]);
+    await dateDialog.getByText("日期清單含有無效日期、路徑或重複的檔案。").waitFor();
+    await importDates("範例資料", [
+      { path: "首頁.txt", created: "2026-04-04" },
+      { path: "財務/2026/Report-2.xlsx", created: "2026-04-07" },
+      { path: "財務/2026/Report-10.pdf", created: "2026-04-10" },
+      { path: "舊檔.txt", created: "2026-04-02" }
+    ]);
+    await page.getByText("3 筆有日期", { exact: true }).waitFor();
+    assert.equal(await page.locator("time.created-label").count(), 3);
+    const from = page.getByLabel("建立日期起日");
+    const to = page.getByLabel("建立日期迄日");
+    await from.fill("2026-04-07");
+    await to.fill("2026-04-10");
+    assert.deepEqual(await listNames(), ["Report-2.xlsx", "Report-10.pdf"]);
+    await search.fill("Report -.pdf");
+    await page.getByText("1 筆結果 · 5 個資料夾 · 7 個檔案", { exact: true }).waitFor();
+    assert.deepEqual(await listNames(), ["Report-2.xlsx"]);
+    await page.getByRole("button", { name: "清除搜尋" }).click();
+    await to.fill("2026-04-07");
+    assert.deepEqual(await listNames(), ["Report-2.xlsx"]);
+    await to.fill("2026-04-06");
+    await page.getByText("起日須早於或等於迄日").waitFor();
+    assert.equal(await rows.count(), 7);
+    await page.getByRole("button", { name: "清除日期" }).click();
+    assert.deepEqual(requested, []);
+    assert.deepEqual(blocked, []);
+
     await page.setViewportSize({ width: 390, height: 820 });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     assert(await page.getByRole(fromFile ? "link" : "button", { name: "開啟位置 十一月 # 帳簿.xlsx" }).isVisible());
 
     await page.getByRole("button", { name: "選擇資料夾", exact: true }).click();
     await page.getByText("填入完整路徑後即可直接開啟位置。", { exact: true }).waitFor();
+    assert.equal(await page.locator("time.created-label").count(), 0);
     await page.getByRole("button", { name: "開啟位置 十一月 # 帳簿.xlsx" }).click();
     const locationDialog = page.getByRole("dialog", { name: "資料夾完整路徑" });
     const locationInput = locationDialog.getByRole("textbox", { name: "完整路徑" });
@@ -128,7 +186,7 @@ module.exports = async function intranetFinder(browser, appURL) {
       async function checkDirectory(tab) {
         await tab.waitForURL(expectedUrl);
         // The headless shell returns Chromium's directory data without its visual listing template.
-        await tab.getByRole("link", { name: "目錄測試.txt", exact: true }).waitFor({ timeout: 5000 });
+        assert.match(await tab.content(), /目錄測試\.txt/);
       }
       const [tab] = await Promise.all([context.waitForEvent("page"), confirmLocation.click()]);
       await checkDirectory(tab);
@@ -161,6 +219,10 @@ module.exports = async function intranetFinder(browser, appURL) {
     await webTab.getByText("Index of /docs/sub/").waitFor();
     assert.equal(webTab.url(), "https://folder.test/docs/sub/");
     assert.deepEqual(requested, ["/docs/", "/docs/sub/", "/docs/sub/"]);
+    assert.deepEqual(requestsWithSensitiveHeaders, []);
+    const fetchOptions = { credentials: "omit", referrerPolicy: "no-referrer", cache: "no-store", redirect: "error" };
+    assert.deepEqual(await page.evaluate(() => window.directoryRequests), [fetchOptions, fetchOptions]);
+    assert.equal(await page.locator("body").getAttribute("data-leaked"), null);
     assert.deepEqual(blocked, []);
     assert.deepEqual(errors, []);
   } finally {

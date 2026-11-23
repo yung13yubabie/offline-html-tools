@@ -1,4 +1,4 @@
-name: Intranet folder navigation check
+name: Intranet finder browser and Windows checks
 on:
   push:
     branches: ['codex/intranet-folder-check']
@@ -20,8 +20,58 @@ jobs:
           const { resolve } = require('node:path');
           const { pathToFileURL } = require('node:url');
           (async () => {
-            const browser = await chromium.launch({headless:true,channel:"chromium"});
-            try { await require('./tests/intranet-file-finder.browser.js')(browser, pathToFileURL(resolve('apps/intranet-file-finder.html')).href); }
-            finally { await browser.close(); }
+            const browser = await chromium.launch({headless:true,channel:'chromium'});
+            try {
+              await require('./tests/intranet-file-finder.browser.js')(browser, pathToFileURL(resolve('apps/intranet-file-finder.html')).href);
+              console.log('PASS browser, date imports, directory links and privacy');
+            } finally { await browser.close(); }
           })().catch(error => { console.error(error); process.exitCode = 1; });
           JS
+  windows-export:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test the embedded Windows PowerShell exporter
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $html = Get-Content -LiteralPath 'apps/intranet-file-finder.html' -Raw -Encoding UTF8
+          $match = [regex]::Match($html, 'const windowsDateCommand = String\.raw`([\s\S]*?)`;')
+          if (!$match.Success) { throw 'Exporter is missing.' }
+          $script:fixtureForExport = Join-Path ([IO.Path]::GetTempPath()) ('finder-test-' + [Guid]::NewGuid().ToString('N'))
+          $out = $null
+          try {
+            $nested = Join-Path $script:fixtureForExport 'Sub'
+            [IO.Directory]::CreateDirectory($nested) | Out-Null
+            $one = Join-Path $nested 'Report A.txt'
+            $two = Join-Path $script:fixtureForExport 'Report B.txt'
+            [IO.File]::WriteAllText($one, 'Synthetic file one')
+            [IO.File]::WriteAllText($two, 'Synthetic file two')
+            [IO.File]::SetCreationTime($one, [DateTime]::new(2021, 11, 12, 12, 0, 0))
+            [IO.File]::SetLastWriteTime($one, [DateTime]::new(2026, 9, 5, 12, 0, 0))
+            [IO.File]::SetCreationTime($two, [DateTime]::new(2022, 4, 3, 12, 0, 0))
+            function Read-Host { param($Prompt) return $script:fixtureForExport }
+            $command = [ScriptBlock]::Create($match.Groups[1].Value)
+            $printed = & $command 6>&1
+            $line = @($printed | Where-Object { $_.ToString().StartsWith('JSON file: ') })
+            if ($line.Count -ne 1) { throw 'Exporter did not report one output.' }
+            $out = $line[0].ToString().Substring(11)
+            $text = [IO.File]::ReadAllText($out)
+            $result = ConvertFrom-Json -InputObject $text
+            if ($result.version -ne 1 -or $result.root -ne [IO.Path]::GetFileName($script:fixtureForExport)) {
+              throw 'Unexpected date list format.'
+            }
+            if ($result.files.Count -ne 2) { throw 'Unexpected number of date records.' }
+            $dates = @{}
+            foreach ($item in $result.files) { $dates[$item.path] = $item.created }
+            if ($dates['Sub/Report A.txt'] -ne '2021-11-12' -or $dates['Report B.txt'] -ne '2022-04-03') {
+              throw 'Exporter did not record filesystem creation dates.'
+            }
+            if ($text.Contains('Synthetic file') -or $text.Contains('LastWriteTime') -or $text.Contains('2026-09-05')) {
+              throw 'Exporter included unexpected data.'
+            }
+            Write-Host ('PASS date exporter in PowerShell ' + $PSVersionTable.PSVersion)
+          } finally {
+            if ($out) { Remove-Item -LiteralPath $out -ErrorAction SilentlyContinue }
+            Remove-Item -LiteralPath $script:fixtureForExport -Recurse -Force -ErrorAction SilentlyContinue
+          }

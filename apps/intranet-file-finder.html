@@ -2,6 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Z+KLfe2W+UGapTtGXpHsZbbQx1D8bHJPiPl/RfM68EE='; style-src 'unsafe-inline'; connect-src http: https:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>內網資料檢索器</title>
@@ -81,8 +83,17 @@ kbd { font: .75rem var(--mono); border: 1px solid #d9e1ed; border-radius: 4px; p
 .sort-key select { appearance: none; border-color: #c8d3e2; padding-inline: 10px 27px; }
 .sort-key::after { content: ""; position: absolute; right: 12px; top: 44%; width: 6px; height: 6px; border-bottom: 1.5px solid var(--muted); border-right: 1.5px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
 .sort-direction { min-width: 4rem; padding-inline: 8px; }
+.date-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 51px; padding: 7px 17px; border-bottom: 1px solid var(--line); background: #fbfcfe; font-size: .875rem; }
+.date-controls strong { margin-inline-end: 2px; }
+.date-range { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.date-range label { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+.date-range input { min-width: 0; min-height: 33px; padding: 4px 6px; border: 1px solid #c8d3e2; border-radius: 7px; background: #fff; color: var(--ink); }
+.date-controls .action { min-height: 33px; padding-block: 4px; }
+.date-status { color: var(--muted); font-size: .8125rem; }
+.date-status[data-error="true"] { color: #a42d2d; }
 .list-area { position: relative; height: clamp(350px, 59vh, 850px); overflow: auto; scrollbar-gutter: stable; }
 .list-head, .file-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 108px; align-items: center; gap: 13px; }
+.has-dates :is(.list-head, .file-row) { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 90px 108px; }
 .list-head { position: sticky; top: 0; z-index: 1; min-height: 37px; padding: 0 16px; background: #f3f6fa; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .8125rem; font-weight: 650; }
 .file-row { position: relative; min-height: 53px; padding: 0 16px; border-bottom: 1px solid #e8edf4; }
 .file-row:hover, .file-row:focus-within { background: #f3f7ff; }
@@ -91,7 +102,8 @@ kbd { font: .75rem var(--mono); border: 1px solid #d9e1ed; border-radius: 4px; p
 .file-copy::after { position: absolute; inset: 0; content: ""; }
 .file-copy:focus-visible::after { outline: 2px solid var(--blue); outline-offset: -2px; }
 .file-label, .folder-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.folder-label { color: var(--muted); font-size: .8125rem; }
+.folder-label, .created-label { color: var(--muted); font-size: .8125rem; }
+time.created-label { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .row-open { position: relative; min-height: 33px; padding-inline: 7px; border-color: transparent; background: transparent; justify-self: end; text-decoration: none; }
 .row-open:hover { background: #fff; border-color: #cad5e5; }
 .empty { position: absolute; inset: 37px 0 0; display: grid; place-content: center; justify-items: center; padding: 20px; text-align: center; }
@@ -111,6 +123,11 @@ dialog textarea, .location-input { width: 100%; border: 1px solid #a9b9d2; borde
 dialog textarea { min-height: 78px; resize: vertical; }
 .location-input { min-height: 40px; }
 .location-error { color: #a42d2d; margin-top: 8px; }
+.date-dialog details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+.date-dialog summary { font-size: .875rem; font-weight: 650; cursor: pointer; }
+.date-dialog details p { margin-top: 8px; }
+.date-dialog textarea { min-height: 100px; }
+.date-dialog .date-status { margin: 8px 0 0; }
 .dialog-actions { margin-top: 12px; display: flex; justify-content: end; gap: 8px; }
 .icon { position: relative; display: inline-block; flex: 0 0 auto; width: 16px; height: 16px; color: inherit; }
 .icon.folder { height: 12px; margin-top: 3px; border: 1.5px solid currentColor; border-radius: 2px; background: #dce8fe; color: #3b66b9; }
@@ -129,6 +146,7 @@ dialog textarea { min-height: 78px; resize: vertical; }
   .results .pane-head { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .search-field { grid-area: 2 / 1 / 3 / -1; width: 100%; }
   .list-head, .file-row { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) 89px; gap: 8px; padding-inline: 10px; }
+  .has-dates :is(.list-head, .file-row) { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) 86px 89px; }
   .row-open { font-size: .8125rem; }
 }
 @media (max-width: 640px) {
@@ -142,15 +160,19 @@ dialog textarea { min-height: 78px; resize: vertical; }
   .workspace { grid-template-columns: minmax(0, 1fr); }
   .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
   .pane-head { padding: 8px 12px; min-height: 49px; }
+  .date-controls { padding-inline: 12px; }
   .tree { height: auto; max-height: 170px; min-height: 53px; padding-block: 5px; }
   .list-area { height: clamp(280px, 55vh, 620px); }
   .search-field kbd { display: none; }
   .list-head, .file-row { grid-template-columns: minmax(0, 1fr) 89px; }
+  .has-dates :is(.list-head, .file-row) { grid-template-columns: minmax(0, 1fr) 85px 89px; }
   .list-head .folder-label { display: none; }
   .file-row { grid-template-rows: auto auto; gap: 0 8px; padding-block: 5px; }
   .file-copy { padding: 1px 0; }
   .file-row .folder-label { grid-row: 2; padding-left: 27px; }
   .row-open { grid-area: 1 / 2 / 3 / 3; }
+  .has-dates .row-open { grid-area: 1 / 3 / 3 / 4; }
+  .has-dates .file-row .created-label { grid-area: 1 / 2 / 3 / 3; }
   .pane-footer { flex-wrap: wrap; padding-inline: 11px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
@@ -214,8 +236,18 @@ dialog textarea { min-height: 78px; resize: vertical; }
           <button id="sortDirection" class="action sort-direction" type="button" title="反轉排序" disabled>升冪</button>
         </div>
       </div>
+      <div id="dateControls" class="date-controls" hidden>
+        <strong>建立日期</strong>
+        <div id="dateRange" class="date-range" hidden>
+          <label>起 <input id="dateFrom" type="date" aria-label="建立日期起日"></label>
+          <label>迄 <input id="dateTo" type="date" aria-label="建立日期迄日"></label>
+          <button id="clearDates" class="action" type="button" hidden>清除日期</button>
+        </div>
+        <button id="dateSetup" class="action" type="button">匯入日期</button>
+        <span id="dateCoverage" class="date-status" role="status"></span>
+      </div>
       <div class="list-area" id="listArea">
-        <div class="list-head" aria-hidden="true"><span>檔名</span><span class="folder-label">所在路徑</span><span></span></div>
+        <div class="list-head" aria-hidden="true"><span>檔名</span><span class="folder-label">所在路徑</span><span id="createdHeading" class="created-label" hidden>建立日期</span><span></span></div>
         <div id="files" role="list" aria-label="檔案清單"></div>
         <div class="empty" id="empty">
           <div class="empty-symbol" aria-hidden="true"><span class="icon folder"></span></div>
@@ -235,6 +267,22 @@ dialog textarea { min-height: 78px; resize: vertical; }
   </section>
 </main>
 <div class="toast" id="toast" role="status" hidden></div>
+<dialog id="dateDialog" class="date-dialog" aria-labelledby="dateTitle">
+  <h2 id="dateTitle">匯入建立日期</h2>
+  <p>選擇同一個資料夾的日期清單 JSON。</p>
+  <input id="dateFile" type="file" accept=".json,application/json" hidden>
+  <button id="chooseDateFile" class="action primary" type="button">選擇 JSON</button>
+  <p id="dateStatus" class="date-status" role="status" hidden></p>
+  <details>
+    <summary>Windows 產生日期清單</summary>
+    <p>將指令貼到 Windows PowerShell 執行，依提示輸入完整資料夾路徑，再選擇所產生的 JSON。</p>
+    <textarea id="dateCommand" aria-label="Windows PowerShell 指令" readonly spellcheck="false"></textarea>
+    <button id="copyDateCommand" class="action" type="button">複製指令</button>
+  </details>
+  <form method="dialog" class="dialog-actions">
+    <button class="action">關閉</button>
+  </form>
+</dialog>
 <dialog id="locationDialog" aria-labelledby="locationTitle">
   <form id="locationForm">
     <h2 id="locationTitle">資料夾完整路徑</h2>
@@ -269,7 +317,10 @@ const ui = Object.fromEntries([
   "listArea", "files", "empty", "emptyTitle", "emptyDetail", "summary", "pages",
   "previous", "next", "pageLabel", "toast", "pathDialog", "pathDialogTitle",
   "pathDialogHint", "manualPath", "manualCopy", "locationDialog", "locationForm",
-  "locationHint", "locationInput", "locationError", "locationCancel"
+  "locationHint", "locationInput", "locationError", "locationCancel", "dateControls",
+  "dateRange", "dateFrom", "dateTo", "clearDates", "dateSetup", "dateCoverage",
+  "createdHeading", "dateDialog", "dateFile", "chooseDateFile", "dateStatus",
+  "dateCommand", "copyDateCommand"
 ].map(id => [id, byId(id)]));
 
 const pageSize = 100;
@@ -279,6 +330,46 @@ const normalize = text => text.normalize("NFKC").toLocaleLowerCase("zh-Hant");
 const normalizePath = text => normalize(text).replaceAll("\\", "/");
 const afterPaint = () => new Promise(resolve => setTimeout(resolve, 0));
 const segment = name => encodeURIComponent(name);
+const windowsDateCommand = String.raw`& {
+  $path = (Read-Host 'Full path of the indexed folder').Trim('"')
+  if ($path -notmatch '^(?:[A-Za-z]:\\|\\\\[^\\]+\\[^\\]+)') {
+    throw 'Enter a full Windows folder path.'
+  }
+  $root = Get-Item -LiteralPath $path -Force -ErrorAction Stop
+  if ($root -isnot [IO.DirectoryInfo]) { throw 'The path must be a folder.' }
+  $prefix = $root.FullName.TrimEnd([char]92) + [char]92
+  $stack = New-Object 'System.Collections.Generic.Stack[string]'
+  $rows = New-Object 'System.Collections.Generic.List[object]'
+  $stack.Push($root.FullName)
+  $skipped = 0
+  while ($stack.Count -gt 0) {
+    $folder = $stack.Pop()
+    try {
+      $children = Get-ChildItem -LiteralPath $folder -Force -ErrorAction Stop
+    } catch {
+      $skipped++
+      continue
+    }
+    foreach ($item in $children) {
+      if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
+        $skipped++
+      } elseif ($item.PSIsContainer) {
+        $stack.Push($item.FullName)
+      } elseif ($item.CreationTimeUtc.Year -gt 1601) {
+        $rows.Add([ordered]@{
+          path = $item.FullName.Substring($prefix.Length).Replace([char]92, [char]47)
+          created = $item.CreationTime.ToString('yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture)
+        })
+      }
+    }
+  }
+  $list = [ordered]@{ version = 1; root = $root.Name.TrimEnd([char]92); files = $rows.ToArray() }
+  $out = Join-Path ([IO.Path]::GetTempPath()) ('intranet-creation-dates-' + [guid]::NewGuid().ToString('N') + '.json')
+  [IO.File]::WriteAllText($out, ($list | ConvertTo-Json -Depth 4 -Compress), [Text.UTF8Encoding]::new($false))
+  Write-Host ('JSON file: ' + $out)
+  if ($skipped -gt 0) { Write-Host ('Skipped entries: ' + $skipped) }
+}
+`;
 const state = {
   index: null,
   scope: null,
@@ -286,6 +377,7 @@ const state = {
   results: [],
   selected: null,
   scopeFiles: [],
+  dateFilterActive: false,
   descending: false,
   locationFolder: null,
   page: 0,
@@ -499,7 +591,9 @@ async function scanFileList(root, entries, signal) {
 }
 
 async function readListing(url, signal) {
-  const response = await fetch(url, { signal, redirect: "error", cache: "no-store" });
+  const response = await fetch(url, {
+    signal, redirect: "error", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer"
+  });
   if (!response.ok || !/text\/html/i.test(response.headers.get("Content-Type") || "")) {
     throw new Error("這個網址沒有可讀取的目錄清單。");
   }
@@ -584,6 +678,7 @@ async function runScan(operation, source) {
     controller.signal.throwIfAborted();
     updateSource(index, source);
     index.orders = new Map();
+    index.creationDates = new Map();
     await afterPaint();
     for (const folder of index.folders) folder.children.sort((a, b) => collator.compare(a.name, b.name));
     let clock = performance.now();
@@ -599,6 +694,7 @@ async function runScan(operation, source) {
     }
     controller.signal.throwIfAborted();
     if (ui.locationDialog.open) ui.locationDialog.close();
+    if (ui.dateDialog.open) ui.dateDialog.close();
     state.index = index;
     state.scope = index.root;
     state.selected = null;
@@ -606,6 +702,9 @@ async function runScan(operation, source) {
     ui.rootPath.value = source.base || "";
     ui.sortKey.disabled = false;
     ui.sortDirection.disabled = false;
+    ui.dateControls.hidden = false;
+    resetDateRange();
+    updateDateCoverage();
     updateSourceNotice(index);
     renderTree(true);
     applyScope();
@@ -797,13 +896,99 @@ function searchTerms(value) {
   return { include, exclude };
 }
 
+function parseCreationDates(text, index) {
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("無法讀取 JSON 日期清單。");
+  }
+  if (data?.version !== 1 || typeof data.root !== "string" || !Array.isArray(data.files)) {
+    throw new Error("日期清單格式不符。");
+  }
+  const root = index.root.name;
+  if (data.root !== root && (index.source.kind !== "local" || data.root.toLowerCase() !== root.toLowerCase())) {
+    throw new Error("日期清單應對應「" + root + "」。");
+  }
+
+  const entries = new Map();
+  for (const record of data.files) {
+    const { path, created } = record || {};
+    const date = typeof created === "string" && /^(?!0000)\d{4}-\d{2}-\d{2}$/.test(created) && new Date(created);
+    if (typeof path !== "string" || path.split("/").some(part => !part || part === "." || part === "..") ||
+        !date || !Number.isFinite(date.getTime()) || date.toISOString().slice(0, 10) !== created || entries.has(path)) {
+      throw new Error("日期清單含有無效日期、路徑或重複的檔案。");
+    }
+    entries.set(path, created);
+  }
+  const matched = new Map();
+  for (const file of index.files) {
+    const created = entries.get(file.relative);
+    if (created) matched.set(file.relative, created);
+  }
+  if (!matched.size) throw new Error("日期清單沒有符合目前索引的檔案。");
+  return matched;
+}
+
+async function importCreationDates(file) {
+  if (!file || !state.index) return;
+  const index = state.index;
+  ui.chooseDateFile.disabled = true;
+  try {
+    const text = await file.text();
+    if (state.index !== index || !ui.dateDialog.open) return;
+    index.creationDates = parseCreationDates(text, index);
+    ui.dateDialog.close();
+    updateDateCoverage();
+    applySearch();
+    showToast("已匯入 " + formatNumber.format(index.creationDates.size) + " 筆建立日期");
+  } catch (error) {
+    if (state.index === index && ui.dateDialog.open) setDateStatus(error.message, true);
+  } finally {
+    ui.chooseDateFile.disabled = false;
+  }
+}
+
+function setDateStatus(text, error = false) {
+  ui.dateStatus.textContent = text;
+  ui.dateStatus.dataset.error = String(error);
+  ui.dateStatus.hidden = !text;
+}
+
+function resetDateRange() {
+  ui.dateFrom.value = "";
+  ui.dateTo.value = "";
+}
+
+function updateDateCoverage(invalid = false) {
+  const count = state.index?.creationDates.size || 0;
+  ui.dateRange.hidden = !count;
+  ui.createdHeading.hidden = !count;
+  ui.listArea.classList.toggle("has-dates", count > 0);
+  ui.clearDates.hidden = !ui.dateFrom.value && !ui.dateTo.value;
+  ui.dateCoverage.dataset.error = String(invalid);
+  ui.dateCoverage.textContent = invalid
+    ? "起日須早於或等於迄日"
+    : count ? formatNumber.format(count) + " 筆有日期" : "尚未匯入";
+}
+
 function applySearch() {
   clearTimeout(state.searchTimer);
   const { include, exclude } = searchTerms(ui.search.value);
   const rootPath = state.index?.searchRoot || "";
+  const dates = state.index?.creationDates;
+  const from = ui.dateFrom.value;
+  const to = ui.dateTo.value;
+  const invalid = Boolean(from && to && from > to);
+  state.dateFilterActive = Boolean(dates?.size && (from || to) && !invalid);
+  updateDateCoverage(invalid);
   ui.clearSearch.hidden = !ui.search.value;
-  state.results = include.length || exclude.length
+  state.results = include.length || exclude.length || state.dateFilterActive
     ? state.scopeFiles.filter(file => {
+      if (state.dateFilterActive) {
+        const date = dates.get(file.relative);
+        if (!date || (from && date < from) || (to && date > to)) return false;
+      }
       const text = rootPath + file.searchText;
       return include.every(term => text.includes(term)) && !exclude.some(term => text.includes(term));
     })
@@ -819,11 +1004,12 @@ function renderFiles(resetScroll = false) {
   if (state.index) {
     const { folders, files } = state.index;
     const stats = formatNumber.format(folders.length) + " 個資料夾 · " + formatNumber.format(files.length) + " 個檔案";
-    ui.summary.textContent = ui.search.value.trim() || state.scope.parent
+    const filtering = ui.search.value.trim() || state.dateFilterActive;
+    ui.summary.textContent = filtering || state.scope.parent
       ? formatNumber.format(total) + " 筆結果 · " + stats
       : stats;
-    ui.emptyTitle.textContent = ui.search.value.trim() ? "找不到符合的檔案" : "這裡沒有檔案";
-    ui.emptyDetail.textContent = ui.search.value.trim() ? "試試其他檔名或路徑關鍵字" : "";
+    ui.emptyTitle.textContent = filtering ? "找不到符合的檔案" : "這裡沒有檔案";
+    ui.emptyDetail.textContent = filtering ? "調整搜尋條件後再試" : "";
   }
 
   const pages = Math.ceil(total / pageSize);
@@ -882,7 +1068,16 @@ function fileRow(file) {
     open.type = "button";
     open.addEventListener("click", () => requestFolderLocation(file.folder));
   }
-  row.append(copy, folder, open);
+  row.append(copy, folder);
+  const dates = state.index.creationDates;
+  if (dates.size) {
+    const date = dates.get(file.relative);
+    const cell = element(date ? "time" : "span", "created-label", date || "—");
+    if (date) cell.dateTime = date;
+    cell.setAttribute("aria-label", date ? "建立日期 " + date : "未提供建立日期");
+    row.append(cell);
+  }
+  row.append(open);
   return row;
 }
 
@@ -947,7 +1142,7 @@ async function writeClipboard(path) {
     edit.className = "sr-only";
     edit.readOnly = true;
     const previous = document.activeElement;
-    const container = ui.pathDialog.open ? ui.pathDialog : document.body;
+    const container = ui.pathDialog.open ? ui.pathDialog : ui.dateDialog.open ? ui.dateDialog : document.body;
     container.append(edit);
     edit.select();
     try {
@@ -986,7 +1181,11 @@ ui.rootPath.addEventListener("input", () => {
   if (state.controller) return;
   try {
     const location = parseLocation(ui.rootPath.value);
-    setMessage(location?.kind === "local" ? "讀取時，請在系統選擇視窗貼上這個路徑。" : "");
+    if (location?.kind === "local") {
+      setMessage("讀取時，請在系統選擇視窗貼上這個路徑。");
+    } else {
+      setMessage(location ? "讀取時會向這個伺服器查詢目錄。" : "");
+    }
   } catch {
     setMessage("");
   }
@@ -1024,6 +1223,35 @@ ui.clearSearch.addEventListener("click", () => {
   applySearch();
   ui.search.focus();
 });
+ui.dateSetup.addEventListener("click", () => {
+  setDateStatus("");
+  ui.dateDialog.showModal();
+});
+ui.chooseDateFile.addEventListener("click", () => {
+  ui.dateFile.value = "";
+  ui.dateFile.click();
+});
+ui.dateFile.addEventListener("change", () => {
+  const file = ui.dateFile.files[0];
+  ui.dateFile.value = "";
+  importCreationDates(file);
+});
+ui.dateCommand.value = windowsDateCommand;
+ui.copyDateCommand.addEventListener("click", async () => {
+  if (await writeClipboard(windowsDateCommand)) {
+    setDateStatus("已複製指令。");
+  } else {
+    ui.dateCommand.select();
+    setDateStatus("按 Ctrl+C 複製已選取的指令。");
+  }
+});
+ui.dateFrom.addEventListener("input", applySearch);
+ui.dateTo.addEventListener("input", applySearch);
+ui.clearDates.addEventListener("click", () => {
+  resetDateRange();
+  applySearch();
+  ui.dateFrom.focus();
+});
 ui.sortKey.addEventListener("change", applyScope);
 ui.sortDirection.addEventListener("click", () => {
   state.descending = !state.descending;
@@ -1049,7 +1277,7 @@ ui.locationForm.addEventListener("submit", event => {
 ui.locationCancel.addEventListener("click", () => ui.locationDialog.close());
 ui.locationDialog.addEventListener("close", () => { state.locationFolder = null; });
 document.addEventListener("keydown", event => {
-  if (ui.pathDialog.open || ui.locationDialog.open || event.isComposing) return;
+  if (ui.pathDialog.open || ui.locationDialog.open || ui.dateDialog.open || event.isComposing) return;
   const key = event.key.toLowerCase();
   if ((event.ctrlKey || event.metaKey) && !event.altKey && (key === "k" || key === "f5")) {
     event.preventDefault();
