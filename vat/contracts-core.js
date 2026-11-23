@@ -80,6 +80,14 @@ function createContractsEngine220() {
  function isDue(record,today,renewed=false) {
   return !renewed&&!record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
  }
+ function normalizeNotices(notices) {
+  if(!Array.isArray(notices))fail('notice','通知紀錄格式錯誤');
+  return notices.map(row=>{
+   if(!dates.iso(row?.at)||!dates.date(row.start)||!dates.date(row.end)||row.end<row.start||
+      !['issues','missing','rent','interest'].includes(row.mode))fail('notice','通知紀錄日期或類別有誤');
+   return {at:row.at,start:row.start,end:row.end,mode:row.mode,content:text(row.content,'notice','通知內容',12000,true)};
+  });
+ }
  function normalize(raw,{clients=[],categories=[],references=true}={}) {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');
   const {clientId,categoryId,startDate,endDate,closed,reminderEnabled}=raw;
@@ -93,7 +101,8 @@ function createContractsEngine220() {
   return {clientId,categoryId,startDate,endDate,closed,reminderEnabled,leadMonths,
    title:text(raw.title,'title','合約名稱',200,true),
    task:text(raw.task,'task','待辦事項',240,reminderEnabled),
-   note:text(raw.note,'note','備註',12000),...(raw.lease===undefined?{}:{lease:leases.normalize(raw.lease,startDate,endDate)})};
+   note:text(raw.note,'note','備註',12000),...(raw.lease===undefined?{}:{lease:leases.normalize(raw.lease,startDate,endDate)}),
+   ...(raw.leaseNotices===undefined?{}:{leaseNotices:normalizeNotices(raw.leaseNotices)})};
  }
  function assertBaseline(current,baseline) {
   if(!current)throw Error('合約已被刪除，請重新整理');

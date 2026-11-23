@@ -260,20 +260,20 @@ async function renewal(page,h){
  await h.reload(page);
  await nav(page,'contracts');
  assert.match(await oldRow().innerText(),/已續約/);
- await oldRow().getByRole('button',{name:/^編輯合約/}).click();
- assert.equal(await page.locator('#modalRoot .modal-title').innerText(),'編輯合約');
+ await oldRow().getByRole('button',{name:'管理合約',exact:true}).click();
+ assert.equal(await page.locator('#modalRoot .modal-title').innerText(),'管理合約');
  page.once('dialog',dialog=>dialog.accept());
  await page.locator('#deleteContract220').click();
  await page.locator('#contractError220').waitFor();
  assert.match(await page.locator('#contractError220').innerText(),/下一期/);
  await page.locator('#cancelContract220').click();
- await page.locator('[data-contract-id220="'+next+'"]').getByRole('button',{name:/^編輯合約/}).click();
+ await page.locator('[data-contract-id220="'+next+'"]').getByRole('button',{name:'管理合約',exact:true}).click();
  page.once('dialog',dialog=>dialog.accept());
  await page.locator('#deleteContract220').click();
  await waitToast(page,'已刪除合約');
  assert.equal(await all.count(),1);
  assert.match(await oldRow().innerText(),/即將到期/);
- await oldRow().getByRole('button',{name:/^編輯合約/}).click();
+ await oldRow().getByRole('button',{name:'管理合約',exact:true}).click();
  await field(page,'closed').check();
  await page.locator('#saveContract220').click();
  await waitToast(page,'合約已儲存');
@@ -281,4 +281,76 @@ async function renewal(page,h){
  assert.equal(await field(page,'startDate').inputValue(),'2026-12-01');
 }
 
-module.exports={lifecycle,lists,renewal};
+async function batchLeases(page,h){
+ await nav(page,'contracts');
+ await page.locator('#newLeaseBatch228').click();
+ const form=page.locator('#leaseBatchForm228'),save=page.locator('#leaseBatchSave228');
+ const common=key=>form.locator(`[name="${key}"]`);
+ const rows=form.locator('.lease-batch-row228');
+ const cell=(row,key)=>rows.nth(row).locator(`[data-batch-field="${key}"]`);
+ await common('clientId').selectOption('synthetic-a');
+ await common('categoryId').selectOption('other');
+ await common('frequency').selectOption('3');
+ await common('rentBasis').selectOption('gross');
+ await common('regime').selectOption('assessed');
+ await common('leadMonths').fill('0');
+ for(const [key,value] of [['title','合成北區據點'],['startDate','2026-11-01'],['endDate','2027-10-31'],['rent','12,300.50'],['deposit','0']]){
+  await cell(0,key).fill(value);
+ }
+ await rows.first().locator('[data-batch-copy]').click();
+ assert.equal(await cell(1,'rent').inputValue(),'12,300.50');
+ await cell(1,'title').fill('合成南區據點');
+ await cell(1,'deposit').fill('24,500');
+ await page.locator('#leaseBatchAdd228').click();
+ assert.equal(await rows.count(),3);
+ await rows.last().locator('[data-batch-remove]').click();
+ await page.locator('#leaseBatchApply228').click();
+ assert.match(await page.locator('#leaseBatchApplied228').innerText(),/2 列/);
+ assert.match(await page.locator('.lease-batch-count228').innerText(),/2 筆/);
+ await cell(1,'endDate').fill('2130-10-31');
+ await save.click();
+ const rowError=rows.nth(1).locator('p');
+ await rowError.waitFor();
+ assert.match(await rowError.innerText(),/第 2 列.*最多 100 年/);
+ const peer=await page.context().newPage();
+ try{
+  await peer.goto(page.url());
+  assert.deepEqual((await h.backup(peer)).data.contracts,[],'Invalid row aborts the entire transaction');
+ }finally{await peer.close();}
+ assert.equal(await cell(0,'title').inputValue(),'合成北區據點');
+ await cell(1,'endDate').fill('2027-04-30');
+ for(const width of [390,320]){
+  await page.setViewportSize({width,height:800});
+  assert(await page.locator('.lease-batch-modal228').evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+  assert(await save.evaluate(button=>button.getBoundingClientRect().bottom<=innerHeight));
+ }
+ await h.screenshot(page,'vat228-lease-batch-mobile');
+ await page.setViewportSize({width:1440,height:1000});
+ await h.screenshot(page,'vat228-lease-batch-desktop');
+ await save.click();
+ await waitToast(page,'已建立 2 筆租約');
+ const folder=page.locator('#contractsList220 .folder-actions-wrap228');
+ const batch=folder.locator('[data-lease-batch228]');
+ assert.equal(await folder.locator('[data-contract-id220]').count(),2);
+ assert.equal(await page.locator('#contractClientFilter220').inputValue(),'synthetic-a');
+ await folder.locator('summary').first().click();
+ assert(await batch.isVisible(),'Batch action is available even with the customer group collapsed');
+ await batch.click();
+ assert.equal(await common('clientId').inputValue(),'synthetic-a');
+ await page.locator('.lease-batch-modal228').getByRole('button',{name:'取消',exact:true}).click();
+ const backup=await h.backup(page);
+ assert.equal(backup.data.contracts.length,2);
+ for(const row of backup.data.contracts){
+  assert.equal(row.clientId,'synthetic-a');
+  assert.equal(row.categoryId,'other');
+  assert.equal(row.leadMonths,0);
+  assert.equal(row.reminderEnabled,true);
+  assert.equal(row.lease.frequency,3);
+  assert.equal(row.lease.rentBasis,'gross');
+  assert.equal(row.lease.regime,'assessed');
+  assert.equal(row.lease.steps[0].cents,1230050);
+  assert.equal(row.lease.deposit,row.title.endsWith('北區據點')?0:2450000);
+ }
+}
+
+module.exports={lifecycle,lists,renewal,batchLeases};

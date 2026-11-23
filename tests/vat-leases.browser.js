@@ -8,6 +8,7 @@ const money=(p,part)=>p.locator('[data-lease-expected="'+part+'"]').textContent(
 
 async function review(p,h){
  await nav(p,'contracts');
+ await p.locator('.contract-settings228 > summary').click();
  await p.locator('#leaseRatesBtn224').click();
  await p.locator('#leaseRateYear224').fill('114');
  await p.locator('#leaseRateValue224').fill('1.5');
@@ -31,10 +32,14 @@ async function review(p,h){
  await toast(p,'合約已儲存');
  const record=p.locator('[data-contract-id220]'),details=record.locator('[data-record-toggle222]');
  assert.match(await record.locator('.contract-rent-amount225').innerText(),/20,000 元 · 未稅/);
- assert(await record.locator('[data-open-lease224]').isVisible());
- await details.click();
+ assert.deepEqual(await record.locator('.record-row220 .record-cell220:last-child button').allTextContents(),['管理合約','續約']);
+ await record.locator('h2').click();
  assert.equal(await record.locator('.record-timeline224 li').count(),2);
- await record.locator('[data-open-lease224]').click();
+ await record.locator('[data-open-contract220]').click();
+ assert.equal(await tab(p,'basic').getAttribute('aria-selected'),'true');
+ assert.equal(await p.getByRole('tab').filter({hasText:/基本資料|租金與押息|逐期核對|通知紀錄/}).count(),4);
+ await tab(p,'basic').press('ArrowRight');
+ assert.equal(await tab(p,'setup').getAttribute('aria-selected'),'true');
  assert.equal(await p.locator('.lease-step-rent').first().inputValue(),'20000');
  await p.locator('#leaseDeposit224').fill('120,000');
  await p.locator('#leaseAddStep224').click();
@@ -47,12 +52,12 @@ async function review(p,h){
  await p.locator('#leaseYear224').selectOption('2025');
  assert.equal(await money(p,'rent'),'40,000 元');
  assert.equal(await money(p,'interest'),'285.71 元');
- await p.locator('#saveLease224').click();
+ await p.locator('#saveContract220').click();
  await toast(p,'租約費用已儲存');
- const close=()=>p.locator('.lease-modal224').getByRole('button',{name:'關閉',exact:true}).click();
+ const close=()=>p.locator('#cancelContract220').click();
  await close();
 
- await record.locator('[data-open-lease224]').click();
+ await record.locator('[data-open-contract220]').click();
  await tab(p,'review').click();
  await p.locator('#leaseQuickRate224').fill('1.725');
  await p.locator('#leaseSaveQuickRate224').click();
@@ -86,18 +91,23 @@ async function review(p,h){
  await p.evaluate(()=>{Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async value=>{window.syntheticLeaseClipboard=value;}}});});
  await p.locator('#leaseCopy224').click();
  assert.equal(await p.evaluate(()=>window.syntheticLeaseClipboard),preview);
+ assert.match(await p.locator('#leaseHistory228').innerText(),/尚無通知紀錄/);
+ await p.locator('#leaseRecordNotice228').click();
+ await toast(p,'已存入通知紀錄');
+ await p.locator('#leaseHistory228 summary').click();
+ assert.match(await p.locator('#leaseHistory228').innerText(),/41,500 元/);
  await tab(p,'review').click();
  await period(p,'2026-03-01/2026-04-30').click();
  assert.equal(await p.locator('#lease-rent-status224').inputValue(),'pending');
  assert.equal(await money(p,'rent'),'48,000 元');
  await period(p,'2026-01-01/2026-02-28').click();
  assert.equal(await p.locator('#lease-rent-actual224').inputValue(),'41500');
- await p.locator('#saveLease224').click();
- await p.locator('#saveLease224:not([disabled])').waitFor();
+ await p.locator('#saveContract220').click();
+ await p.locator('#saveContract220:not([disabled])').waitFor();
  for(const width of [390,320]){
   await p.setViewportSize({width,height:844});
   assert(await p.locator('.lease-modal224').evaluate(el=>el.getBoundingClientRect().right<=innerWidth&&el.scrollWidth<=el.clientWidth+1));
-  assert(await p.locator('#saveLease224').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
+  assert(await p.locator('#saveContract220').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight));
  }
  await p.setViewportSize({width:390,height:844});
  await h.screenshot(p,'vat224-lease-review-mobile');
@@ -105,32 +115,42 @@ async function review(p,h){
  await h.reload(p);
  await nav(p,'contracts');
  await details.click();
- await record.locator('[data-open-lease224]').click();
+ await record.locator('[data-open-contract220]').click();
  await tab(p,'review').click();
  assert.equal(await p.locator('#lease-rent-actual224').inputValue(),'41500');
+ await tab(p,'notice').click();
+ assert.equal(await p.locator('#leaseHistory228 details').count(),1);
  await tab(p,'setup').click();
  await p.locator('#leaseFrequency224').selectOption('1');
- await p.locator('#saveLease224').click();
+ await p.locator('#saveContract220').click();
  assert.match(await p.locator('#leaseError224').innerText(),/核對期間/);
  await p.locator('#leaseFrequency224').selectOption('2');
  await close();
 
  await record.locator('[data-open-contract220]').click();
- assert(await monthly.isVisible());
- assert.equal(await monthly.inputValue(),'20000');
- await monthly.fill('21000');
+ await tab(p,'setup').click();
+ const opening=p.locator('.lease-step-rent').first();
+ assert.equal(await opening.inputValue(),'20000');
+ await opening.fill('21000');
+ await tab(p,'basic').click();
+ await p.locator('#contract-title220').fill('合成修訂商用租約');
+ await tab(p,'setup').click();
  await p.locator('#saveContract220').click();
- await p.locator('#contractForm220').waitFor({state:'detached'});
+ await p.locator('#saveContract220:not([disabled])').waitFor();
+ await close();
  const backup=await h.backup(p);
+ assert.equal(backup.data.contracts[0].title,'合成修訂商用租約');
  assert.deepEqual(backup.data.contracts[0].lease.steps,[{from:'2025-11-01',cents:2100000},{from:'2026-02-15',cents:2400000}]);
  assert.equal(backup.backupVersion,11);
  assert.deepEqual(backup.data.leaseRates.map(rate=>rate.id),['2025','2026']);
  assert.equal(backup.data.contracts[0].lease.checks[0].rentActual,4150000);
+ assert.match(backup.data.contracts[0].leaseNotices[0].content,/41,500 元/);
  await p.locator('#partialScope').selectOption('contracts');
  const file=await h.download(p,()=>p.locator('#partialExportBtn').click());
  const partial=JSON.parse(file.toString());
  assert.deepEqual(partial.data.leaseRates,backup.data.leaseRates);
  assert.deepEqual(partial.data.contracts[0].lease,backup.data.contracts[0].lease);
+ assert.deepEqual(partial.data.contracts[0].leaseNotices,backup.data.contracts[0].leaseNotices);
 
  await nav(p,'contracts');
  await p.locator('#newContract220').click();
@@ -141,9 +161,14 @@ async function review(p,h){
  await p.locator('#contractForm220').waitFor({state:'detached'});
  const older=record.filter({hasText:'合成舊式租約'});
  assert.match(await older.locator('.contract-rent-amount225').innerText(),/月租 未填/);
- await older.locator('[data-open-lease224]').click();
- assert(await monthly.isVisible());
- assert(await p.locator('#contract-startDate220').evaluate(node=>document.activeElement===node));
+ await older.locator('[data-open-contract220]').click();
+ await tab(p,'review').click();
+ assert.match(await p.locator('#leaseReviewEmpty228').innerText(),/租期起訖日/);
+ await tab(p,'basic').click();
+ await p.locator('#contract-startDate220').fill('2026-11-01');
+ await tab(p,'setup').click();
+ assert.equal(await p.locator('.lease-step-date').first().inputValue(),'2026-11-01');
+ p.once('dialog',dialog=>dialog.accept());
  await p.locator('#cancelContract220').click();
 }
 

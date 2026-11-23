@@ -32,10 +32,10 @@ function renderRecordStatusFilters227(host,options,runtime,defaultStatus,render)
 function buildRecordRows222(rows,columns,expanded,prefix) {
  return rows.map((row,index)=>{
   const detailId=prefix+'-detail-'+index,open=expanded.has(row.id);
-  const toggle=`<button class="btn record-detail-toggle222" type="button" data-record-toggle222="${esc(row.id)}" aria-controls="${detailId}" aria-expanded="${open}">明細</button>`;
+  const toggle=`<button class="btn record-detail-toggle222${row.clickToExpand?' record-row-toggle228':''}" type="button" data-record-toggle222="${esc(row.id)}" aria-controls="${detailId}" aria-expanded="${open}"${row.clickToExpand?` aria-label="${esc(row.title)}的明細"`:''}>${row.clickToExpand?'':'明細'}</button>`;
   return `<article role="listitem" class="record-item220" ${row.keyAttribute}="${esc(row.id)}">
-   <div class="record-row220">${row.cells.map((content,cell)=>
-    `<div class="record-cell220"><span class="record-label222">${esc(columns[cell])}</span>${content}${cell===row.cells.length-1?toggle:''}</div>`).join('')}</div>
+   <div class="record-row220">${row.clickToExpand?toggle:''}${row.cells.map((content,cell)=>
+    `<div class="record-cell220"><span class="record-label222">${esc(columns[cell])}</span>${content}${cell===row.cells.length-1&&!row.clickToExpand?toggle:''}</div>`).join('')}</div>
    <div id="${detailId}" class="record-detail-body222" ${open?'':'hidden'}>
     ${recordTimeline224(row.schedule)}
     ${row.extra||''}
@@ -72,6 +72,11 @@ function bindRecordDetails222(host,expanded) {
    if(open){expanded.add(button.dataset.recordToggle222);recordReveal222(body);}
    else expanded.delete(button.dataset.recordToggle222);
   };
+  if(button.classList.contains('record-row-toggle228')){
+   button.parentElement.onclick=event=>{
+    if(!event.target.closest('button,a,input,select,textarea')&&!window.getSelection()?.toString())button.click();
+   };
+  }
  });
 }
 function recordCounts222(records) {
@@ -79,7 +84,7 @@ function recordCounts222(records) {
  for(const row of records)counts.set(row.clientId,(counts.get(row.clientId)||0)+1);
  return counts;
 }
-function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,render,bind}) {
+function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,render,bind,folderAction}) {
  host.querySelectorAll('[data-client-folder222]').forEach(folder=>{
   if(folder.open!==(folder.dataset.initialOpen==='true'))runtime.folders.set(folder.dataset.clientFolder222,folder.open);
  });
@@ -106,15 +111,18 @@ function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,r
     const customer=clients.get(clientId),total=totals.get(clientId),other=otherCounts.get(clientId);
     const count=rows.length===total?String(total):rows.length+' / '+total;
     const open=runtime.folders.get(clientId)??folders.length===1;
-    return `<details class="client-folder222" data-client-folder222="${esc(clientId)}" data-initial-open="${open}" ${open?'open':''}>
+    const action=customer&&folderAction?folderAction(customer):'';
+    const content=`<details class="client-folder222" data-client-folder222="${esc(clientId)}" data-initial-open="${open}" ${open?'open':''}>
      <summary><span class="folder-title222"><strong>${esc(customer?.name||'客戶已移除')}</strong>${customer?.code?`<small>${esc(customer.code)}</small>`:''}</span>
       <span class="folder-counts222"><span class="folder-count222" aria-label="${esc(kind)}符合 ${rows.length} 筆，共 ${total} 筆">${count} ${esc(kind)}</span>
       ${other?`<span class="folder-cross-count222">${other} ${otherKind}</span>`:''}</span></summary>
      <div class="folder-body222"></div>
     </details>`;
+    return action?`<div class="folder-actions-wrap228">${content}${action}</div>`:content;
    }).join('')}
   </div>`;
  }
+ if(folderAction)bind(host);
  host.querySelectorAll('[data-client-folder222]').forEach((folder,folderIndex)=>{
   const clientId=folder.dataset.clientFolder222,records=groups.get(clientId),body=folder.querySelector('.folder-body222');
   const mount=()=>{

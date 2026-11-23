@@ -30,3 +30,28 @@
 .contract-renew-info221{margin:0;color:var(--muted);font-size:13px}
 #renewFromDetail221{min-height:44px;align-self:end}
 #contract-endDate220[readonly]{background:var(--panel2)}
+
+.contract-settings228{position:relative}
+.contract-settings228>summary{list-style:none;cursor:pointer}
+.contract-settings228>summary::-webkit-details-marker{display:none}
+.contract-settings228>summary::after{content:'▾';margin-left:.4em;color:var(--muted)}
+.contract-settings228>div{
+ position:absolute;inset:calc(100% + 4px) 0 auto auto;z-index:6;white-space:nowrap;
+ padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:var(--shadow)
+}
+.contract-settings228 .btn{min-height:44px}
+.folder-actions-wrap228{position:relative;min-width:0}
+.folder-actions-wrap228>.client-folder222>summary{padding-right:165px}
+.folder-actions-wrap228>[data-lease-batch228]{position:absolute;top:7px;right:9px;min-height:44px;max-width:48%;font-size:13px}
+.record-row220:has(>.record-row-toggle228){position:relative;padding-inline-start:42px;cursor:pointer}
+.record-row220:has(>.record-row-toggle228):hover{background:var(--panel2)}
+.record-row220>.record-row-toggle228{
+ position:absolute;left:5px;top:8px;justify-content:center;min-height:38px;min-width:34px;border-radius:5px
+}
+@container record-list (max-width:620px){
+ .folder-actions-wrap228>.client-folder222>summary{
+  grid-template-columns:10px minmax(0,1fr);gap:3px 9px;padding-right:135px
+ }
+ .folder-actions-wrap228 .folder-counts222{grid-column:2;justify-content:flex-start}
+ .folder-actions-wrap228>[data-lease-batch228]{padding-inline:6px}
+}

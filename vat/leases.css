@@ -50,14 +50,12 @@
 }
 .lease-modal224 .btn,.lease-rate-modal224 .btn{min-height:38px;white-space:normal}
 .lease-workspace224,.lease-rate-panel224{display:grid;gap:10px;min-width:0}
-.lease-context224,.lease-notice-head224{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;overflow-wrap:anywhere}
-.lease-context224 span{color:var(--muted);font-variant-numeric:tabular-nums}
+.lease-notice-head224{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;overflow-wrap:anywhere}
 .lease-tabs224{
  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px;
  border:1px solid var(--line);border-radius:7px;background:var(--panel2)
 }
 .lease-tabs224 .btn{background:transparent;border-color:transparent;min-width:0;justify-content:center}
-.lease-tabs224 .btn[aria-pressed=true]{color:var(--brand);background:var(--panel);border-color:var(--line);font-weight:700}
 .lease-pane224{min-width:0}
 .lease-fields224{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(135px,100%),1fr));gap:8px}
 .lease-fields224 .field,.lease-step224 .field,.lease-period-pane224 .field{min-width:0;font-size:13px;color:var(--muted);font-weight:650}
@@ -114,7 +112,6 @@
  .lease-periods224{grid-template-columns:repeat(2,minmax(0,1fr));max-height:176px}
  .lease-modal224 .modal-body,.lease-rate-modal224 .modal-body{padding:10px}
  .lease-modal224>.modal-foot{justify-content:flex-start;padding:8px 10px}
- .lease-modal224 #saveLease224{order:-1}
  .lease-modal224 .btn,.lease-rate-modal224 .btn{min-height:44px}
 }
 @media(max-width:560px){
@@ -142,4 +139,74 @@
 .contract-rent-count225{grid-column:1/-1;color:var(--muted);font-size:13px}
 @media(max-width:480px){
  .contract-rent-fields225{grid-template-columns:minmax(0,1fr)}
+}
+
+.contract-manager-context228{margin:0;color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+.contract-manager-context228:empty{display:none}
+#modalRoot .contract-manager228{width:min(1000px,calc(100vw - 24px))}
+.contract-manager228 .lease-tabs224{
+ position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))
+}
+.contract-manager228 .lease-tabs224 .btn{min-height:44px;line-height:1.25}
+.contract-manager228 .lease-tabs224 .btn[aria-selected=true]{
+ color:var(--brand);background:var(--panel);border-color:var(--line);box-shadow:inset 0 -2px var(--brand)
+}
+.contract-manager228 .lease-pane224>.record-form222{max-width:700px;margin-inline:auto}
+.lease-post224>summary{cursor:pointer;font-weight:650;color:var(--muted);padding:5px 0}
+.lease-history-entry228{border-bottom:1px solid var(--line);padding:8px 0}
+.lease-history-entry228>summary{cursor:pointer;overflow-wrap:anywhere}
+.lease-history-entry228>summary :is(span,time){margin-left:10px;color:var(--muted)}
+.lease-history-entry228>p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}
+.lease-history228 #leaseHistory228>p{margin:0}
+.lease-notice-head224>.field{flex:1 1 160px;min-width:0}
+
+#modalRoot .lease-batch-modal228{width:min(1060px,calc(100vw - 24px))}
+.lease-batch-modal228 .modal-foot{flex-wrap:wrap}
+.lease-batch-modal228 .btn{min-height:44px}
+#leaseBatchForm228{display:grid;gap:14px;min-width:0}
+#leaseBatchAdd228{justify-self:start}
+.lease-batch-settings228{display:grid;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.lease-batch-settings228 h3{margin:0;font-size:15px}
+.lease-batch-fields228{
+ display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.15fr) repeat(4,minmax(0,1fr));gap:9px;align-items:end
+}
+.lease-batch-fields228 .field{min-width:0}
+.lease-batch-apply228{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+.lease-batch-apply228 output,.lease-batch-count228{font-weight:650;color:var(--brand);font-variant-numeric:tabular-nums}
+.lease-batch-count228{margin-right:auto}
+.lease-batch-columns228,.lease-batch-row-fields228{
+ display:grid;grid-template-columns:minmax(0,1.5fr) minmax(118px,1fr) minmax(118px,1fr) repeat(2,minmax(75px,.7fr)) max-content;
+ align-items:center;gap:7px;padding:0 7px
+}
+.lease-batch-columns228{padding-block:5px;font-weight:650;color:var(--muted)}
+.lease-batch-row228{border:0;border-top:1px solid var(--line);min-width:0;padding:6px 0;margin:0}
+.lease-batch-row228 legend,.lease-batch-row-fields228 .field>span{
+ position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap
+}
+.lease-batch-row-fields228 .field{min-width:0}
+.lease-batch-row-actions228{display:flex;align-items:center}
+.lease-batch-row-actions228>.btn{padding-inline:6px}
+.lease-batch-row228>p{margin:4px 7px 0}
+.lease-batch-row228 input[aria-invalid=true]{border-color:var(--red)}
+#leaseBatchError228{margin:0}
+@media(max-width:820px){
+ .lease-batch-fields228{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .lease-batch-columns228{display:none}
+ #leaseBatchRows228{display:grid;gap:10px}
+ .lease-batch-row228{border:1px solid var(--line);border-radius:7px;padding:6px}
+ .lease-batch-row-fields228{grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+ .lease-batch-row-fields228>:first-child,.lease-batch-row-actions228{grid-column:1/-1}
+ .lease-batch-row-actions228{justify-content:flex-end}
+ .lease-batch-row228 legend,.lease-batch-row-fields228 .field>span{
+  position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal
+ }
+}
+@media(max-width:480px){
+ .lease-batch-fields228{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lease-batch-fields228>.field:first-child{grid-column:1/-1}
+ .lease-batch-modal228 :is(.select,.input){font-size:16px}
+ .contract-manager228 .lease-tabs224 .btn{font-size:13px}
+}
+@media(max-width:365px){
+ .lease-batch-row-fields228 .field:has(input[type=date]){grid-column:1/-1}
 }

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.27.0</title>
+<title>營業稅工作台 v2.28.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -742,6 +742,31 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 .contract-renew-info221{margin:0;color:var(--muted);font-size:13px}
 #renewFromDetail221{min-height:44px;align-self:end}
 #contract-endDate220[readonly]{background:var(--panel2)}
+
+.contract-settings228{position:relative}
+.contract-settings228>summary{list-style:none;cursor:pointer}
+.contract-settings228>summary::-webkit-details-marker{display:none}
+.contract-settings228>summary::after{content:'▾';margin-left:.4em;color:var(--muted)}
+.contract-settings228>div{
+ position:absolute;inset:calc(100% + 4px) 0 auto auto;z-index:6;white-space:nowrap;
+ padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:var(--shadow)
+}
+.contract-settings228 .btn{min-height:44px}
+.folder-actions-wrap228{position:relative;min-width:0}
+.folder-actions-wrap228>.client-folder222>summary{padding-right:165px}
+.folder-actions-wrap228>[data-lease-batch228]{position:absolute;top:7px;right:9px;min-height:44px;max-width:48%;font-size:13px}
+.record-row220:has(>.record-row-toggle228){position:relative;padding-inline-start:42px;cursor:pointer}
+.record-row220:has(>.record-row-toggle228):hover{background:var(--panel2)}
+.record-row220>.record-row-toggle228{
+ position:absolute;left:5px;top:8px;justify-content:center;min-height:38px;min-width:34px;border-radius:5px
+}
+@container record-list (max-width:620px){
+ .folder-actions-wrap228>.client-folder222>summary{
+  grid-template-columns:10px minmax(0,1fr);gap:3px 9px;padding-right:135px
+ }
+ .folder-actions-wrap228 .folder-counts222{grid-column:2;justify-content:flex-start}
+ .folder-actions-wrap228>[data-lease-batch228]{padding-inline:6px}
+}
 /* Accounting and notification workspaces */
 @media screen {
  #view-accounting [hidden],#view-templates [hidden]{display:none!important}
@@ -1070,14 +1095,12 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 }
 .lease-modal224 .btn,.lease-rate-modal224 .btn{min-height:38px;white-space:normal}
 .lease-workspace224,.lease-rate-panel224{display:grid;gap:10px;min-width:0}
-.lease-context224,.lease-notice-head224{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;overflow-wrap:anywhere}
-.lease-context224 span{color:var(--muted);font-variant-numeric:tabular-nums}
+.lease-notice-head224{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:center;overflow-wrap:anywhere}
 .lease-tabs224{
  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px;
  border:1px solid var(--line);border-radius:7px;background:var(--panel2)
 }
 .lease-tabs224 .btn{background:transparent;border-color:transparent;min-width:0;justify-content:center}
-.lease-tabs224 .btn[aria-pressed=true]{color:var(--brand);background:var(--panel);border-color:var(--line);font-weight:700}
 .lease-pane224{min-width:0}
 .lease-fields224{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(135px,100%),1fr));gap:8px}
 .lease-fields224 .field,.lease-step224 .field,.lease-period-pane224 .field{min-width:0;font-size:13px;color:var(--muted);font-weight:650}
@@ -1134,7 +1157,6 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .lease-periods224{grid-template-columns:repeat(2,minmax(0,1fr));max-height:176px}
  .lease-modal224 .modal-body,.lease-rate-modal224 .modal-body{padding:10px}
  .lease-modal224>.modal-foot{justify-content:flex-start;padding:8px 10px}
- .lease-modal224 #saveLease224{order:-1}
  .lease-modal224 .btn,.lease-rate-modal224 .btn{min-height:44px}
 }
 @media(max-width:560px){
@@ -1162,6 +1184,76 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 .contract-rent-count225{grid-column:1/-1;color:var(--muted);font-size:13px}
 @media(max-width:480px){
  .contract-rent-fields225{grid-template-columns:minmax(0,1fr)}
+}
+
+.contract-manager-context228{margin:0;color:var(--muted);font-size:14px;overflow-wrap:anywhere}
+.contract-manager-context228:empty{display:none}
+#modalRoot .contract-manager228{width:min(1000px,calc(100vw - 24px))}
+.contract-manager228 .lease-tabs224{
+ position:sticky;top:0;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))
+}
+.contract-manager228 .lease-tabs224 .btn{min-height:44px;line-height:1.25}
+.contract-manager228 .lease-tabs224 .btn[aria-selected=true]{
+ color:var(--brand);background:var(--panel);border-color:var(--line);box-shadow:inset 0 -2px var(--brand)
+}
+.contract-manager228 .lease-pane224>.record-form222{max-width:700px;margin-inline:auto}
+.lease-post224>summary{cursor:pointer;font-weight:650;color:var(--muted);padding:5px 0}
+.lease-history-entry228{border-bottom:1px solid var(--line);padding:8px 0}
+.lease-history-entry228>summary{cursor:pointer;overflow-wrap:anywhere}
+.lease-history-entry228>summary :is(span,time){margin-left:10px;color:var(--muted)}
+.lease-history-entry228>p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}
+.lease-history228 #leaseHistory228>p{margin:0}
+.lease-notice-head224>.field{flex:1 1 160px;min-width:0}
+
+#modalRoot .lease-batch-modal228{width:min(1060px,calc(100vw - 24px))}
+.lease-batch-modal228 .modal-foot{flex-wrap:wrap}
+.lease-batch-modal228 .btn{min-height:44px}
+#leaseBatchForm228{display:grid;gap:14px;min-width:0}
+#leaseBatchAdd228{justify-self:start}
+.lease-batch-settings228{display:grid;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.lease-batch-settings228 h3{margin:0;font-size:15px}
+.lease-batch-fields228{
+ display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1.15fr) repeat(4,minmax(0,1fr));gap:9px;align-items:end
+}
+.lease-batch-fields228 .field{min-width:0}
+.lease-batch-apply228{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+.lease-batch-apply228 output,.lease-batch-count228{font-weight:650;color:var(--brand);font-variant-numeric:tabular-nums}
+.lease-batch-count228{margin-right:auto}
+.lease-batch-columns228,.lease-batch-row-fields228{
+ display:grid;grid-template-columns:minmax(0,1.5fr) minmax(118px,1fr) minmax(118px,1fr) repeat(2,minmax(75px,.7fr)) max-content;
+ align-items:center;gap:7px;padding:0 7px
+}
+.lease-batch-columns228{padding-block:5px;font-weight:650;color:var(--muted)}
+.lease-batch-row228{border:0;border-top:1px solid var(--line);min-width:0;padding:6px 0;margin:0}
+.lease-batch-row228 legend,.lease-batch-row-fields228 .field>span{
+ position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap
+}
+.lease-batch-row-fields228 .field{min-width:0}
+.lease-batch-row-actions228{display:flex;align-items:center}
+.lease-batch-row-actions228>.btn{padding-inline:6px}
+.lease-batch-row228>p{margin:4px 7px 0}
+.lease-batch-row228 input[aria-invalid=true]{border-color:var(--red)}
+#leaseBatchError228{margin:0}
+@media(max-width:820px){
+ .lease-batch-fields228{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .lease-batch-columns228{display:none}
+ #leaseBatchRows228{display:grid;gap:10px}
+ .lease-batch-row228{border:1px solid var(--line);border-radius:7px;padding:6px}
+ .lease-batch-row-fields228{grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
+ .lease-batch-row-fields228>:first-child,.lease-batch-row-actions228{grid-column:1/-1}
+ .lease-batch-row-actions228{justify-content:flex-end}
+ .lease-batch-row228 legend,.lease-batch-row-fields228 .field>span{
+  position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal
+ }
+}
+@media(max-width:480px){
+ .lease-batch-fields228{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lease-batch-fields228>.field:first-child{grid-column:1/-1}
+ .lease-batch-modal228 :is(.select,.input){font-size:16px}
+ .contract-manager228 .lease-tabs224 .btn{font-size:13px}
+}
+@media(max-width:365px){
+ .lease-batch-row-fields228 .field:has(input[type=date]){grid-column:1/-1}
 }
 @media screen {
  .vat-sample-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
@@ -1304,7 +1396,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.27.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.28.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -1569,7 +1661,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.27.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.28.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
 const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
 const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
 const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
@@ -4711,10 +4803,10 @@ function renderRecordStatusFilters227(host,options,runtime,defaultStatus,render)
 function buildRecordRows222(rows,columns,expanded,prefix) {
  return rows.map((row,index)=>{
   const detailId=prefix+'-detail-'+index,open=expanded.has(row.id);
-  const toggle=`<button class="btn record-detail-toggle222" type="button" data-record-toggle222="${esc(row.id)}" aria-controls="${detailId}" aria-expanded="${open}">明細</button>`;
+  const toggle=`<button class="btn record-detail-toggle222${row.clickToExpand?' record-row-toggle228':''}" type="button" data-record-toggle222="${esc(row.id)}" aria-controls="${detailId}" aria-expanded="${open}"${row.clickToExpand?` aria-label="${esc(row.title)}的明細"`:''}>${row.clickToExpand?'':'明細'}</button>`;
   return `<article role="listitem" class="record-item220" ${row.keyAttribute}="${esc(row.id)}">
-   <div class="record-row220">${row.cells.map((content,cell)=>
-    `<div class="record-cell220"><span class="record-label222">${esc(columns[cell])}</span>${content}${cell===row.cells.length-1?toggle:''}</div>`).join('')}</div>
+   <div class="record-row220">${row.clickToExpand?toggle:''}${row.cells.map((content,cell)=>
+    `<div class="record-cell220"><span class="record-label222">${esc(columns[cell])}</span>${content}${cell===row.cells.length-1&&!row.clickToExpand?toggle:''}</div>`).join('')}</div>
    <div id="${detailId}" class="record-detail-body222" ${open?'':'hidden'}>
     ${recordTimeline224(row.schedule)}
     ${row.extra||''}
@@ -4751,6 +4843,11 @@ function bindRecordDetails222(host,expanded) {
    if(open){expanded.add(button.dataset.recordToggle222);recordReveal222(body);}
    else expanded.delete(button.dataset.recordToggle222);
   };
+  if(button.classList.contains('record-row-toggle228')){
+   button.parentElement.onclick=event=>{
+    if(!event.target.closest('button,a,input,select,textarea')&&!window.getSelection()?.toString())button.click();
+   };
+  }
  });
 }
 function recordCounts222(records) {
@@ -4758,7 +4855,7 @@ function recordCounts222(records) {
  for(const row of records)counts.set(row.clientId,(counts.get(row.clientId)||0)+1);
  return counts;
 }
-function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,render,bind}) {
+function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,render,bind,folderAction}) {
  host.querySelectorAll('[data-client-folder222]').forEach(folder=>{
   if(folder.open!==(folder.dataset.initialOpen==='true'))runtime.folders.set(folder.dataset.clientFolder222,folder.open);
  });
@@ -4785,15 +4882,18 @@ function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,r
     const customer=clients.get(clientId),total=totals.get(clientId),other=otherCounts.get(clientId);
     const count=rows.length===total?String(total):rows.length+' / '+total;
     const open=runtime.folders.get(clientId)??folders.length===1;
-    return `<details class="client-folder222" data-client-folder222="${esc(clientId)}" data-initial-open="${open}" ${open?'open':''}>
+    const action=customer&&folderAction?folderAction(customer):'';
+    const content=`<details class="client-folder222" data-client-folder222="${esc(clientId)}" data-initial-open="${open}" ${open?'open':''}>
      <summary><span class="folder-title222"><strong>${esc(customer?.name||'客戶已移除')}</strong>${customer?.code?`<small>${esc(customer.code)}</small>`:''}</span>
       <span class="folder-counts222"><span class="folder-count222" aria-label="${esc(kind)}符合 ${rows.length} 筆，共 ${total} 筆">${count} ${esc(kind)}</span>
       ${other?`<span class="folder-cross-count222">${other} ${otherKind}</span>`:''}</span></summary>
      <div class="folder-body222"></div>
     </details>`;
+    return action?`<div class="folder-actions-wrap228">${content}${action}</div>`:content;
    }).join('')}
   </div>`;
  }
+ if(folderAction)bind(host);
  host.querySelectorAll('[data-client-folder222]').forEach((folder,folderIndex)=>{
   const clientId=folder.dataset.clientFolder222,records=groups.get(clientId),body=folder.querySelector('.folder-body222');
   const mount=()=>{
@@ -5101,6 +5201,14 @@ function createContractsEngine220() {
  function isDue(record,today,renewed=false) {
   return !renewed&&!record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
  }
+ function normalizeNotices(notices) {
+  if(!Array.isArray(notices))fail('notice','通知紀錄格式錯誤');
+  return notices.map(row=>{
+   if(!dates.iso(row?.at)||!dates.date(row.start)||!dates.date(row.end)||row.end<row.start||
+      !['issues','missing','rent','interest'].includes(row.mode))fail('notice','通知紀錄日期或類別有誤');
+   return {at:row.at,start:row.start,end:row.end,mode:row.mode,content:text(row.content,'notice','通知內容',12000,true)};
+  });
+ }
  function normalize(raw,{clients=[],categories=[],references=true}={}) {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');
   const {clientId,categoryId,startDate,endDate,closed,reminderEnabled}=raw;
@@ -5114,7 +5222,8 @@ function createContractsEngine220() {
   return {clientId,categoryId,startDate,endDate,closed,reminderEnabled,leadMonths,
    title:text(raw.title,'title','合約名稱',200,true),
    task:text(raw.task,'task','待辦事項',240,reminderEnabled),
-   note:text(raw.note,'note','備註',12000),...(raw.lease===undefined?{}:{lease:leases.normalize(raw.lease,startDate,endDate)})};
+   note:text(raw.note,'note','備註',12000),...(raw.lease===undefined?{}:{lease:leases.normalize(raw.lease,startDate,endDate)}),
+   ...(raw.leaseNotices===undefined?{}:{leaseNotices:normalizeNotices(raw.leaseNotices)})};
  }
  function assertBaseline(current,baseline) {
   if(!current)throw Error('合約已被刪除，請重新整理');
@@ -5181,7 +5290,7 @@ const contractReminderDate220=row=>contractEngine220.reminderDate(row.endDate,ro
 const nextContract220=id=>contracts220().find(row=>row.previousContractId===id);
 const contractDue220=(row,renewed=!!nextContract220(row.id))=>contractEngine220.isDue(row,localDate(),renewed);
 
-function writeContract220({id,draft,baseline=null,categoryName='',action='save',renewalFrom=null}) {
+function writeContract220({id,draft,drafts,baseline=null,categoryName='',action='save',renewalFrom=null}) {
  return new Promise((resolve,reject)=>{
   let transaction;
   try{transaction=db.transaction(['contracts','clients','contractCategories'],'readwrite');}
@@ -5194,6 +5303,18 @@ function writeContract220({id,draft,baseline=null,categoryName='',action='save',
    written=true;
    try{
     const rows=records.result;
+    if(drafts){
+     const ids=new Set(rows.map(row=>row.id)),at=nowISO();
+     result=drafts.map((draft,index)=>{
+      try{
+       if(ids.has(draft.id))throw Error('合約編號已存在，請重試');
+       ids.add(draft.id);
+       return contractEngine220.save({draft,clients:clients.result,categories:categories.result,at});
+      }catch(error){error.row=index;throw error;}
+     });
+     for(const row of result)contracts.add(row);
+     return;
+    }
     const before=rows.find(row=>row.id===id)||null;
     const renewed=contractEngine220.successors(rows);
     if(renewalFrom){
@@ -5242,7 +5363,10 @@ function mountContracts220() {
  const view=$('#view-contracts');
  if(!view||$('#contractsList220'))return;
  view.innerHTML=`<div class="page-head"><h1 class="page-title">租約與合約</h1>
-  <div class="actions"><button class="btn" type="button" id="leaseRatesBtn224">年度郵政利率</button><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
+  <div class="actions"><details class="contract-settings228"><summary class="btn ghost">設定</summary>
+   <div><button class="btn ghost" type="button" id="leaseRatesBtn224">年度郵政利率</button></div></details>
+   <button class="btn" type="button" id="newLeaseBatch228">批量新增租約</button>
+   <button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
  <div class="contract-stats220" id="contractStats220" role="group" aria-label="依狀態篩選合約"></div>
  <div class="contract-filters220">
   <div class="field"><label for="contractSearch220">搜尋合約</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
@@ -5256,6 +5380,7 @@ function mountContracts220() {
  <div class="cases-result219" id="contractCount220" aria-live="polite"></div>
  <div id="contractsList220"></div><div id="contractPagination220"></div>`;
  $('#newContract220').onclick=()=>openContract220();
+ $('#newLeaseBatch228').onclick=()=>openLeaseBatch228();
  bindLeaseRates224($('#leaseRatesBtn224'));
  for(const [selector,key,event] of [['#contractSearch220','query','input'],['#contractClientFilter220','clientId','change'],
   ['#contractCategoryFilter220','categoryId','change'],['#contractStatusFilter220','status','change'],['#contractYearFilter221','year','change']]){
@@ -5312,13 +5437,12 @@ function renderContracts220() {
   const taskStatus=contractTaskLabel220(row,!!next);
   const action=due?`<button class="btn primary" type="button" data-contract-complete220="${esc(row.id)}">完成待辦</button>`:
    row.taskCompletedAt&&!row.closed&&!next&&row.reminderEnabled?`<button class="btn" type="button" data-contract-reopen220="${esc(row.id)}">重開待辦</button>`:'';
-  return {id:row.id,keyAttribute:'data-contract-id220',
+  return {id:row.id,keyAttribute:'data-contract-id220',clickToExpand:true,title:row.title,
    cells:[
     `<h2>${esc(row.title)}</h2><small>${esc(type)}</small>${rent?`<span class="contract-rent-amount225">${esc(rent.label)} <strong>${esc(rent.value)}</strong></span>`:''}`,
     contractBadge220(status),
     `<strong>${esc(fmtDate(row.endDate))}</strong><small>${esc(next?'下一期 '+fmtDate(next.startDate):due?'待辦未完成':row.taskCompletedAt?'待辦已完成':row.reminderEnabled&&!row.closed?'提醒 '+reminder:'')}</small>`,
-    `<button class="btn" type="button" data-open-contract220="${esc(row.id)}" aria-label="編輯合約：${esc(row.title)}">編輯</button>
-     ${isLease?`<button class="btn record-secondary-action227" type="button" data-open-lease224="${esc(row.id)}">租金與押息</button>`:''}
+    `<button class="btn" type="button" data-open-contract220="${esc(row.id)}">管理合約</button>
      ${!next&&contractEngine220.shiftDay(row.endDate,1)?`<button class="btn record-secondary-action227" type="button" data-contract-renew221="${esc(row.id)}">續約</button>`:''}`
    ],
    schedule:[['開始',row.startDate?fmtDate(row.startDate):'',row.startDate],['提醒',reminder,contractReminderDate220(row)],['到期',fmtDate(row.endDate),row.endDate]],
@@ -5330,12 +5454,13 @@ function renderContracts220() {
   };
  };
  const count=clientFolders222({host,pager:$('#contractPagination220'),runtime,matched:filtered.map(item=>item.row),all:records,kind:'合約',
-  columns:['合約／類別','狀態','到期／提醒','操作'],makeRow,render:renderContracts220,bind:bindContractActions220});
+  columns:['合約／類別','狀態','到期／提醒','操作'],makeRow,render:renderContracts220,bind:bindContractActions220,
+  folderAction:customer=>`<button class="btn" type="button" data-lease-batch228="${esc(customer.id)}">＋ 批量新增租約</button>`});
  $('#contractCount220').textContent=`${count} 位客戶 · ${filtered.length} 筆合約`;
 }
 
 function openContract220(id,renewalFrom=null) {
- const existing=id?contractID220(id):null;
+ let existing=id?contractID220(id):null;
  if(id&&!existing){toast('合約已被刪除，請重新整理');return;}
  if(!existing&&!state.clients.length){toast('請先在客戶庫新增客戶');return;}
  const renewalStart=renewalFrom?contractEngine220.shiftDay(renewalFrom.endDate,1):'';
@@ -5348,13 +5473,13 @@ function openContract220(id,renewalFrom=null) {
   startDate:renewalStart,endDate:contractEngine220.termEnd(renewalStart,1),
   leadMonths:renewalFrom.leadMonths,reminderEnabled:renewalFrom.reminderEnabled,task:renewalFrom.task
  });
- const root=$('#modalRoot');
+ const root=$('#modalRoot'),origin=document.activeElement;
  const field=(key,label,contents)=>`<div class="field"><label for="contract-${key}220">${label}</label>${contents}
   <span class="contract-field-error220" data-contract-field-error220="${key}" hidden></span></div>`;
  const input=(key,type,value,extra='')=>`<input id="contract-${key}220" class="input" type="${type}" value="${esc(value)}" ${extra}>`;
  const customer=`<select class="select" id="contract-clientId220" required><option value="">選擇客戶</option>${recordClientOptions220(draft.clientId)}</select>`;
  const category=`<select class="select" id="contract-categoryId220">${contractTypeOptions220(draft.categoryId)}<option value="__new">＋ 新增類別</option></select>`;
- showModal(renewalFrom?'續約':existing?'編輯合約':'新增合約',`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
+ const basic=`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
   ${renewalFrom?`<p class="cases-span219 contract-renew-info221">上期到期日 <strong>${esc(fmtDate(renewalFrom.endDate))}</strong></p>`:''}
   <div class="cases-span219">${field('title','合約名稱',input('title','text',draft.title,'required maxlength="200"'))}</div>
   ${field('clientId','客戶',customer)}${field('categoryId','類別',category)}
@@ -5363,14 +5488,14 @@ function openContract220(id,renewalFrom=null) {
    <option value="1">1 年</option><option value="2">2 年</option><option value="3">3 年</option><option value="">自訂到期日</option></select></div>`:''}
   ${field('startDate',renewalFrom?'新約開始日期':'開始日期（選填）',input('startDate','date',draft.startDate))}
   ${field('endDate','到期日',input('endDate','date',draft.endDate,'required'))}
-  <details class="record-settings222 contract-rent-settings225 cases-span219" id="contractRent225" ${draft.categoryId==='lease'||draft.lease?'open':''}>
+  ${existing?'':`<details class="record-settings222 contract-rent-settings225 cases-span219" id="contractRent225" ${draft.categoryId==='lease'||draft.lease?'open':''}>
    <summary>租金設定</summary>
    <div class="contract-rent-fields225">
     ${field('monthlyRent','月租（元）',input('monthlyRent','text',leaseEngine224.format(draft.lease?.steps[0]?.cents),'inputmode="decimal"'))}
     ${field('rentBasis','金額基準',`<select id="contract-rentBasis220" class="select">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,draft.lease?.rentBasis||'net')).join('')}</select>`)}
     ${draft.lease?.steps.length>1?`<span class="contract-rent-count225">首段月租 · 共 ${draft.lease.steps.length} 段</span>`:''}
    </div>
-  </details>
+  </details>`}
   <div class="record-reminder-settings227 cases-span219">
    <div class="record-setting-head222">
     <label class="cases-check219 record-toggle222"><input id="contract-reminderEnabled220" type="checkbox" aria-controls="contractReminderFields222" ${draft.reminderEnabled?'checked':''}>到期提醒</label>
@@ -5383,11 +5508,18 @@ function openContract220(id,renewalFrom=null) {
   </div>
   <div class="cases-span219 field"><label for="contract-note220">備註</label><textarea class="textarea" id="contract-note220" maxlength="12000" rows="2">${esc(draft.note)}</textarea></div>
   ${renewalFrom?'<input id="contract-closed220" type="checkbox" hidden>':`<label class="cases-check219"><input id="contract-closed220" type="checkbox" ${draft.closed?'checked':''}>已結案</label>`}
-  ${!renewalFrom&&existing&&!nextContract220(existing.id)&&contractEngine220.shiftDay(existing.endDate,1)?'<button class="btn" type="button" id="renewFromDetail221">續約</button>':''}
   <p class="notice warn cases-span219" id="contractError220" role="alert" tabindex="-1" hidden></p>
- </form>`,[{text:'取消',value:false},{text:renewalFrom?'確認續約':'儲存合約',value:true,cls:'primary'}],()=>{});
+ </form>`;
+ showModal(renewalFrom?'續約':existing?'管理合約':'新增合約',existing?contractLeasePanels228(draft,basic):basic,[{text:'取消',value:false},{text:renewalFrom?'確認續約':'儲存合約',value:true,cls:'primary'}],()=>{});
  const modal=root.querySelector('.modal'),form=$('#contractForm220'),error=$('#contractError220');
  modal.classList.add('cases-modal219','contract-modal220','record-modal222');
+ if(existing){
+  modal.classList.add('lease-modal224','contract-manager228');
+  modal.setAttribute('role','dialog');
+  modal.setAttribute('aria-labelledby','contractManagerTitle228');
+  modal.querySelector('.modal-title').id='contractManagerTitle228';
+  modal.querySelector('[data-close]').setAttribute('aria-label','關閉');
+ }
  const footer=modal.querySelector('.modal-foot'),[cancel,save]=footer.querySelectorAll('button');
  save.id='saveContract220';cancel.id='cancelContract220';
  const get=key=>$('#contract-'+key+'220');
@@ -5399,7 +5531,7 @@ function openContract220(id,renewalFrom=null) {
  const collect=()=>({id:draft.id,title:get('title').value,clientId:get('clientId').value,categoryId:get('categoryId').value,
   startDate:get('startDate').value,endDate:get('endDate').value,leadMonths:leadValue(),
   reminderEnabled:get('reminderEnabled').checked,task:get('task').value,closed:get('closed').checked,note:get('note').value,
-  ...(draft.lease?{lease:draft.lease}:{})});
+  ...(existing?.leaseNotices?{leaseNotices:existing.leaseNotices}:{})});
  const term=$('#contractRenewTerm221');
  if(renewalFrom)get('clientId').disabled=true;
  if(term){
@@ -5413,14 +5545,15 @@ function openContract220(id,renewalFrom=null) {
   updateTerm();
  }
  const rentPanel=$('#contractRent225');
- get('categoryId').addEventListener('change',()=>{
-  rentPanel.open=get('categoryId').value==='lease'||!!draft.lease||!!get('monthlyRent').value.trim();
+ if(rentPanel)get('categoryId').addEventListener('change',()=>{
+  rentPanel.open=get('categoryId').value==='lease'||!!get('monthlyRent').value.trim();
  });
- const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent').value,get('rentBasis').value]);
- const initial=snapshot(),origin=document.activeElement;
+ const lease=existing?mountContractLease228(modal,draft,collect,notice=>commit('save',notice)):null;
+ const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value]);
+ let initial=snapshot();
  let busy=false;
  function updatePreview(){
-  const requiresStart=!!renewalFrom||!!get('monthlyRent').value.trim()||!!draft.lease;
+  const requiresStart=!!renewalFrom||!!get('monthlyRent')?.value.trim()||!!existing?.lease;
   get('startDate').required=requiresStart;
   if(!renewalFrom)form.querySelector('label[for="contract-startDate220"]').textContent=requiresStart?'開始日期（必填）':'開始日期（選填）';
   $('#contractNewCategory220').hidden=get('categoryId').value!=='__new';
@@ -5428,6 +5561,8 @@ function openContract220(id,renewalFrom=null) {
   try{date=contractEngine220.reminderDate(get('endDate').value,get('leadMonths').value);}catch{}
   $('#contractReminderFields222').hidden=!get('reminderEnabled').checked;
   $('#contractPreviewDate220').textContent=get('reminderEnabled').checked&&date?'提醒日 '+fmtDate(date):'';
+  const context=$('#contractManagerContext228');
+  if(context)context.textContent=[clientById(get('clientId').value)?.name,get('title').value.trim()].filter(Boolean).join(' · ');
  }
  form.addEventListener('input',event=>{
   const key=event.target.id?.match(/^contract-(\w+)220$/)?.[1];
@@ -5448,62 +5583,79 @@ function openContract220(id,renewalFrom=null) {
   if(origin?.isConnected)origin.focus();
  }
  function cancelEdit(){
-  if(busy)return;
-  if(snapshot()!==initial&&!window.confirm('合約尚未儲存，確定捨棄變更？'))return;
+  if(busy||lease?.busy())return;
+  if((snapshot()!==initial||lease?.hasUnsaved())&&!window.confirm('合約尚未儲存，確定捨棄變更？'))return;
   close();
  }
- const renewButton=$('#renewFromDetail221');
- if(renewButton)renewButton.onclick=()=>{
-  if(busy||snapshot()!==initial&&!window.confirm('尚未儲存的改動會捨棄，要改為續約嗎？'))return;
-  close();
-  openContract220(null,existing);
- };
  cancel.onclick=cancelEdit;
  modal.querySelector('[data-close]').onclick=cancelEdit;
  root.onclick=event=>{if(event.target===root)cancelEdit();};
  modal.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();cancelEdit();}});
- async function commit(action) {
+ async function commit(action,notice=null) {
   if(busy)return;
   busy=true;
   error.hidden=true;
+  const leaseError=$('#leaseError224');
+  if(leaseError)leaseError.hidden=true;
   for(const node of form.querySelectorAll('[data-contract-field-error220]')){node.hidden=true;node.textContent='';}
   form.querySelectorAll('[aria-invalid]').forEach(node=>node.removeAttribute('aria-invalid'));
-  const fields=collect();
+  const fields=collect(),stay=action==='save'&&lease&&lease.active()!=='basic';
   const categoryName=fields.categoryId==='__new'?get('categoryName').value:'';
   const controls=[...modal.querySelectorAll('input,textarea,select,button')].filter(node=>!node.disabled);
   controls.forEach(node=>node.disabled=true);
+  let saved;
   try{
    if(action==='save'){
     if(fields.categoryId==='__new')contractEngine220.categoryFor(categoryName);
-    const lease=leaseEngine224.updateOpeningRent(draft.lease,fields.startDate,get('monthlyRent').value,get('rentBasis').value);
-    if(lease)fields.lease=lease;
+    const costs=lease?lease.collect():leaseEngine224.updateOpeningRent(undefined,fields.startDate,get('monthlyRent').value,get('rentBasis').value);
+    if(costs)fields.lease=costs;
+    if(notice)fields.leaseNotices=[...(fields.leaseNotices||[]),notice];
    }
-   await writeContract220({id:draft.id,draft:fields,baseline:existing,categoryName,action,renewalFrom});
+   saved=await writeContract220({id:draft.id,draft:fields,baseline:existing,categoryName,action,renewalFrom});
   }catch(failure){
-   busy=false;controls.forEach(node=>node.disabled=false);
    const key=failure.field,target=key?get(key):null;
    const hint=key?form.querySelector(`[data-contract-field-error220="${key}"]`):null;
    if(target&&hint){
-    if(rentPanel.contains(target))rentPanel.open=true;
+    lease?.activate('basic');
+    if(rentPanel?.contains(target))rentPanel.open=true;
     hint.textContent=failure.message;hint.hidden=false;hint.id='contract-field-error-'+key+'220';
-    target.setAttribute('aria-invalid','true');target.setAttribute('aria-errormessage',hint.id);target.focus();
-   }else{error.textContent=failure.message||'合約未能儲存';error.hidden=false;error.focus();}
+    target.setAttribute('aria-invalid','true');target.setAttribute('aria-errormessage',hint.id);
+   }
+   else{
+    const message=lease&&lease.active()!=='basic'?leaseError:error;
+    message.textContent=failure.message||'合約未能儲存';
+    message.hidden=false;
+   }
+   busy=false;controls.forEach(node=>node.disabled=false);
+   (target&&hint?target:lease&&lease.active()!=='basic'?leaseError:error).focus();
    return;
   }
-  close();
+  if(!stay)close();
+  else{
+   existing=saved;
+   lease.saved(saved);
+  }
   if(renewalFrom&&state.view==='contracts'){
    Object.assign(contractRuntime220,{query:'',status:'all',year:'',categoryId:'',clientId:renewalFrom.clientId,page:1});
    $('#contractSearch220').value='';
   }
   try{
    await loadAll();
-   if(state.view==='contracts'&&!origin?.isConnected){
+   if(stay){
+    get('categoryId').innerHTML=contractTypeOptions220(saved.categoryId)+'<option value="__new">＋ 新增類別</option>';
+    get('categoryName').value='';
+    updatePreview();
+    initial=snapshot();
+   }else if(state.view==='contracts'&&!origin?.isConnected){
     const next=$$('#contractsList220 [data-open-contract220]').find(button=>button.dataset.openContract220===draft.id);
     (next||$('#newContract220'))?.focus({preventScroll:true});
    }
-   toast(action==='delete'?'已刪除合約':renewalFrom?'續約已儲存':'合約已儲存');
+   toast(action==='delete'?'已刪除合約':renewalFrom?'續約已儲存':notice?'已存入通知紀錄':stay?'租約費用已儲存':'合約已儲存');
+  }catch{toast('變更已儲存，請重新整理工作台');}
+  finally{
+   busy=false;controls.forEach(node=>{if(node.isConnected)node.disabled=false;});
+   if(stay)(notice?$('#leaseRecordNotice228'):save)?.focus({preventScroll:true});
   }
-  catch{toast('變更已儲存，請重新整理工作台');}
  }
  save.onclick=()=>commit('save');
  form.onsubmit=event=>{event.preventDefault();commit('save');};
@@ -5573,7 +5725,7 @@ async function updateContractTask220(id,action) {
 function bindContractActions220(root) {
  if(!root)return;
  for(const [attr,action] of [
-  ['openLease224',id=>openLease224(id)],['openContract220',id=>openContract220(id)],['contractRenew221',id=>{const source=contractID220(id);if(source)openContract220(null,source);}],['contractCalendar220',id=>openContractCalendar220(id)],
+  ['leaseBatch228',id=>openLeaseBatch228(id)],['openContract220',id=>openContract220(id)],['contractRenew221',id=>{const source=contractID220(id);if(source)openContract220(null,source);}],['contractCalendar220',id=>openContractCalendar220(id)],
   ['contractComplete220',id=>updateContractTask220(id,'complete')],['contractReopen220',id=>updateContractTask220(id,'reopen')]
  ]){
   const selector='[data-'+attr.replace(/[A-Z]/g,char=>'-'+char.toLowerCase())+']';
@@ -5999,7 +6151,11 @@ function leaseSummary224(contract){
  </dl>`;
 }
 function bindLeaseRates224(button){
- if(button)button.onclick=()=>openLeaseRates224();
+ if(button)button.onclick=()=>{
+  const menu=button.closest('details');
+  if(menu){menu.open=false;menu.querySelector('summary').focus();}
+  openLeaseRates224();
+ };
 }
 function commitLeaseRate224(id,rate,baseline){
  return new Promise((resolve,reject)=>{
@@ -6105,55 +6261,62 @@ function leaseNotice224(contract,period,mode){
   ...lines.map((line,index)=>`${index+1}. ${line}`),'','煩請確認後回覆，謝謝。'].join('\n');
 }
 
-function openLease224(id){
- let baseline=contractID220(id);
- if(!baseline){toast('合約已被刪除');return;}
- if(!baseline.startDate){openContract220(id);$('#contract-startDate220')?.focus();return;}
- let draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
- const origin=document.activeElement;
- const tabs=[['setup','租金與押金'],['review','逐期核對'],['notice','通知']];
- const field=(id,label,type,properties='')=>`<label class="field" for="${id}">${label}<input id="${id}" class="input" type="${type}" ${properties}></label>`;
- const rateLabel='郵政一年期固定利率';
- showModal(baseline.title,`<div class="lease-workspace224">
-  <div class="lease-context224"><strong>${esc(clientById(baseline.clientId)?.name||'')}</strong><span>${esc(leaseRange224({start:baseline.startDate,end:baseline.endDate}))}</span></div>
-  <nav class="operations-tabs lease-tabs224" aria-label="租約費用工作區">${tabs.map(([id,title])=>`<button class="btn" type="button" data-lease-tab="${id}" aria-controls="lease-pane-${id}">${title}</button>`).join('')}</nav>
+const contractTabs228=[['basic','基本資料'],['setup','租金與押息'],['review','逐期核對'],['notice','通知紀錄']];
+const leaseNoticeModes228={issues:'全部已確認異常',missing:'漏開發票',rent:'租金金額差異',interest:'押金設算利息'};
+const leaseField228=(id,label,type,properties='')=>`<label class="field" for="${id}">${label}<input id="${id}" class="input" type="${type}" ${properties}></label>`;
+function contractLeasePanels228(contract,basic){
+ const lease=contract.lease||leaseEngine224.defaultLease(),field=leaseField228;
+ const panel=(key,html)=>`<section id="lease-pane-${key}" class="lease-pane224" role="tabpanel" aria-labelledby="lease-tab-${key}" ${key==='basic'?'':'hidden'}>${html}</section>`;
+ return `<div class="lease-workspace224">
+  <p class="contract-manager-context228" id="contractManagerContext228"></p>
+  <nav class="lease-tabs224" role="tablist" aria-label="合約管理">${contractTabs228.map(([id,title])=>
+   `<button class="btn" type="button" role="tab" data-lease-tab="${id}" id="lease-tab-${id}" aria-controls="lease-pane-${id}" aria-selected="${id==='basic'}" tabindex="${id==='basic'?0:-1}">${title}</button>`).join('')}</nav>
   <div id="leaseError224" class="notice warn" role="alert" tabindex="-1" hidden></div>
-  <section id="lease-pane-setup" class="lease-pane224">
+  ${panel('basic',basic)}
+  ${panel('setup',`
    <div class="lease-fields224">
-    <label class="field">核對週期<select id="leaseFrequency224" class="select">${leaseEngine224.frequencies.map(key=>leaseOption224(key,leaseFrequency224[key],draft.frequency)).join('')}</select></label>
-    <label class="field">月租金額基準<select id="leaseRentBasis224" class="select">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,draft.rentBasis)).join('')}</select></label>
+    <label class="field">核對週期<select id="leaseFrequency224" class="select">${leaseEngine224.frequencies.map(key=>leaseOption224(key,leaseFrequency224[key],lease.frequency)).join('')}</select></label>
+    <label class="field">月租金額基準<select id="leaseRentBasis224" class="select">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,lease.rentBasis)).join('')}</select></label>
     ${field('leaseDeposit224','押金（元）','text','inputmode="decimal" placeholder="待填"')}
-    <label class="field">押息計算方式<select id="leaseRegime224" class="select">${[['invoice','一般稅額'],['assessed','查定計算']].map(([key,label])=>leaseOption224(key,label,draft.regime)).join('')}</select></label>
+    <label class="field">押息計算方式<select id="leaseRegime224" class="select">${[['invoice','一般稅額'],['assessed','查定計算']].map(([key,label])=>leaseOption224(key,label,lease.regime)).join('')}</select></label>
     ${field('leaseVAT224','營業稅徵收率（%）','text','inputmode="decimal"')}
    </div>
    <section class="lease-section224">
     <header><h3>租金階段</h3><button class="btn" type="button" id="leaseAddStep224">新增階段</button></header>
     <div id="leaseSteps224"></div>
    </section>
-   <section class="lease-section224 lease-post224"><header><h3>${rateLabel}</h3></header><div id="leaseRateChips224"></div></section>
-  </section>
-  <section id="lease-pane-review" class="lease-pane224" hidden>
-   <div class="lease-review-layout224">
+   <details class="lease-section224 lease-post224"><summary>年度郵政利率</summary><div id="leaseRateChips224"></div></details>
+  `)}
+  ${panel('review',`
+   <div id="leaseReviewEmpty228" class="empty" hidden>請先在基本資料填寫有效的租期起訖日。</div>
+   <div class="lease-review-layout224" id="leaseReviewLayout228">
     <div class="lease-period-pane224">
      <label class="field">核對年度<select class="select" id="leaseYear224"></select></label>
      <div id="leasePeriods224" class="lease-periods224"></div>
     </div>
     <section id="leaseCheck224" class="lease-check224"></section>
    </div>
-  </section>
-  <section id="lease-pane-notice" class="lease-pane224" hidden>
-   <div class="lease-notice-head224"><strong id="leaseNoticePeriod224"></strong>
-    <label class="field">通知內容<select class="select" id="leaseNoticeMode224"><option value="issues">全部已確認異常</option><option value="missing">漏開發票</option><option value="rent">租金金額差異</option><option value="interest">押金設算利息</option></select></label></div>
-   <label class="field">訊息預覽<textarea class="textarea" id="leaseNoticeText224" rows="8"></textarea></label>
-   <div class="lease-notice-actions224"><button class="btn" type="button" id="leaseRegenerate224">重新帶入</button><button class="btn primary" type="button" id="leaseCopy224">複製通知</button></div>
-  </section>
- </div>`,[{text:'關閉',value:false},{text:'儲存租約費用',value:true,cls:'primary'}],()=>{});
- const root=$('#modalRoot'),modal=root.querySelector('.modal'),error=$('#leaseError224');
- const [closeButton,save]=modal.querySelectorAll('.modal-foot button');
- modal.classList.add('lease-modal224');save.id='saveLease224';
+  `)}
+  ${panel('notice',`
+   <div id="leaseNoticeDraft228" hidden>
+    <div class="lease-notice-head224">
+     <label class="field">核對期間<select id="leaseNoticeRange228" class="select"></select></label>
+     <strong id="leaseNoticePeriod224" hidden></strong>
+     <label class="field">通知內容<select class="select" id="leaseNoticeMode224">${Object.entries(leaseNoticeModes228).map(([key,label])=>leaseOption224(key,label,'issues')).join('')}</select></label>
+    </div>
+    <label class="field">訊息預覽<textarea class="textarea" id="leaseNoticeText224" rows="6" maxlength="12000"></textarea></label>
+    <div class="lease-notice-actions224"><button class="btn" type="button" id="leaseRegenerate224">重新帶入</button><button class="btn" type="button" id="leaseCopy224">複製通知</button><button class="btn" type="button" id="leaseRecordNotice228">存入紀錄</button></div>
+   </div>
+   <section class="lease-section224 lease-history228"><header><h3>已留存通知</h3></header><div id="leaseHistory228"></div></section>
+  `)}
+ </div>`;
+}
+function mountContractLease228(modal,baseline,readBasic,recordNotice){
+ let term={...baseline},draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
+ const error=$('#leaseError224'),field=leaseField228;
  const steps=$('#leaseSteps224'),years=$('#leaseYear224'),list=$('#leasePeriods224'),checkPanel=$('#leaseCheck224');
  const notices=new Map(),noticeMode=$('#leaseNoticeMode224'),noticeText=$('#leaseNoticeText224'),copy=$('#leaseCopy224');
- let pane='setup',periods=[],selectedKey='',noticeKey='',busy=false,checkMounted=false;
+ let pane='basic',periods=[],selectedKey='',noticeKey='',busy=false,checkMounted=false;
  const val=id=>$('#'+id).value;
  const format=leaseEngine224.format;
  $('#leaseDeposit224').value=format(draft.deposit);
@@ -6161,7 +6324,7 @@ function openLease224(id){
 
  function appendStep(from='',cents=null,opening=false){
   steps.insertAdjacentHTML('beforeend',`<div class="lease-step224">
-   <label class="field">生效日<input class="input lease-step-date" type="date" min="${esc(baseline.startDate)}" max="${esc(baseline.endDate)}" value="${esc(from)}" ${opening?'readonly':''}></label>
+   <label class="field">生效日<input class="input lease-step-date" type="date" min="${esc(term.startDate)}" max="${esc(term.endDate)}" value="${esc(from)}" ${opening?'readonly':''}></label>
    <label class="field">${opening?'首段月租（元）':'月租（元）'}<input class="input lease-step-rent" inputmode="decimal" value="${esc(format(cents))}"></label>
    ${opening?'':'<button class="btn danger" type="button" data-lease-remove-step>移除</button>'}</div>`);
  }
@@ -6178,15 +6341,26 @@ function openLease224(id){
  showRegime();
  function setupSnapshot(){
   return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
-   [...steps.querySelectorAll('input')].map(input=>input.value)];
+   [...steps.querySelectorAll('input:not([readonly])')].map(input=>input.value)];
  }
+ const snapshot=()=>JSON.stringify([setupSnapshot(),draft.checks]);
  const hasUnsaved=()=>{
   if(checkMounted){
    try{collectCheck();}catch{return true;}
   }
-  return JSON.stringify([setupSnapshot(),draft.checks])!==initial;
+  return snapshot()!==initial;
  };
- let initial=JSON.stringify([setupSnapshot(),draft.checks]);
+ let initial=snapshot();
+ function updateTerm(){
+  term={...term,...readBasic()};
+  const inputs=[...steps.querySelectorAll('.lease-step-date')];
+  inputs[0].value=term.startDate;
+  for(const input of inputs){input.min=term.startDate;input.max=term.endDate;}
+ }
+ function validTerm(){
+  const valid=createCasesEngine219().date;
+  return valid(term.startDate)&&valid(term.endDate)&&term.startDate<=term.endDate;
+ }
  function collectCheck(){
   if(!checkMounted)return;
   const months=val('leaseInterestMonths224');
@@ -6196,11 +6370,12 @@ function openLease224(id){
    row[part+'Status']=status;
    row[part+'Actual']=status==='issued'?leaseEngine224.amount(val('lease-'+part+'-actual224')):null;
   }
-  const normalized=leaseEngine224.normalize({...draft,checks:[...draft.checks.filter(row=>row.key!==selectedKey),row]},baseline.startDate,baseline.endDate);
+  const normalized=leaseEngine224.normalize({...draft,checks:[...draft.checks.filter(row=>row.key!==selectedKey),row]},term.startDate,term.endDate);
   draft.checks=normalized.checks.sort((a,b)=>a.key.localeCompare(b.key));
  }
  function collect(){
   collectCheck();
+  updateTerm();
   const rentBasis=val('leaseRentBasis224');
   if(rentBasis!==draft.rentBasis&&draft.checks.some(check=>check.rentActual!==null)){
    throw Error('已有實開租金金額，請先清除該期金額再變更含稅／未稅基準');
@@ -6212,8 +6387,8 @@ function openLease224(id){
   }));
   if(newSteps.length===1&&newSteps[0].cents===null)newSteps.pop();
   draft=leaseEngine224.normalize({...draft,frequency:Number(val('leaseFrequency224')),rentBasis,
-   deposit:leaseEngine224.amount(val('leaseDeposit224')),regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},baseline.startDate,baseline.endDate);
-  periods=leaseEngine224.calculate({...baseline,lease:draft},leaseRates224());
+   deposit:leaseEngine224.amount(val('leaseDeposit224')),regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},term.startDate,term.endDate);
+  periods=leaseEngine224.calculate({...term,lease:draft},leaseRates224());
  }
  function attempt(action){
   if(busy)return;
@@ -6221,17 +6396,24 @@ function openLease224(id){
   try{action();}catch(failure){error.textContent=failure.message;error.hidden=false;error.focus();}
  }
  function drawRateChips(){
+  const target=$('#leaseRateChips224');
+  target.parentElement.hidden=!validTerm();
+  if(target.parentElement.hidden)return;
   const rows=new Map(leaseRates224().map(rate=>[rate.id,rate.rate]));
-  const start=Number(baseline.startDate.slice(0,4)),end=Number(baseline.endDate.slice(0,4));
+  const start=Number(term.startDate.slice(0,4)),end=Number(term.endDate.slice(0,4));
   const all=Array.from({length:Math.min(101,end-start+1)},(_,i)=>String(start+i).padStart(4,'0'));
-  $('#leaseRateChips224').innerHTML=all.map(year=>`<span class="lease-rate-chip224">${esc(leaseYear224(year))} ${rows.has(year)?'<strong>'+esc(format(rows.get(year),4))+'%</strong>':'<span>未設定</span>'}</span>`).join('');
+  target.innerHTML=all.map(year=>`<span class="lease-rate-chip224">${esc(leaseYear224(year))} ${rows.has(year)?'<strong>'+esc(format(rows.get(year),4))+'%</strong>':'<span>未設定</span>'}</span>`).join('');
  }
  function activate(next){
   pane=next;
-  tabs.forEach(([key])=>{
-   modal.querySelector(`[data-lease-tab="${key}"]`).setAttribute('aria-pressed',String(key===pane));
-   $('#lease-pane-'+key).hidden=key!==pane;
-  });
+  if(next==='basic')checkMounted=false;
+  for(const [key] of contractTabs228){
+   const tab=$('#lease-tab-'+key),active=key===pane;
+   tab.setAttribute('aria-selected',String(active));
+   tab.tabIndex=active?0:-1;
+   $('#lease-pane-'+key).hidden=!active;
+  }
+  modal.querySelector('.modal-body').scrollTop=0;
   revealLease224($('#lease-pane-'+pane));
  }
  function ensurePeriod(preferredYear){
@@ -6325,26 +6507,56 @@ function openLease224(id){
   noticeKey=selectedKey+':'+mode;
   if(reset)notices.delete(noticeKey);
   $('#leaseNoticePeriod224').textContent=leaseRange224(period);
-  const source=leaseNotice224({...baseline,lease:draft},period,mode);
+  const source=leaseNotice224({...term,lease:draft},period,mode);
   const saved=notices.get(noticeKey);
   if(saved&&saved.source!==source)notices.delete(noticeKey);
   noticeText.dataset.generated=source;
   noticeText.value=notices.get(noticeKey)?.text??source;
   noticeText.placeholder=mode==='interest'?'本期無已試算的押息':'本期無已確認的異常';
-  copy.disabled=!noticeText.value.trim();
+  copy.disabled=$('#leaseRecordNotice228').disabled=!noticeText.value.trim();
+ }
+ function drawHistory(){
+  $('#leaseHistory228').innerHTML=(baseline.leaseNotices||[]).slice().reverse().map(row=>`<details class="lease-history-entry228">
+   <summary><strong>${esc(leaseNoticeModes228[row.mode])}</strong><span>${esc(leaseRange224(row))}</span><time>${esc(fmtDateTime(row.at))}</time></summary>
+   <p>${esc(row.content)}</p>
+  </details>`).join('')||'<p class="muted">尚無通知紀錄</p>';
  }
  function showPane(next){
-  collect();
-  checkMounted=false;
-  if(next==='setup'){activate(next);return;}
-  ensurePeriod();
-  if(next==='review'){drawPeriods();drawCheck();}
-  if(next==='notice')drawNotice();
+  if(next===pane)return;
+  collectCheck();
+  updateTerm();
+  if(next==='setup')drawRateChips();
+  if(next==='review'||next==='notice'){
+   const valid=validTerm();
+   $('#leaseReviewEmpty228').hidden=valid;
+   $('#leaseReviewLayout228').hidden=!valid;
+   $('#leaseNoticeDraft228').hidden=!valid;
+   if(valid){
+    collect();
+    ensurePeriod();
+    if(next==='review'){drawPeriods();drawCheck();}
+    else{
+     $('#leaseNoticeRange228').innerHTML=periods.map(period=>leaseOption224(period.key,leaseRange224(period),selectedKey)).join('');
+     drawNotice();
+    }
+   }
+  }
+  checkMounted=next==='review'&&validTerm();
   activate(next);
  }
- modal.querySelectorAll('[data-lease-tab]').forEach(button=>{
-  button.onclick=()=>{if(pane!==button.dataset.leaseTab)attempt(()=>showPane(button.dataset.leaseTab));};
- });
+ const tabButtons=[...modal.querySelectorAll('[data-lease-tab]')];
+ for(const [index,button] of tabButtons.entries()){
+  button.onclick=()=>attempt(()=>showPane(button.dataset.leaseTab));
+  button.onkeydown=event=>{
+   const last=tabButtons.length-1;
+   const target={ArrowLeft:index===0?last:index-1,ArrowRight:index===last?0:index+1,Home:0,End:last}[event.key];
+   if(target===undefined)return;
+   event.preventDefault();
+   tabButtons[target].click();
+   if(tabButtons[target].getAttribute('aria-selected')==='true')tabButtons[target].focus();
+  };
+ }
+ $('#leaseNoticeRange228').onchange=event=>{selectedKey=event.target.value;drawNotice();};
  list.onclick=event=>{
   const button=event.target.closest('[data-lease-period]');
   if(!button||button.dataset.leasePeriod===selectedKey)return;
@@ -6360,7 +6572,7 @@ function openLease224(id){
   attempt(()=>{collect();ensurePeriod(year);drawPeriods();drawCheck();});
  };
  noticeMode.onchange=()=>drawNotice();
- noticeText.oninput=()=>{notices.set(noticeKey,{source:noticeText.dataset.generated,text:noticeText.value});copy.disabled=!noticeText.value.trim();};
+ noticeText.oninput=()=>{notices.set(noticeKey,{source:noticeText.dataset.generated,text:noticeText.value});copy.disabled=$('#leaseRecordNotice228').disabled=!noticeText.value.trim();};
  $('#leaseRegenerate224').onclick=()=>drawNotice(true);
  copy.onclick=async()=>{
   const value=noticeText.value.trim();
@@ -6372,39 +6584,227 @@ function openLease224(id){
   }
   toast('租約通知已複製');
  };
- function close(){
-  if(busy||hasUnsaved()&&!window.confirm('租約費用尚未儲存，確定關閉？'))return;
-  root.classList.remove('show');root.replaceChildren();
-  if(origin?.isConnected)origin.focus();
- }
- closeButton.onclick=close;
- modal.querySelector('[data-close]').onclick=close;
- root.onclick=event=>{if(event.target===root)close();};
- modal.onkeydown=event=>{if(event.key==='Escape'){event.preventDefault();close();}};
- save.onclick=async()=>{
-  if(busy)return;
-  error.hidden=true;
-  try{collect();}catch(failure){error.textContent=failure.message;error.hidden=false;error.focus();return;}
-  busy=true;
-  const controls=[...modal.querySelectorAll('input,select,textarea,button')].filter(control=>!control.disabled);
-  controls.forEach(control=>control.disabled=true);
-  try{
-   baseline=await writeContract220({id,draft:{...baseline,lease:draft},baseline});
-   initial=JSON.stringify([setupSnapshot(),draft.checks]);
-   state.contracts=await getAll('contracts');
-   if(state.view==='contracts')renderContracts220();
-   toast('租約費用已儲存');
-  }catch(failure){error.textContent=failure.message;error.hidden=false;error.focus();}
-  finally{busy=false;controls.forEach(control=>control.disabled=false);}
+ $('#leaseRecordNotice228').onclick=()=>{
+  const period=periods.find(period=>period.key===selectedKey);
+  const content=noticeText.value.trim();
+  if(content&&period)recordNotice({at:nowISO(),start:period.start,end:period.end,mode:noticeMode.value,content});
  };
- drawRateChips();
- activate('setup');
- modal.querySelector('[data-lease-tab][aria-pressed=true]')?.focus();
+ drawHistory();
+ return {
+  active:()=>pane,
+  busy:()=>busy,
+  activate,
+  hasUnsaved,
+  collect(){
+   if(!baseline.lease&&!hasUnsaved())return undefined;
+   updateTerm();
+   if(!validTerm()){
+    const error=new Error('請先在基本資料填寫有效的租期起訖日');
+    error.field=!term.startDate?'startDate':'endDate';
+    throw error;
+   }
+   collect();
+   return draft;
+  },
+  saved(row){
+   baseline=row;
+   initial=snapshot();
+   drawHistory();
+  }
+ };
 }
 function revealLease224(node){
  if(!motionEnabled211()||node.hidden)return;
  node.getAnimations().forEach(animation=>animation.cancel());
  node.animate([{opacity:.66,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:185,easing:'cubic-bezier(.2,.75,.2,1)'});
+}
+
+/* Create every row under one customer in a single contract transaction. */
+function openLeaseBatch228(clientId=''){
+ if(!state.clients.length){toast('請先在客戶庫新增客戶');return;}
+ const origin=document.activeElement,root=$('#modalRoot'),defaults=leaseEngine224.defaultLease();
+ const settings=[
+  ['clientId','客戶','<option value="">選擇客戶</option>'+recordClientOptions220(clientId)],
+  ['categoryId','類別',contractTypeOptions220('lease')],
+  ['frequency','核對週期',leaseEngine224.frequencies.map(key=>leaseOption224(key,leaseFrequency224[key],defaults.frequency)).join('')],
+  ['rentBasis','月租基準',leaseOption224('net','未稅',defaults.rentBasis)+leaseOption224('gross','含稅',defaults.rentBasis)],
+  ['regime','押息計算方式',leaseOption224('invoice','一般稅額',defaults.regime)+leaseOption224('assessed','查定計算',defaults.regime)]
+ ];
+ const columns=[['title','合約／據點名稱'],['startDate','開始日'],['endDate','到期日'],['rent','月租（元）'],['deposit','押金（元）']];
+ showModal('批量新增租約',`<form id="leaseBatchForm228" novalidate>
+  <section class="lease-batch-settings228" aria-labelledby="leaseBatchCommon228">
+   <h3 id="leaseBatchCommon228">共通設定</h3>
+   <div class="lease-batch-fields228">
+    ${settings.map(([key,label,options])=>`<label class="field">${label}<select class="select" name="${key}">${options}</select></label>`).join('')}
+    <label class="field">提前提醒（月）<input class="input" type="number" name="leadMonths" value="1" min="0" max="36" step="1"></label>
+   </div>
+   <div class="lease-batch-apply228"><button class="btn" type="button" id="leaseBatchApply228">套用至所有列</button>
+    <output id="leaseBatchApplied228" role="status"></output></div>
+  </section>
+  <div class="lease-batch-table228">
+   <div class="lease-batch-columns228" aria-hidden="true">${columns.map(([,label])=>`<span>${label}</span>`).join('')}<span>操作</span></div>
+   <div id="leaseBatchRows228"></div>
+  </div>
+  <button type="button" class="btn" id="leaseBatchAdd228">＋ 新增一列</button>
+  <p id="leaseBatchError228" class="notice warn" role="alert" tabindex="-1" hidden></p>
+ </form>`,[{text:'取消',value:false},{text:'確認建立',value:true,cls:'primary'}],()=>{});
+ const modal=root.querySelector('.modal'),form=$('#leaseBatchForm228'),list=$('#leaseBatchRows228'),error=$('#leaseBatchError228');
+ const footer=modal.querySelector('.modal-foot'),[cancel,save]=footer.querySelectorAll('button');
+ modal.classList.add('lease-modal224','lease-batch-modal228');
+ modal.setAttribute('role','dialog');
+ modal.setAttribute('aria-labelledby','leaseBatchTitle228');
+ modal.querySelector('.modal-title').id='leaseBatchTitle228';
+ modal.querySelector('[data-close]').setAttribute('aria-label','關閉');
+ save.id='leaseBatchSave228';
+ const count=document.createElement('output');
+ count.className='lease-batch-count228';count.setAttribute('aria-live','polite');footer.prepend(count);
+ const rows=()=>[...list.children];
+ const common=key=>form.elements.namedItem(key);
+ const read=row=>Object.fromEntries(columns.map(([key])=>[key,row.querySelector(`[data-batch-field="${key}"]`).value]));
+ const snapshot=()=>JSON.stringify([...settings.map(([key])=>common(key).value),common('leadMonths').value,rows().map(read)]);
+ let busy=false,serial=0;
+ function drawCount(){
+  const size=list.childElementCount;
+  count.textContent='預計建立 '+size+' 筆';
+  save.disabled=!size;
+  for(const [index,row] of rows().entries()){
+   row.querySelector('legend').textContent='第 '+(index+1)+' 列';
+  }
+ }
+ function addRow(values={},after=null){
+  const index=++serial;
+  const row=document.createElement('fieldset');
+  row.className='lease-batch-row228';
+  row.innerHTML=`<legend></legend><div class="lease-batch-row-fields228">${columns.map(([key,label])=>`
+   <label class="field"><span>${label}</span><input class="input" data-batch-field="${key}" type="${key.endsWith('Date')?'date':'text'}"
+    ${key==='title'?'maxlength="200"':key.endsWith('Date')?'':'inputmode="decimal"'}
+    aria-describedby="lease-batch-row-error-${index}" value="${esc(values[key]||'')}"></label>`).join('')}
+   <div class="lease-batch-row-actions228"><button type="button" class="btn ghost" data-batch-copy>複製此列</button>
+    <button type="button" class="btn ghost danger" data-batch-remove>刪除</button></div></div>
+   <p class="contract-field-error220" id="lease-batch-row-error-${index}" hidden></p>`;
+  if(after)after.after(row);
+  else list.append(row);
+  drawCount();
+  return row.querySelector('input');
+ }
+ function commonValues(requireClient){
+  const selected=common('clientId').value;
+  if(requireClient&&!clientById(selected)){
+   common('clientId').focus();
+   throw Error('請選擇客戶庫中的客戶');
+  }
+  let leadMonths;
+  try{leadMonths=contractEngine220.months(common('leadMonths').value);}
+  catch(failure){common('leadMonths').focus();throw failure;}
+  return {clientId:selected,categoryId:common('categoryId').value,leadMonths,
+   lease:{...defaults,frequency:Number(common('frequency').value),rentBasis:common('rentBasis').value,regime:common('regime').value}};
+ }
+ function showError(message){
+  error.textContent=message;error.hidden=false;
+ }
+ function clearRow(row){
+  row.querySelector('p').hidden=true;
+  row.querySelector('[aria-invalid]')?.removeAttribute('aria-invalid');
+ }
+ function showRowError(row,index,failure){
+  const hint=row.querySelector('p');
+  hint.textContent='第 '+(index+1)+' 列 · '+failure.message;
+  hint.hidden=false;
+  const target=row.querySelector(`[data-batch-field="${failure.field||'title'}"]`)||row.querySelector('input');
+  target.setAttribute('aria-invalid','true');
+  return target;
+ }
+ function prepare(row,shared){
+  const data=read(row);
+  const {title,startDate,endDate}=data;
+  if(!title.trim())throw Object.assign(Error('請填寫合約／據點名稱'),{field:'title'});
+  if(!startDate)throw Object.assign(Error('請填寫開始日'),{field:'startDate'});
+  if(!endDate||endDate<startDate)throw Object.assign(Error('到期日須等於或晚於開始日'),{field:'endDate'});
+  const amount=key=>{
+   try{return leaseEngine224.amount(data[key]);}
+   catch{throw Object.assign(Error('金額須為非負數，最多兩位小數'),{field:key});}
+  };
+  const rent=amount('rent'),deposit=amount('deposit');
+  const lease={...shared.lease,deposit,steps:rent===null?[]:[{from:startDate,cents:rent}]};
+  return {id:uid('contract'),...shared,title,startDate,endDate,closed:false,reminderEnabled:true,
+   task:'確認續約或結案',note:'',lease};
+ }
+ addRow();
+ const initial=snapshot(),applied=$('#leaseBatchApplied228');
+ function close(){
+  if(busy||snapshot()!==initial&&!window.confirm('批量新增尚未儲存，確定關閉？'))return;
+  root.classList.remove('show');root.replaceChildren();
+  if(origin?.isConnected)origin.focus();
+ }
+ cancel.onclick=close;
+ modal.querySelector('[data-close]').onclick=close;
+ root.onclick=event=>{if(event.target===root)close();};
+ modal.onkeydown=event=>{if(event.key==='Escape'){event.preventDefault();close();}};
+ form.oninput=event=>{
+  error.hidden=true;
+  const row=event.target.closest('.lease-batch-row228');
+  if(row)clearRow(row);
+  else applied.textContent='';
+ };
+ $('#leaseBatchApply228').onclick=()=>{
+  error.hidden=true;
+  try{commonValues(false);applied.textContent='共通設定已套用至 '+list.childElementCount+' 列';}
+  catch(failure){showError(failure.message);}
+ };
+ $('#leaseBatchAdd228').onclick=()=>{applied.textContent='';addRow().focus();};
+ list.onclick=event=>{
+  const row=event.target.closest('.lease-batch-row228');
+  if(!row)return;
+  if(event.target.closest('[data-batch-copy]'))addRow(read(row),row).focus();
+  else if(event.target.closest('[data-batch-remove]')){
+   const next=row.nextElementSibling||row.previousElementSibling;
+   row.remove();
+   drawCount();
+   (next?.querySelector('[data-batch-remove]')||$('#leaseBatchAdd228')).focus();
+  }else return;
+  applied.textContent='';error.hidden=true;
+ };
+ async function commit(event){
+  event?.preventDefault();
+  if(busy||!list.childElementCount)return;
+  error.hidden=true;
+  let shared;
+  try{shared=commonValues(true);}
+  catch(failure){showError(failure.message);return;}
+  const inputs=rows(),drafts=[];
+  let invalid;
+  for(const [index,row] of inputs.entries()){
+   clearRow(row);
+   try{drafts.push(prepare(row,shared));}
+   catch(failure){const target=showRowError(row,index,failure);invalid??=target;}
+  }
+  if(invalid){invalid.focus();return;}
+  busy=true;
+  const controls=[...modal.querySelectorAll('button,input,select')].filter(control=>!control.disabled);
+  controls.forEach(control=>control.disabled=true);
+  try{await writeContract220({drafts});}
+  catch(failure){
+   busy=false;
+   controls.forEach(control=>control.disabled=false);
+   if(Number.isInteger(failure.row))showRowError(inputs[failure.row],failure.row,failure).focus();
+   else{showError(failure.message||'批量新增未儲存');error.focus();}
+   return;
+  }
+  root.classList.remove('show');root.replaceChildren();
+  Object.assign(contractRuntime220,{query:'',clientId:shared.clientId,categoryId:'',year:'',status:'all',page:1});
+  contractRuntime220.folders.set(shared.clientId,true);
+  const folder=$$('#contractsList220 [data-client-folder222]').find(node=>node.dataset.clientFolder222===shared.clientId);
+  if(folder)folder.open=true;
+  $('#contractSearch220').value='';
+  try{
+   await loadAll();
+   $('#contractsList220 [data-lease-batch228]')?.focus({preventScroll:true});
+   toast('已建立 '+drafts.length+' 筆租約');
+  }catch{toast('租約已儲存，請重新整理工作台');}
+ }
+ save.onclick=()=>commit();
+ form.onsubmit=commit;
+ (clientId?list.querySelector('input'):common('clientId')).focus();
 }
 
 /* Synthetic fixtures are written only to the current tab's sample database. */
@@ -6707,7 +7107,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.27.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.28.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
