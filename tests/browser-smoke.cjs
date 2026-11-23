@@ -28,6 +28,7 @@ const vatCases=require('./vat-cases.browser.js');
 const vatContracts=require('./vat-contracts.browser.js');
 const vatLeases=require('./vat-leases.browser.js');
 const vatOperations=require('./vat-operations.browser.js');
+const intranetFinder=require('./intranet-file-finder.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
 // Default CI still uses file://. Local HTTP is an explicit fallback for managed browsers.
 const BASE=process.env.OFFLINE_TEST_BASE_URL||'';
@@ -511,4 +512,5 @@ async function vatPreviewPaperGeometry(p){
  await check('vat collection local today + day offset + auto clients + merge/TXT + empty + midnight + two time zones',async()=>{for(const timezoneId of ['Asia/Taipei','America/Los_Angeles'])await vatRevisionContext(vatCollectionRevision,{timezoneId})});
  await check('four tools floating feedback real touch movement + save',floatingTouch);
  for(const kind of ['unavailable','quota'])await check('feedback '+kind+' storage retains exportable in-memory note',()=>storageFailure(kind));
+ await check('intranet finder offline folder tree + full path + search + location + mobile + web directory',()=>intranetFinder(browser,appURL('intranet-file-finder.html')));
 })().catch(e=>{report.checks.push({name:'test infrastructure',status:'fail',error:String(e.stack||e)});console.error(e)}).finally(async()=>{if(browser)await browser.close();report.finishedAt=new Date().toISOString();report.pass=report.checks.filter(x=>x.status==='pass').length;report.fail=report.checks.filter(x=>x.status==='fail').length;fs.writeFileSync(path.join(OUT,'report.json'),JSON.stringify(report,null,2));console.log(`${report.pass} passed, ${report.fail} failed`);process.exitCode=report.fail?1:0});

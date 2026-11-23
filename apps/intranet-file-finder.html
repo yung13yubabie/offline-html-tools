@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>內網資料檢索器</title>
+<style>
+:root {
+  font-family: system-ui, "Microsoft JhengHei", "PingFang TC", sans-serif;
+  color: #19263c;
+  background: #edf1f6;
+  --ink: #19263c;
+  --muted: #52627a;
+  --line: #dce3ed;
+  --blue: #2357c5;
+  --blue-dark: #19449e;
+  --blue-soft: #eaf1ff;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; min-width: 0; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: .48; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.masthead { background: #14233b; color: #fff; border-bottom: 3px solid #527ee5; }
+.mast-inner, main { width: min(100% - 3rem, 1440px); margin-inline: auto; }
+.mast-inner { min-height: 88px; display: flex; align-items: center; gap: 15px; }
+.brand-mark { display: grid; place-items: center; inline-size: 42px; block-size: 42px; border: 1px solid #5978b2; border-radius: 10px; color: #e2ebff; background: #25416f; }
+h1, h2, p { margin: 0; }
+h1 { font-size: clamp(1.35rem, 3vw, 1.75rem); line-height: 1.25; letter-spacing: .035em; }
+main { padding-block: 26px 28px; }
+.source { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 17px 19px; margin-bottom: 16px; }
+.source label { display: block; margin-bottom: 8px; font-size: .875rem; font-weight: 700; }
+.source-line { display: flex; align-items: stretch; gap: 8px; }
+.field { display: flex; align-items: center; gap: 11px; min-width: 0; flex: 1; min-height: 43px; border: 1px solid #c8d3e2; border-radius: 8px; padding: 0 12px; background: #fbfcfe; color: var(--muted); }
+.field:focus-within { border-color: var(--blue); box-shadow: 0 0 0 2px #2357c51c; }
+.field input { border: 0; outline: none; background: transparent; min-width: 0; flex: 1; min-height: 42px; padding: 0; color: var(--ink); }
+.field input::placeholder { color: #627189; opacity: 1; }
+#rootPath { font: .875rem var(--mono); }
+.action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 7px 13px; border: 1px solid #cad5e5; border-radius: 8px; background: #fff; color: #263953; font-size: .875rem; font-weight: 650; white-space: nowrap; transition: background-color .15s, border-color .15s; }
+.action:enabled:hover { background: #edf3fe; border-color: #9baed1; }
+.action.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+.action.primary:enabled:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+.message { margin-top: 9px; font-size: .875rem; color: var(--muted); overflow-wrap: anywhere; }
+.message[data-tone="error"] { color: #a42d2d; }
+.workspace { display: grid; grid-template-columns: minmax(220px, 27%) minmax(0, 1fr); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 9px 28px #2438550a; }
+.sidebar, .results { min-width: 0; display: flex; flex-direction: column; }
+.sidebar { background: #f8fafd; border-right: 1px solid var(--line); }
+.pane-head { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 17px; border-bottom: 1px solid var(--line); }
+.pane-head h2 { font-size: .975rem; white-space: nowrap; }
+.tree-toolbar { display: flex; gap: 3px; }
+.tree-toolbar .action { padding-inline: 8px; border-color: transparent; background: transparent; }
+.tree-toolbar .action:enabled:hover { background: var(--blue-soft); }
+.tree { height: clamp(350px, 59vh, 850px); overflow: auto; padding: 9px 7px; }
+.tree-placeholder { display: flex; align-items: center; gap: 8px; padding: 11px 8px; color: var(--muted); font-size: .875rem; }
+.tree-row { display: flex; align-items: stretch; min-height: 37px; border-radius: 7px; padding-inline-start: calc(var(--depth) * 12px); }
+.tree-row:hover { background: #eaf0fa; }
+.tree-row.current { background: #e1eafe; color: #19459f; }
+.tree-toggle, .tree-name { border: 0; background: transparent; color: inherit; }
+.tree-toggle { flex: 0 0 27px; display: grid; place-items: center; padding: 0; border-radius: 5px; }
+.tree-toggle:focus-visible, .tree-name:focus-visible { outline-offset: -2px; }
+.tree-toggle .chevron { width: 6px; height: 6px; border-right: 1.5px solid; border-bottom: 1.5px solid; transform: rotate(-45deg); }
+.tree-toggle[aria-expanded="true"] .chevron { transform: translateY(-2px) rotate(45deg); }
+.tree-name { min-width: 0; flex: 1; display: flex; align-items: center; gap: 9px; text-align: start; padding: 0 6px 0 0; font-size: .875rem; border-radius: 5px; }
+.tree-name span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-name.root { font-weight: 700; }
+.tree-name[aria-current="true"] { font-weight: 650; }
+.toggle-space { flex: 0 0 27px; }
+.results .pane-head { flex-wrap: wrap; }
+.heading-group { min-width: 0; display: flex; align-items: center; gap: 9px; }
+.scope { color: var(--muted); font-size: .8125rem; max-width: 24ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-field { max-width: 440px; min-height: 40px; gap: 9px; }
+.search-field input { min-height: 38px; font-size: .9rem; }
+kbd { font: .75rem var(--mono); border: 1px solid #d9e1ed; border-radius: 4px; padding: 2px 5px; white-space: nowrap; color: var(--muted); background: #fff; }
+.clear-search { padding: 0 3px; border: 0; background: none; color: var(--muted); font-size: 1.25rem; line-height: 1; }
+.list-area { position: relative; height: clamp(350px, 59vh, 850px); overflow: auto; scrollbar-gutter: stable; }
+.list-head, .file-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 108px; align-items: center; gap: 13px; }
+.list-head { position: sticky; top: 0; z-index: 1; min-height: 37px; padding: 0 16px; background: #f3f6fa; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .8125rem; font-weight: 650; }
+.file-row { position: relative; min-height: 53px; padding: 0 16px; border-bottom: 1px solid #e8edf4; }
+.file-row:hover, .file-row:focus-within { background: #f3f7ff; }
+.file-row.selected { background: #eaf1ff; }
+.file-copy { min-width: 0; padding: 9px 0; border: 0; background: transparent; text-align: start; display: flex; align-items: center; gap: 11px; color: var(--ink); font-weight: 600; font-size: .9375rem; }
+.file-copy::after { position: absolute; inset: 0; content: ""; }
+.file-copy:focus-visible::after { outline: 2px solid var(--blue); outline-offset: -2px; }
+.file-label, .folder-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.folder-label { color: var(--muted); font-size: .8125rem; }
+.row-open { position: relative; min-height: 33px; padding-inline: 7px; border-color: transparent; background: transparent; justify-self: end; }
+.row-open:enabled:hover { background: #fff; }
+.empty { position: absolute; inset: 37px 0 0; display: grid; place-content: center; justify-items: center; padding: 20px; text-align: center; }
+.empty-symbol { display: grid; place-items: center; width: 65px; height: 65px; margin-bottom: 14px; border: 1px solid #d8e4fd; border-radius: 16px; background: #edf3ff; color: #365fbd; }
+.empty-symbol .icon { transform: scale(1.6); }
+.empty strong { font-size: 1rem; }
+.empty p { margin-top: 5px; color: var(--muted); font-size: .875rem; }
+.pane-footer { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 51px; border-top: 1px solid var(--line); padding: 7px 16px; background: #f8fafd; color: var(--muted); font-size: .8125rem; }
+.pages { display: flex; align-items: center; flex-wrap: wrap; justify-content: end; gap: 7px; }
+.pages .action { padding-block: 5px; }
+.toast { position: fixed; z-index: 5; bottom: 19px; right: 20px; max-width: min(380px, 100% - 40px); padding: 12px 16px; border-radius: 9px; box-shadow: 0 10px 28px #1a2b5133; background: #14233b; color: #fff; font-size: .875rem; }
+dialog { width: min(510px, calc(100% - 30px)); padding: 20px; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 48px #1a2b5144; color: var(--ink); }
+dialog::backdrop { background: #14233b55; }
+dialog h2 { margin-bottom: 10px; font-size: 1.1rem; }
+dialog p { margin-bottom: 10px; color: var(--muted); font-size: .875rem; }
+dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px solid #a9b9d2; border-radius: 8px; padding: 8px; color: var(--ink); font: .875rem var(--mono); }
+.dialog-actions { margin-top: 12px; display: flex; justify-content: end; gap: 8px; }
+.icon { position: relative; display: inline-block; flex: 0 0 auto; width: 16px; height: 16px; color: inherit; }
+.icon.folder { height: 12px; margin-top: 3px; border: 1.5px solid currentColor; border-radius: 2px; background: #dce8fe; color: #3b66b9; }
+.icon.folder::before { content: ""; position: absolute; top: -4px; left: -1.5px; width: 8px; height: 4px; border: 1.5px solid currentColor; border-bottom: 0; border-radius: 2px 2px 0 0; background: inherit; }
+.icon.search::before { content: ""; position: absolute; top: 1px; left: 1px; width: 11px; height: 11px; border: 1.6px solid; border-radius: 50%; }
+.icon.search::after { content: ""; position: absolute; bottom: 1px; right: 0; width: 7px; height: 1.6px; border-radius: 1px; background: currentColor; transform: rotate(45deg); }
+.icon.path { width: 18px; height: 13px; border: 1.5px solid; border-radius: 3px; }
+.icon.path::before { content: "›"; position: absolute; top: -5px; left: 2px; font-size: 15px; line-height: 17px; }
+.icon.path::after { content: ""; position: absolute; width: 5px; height: 1.5px; background: currentColor; bottom: 2px; right: 2px; }
+.icon.file { width: 15px; height: 18px; margin-inline: 1px 0; border: 1.5px solid currentColor; border-radius: 3px; background: #ecf2fc; color: #49638b; }
+.icon.file::after { content: ""; position: absolute; left: 3px; right: 3px; top: 6px; height: 1.5px; background: currentColor; box-shadow: 0 4px 0 currentColor; }
+.icon.file.sheet { background: #e8f6ef; color: #2c7556; }
+.icon.file.pdf { background: #fff0ee; color: #a84943; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 920px) {
+  .results .pane-head { gap: 8px; }
+  .search-field { min-width: min(100%, 250px); }
+  .list-head, .file-row { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) 89px; gap: 8px; padding-inline: 10px; }
+  .row-open { font-size: .8125rem; }
+}
+@media (max-width: 640px) {
+  .mast-inner, main { width: calc(100% - 24px); }
+  .mast-inner { min-height: 69px; }
+  main { padding-block: 12px; }
+  .source { padding: 12px; margin-bottom: 12px; }
+  .source-line { flex-wrap: wrap; }
+  .source-line .field { flex-basis: 100%; }
+  .source-line .action { min-height: 39px; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+  .pane-head { padding: 8px 12px; min-height: 49px; }
+  .tree { height: auto; max-height: 170px; min-height: 53px; padding-block: 5px; }
+  .list-area { height: clamp(280px, 55vh, 620px); }
+  .search-field { max-width: none; flex: 1 1 100%; }
+  .list-head, .file-row { grid-template-columns: minmax(0, 1fr) 89px; }
+  .list-head .folder-label { display: none; }
+  .file-row { grid-template-rows: auto auto; gap: 0 8px; padding-block: 5px; }
+  .file-copy { padding: 1px 0; }
+  .file-row .folder-label { grid-row: 2; padding-left: 27px; }
+  .row-open { grid-area: 1 / 2 / 3 / 3; }
+  .pane-footer { flex-wrap: wrap; padding-inline: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="mast-inner">
+    <span class="brand-mark" aria-hidden="true"><span class="icon search"></span></span>
+    <h1>內網資料檢索器</h1>
+  </div>
+</header>
+<main>
+  <form id="sourceForm" class="source">
+    <label for="rootPath">資料夾路徑或網址</label>
+    <div class="source-line">
+      <div class="field">
+        <span class="icon path" aria-hidden="true"></span>
+        <input id="rootPath" type="text" placeholder="例如 \\server\share\資料夾" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="action primary" id="read" type="submit">讀取</button>
+      <button class="action" id="choose" type="button"><span class="icon folder" aria-hidden="true"></span>選擇資料夾</button>
+      <button class="action" id="cancel" type="button" hidden>停止</button>
+    </div>
+    <p class="message" id="message" role="status" hidden></p>
+  </form>
+  <input id="directoryInput" type="file" webkitdirectory multiple hidden>
+  <section class="workspace" aria-label="資料瀏覽">
+    <aside class="sidebar" aria-labelledby="foldersTitle">
+      <div class="pane-head">
+        <h2 id="foldersTitle">資料夾</h2>
+        <div class="tree-toolbar" id="treeToolbar" hidden>
+          <button class="action" type="button" id="expand">全展開</button>
+          <button class="action" type="button" id="collapse">全收合</button>
+        </div>
+      </div>
+      <div class="tree" id="tree"></div>
+    </aside>
+    <section class="results" aria-labelledby="filesTitle">
+      <div class="pane-head">
+        <div class="heading-group">
+          <h2 id="filesTitle">檔案</h2>
+          <span id="scope" class="scope" hidden></span>
+        </div>
+        <div class="field search-field">
+          <span class="icon search" aria-hidden="true"></span>
+          <label for="search" class="sr-only">搜尋檔名或路徑</label>
+          <input id="search" type="text" placeholder="搜尋檔名或路徑" autocomplete="off" spellcheck="false" aria-keyshortcuts="Control+K Meta+K Control+F5">
+          <button id="clearSearch" class="clear-search" type="button" aria-label="清除搜尋" hidden>×</button>
+          <kbd aria-hidden="true">Ctrl K</kbd>
+        </div>
+      </div>
+      <div class="list-area" id="listArea">
+        <div class="list-head" aria-hidden="true"><span>檔名</span><span class="folder-label">所在路徑</span><span></span></div>
+        <div id="files" role="list" aria-label="檔案清單"></div>
+        <div class="empty" id="empty">
+          <div class="empty-symbol" aria-hidden="true"><span class="icon folder"></span></div>
+          <strong id="emptyTitle">尚未讀取資料夾</strong>
+          <p id="emptyDetail">貼上路徑或選擇資料夾</p>
+        </div>
+      </div>
+    </section>
+    <footer class="pane-footer">
+      <span id="summary" role="status">0 個資料夾 · 0 個檔案</span>
+      <div class="pages" id="pages" hidden>
+        <button class="action" id="previous" type="button">上一頁</button>
+        <span id="pageLabel"></span>
+        <button class="action" id="next" type="button">下一頁</button>
+      </div>
+    </footer>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+<dialog id="pathDialog" aria-labelledby="pathDialogTitle">
+  <form method="dialog">
+    <h2 id="pathDialogTitle">路徑</h2>
+    <p id="pathDialogHint"></p>
+    <textarea id="manualPath" aria-label="可複製的路徑" readonly></textarea>
+    <div class="dialog-actions">
+      <button class="action" value="close">關閉</button>
+      <button class="action primary" id="manualCopy" type="button">複製路徑</button>
+    </div>
+  </form>
+</dialog>
+<script>
+"use strict";
+
+const byId = id => document.getElementById(id);
+const ui = Object.fromEntries([
+  "sourceForm", "rootPath", "read", "choose", "cancel", "message", "directoryInput",
+  "tree", "treeToolbar", "expand", "collapse", "scope", "search", "clearSearch",
+  "listArea", "files", "empty", "emptyTitle", "emptyDetail", "summary", "pages",
+  "previous", "next", "pageLabel", "toast", "pathDialog", "pathDialogTitle",
+  "pathDialogHint", "manualPath", "manualCopy"
+].map(id => [id, byId(id)]));
+
+const pageSize = 100;
+const collator = new Intl.Collator("zh-Hant", { numeric: true, sensitivity: "base" });
+const formatNumber = new Intl.NumberFormat("zh-TW");
+const normalize = text => text.normalize("NFKC").toLocaleLowerCase("zh-Hant");
+const afterPaint = () => new Promise(resolve => setTimeout(resolve, 0));
+const segment = name => encodeURIComponent(name);
+const state = {
+  index: null,
+  scope: null,
+  collapsed: new Set(),
+  results: [],
+  selected: null,
+  scopeFiles: [],
+  page: 0,
+  controller: null,
+  treeVersion: 0,
+  folderButtons: new Map(),
+  searchTimer: 0,
+  toastTimer: 0,
+  copyVersion: 0
+};
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function icon(name) {
+  const node = element("span", "icon " + name);
+  node.setAttribute("aria-hidden", "true");
+  return node;
+}
+
+function setMessage(text, tone = "") {
+  ui.message.textContent = text;
+  ui.message.dataset.tone = tone;
+  ui.message.hidden = !text;
+}
+
+function showToast(text) {
+  clearTimeout(state.toastTimer);
+  ui.toast.textContent = text;
+  ui.toast.hidden = false;
+  state.toastTimer = setTimeout(() => { ui.toast.hidden = true; }, 2800);
+}
+
+function parseLocation(value) {
+  const text = value.trim().replace(/^"([^"]*)"$/, "$1");
+  if (!text) return null;
+  if (/^https?:\/\//i.test(text)) {
+    const url = new URL(text);
+    if (url.username || url.password || url.search || url.hash) {
+      throw new Error("請輸入資料夾網址，移除帳密、查詢參數與片段。");
+    }
+    if (!url.pathname.endsWith("/")) url.pathname += "/";
+    return { kind: "http", url, base: url.href };
+  }
+  if (/^(file|smb):\/\//i.test(text)) {
+    const url = new URL(text.replace(/^smb:/i, "file:"));
+    if (url.username || url.password || url.search || url.hash) {
+      throw new Error("請輸入完整的資料夾路徑。");
+    }
+    const path = decodeURIComponent(url.pathname);
+    if (url.hostname) return localLocation("\\\\" + url.hostname + path.replace(/\//g, "\\"), "\\");
+    if (/^\/[a-z]:\//i.test(path)) return localLocation(path.slice(1).replace(/\//g, "\\"), "\\");
+    return localLocation(path, "/");
+  }
+  if (/^(?:[a-z]:[\\/]|[\\/]{2}[^\\/]+[\\/][^\\/]+)/i.test(text)) {
+    return localLocation(text.replace(/\//g, "\\"), "\\");
+  }
+  if (text.startsWith("/") && !text.startsWith("//")) return localLocation(text, "/");
+  throw new Error("請輸入完整路徑，例如 \\\\server\\share\\資料夾，或內網資料夾網址。");
+}
+
+function localLocation(path, separator) {
+  const pieces = path.split(separator).filter(Boolean);
+  if (path.startsWith("\\\\") && pieces.length < 2) throw new Error("請輸入共享資料夾的完整路徑。");
+  if (pieces.some(part => part === ".." || part === ".")) throw new Error("請使用展開後的完整路徑。");
+  let base = path;
+  while (base.length > 1 && base.endsWith(separator) && !/^[a-z]:\\$/i.test(base)) {
+    base = base.slice(0, -1);
+  }
+  const name = pieces.at(-1) || "";
+  return { kind: "local", base, separator, name };
+}
+
+function locationMatches(location, name) {
+  if (!location || !location.name || /^[a-z]:\\$/i.test(location.base)) return true;
+  if (location.separator === "/") return location.name === name;
+  return location.name.toLocaleLowerCase() === name.toLocaleLowerCase();
+}
+
+function directory(name, parent = null, handle = null) {
+  return { name, parent, handle, relative: parent ? appendRelative(parent, name) : "", children: [] };
+}
+
+function appendRelative(folder, name) {
+  return folder.relative ? folder.relative + "/" + name : name;
+}
+
+function makeFile(name, folder, url = null) {
+  return { name, folder, url, relative: appendRelative(folder, name) };
+}
+
+function localPath(location, relative) {
+  if (!relative) return location.base;
+  const suffix = relative.split("/").join(location.separator);
+  const join = location.base.endsWith(location.separator) ? "" : location.separator;
+  return location.base + join + suffix;
+}
+
+function fileUrl(location, relative) {
+  const path = localPath(location, relative);
+  if (location.separator === "/") {
+    return "file://" + path.split("/").map(segment).join("/");
+  }
+  if (path.startsWith("\\\\")) {
+    const [host, ...parts] = path.slice(2).split("\\");
+    return new URL("file://" + host + "/" + parts.map(segment).join("/")).href;
+  }
+  const [drive, ...parts] = path.split("\\");
+  return "file:///" + drive + "/" + parts.map(segment).join("/");
+}
+
+function indexedPath(index, file) {
+  const { source, root } = index;
+  if (file.url) return file.url.href;
+  if (source.base) return localPath(source, file.relative);
+  return root.name + "/" + file.relative;
+}
+
+function scanProgress(folders, files) {
+  setMessage("讀取中 · " + formatNumber.format(folders) + " 個資料夾 · " + formatNumber.format(files) + " 個檔案");
+}
+
+async function scanHandle(root, signal) {
+  const pending = [root];
+  const folders = [];
+  const files = [];
+  let skipped = 0;
+  let clock = performance.now();
+  while (pending.length) {
+    signal.throwIfAborted();
+    const folder = pending.pop();
+    folders.push(folder);
+    try {
+      for await (const handle of folder.handle.values()) {
+        signal.throwIfAborted();
+        if (handle.kind === "directory") {
+          const child = directory(handle.name, folder, handle);
+          folder.children.push(child);
+          pending.push(child);
+        } else {
+          files.push(makeFile(handle.name, folder));
+        }
+        if (performance.now() - clock >= 18) {
+          scanProgress(folders.length, files.length);
+          await afterPaint();
+          clock = performance.now();
+        }
+      }
+    } catch (error) {
+      if (signal.aborted || folder === root) throw error;
+      skipped++;
+    }
+  }
+  return { root, folders, files, skipped };
+}
+
+async function scanFileList(root, entries, signal) {
+  const found = new Map([["", root]]);
+  const files = [];
+  let clock = performance.now();
+  for (const entry of entries) {
+    signal.throwIfAborted();
+    const parts = entry.webkitRelativePath.split("/");
+    if (parts.shift() !== root.name || !parts.length) continue;
+    const name = parts.pop();
+    let folder = root;
+    for (const part of parts) {
+      const relative = appendRelative(folder, part);
+      let child = found.get(relative);
+      if (!child) {
+        child = directory(part, folder);
+        folder.children.push(child);
+        found.set(relative, child);
+      }
+      folder = child;
+    }
+    files.push(makeFile(name, folder));
+    if (performance.now() - clock >= 18) {
+      scanProgress(found.size, files.length);
+      await afterPaint();
+      clock = performance.now();
+    }
+  }
+  return { root, folders: [...found.values()], files, skipped: 0 };
+}
+
+async function readListing(url, signal) {
+  const response = await fetch(url, { signal, redirect: "error", cache: "no-store" });
+  if (!response.ok || !/text\/html/i.test(response.headers.get("Content-Type") || "")) {
+    throw new Error("這個網址沒有可讀取的目錄清單。");
+  }
+  // A template keeps the directory listing inert, including scripts and embedded resources.
+  const template = document.createElement("template");
+  template.innerHTML = await response.text();
+  const listing = template.content;
+  const heading = [...listing.querySelectorAll("title, h1, h2")].map(node => node.textContent).join(" ");
+  const anchors = [...listing.querySelectorAll("a[href]")];
+  if (!/\b(?:index of|directory listing(?: for)?)\b/i.test(heading) &&
+      !anchors.some(anchor => /^(?:\[to parent directory\]|parent directory)$/i.test(anchor.textContent.trim()))) {
+    throw new Error("這個網址沒有可讀取的目錄清單。");
+  }
+  const children = new Map();
+  for (const anchor of anchors) {
+    let child;
+    let name;
+    try {
+      child = new URL(anchor.getAttribute("href"), url);
+      if (child.origin !== url.origin || child.username || child.password ||
+          child.search || child.hash || !child.pathname.startsWith(url.pathname)) continue;
+      name = decodeURIComponent(child.pathname.slice(url.pathname.length).replace(/\/$/, ""));
+    } catch {
+      continue;
+    }
+    if (!name || name === "." || name === ".." || /[\/\\\u0000]/.test(name)) continue;
+    children.set(child.href, { child, name, isFolder: child.pathname.endsWith("/") });
+  }
+  return children.values();
+}
+
+async function scanWeb(source, signal) {
+  const pathParts = source.url.pathname.split("/").filter(Boolean);
+  const root = directory(pathParts.length ? decodeURIComponent(pathParts.at(-1)) : source.url.host);
+  root.url = source.url;
+  const queue = [root];
+  const folders = [root];
+  const files = [];
+  let skipped = 0;
+  let cursor = 0;
+  while (cursor < queue.length) {
+    signal.throwIfAborted();
+    const batch = queue.slice(cursor, cursor + 4);
+    cursor += batch.length;
+    const lists = await Promise.allSettled(batch.map(folder => readListing(folder.url, signal)));
+    signal.throwIfAborted();
+    for (const [index, result] of lists.entries()) {
+      const folder = batch[index];
+      if (result.status === "rejected") {
+        if (folder === root) throw result.reason;
+        skipped++;
+        continue;
+      }
+      for (const { child, name, isFolder } of result.value) {
+        if (isFolder) {
+          const subfolder = directory(name, folder);
+          subfolder.url = child;
+          folder.children.push(subfolder);
+          queue.push(subfolder);
+          folders.push(subfolder);
+        } else {
+          files.push(makeFile(name, folder, child));
+        }
+      }
+    }
+    scanProgress(folders.length, files.length);
+    await afterPaint();
+  }
+  return { root, folders, files, skipped };
+}
+
+async function runScan(operation, source) {
+  if (state.controller) return;
+  const controller = new AbortController();
+  state.controller = controller;
+  ui.read.disabled = true;
+  ui.choose.disabled = true;
+  ui.cancel.hidden = false;
+  scanProgress(0, 0);
+  try {
+    const index = await operation(controller.signal);
+    controller.signal.throwIfAborted();
+    index.source = source;
+    await afterPaint();
+    for (const folder of index.folders) folder.children.sort((a, b) => collator.compare(a.name, b.name));
+    index.files.sort((a, b) => collator.compare(a.relative, b.relative));
+    let clock = performance.now();
+    for (const file of index.files) {
+      file.searchText = normalize(file.url ? decodeURIComponent(file.url.href) : indexedPath(index, file));
+      if (performance.now() - clock >= 18) {
+        await afterPaint();
+        controller.signal.throwIfAborted();
+        clock = performance.now();
+      }
+    }
+    controller.signal.throwIfAborted();
+    state.index = index;
+    state.scope = index.root;
+    state.selected = null;
+    state.collapsed.clear();
+    ui.rootPath.value = source.base || "";
+    const notice = index.skipped ? "有 " + formatNumber.format(index.skipped) + " 個資料夾無法完整讀取。" : "";
+    setMessage(source.base ? notice : notice + "要複製完整路徑，請貼上資料夾路徑後讀取。");
+    renderTree(true);
+    applyScope();
+  } catch (error) {
+    if (controller.signal.aborted) {
+      setMessage("已停止讀取。");
+    } else if (source.kind === "http" && error instanceof TypeError) {
+      setMessage("無法讀取此網址。請確認內網連線、目錄清單與瀏覽器跨來源讀取權限。", "error");
+    } else {
+      setMessage(error.name === "NotAllowedError" ? "沒有讀取權限，請重新選擇資料夾。" : error.message, "error");
+    }
+  } finally {
+    state.controller = null;
+    ui.read.disabled = false;
+    ui.choose.disabled = false;
+    ui.cancel.hidden = true;
+  }
+}
+
+let pendingLocation = null;
+let openingPicker = false;
+
+async function selectDirectory(location) {
+  if (state.controller || openingPicker) return;
+  if (location) setMessage("在系統選擇視窗的位址列貼上路徑，再選取資料夾。");
+  if (!window.showDirectoryPicker) {
+    pendingLocation = location;
+    ui.directoryInput.value = "";
+    ui.directoryInput.click();
+    return;
+  }
+  openingPicker = true;
+  try {
+    const handle = await window.showDirectoryPicker({ mode: "read", id: "intranet-file-finder" });
+    startLocalScan(location, handle.name, handle);
+  } catch (error) {
+    if (error.name === "AbortError") {
+      setMessage("");
+    } else if (error.name === "SecurityError") {
+      pendingLocation = location;
+      ui.directoryInput.value = "";
+      ui.directoryInput.click();
+    } else {
+      setMessage("無法開啟選擇視窗，請重新按「選擇資料夾」。", "error");
+    }
+  } finally {
+    openingPicker = false;
+  }
+}
+
+function startLocalScan(location, name, handle, entries) {
+  if (!locationMatches(location, name)) {
+    setMessage("選到「" + name + "」，與輸入路徑的「" + location.name + "」不同。請核對後再讀取。", "error");
+    return;
+  }
+  const root = directory(name, null, handle);
+  const source = location || { kind: "local", base: null, separator: "/" };
+  runScan(signal => handle ? scanHandle(root, signal) : scanFileList(root, entries, signal), source);
+}
+
+function readSource() {
+  try {
+    const location = parseLocation(ui.rootPath.value);
+    if (location?.kind === "http") runScan(signal => scanWeb(location, signal), location);
+    else selectDirectory(location);
+  } catch (error) {
+    setMessage(error.message, "error");
+    ui.rootPath.focus();
+  }
+}
+
+function renderTree(resetScroll = false, focusFolder = null) {
+  const version = ++state.treeVersion;
+  const scroll = resetScroll ? 0 : ui.tree.scrollTop;
+  state.folderButtons.clear();
+  ui.tree.replaceChildren();
+  if (resetScroll) ui.tree.scrollTop = 0;
+  ui.treeToolbar.hidden = !state.index || state.index.folders.length < 2;
+  if (!state.index) {
+    const placeholder = element("p", "tree-placeholder");
+    placeholder.append(icon("folder"), document.createTextNode("尚未選擇資料夾"));
+    ui.tree.append(placeholder);
+    return;
+  }
+
+  const pending = [{ folder: state.index.root, depth: 0 }];
+  function paintBatch() {
+    if (version !== state.treeVersion) return;
+    const fragment = document.createDocumentFragment();
+    let focusButton;
+    for (let count = 0; count < 350 && pending.length; count++) {
+      const { folder, depth } = pending.pop();
+      const open = !state.collapsed.has(folder);
+      const row = element("div", "tree-row");
+      row.style.setProperty("--depth", Math.min(depth, 9));
+      row.classList.toggle("current", folder === state.scope);
+      if (folder.children.length) {
+        const toggle = element("button", "tree-toggle");
+        toggle.type = "button";
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", (open ? "收合 " : "展開 ") + folder.name);
+        toggle.append(element("span", "chevron"));
+        toggle.addEventListener("click", () => {
+          if (state.collapsed.has(folder)) state.collapsed.delete(folder);
+          else state.collapsed.add(folder);
+          renderTree(false, folder);
+        });
+        row.append(toggle);
+        if (folder === focusFolder) focusButton = toggle;
+      } else {
+        row.append(element("span", "toggle-space"));
+      }
+
+      const button = element("button", "tree-name" + (depth ? "" : " root"));
+      button.type = "button";
+      button.title = folder.relative || state.index.source.base || folder.name;
+      if (folder === state.scope) button.setAttribute("aria-current", "true");
+      button.append(icon("folder"), element("span", "", folder.name));
+      button.addEventListener("click", () => selectScope(folder));
+      state.folderButtons.set(folder, button);
+      row.append(button);
+      fragment.append(row);
+      if (open) {
+        for (let index = folder.children.length - 1; index >= 0; index--) {
+          pending.push({ folder: folder.children[index], depth: depth + 1 });
+        }
+      }
+    }
+    ui.tree.append(fragment);
+    if (focusButton) {
+      ui.tree.scrollTop = scroll;
+      focusButton.focus({ preventScroll: true });
+      focusButton.scrollIntoView({ block: "nearest" });
+    }
+    if (pending.length) requestAnimationFrame(paintBatch);
+  }
+  paintBatch();
+}
+
+function selectScope(folder) {
+  if (folder === state.scope) return;
+  const previous = state.folderButtons.get(state.scope);
+  previous?.removeAttribute("aria-current");
+  previous?.parentElement.classList.remove("current");
+  state.scope = folder;
+  const next = state.folderButtons.get(folder);
+  next?.setAttribute("aria-current", "true");
+  next?.parentElement.classList.add("current");
+  applyScope();
+}
+
+function applyScope() {
+  const folder = state.scope;
+  ui.scope.hidden = folder === state.index.root;
+  ui.scope.textContent = folder.relative;
+  ui.scope.title = folder.relative;
+  const prefix = folder.relative + "/";
+  state.scopeFiles = folder.parent
+    ? state.index.files.filter(file => file.relative.startsWith(prefix))
+    : state.index.files;
+  applySearch();
+}
+
+function applySearch() {
+  clearTimeout(state.searchTimer);
+  const terms = normalize(ui.search.value.trim()).split(/\s+/).filter(Boolean);
+  ui.clearSearch.hidden = !ui.search.value;
+  state.results = terms.length
+    ? state.scopeFiles.filter(file => terms.every(term => file.searchText.includes(term)))
+    : state.scopeFiles;
+  state.page = 0;
+  renderFiles(true);
+}
+
+function renderFiles(resetScroll = false) {
+  if (resetScroll) ui.listArea.scrollTop = 0;
+  const total = state.results.length;
+  ui.empty.hidden = total > 0;
+  if (state.index) {
+    const { folders, files } = state.index;
+    const stats = formatNumber.format(folders.length) + " 個資料夾 · " + formatNumber.format(files.length) + " 個檔案";
+    ui.summary.textContent = ui.search.value.trim() || state.scope.parent
+      ? formatNumber.format(total) + " 筆結果 · " + stats
+      : stats;
+    ui.emptyTitle.textContent = ui.search.value.trim() ? "找不到符合的檔案" : "這裡沒有檔案";
+    ui.emptyDetail.textContent = ui.search.value.trim() ? "試試其他檔名或路徑關鍵字" : "";
+  }
+
+  const pages = Math.ceil(total / pageSize);
+  ui.pages.hidden = pages < 2;
+  ui.previous.disabled = state.page === 0;
+  ui.next.disabled = state.page >= pages - 1;
+  ui.pageLabel.textContent = (state.page + 1) + " / " + formatNumber.format(pages);
+  const fragment = document.createDocumentFragment();
+  const start = state.page * pageSize;
+  for (const file of state.results.slice(start, start + pageSize)) fragment.append(fileRow(file));
+  ui.files.replaceChildren(fragment);
+}
+
+function fileRow(file) {
+  const row = element("div", "file-row");
+  row.setAttribute("role", "listitem");
+  const copy = element("button", "file-copy");
+  const selected = file === state.selected;
+  row.classList.toggle("selected", selected);
+  copy.type = "button";
+  copy.setAttribute("aria-pressed", String(selected));
+  copy.setAttribute("aria-label", "複製路徑 " + file.name);
+  copy.title = indexedPath(state.index, file);
+  const type = /\.pdf$/i.test(file.name) ? " pdf" : /\.(?:csv|xlsx?|ods)$/i.test(file.name) ? " sheet" : "";
+  copy.append(icon("file" + type), element("span", "file-label", file.name));
+  copy.addEventListener("click", () => {
+    const old = ui.files.querySelector(".selected");
+    if (old && old !== row) {
+      old.classList.remove("selected");
+      old.querySelector(".file-copy").setAttribute("aria-pressed", "false");
+    }
+    state.selected = file;
+    row.classList.add("selected");
+    copy.setAttribute("aria-pressed", "true");
+    const path = indexedPath(state.index, file);
+    copyPath(path, state.index.source.base ? "已複製路徑" : "已複製相對路徑");
+  });
+
+  const folder = element("span", "folder-label", file.folder.relative || state.index.root.name);
+  folder.title = file.folder.url?.href || (state.index.source.base
+    ? localPath(state.index.source, file.folder.relative)
+    : file.folder.relative || state.index.root.name);
+  const open = element("button", "action row-open", "開啟位置");
+  open.type = "button";
+  open.setAttribute("aria-label", "開啟位置 " + file.name);
+  open.addEventListener("click", () => openFolder(file.folder));
+  row.append(copy, folder, open);
+  return row;
+}
+
+async function openFolder(folder) {
+  const { source } = state.index;
+  if (folder.url) {
+    window.open(folder.url.href, "_blank", "noopener,noreferrer");
+    return;
+  }
+  if (folder.handle && window.showOpenFilePicker) {
+    try {
+      await window.showOpenFilePicker({ startIn: folder.handle });
+      return;
+    } catch (error) {
+      if (error.name === "AbortError") return;
+      if (source.base) {
+        showManualPath(localPath(source, folder.relative), "資料夾位置", "將路徑貼到檔案總管或瀏覽器位址列。");
+        return;
+      }
+    }
+  } else if (source.base) {
+    try {
+      const url = fileUrl(source, folder.relative);
+      if (window.location.protocol === "file:") {
+        window.open(url.endsWith("/") ? url : url + "/", "_blank", "noopener,noreferrer");
+        return;
+      }
+    } catch {
+      // The path is still available for manual navigation.
+    }
+    showManualPath(localPath(source, folder.relative), "資料夾位置", "將路徑貼到檔案總管或瀏覽器位址列。");
+    return;
+  }
+  selectScope(folder);
+  showToast("已切換到所在資料夾");
+}
+
+async function writeClipboard(path) {
+  try {
+    await navigator.clipboard.writeText(path);
+    return true;
+  } catch {
+    const edit = element("textarea");
+    edit.value = path;
+    edit.className = "sr-only";
+    edit.readOnly = true;
+    const previous = document.activeElement;
+    const container = ui.pathDialog.open ? ui.pathDialog : document.body;
+    container.append(edit);
+    edit.select();
+    try {
+      return document.execCommand("copy");
+    } catch {
+      return false;
+    } finally {
+      edit.remove();
+      previous?.focus({ preventScroll: true });
+    }
+  }
+}
+
+async function copyPath(path, feedback) {
+  const version = ++state.copyVersion;
+  const copied = await writeClipboard(path);
+  if (version !== state.copyVersion) return;
+  if (copied) showToast(feedback);
+  else showManualPath(path, "複製路徑", "按 Ctrl+C 或 ⌘C 複製已選取的路徑。");
+}
+
+function showManualPath(path, title, hint) {
+  ui.pathDialogTitle.textContent = title;
+  ui.pathDialogHint.textContent = hint;
+  ui.manualPath.value = path;
+  if (!ui.pathDialog.open) ui.pathDialog.showModal();
+  ui.manualPath.focus();
+  ui.manualPath.select();
+}
+
+ui.sourceForm.addEventListener("submit", event => {
+  event.preventDefault();
+  readSource();
+});
+ui.rootPath.addEventListener("input", () => {
+  if (state.controller) return;
+  try {
+    const location = parseLocation(ui.rootPath.value);
+    setMessage(location?.kind === "local" ? "讀取時，請在系統選擇視窗貼上這個路徑。" : "");
+  } catch {
+    setMessage("");
+  }
+});
+ui.choose.addEventListener("click", () => selectDirectory(null));
+ui.directoryInput.addEventListener("change", () => {
+  const entries = ui.directoryInput.files;
+  const name = entries[0]?.webkitRelativePath.split("/")[0];
+  if (name) {
+    startLocalScan(pendingLocation, name, null, entries);
+  } else {
+    setMessage("沒有找到可讀取的檔案，請選擇含有檔案的資料夾。");
+  }
+  pendingLocation = null;
+});
+ui.directoryInput.addEventListener("cancel", () => {
+  pendingLocation = null;
+  setMessage("");
+});
+ui.cancel.addEventListener("click", () => state.controller?.abort());
+ui.expand.addEventListener("click", () => {
+  state.collapsed.clear();
+  renderTree(true);
+});
+ui.collapse.addEventListener("click", () => {
+  state.collapsed = new Set(state.index.folders.filter(folder => folder.children.length));
+  renderTree(true);
+});
+ui.search.addEventListener("input", () => {
+  clearTimeout(state.searchTimer);
+  state.searchTimer = setTimeout(applySearch, 65);
+});
+ui.clearSearch.addEventListener("click", () => {
+  ui.search.value = "";
+  applySearch();
+  ui.search.focus();
+});
+ui.previous.addEventListener("click", () => {
+  state.page--;
+  renderFiles(true);
+  if (ui.previous.disabled) ui.next.focus();
+});
+ui.next.addEventListener("click", () => {
+  state.page++;
+  renderFiles(true);
+  if (ui.next.disabled) ui.previous.focus();
+});
+ui.manualCopy.addEventListener("click", () => copyPath(ui.manualPath.value, "已複製路徑"));
+document.addEventListener("keydown", event => {
+  if (ui.pathDialog.open || event.isComposing) return;
+  const key = event.key.toLowerCase();
+  if ((event.ctrlKey || event.metaKey) && !event.altKey && (key === "k" || key === "f5")) {
+    event.preventDefault();
+    ui.search.focus();
+    ui.search.select();
+  } else if (key === "escape" && document.activeElement === ui.search && ui.search.value) {
+    ui.search.value = "";
+    applySearch();
+  }
+});
+renderTree();
+</script>
+</body>
+</html>
