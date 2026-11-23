@@ -76,7 +76,7 @@ async function lifecycle(page,h){
  await nav(page,'today');
  assert(!await strip.isVisible());
  const backup=await h.backup(page);
- assert.equal(backup.backupVersion,10);
+ assert.equal(backup.backupVersion,11);
  assert.equal(backup.data.contracts[0].id,id);
  assert(backup.data.contracts[0].closed);
  assert.equal(backup.data.contractCategories[0].name,'合成場地租用');
@@ -131,7 +131,7 @@ async function lists(page,h){
   assert.equal(await first.getAttribute('data-client-folder222'),'synthetic-a');
   assert.match(await summary.innerText(),view==='contracts'?/14 合約[\s\S]*14 案件/:/14 案件[\s\S]*14 合約/);
   await summary.press('Enter');
-  const child=first.getByRole('listitem');
+  const child=first.locator('.record-item220');
   await child.first().waitFor();
   assert.equal(await child.count(),12);
   assert.equal(await first.locator('.folder-contact222').count(),1);
@@ -145,7 +145,7 @@ async function lists(page,h){
   assert.equal(await folders.count(),1);
   assert.equal(await folders.first().getAttribute('data-client-folder222'),'folder-demo-11');
   await folders.first().locator(':scope > summary').press('Space');
-  const lastChild=folders.first().getByRole('listitem');
+  const lastChild=folders.first().locator('.record-item220');
   await lastChild.waitFor();
   if(view==='cases'){
    await lastChild.locator('[data-record-toggle222]').click();

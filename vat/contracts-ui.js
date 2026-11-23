@@ -74,7 +74,7 @@ function mountContracts220() {
  const view=$('#view-contracts');
  if(!view||$('#contractsList220'))return;
  view.innerHTML=`<div class="page-head"><h1 class="page-title">租約與合約</h1>
-  <div class="actions"><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
+  <div class="actions"><button class="btn" type="button" id="leaseRatesBtn224">年度郵政利率</button><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
  <div class="contract-stats220" id="contractStats220" aria-label="合約狀態"></div>
  <div class="contract-filters220">
   <div class="field"><label for="contractSearch220">搜尋</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
@@ -88,6 +88,7 @@ function mountContracts220() {
  <div class="cases-result219" id="contractCount220" aria-live="polite"></div>
  <div id="contractsList220"></div><div id="contractPagination220"></div>`;
  $('#newContract220').onclick=()=>openContract220();
+ bindLeaseRates224($('#leaseRatesBtn224'));
  for(const [selector,key,event] of [['#contractSearch220','query','input'],['#contractClientFilter220','clientId','change'],
   ['#contractCategoryFilter220','categoryId','change'],['#contractStatusFilter220','status','change'],['#contractYearFilter221','year','change']]){
   $(selector).addEventListener(event,ev=>{Object.assign(contractRuntime220,{[key]:ev.target.value,page:1});renderContracts220();});
@@ -157,11 +158,12 @@ function renderContracts220() {
     `<button class="btn" type="button" data-open-contract220="${esc(row.id)}">查看合約</button>
      ${!next&&contractEngine220.shiftDay(row.endDate,1)?`<button class="btn" type="button" data-contract-renew221="${esc(row.id)}">續約</button>`:''}`
    ],
-   facts:[['開始',row.startDate?fmtDate(row.startDate):''],['到期',fmtDate(row.endDate)],
-    ['提醒',row.reminderEnabled?[reminder,taskStatus].filter(Boolean).join(' · '):''],['待辦',row.reminderEnabled?row.task:''],
+   schedule:[['開始',row.startDate?fmtDate(row.startDate):'',row.startDate],['到期',fmtDate(row.endDate),row.endDate],['提醒',reminder,contractReminderDate220(row)]],
+   extra:leaseSummary224(row),
+   facts:[['提醒狀態',row.reminderEnabled?taskStatus:''],['待辦',row.reminderEnabled?row.task:''],
     ...(previous?[['上期合約',previous.title+' · '+fmtDate(previous.endDate)]]:[]),
     ...(next?[['續約期間',fmtDate(next.startDate)+' ～ '+fmtDate(next.endDate)]]:[])],note:row.note,
-   detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-contract-calendar220="${esc(row.id)}">查看日曆</button>${previous?`<button class="btn" type="button" data-open-contract220="${esc(previous.id)}">查看上期</button>`:''}${next?`<button class="btn" type="button" data-open-contract220="${esc(next.id)}">查看續約</button>`:''}${action}</div>`
+   detailActions:`<div class="record-detail-actions220">${row.categoryId==='lease'||row.lease?`<button class="btn primary" type="button" data-open-lease224="${esc(row.id)}">租金與押息</button>`:''}<button class="btn" type="button" data-contract-calendar220="${esc(row.id)}">查看日曆</button>${previous?`<button class="btn" type="button" data-open-contract220="${esc(previous.id)}">查看上期</button>`:''}${next?`<button class="btn" type="button" data-open-contract220="${esc(next.id)}">查看續約</button>`:''}${action}</div>`
   };
  };
  const count=clientFolders222({host,pager:$('#contractPagination220'),runtime,matched:filtered.map(item=>item.row),all:records,kind:'合約',
@@ -225,7 +227,8 @@ function openContract220(id,renewalFrom=null) {
  };
  const collect=()=>({id:draft.id,title:get('title').value,clientId:get('clientId').value,categoryId:get('categoryId').value,
   startDate:get('startDate').value,endDate:get('endDate').value,leadMonths:leadValue(),
-  reminderEnabled:get('reminderEnabled').checked,task:get('task').value,closed:get('closed').checked,note:get('note').value});
+  reminderEnabled:get('reminderEnabled').checked,task:get('task').value,closed:get('closed').checked,note:get('note').value,
+  ...(draft.lease?{lease:draft.lease}:{})});
  const term=$('#contractRenewTerm221');
  if(renewalFrom)get('clientId').disabled=true;
  if(term){
@@ -391,7 +394,7 @@ async function updateContractTask220(id,action) {
 function bindContractActions220(root) {
  if(!root)return;
  for(const [attr,action] of [
-  ['openContract220',id=>openContract220(id)],['contractRenew221',id=>{const source=contractID220(id);if(source)openContract220(null,source);}],['contractCalendar220',id=>openContractCalendar220(id)],
+  ['openLease224',id=>openLease224(id)],['openContract220',id=>openContract220(id)],['contractRenew221',id=>{const source=contractID220(id);if(source)openContract220(null,source);}],['contractCalendar220',id=>openContractCalendar220(id)],
   ['contractComplete220',id=>updateContractTask220(id,'complete')],['contractReopen220',id=>updateContractTask220(id,'reopen')]
  ]){
   const selector='[data-'+attr.replace(/[A-Z]/g,char=>'-'+char.toLowerCase())+']';

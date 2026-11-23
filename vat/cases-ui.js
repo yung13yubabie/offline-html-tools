@@ -50,8 +50,8 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
    cells:[`<h2>${esc(record.title)}</h2>`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
     `<strong>${esc(when)}</strong><small>${record.dueDate?'截止':'開始'}</small>`,
     `<button class="btn" type="button" data-open-case219="${esc(record.id)}">查看案件</button>`],
-   facts:[['開始',fmtDate(record.startDate)],['截止',record.dueDate?when:''],
-    ['提醒',[reminder,reminderState].filter(Boolean).join(' · ')]],
+   schedule:[['開始',fmtDate(record.startDate),record.startDate],['截止',record.dueDate?when:'',record.dueDate],['提醒',reminder,record.reminderDate]],
+   facts:[['提醒狀態',reminderState]],
    detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button></div>`,
    note:record.note,
    meta:[['建立',fmtDateTime(record.createdAt)],['更新',fmtDateTime(record.updatedAt)],...(record.completedAt?[['完成',fmtDateTime(record.completedAt)]]:[])]

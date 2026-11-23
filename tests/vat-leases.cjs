@@ -1,0 +1,56 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {createLeaseEngine224}=require('../vat/lease-core.js');
+const {createContractsEngine220}=require('../vat/contracts-core.js');
+const E=createLeaseEngine224(),C=createContractsEngine220();
+const start='2025-11-01',end='2026-04-30';
+const lease=E.defaultLease();
+Object.assign(lease,{deposit:E.amount('120,000'),steps:[{from:start,cents:E.amount('20,000')},{from:'2026-02-15',cents:E.amount('24,000')}]});
+const rates=[{id:'2025',rate:E.rate('1.5')},{id:'2026',rate:E.rate('1.725')}];
+assert.equal(E.rate('１．７２５５'),17255);
+assert.equal(E.amount('0'),0);
+assert.equal(E.amount(''),null);
+for(const bad of ['-1','9,99','3.333','1e5','<1','99900000000000'])assert.throws(()=>E.amount(bad));
+assert.throws(()=>E.rate('100.0001'));
+assert.throws(()=>E.validateRates([rates[0],rates[0]]));
+assert.throws(()=>E.validateRates([{id:'__proto__',rate:100}]));
+const calc=(leaseData=lease,table=rates,from=start,to=end)=>E.calculate({startDate:from,endDate:to,lease:E.normalize(leaseData,from,to)},table);
+let rows=calc();
+assert.deepEqual(rows.map(x=>x.key),['2025-11-01/2025-12-31','2026-01-01/2026-02-28','2026-03-01/2026-04-30']);
+assert.deepEqual(rows.map(x=>[x.rent,x.gross,x.interest]),[[4000000,30000,28571],[4200000,34500,32857],[4800000,34500,32857]]);
+assert.deepEqual(calc({...lease,regime:'assessed'}).map(x=>x.interest),[30000,34500,34500]);
+assert.deepEqual(calc(lease,[]).map(x=>[x.rentResult,x.interestResult,x.needsRate]),Array(3).fill(['pending','unknown',true]));
+assert(calc({...lease,deposit:0},[]).every(x=>!x.needsRate&&x.interest===0));
+assert(calc(lease,[{id:'2025',rate:0}])[0].interest===0);
+assert(calc({...lease,deposit:null},[]).every(x=>x.interest===null));
+
+let check={...E.emptyCheck(rows[0].key),rentStatus:'issued',rentActual:E.amount('39,000'),interestStatus:'missing'};
+let verified=calc({...lease,checks:[check]})[0];
+assert.deepEqual([verified.rentResult,verified.interestResult],['different','missing']);
+assert.deepEqual(calc({...lease,checks:[{...check,rentActual:null}]})[0].rentResult,'pending');
+assert.throws(()=>calc({...lease,frequency:1,checks:[check]}),/核對期間/);
+assert.throws(()=>calc({...lease,checks:[{...check,interestActual:1}]}),/發票狀態/);
+assert.throws(()=>calc({...lease,checks:[{...check,interestMonths:3}]}),/月數/);
+assert.throws(()=>calc({...lease,steps:[lease.steps[0],lease.steps[0]]}),/生效日重複/);
+assert.throws(()=>calc({...lease,steps:[lease.steps[1]]}),/第一階段/);
+
+const leapStart='2024-02-15',leapEnd='2024-03-31';
+const leap={...lease,frequency:2,steps:[{from:leapStart,cents:E.amount('29000')}],checks:[]};
+rows=calc(leap,[{id:'2024',rate:E.rate('1.5')}],leapStart,leapEnd);
+assert.equal(rows[0].rent,1500000);
+assert.equal(rows[0].interest,0);
+assert.equal(rows[1].interest,14286);
+const override={...E.emptyCheck(rows[0].key),interestMonths:1};
+assert.equal(calc({...leap,checks:[override]},[{id:'2024',rate:E.rate('1.5')}],leapStart,leapEnd)[0].interest,14286);
+assert.equal(E.periods('9999-12-01','9999-12-31',1)[0].fullMonths,1);
+assert.throws(()=>E.periods('2024-01-01','2124-01-01',1),/100 年/);
+
+const client={id:'synth-a'},at='2026-01-01T00:00:00.000Z';
+const record=C.save({draft:{id:'synthetic',clientId:client.id,categoryId:'lease',startDate:start,endDate:end,closed:false,
+ reminderEnabled:false,leadMonths:1,title:'合成租約',task:'',note:'',lease:{...lease,checks:[check]}},clients:[client],categories:[],at});
+assert.deepEqual(record.lease.checks,[check]);
+C.validate({clients:[client],contracts:[record],leaseRates:rates});
+assert.throws(()=>C.validate({clients:[client],contracts:[record],leaseRates:[{id:'2026',rate:-1}]}),/利率/);
+assert.throws(()=>C.validate({clients:[client],contracts:[{...record,lease:{...lease,steps:null}}]}),/費用資料/);
+C.validate({clients:[client],contracts:[{...record,lease:undefined}]});
+console.log('PASS lease calendar cadence, step-rent cents, statutory interest, missing rates, partial months, reconciliation and legacy backups');

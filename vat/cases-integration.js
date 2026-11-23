@@ -87,6 +87,11 @@ function addContractPartial220(data,scope){
   const types=new Set(data.contracts.map(row=>row.categoryId));
   data.contractCategories=clone(customContractTypes220().filter(row=>types.has(row.id)));
  }
+ if(scope==='contracts')data.leaseRates=clone(state.leaseRates||[]);
+ else if(data.contracts?.some(row=>row.lease)){
+  const terms=data.contracts.filter(row=>row.lease);
+  data.leaseRates=clone((state.leaseRates||[]).filter(rate=>terms.some(row=>rate.id>=row.startDate.slice(0,4)&&rate.id<=row.endDate.slice(0,4))));
+ }
 }
 const renderBackupBefore220=renderBackup;
 renderBackup=function(){

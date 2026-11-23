@@ -2,6 +2,8 @@
 function createContractsEngine220() {
  const dates = (typeof module !== 'undefined' && module.exports
   ? require('./cases-core.js').createCasesEngine219 : createCasesEngine219)();
+ const leases=(typeof module!=='undefined'&&module.exports
+  ? require('./lease-core.js').createLeaseEngine224 : createLeaseEngine224)();
  const builtins = [{id:'lease',name:'租約'},{id:'other',name:'其他'}];
  const idOK = value => typeof value === 'string' && /^[^<>"'\x00-\x1f]{1,300}$/.test(value) && value.trim() === value;
  const fail = (field,message) => {const error=new Error(message);error.field=field;throw error;};
@@ -91,7 +93,7 @@ function createContractsEngine220() {
   return {clientId,categoryId,startDate,endDate,closed,reminderEnabled,leadMonths,
    title:text(raw.title,'title','合約名稱',200,true),
    task:text(raw.task,'task','待辦事項',240,reminderEnabled),
-   note:text(raw.note,'note','備註',12000)};
+   note:text(raw.note,'note','備註',12000),...(raw.lease===undefined?{}:{lease:leases.normalize(raw.lease,startDate,endDate)})};
  }
  function assertBaseline(current,baseline) {
   if(!current)throw Error('合約已被刪除，請重新整理');
@@ -119,7 +121,8 @@ function createContractsEngine220() {
   return {...current,taskCompletedAt:completed?at:'',revision:current.revision+1,updatedAt:at};
  }
  function validate(data,{references=true}={}) {
-  const {contracts=[],contractCategories=[],clients=[]}=data;
+  const {contracts=[],contractCategories=[],clients=[],leaseRates=[]}=data;
+  leases.validateRates(leaseRates);
   if(!Array.isArray(contracts)||!Array.isArray(contractCategories))throw Error('合約或類別資料格式錯誤');
   const types=new Set(),ids=new Set();
   for(const row of contractCategories){

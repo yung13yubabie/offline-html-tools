@@ -109,7 +109,7 @@ async function lifecycle(p,h){
 async function backupAndReferences(p,h){
  const caseId=await create(p,false);
  const current=await h.backup(p);
- assert.equal(current.backupVersion,10);
+ assert.equal(current.backupVersion,11);
  await p.locator('#partialScope').selectOption('cases');
  const partial=JSON.parse((await h.download(p,()=>p.locator('#partialExportBtn').click())).toString());
  assert.deepEqual(partial.data.cases.map(row=>row.id),[caseId]);
@@ -164,7 +164,7 @@ async function upgrade(p,h){
    const request=indexedDB.open(name,4);
    request.onupgradeneeded=()=>{
     for(const [store,rows] of Object.entries(snapshot)){
-     if(['contracts','contractCategories'].includes(store))continue;
+     if(['contracts','contractCategories','leaseRates'].includes(store))continue;
      const table=request.result.createObjectStore(store,{keyPath:'id'});
      for(const row of rows)table.put(row);
     }
@@ -175,7 +175,7 @@ async function upgrade(p,h){
  },data);
  await h.reload(p);
  const result=await h.backup(p);
- assert.equal(result.backupVersion,10);
+ assert.equal(result.backupVersion,11);
  assert.deepEqual(result.data.cases,data.cases);
  assert.deepEqual(result.data.contracts,[]);
  assert.deepEqual(result.data.contractCategories,[]);

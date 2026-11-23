@@ -8,6 +8,12 @@ function recordFacts220(facts) {
 function recordClientFacts222(client) {
  return client?recordFacts220([['聯絡人',contactSummary(client)],['地址',client.address]]):'';
 }
+function recordTimeline224(schedule){
+ const values=(schedule||[]).filter(([,value])=>value&&value!=='—').sort((a,b)=>a[2].localeCompare(b[2]));
+ if(!values.length)return '';
+ return `<ol class="record-timeline224" aria-label="重要日期">${values.map(([label,value])=>
+  `<li><span aria-hidden="true" class="record-node224"></span><div><span>${esc(label)}</span><strong>${esc(value)}</strong></div></li>`).join('')}</ol>`;
+}
 function buildRecordRows222(rows,columns,expanded,prefix) {
  return rows.map((row,index)=>{
   const detailId=prefix+'-detail-'+index,open=expanded.has(row.id);
@@ -16,6 +22,8 @@ function buildRecordRows222(rows,columns,expanded,prefix) {
    <div class="record-row220">${row.cells.map((content,cell)=>
     `<div class="record-cell220"><span class="record-label222">${esc(columns[cell])}</span>${content}${cell===row.cells.length-1?toggle:''}</div>`).join('')}</div>
    <div id="${detailId}" class="record-detail-body222" ${open?'':'hidden'}>
+    ${recordTimeline224(row.schedule)}
+    ${row.extra||''}
     ${recordFacts220(row.facts)}
     ${row.note?.trim()?`<div class="record-note222"><strong>備註</strong><p>${esc(row.note)}</p></div>`:''}
     ${row.meta?.length?`<div class="record-audit222">${row.meta.map(([label,value])=>`<span>${esc(label)} ${esc(value)}</span>`).join('')}</div>`:''}
@@ -27,7 +35,17 @@ function buildRecordRows222(rows,columns,expanded,prefix) {
 function recordReveal222(body) {
  if(!motionEnabled211())return;
  body.getAnimations().forEach(animation=>animation.cancel());
- body.animate([{opacity:0.75,transform:'translateY(-3px)'},{opacity:1,transform:'translateY(0)'}],{duration:145,easing:'cubic-bezier(.2,.7,.25,1)'});
+ const ease='cubic-bezier(.2,.72,.22,1)';
+ if(!body.matches('.record-detail-body222')){
+  body.animate([{opacity:.82,transform:'translateY(-4px)'},{opacity:1,transform:'translateY(0)'}],{duration:160,easing:ease});
+  return;
+ }
+ body.getAnimations({subtree:true}).forEach(animation=>animation.cancel());
+ body.animate([{opacity:.72,transform:'translateY(-5px)'},{opacity:1,transform:'translateY(0)'}],{duration:225,easing:ease});
+ body.querySelectorAll('.record-timeline224 li').forEach((item,index)=>{
+  item.animate([{opacity:.45,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],
+   {duration:190,delay:index*36,easing:ease,fill:'backwards'});
+ });
 }
 function bindRecordDetails222(host,expanded) {
  host.querySelectorAll('[data-record-toggle222]').forEach(button=>{
