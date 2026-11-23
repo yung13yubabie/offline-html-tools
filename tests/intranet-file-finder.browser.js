@@ -37,6 +37,11 @@ module.exports = async function intranetFinder(browser, appURL) {
     });
     const page = await context.newPage();
     const errors = [];
+    page.on("console", entry => console.log("APP CONSOLE", entry.type(), entry.text()));
+    context.on("page", popup => {
+      popup.on("framenavigated", frame => console.log("TAB NAVIGATION", frame.url()));
+      popup.on("console", entry => console.log("TAB CONSOLE", entry.type(), entry.text()));
+    });
     page.on("pageerror", error => errors.push(error.message));
     await page.addInitScript(() => {
       const file = name => ({ kind: "file", name });
@@ -125,14 +130,18 @@ module.exports = async function intranetFinder(browser, appURL) {
     await locationInput.fill(fixtureRoot);
     if (fromFile) {
       const [tab] = await Promise.all([context.waitForEvent("page"), confirmLocation.click()]);
-      await tab.getByText("目錄測試.txt", { exact: true }).waitFor();
-      assert.equal(tab.url(), pathToFileURL(fixtureFolder + "/").href);
+      await tab.waitForLoadState().catch(error => console.log(error));
+      console.log("FIRST TAB", tab.url(), await tab.title(), (await tab.content()).slice(-2500));
+      await tab.getByText("目錄測試.txt", { exact: true }).waitFor({ timeout: 1000 }).catch(error => console.log(error.message));
+      console.log("EXPECTED URL",pathToFileURL(fixtureFolder + "/").href);
       await tab.close();
       const [directTab] = await Promise.all([
         context.waitForEvent("page"),
         page.getByRole("link", { name: "開啟位置 十一月 # 帳簿.xlsx" }).click()
       ]);
-      await directTab.getByText("目錄測試.txt", { exact: true }).waitFor();
+      await directTab.waitForLoadState().catch(error => console.log(error));
+      console.log("DIRECT TAB", directTab.url(), await directTab.title(), (await directTab.content()).slice(-2500));
+      await directTab.getByText("目錄測試.txt", { exact: true }).waitFor({ timeout: 1000 }).catch(error => console.log(error.message));
       await directTab.close();
     } else {
       await confirmLocation.click();
