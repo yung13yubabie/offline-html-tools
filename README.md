@@ -13,7 +13,7 @@
 | PDF 家族 | [開啟檔案／下載](apps/pdf-workbench.html) | 0.12.2-ui.1 | 頁面排序、旋轉、裁切、合併、拆頁、完稿、輸出 |
 | 會計計算機 | [開啟檔案／下載](apps/accounting-calculator.html) | 1.9.1 | 金額分攤、多組拆稅、一般計算、數字池、日期帳期、稅額、勞健保 |
 | 稅務新聞整理台 | [開啟檔案／下載](apps/tax-news.html) | 2026-11-23 快照 | 五站新聞、分類、重複刊登日期、內文版本、複製與處理紀錄 |
-| 內網資料檢索器 | [開啟檔案／下載](apps/intranet-file-finder.html) | 1.1.0 | 展開子資料夾、搜尋與排除、檔案排序、複製路徑、開啟位置 |
+| 內網資料檢索器 | [開啟檔案／下載](apps/intranet-file-finder.html) | 1.2.0 | 搜尋與排除、檔案排序、建立日期篩選、複製路徑、開啟位置 |
 
 進入檔案頁後，按 GitHub 右上方 **Download raw file**，保留 `.html` 副檔名。不要把 GitHub 的檔案檢視網頁另存為 HTML。`apps/` 內就是可用成品，所有程式與樣式已內嵌，不需另抓相依檔案。
 
@@ -24,6 +24,10 @@
 讀取後會展開子資料夾。清單可按檔名、副檔名或所在資料夾排序，並切換升冪和降冪。搜尋可用 `報表 -草稿 -#` 排除關鍵字或符號，用 `-"舊 版本"` 排除含空格的整組文字。`Ctrl+K` 可聚焦搜尋，瀏覽器把 `Ctrl+F5` 交給頁面時也能使用。
 
 點檔名即可複製路徑。「開啟位置」會在瀏覽器新分頁開啟檔案所在的資料夾。本機和 Windows 共享資料夾使用 `file://` 連結，若一開始只用「選擇資料夾」，首次開啟位置時補上根資料夾完整路徑即可。檔名索引留在當前頁面，內網共享資料夾仍需維持內網連線。
+
+**建立日期**可設定起日、迄日或其中一端，包含起迄當天，並可搭配關鍵字。瀏覽器 File API 提供修改日期。要取得 Windows 檔案系統的建立日期，讀取資料夾後按「匯入日期」，展開「Windows 產生日期清單」，把指令貼到 Windows PowerShell 並輸入同一資料夾的完整路徑。回到頁面選取 PowerShell 顯示的 JSON 路徑。沒有日期的檔案在未套用日期篩選時仍會顯示。[File API 規格](https://www.w3.org/TR/FileAPI/#file-section) [Windows 建立時間欄位](https://learn.microsoft.com/en-us/dotnet/api/system.io.filesysteminfo.creationtime)
+
+**資料流向**。本機與 SMB 掃描只列舉名稱及路徑，頁面索引及匯入日期留在記憶體。HTTP(S) 掃描只向輸入網址的同源目錄樹發出請求，不附帶 Cookie 或來源網址。Windows 產生的日期 JSON 留在本機暫存資料夾，內容有根資料夾名稱、相對檔案路徑與日期，用完可刪除。點檔名會寫入系統剪貼簿，路徑可能進入 Windows 剪貼簿歷程或同步。[Microsoft 剪貼簿設定](https://support.microsoft.com/en-us/windows/apps/using-the-clipboard)
 
 ## 稅務新聞：2026-11-23 離線快照
 
