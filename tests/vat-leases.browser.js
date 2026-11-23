@@ -21,6 +21,7 @@ async function review(p,h){
  const monthly=p.locator('#contract-monthlyRent220');
  assert(await monthly.isVisible());
  await monthly.fill('20,000');
+ assert.match(await p.locator('label[for="contract-startDate220"]').innerText(),/必填/);
  await p.locator('#saveContract220').click();
  assert.match(await p.locator('[data-contract-field-error220="startDate"]').innerText(),/開始日/);
  await p.locator('#contract-startDate220').fill('2025-11-01');

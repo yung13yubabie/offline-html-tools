@@ -261,6 +261,9 @@ function openContract220(id,renewalFrom=null) {
  const initial=snapshot(),origin=document.activeElement;
  let busy=false;
  function updatePreview(){
+  const requiresStart=!!renewalFrom||!!get('monthlyRent').value.trim()||!!draft.lease;
+  get('startDate').required=requiresStart;
+  if(!renewalFrom)form.querySelector('label[for="contract-startDate220"]').textContent=requiresStart?'開始日期（必填）':'開始日期（選填）';
   $('#contractNewCategory220').hidden=get('categoryId').value!=='__new';
   const customer=clientById(get('clientId').value),preview=$('#contractClientPreview220');
   const facts=recordClientFacts222(customer);
