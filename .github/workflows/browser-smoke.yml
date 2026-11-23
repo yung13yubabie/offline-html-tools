@@ -20,7 +20,7 @@ jobs:
           const { resolve } = require('node:path');
           const { pathToFileURL } = require('node:url');
           (async () => {
-            const browser = await chromium.launch({headless:true});
+            const browser = await chromium.launch({headless:true,channel:"chromium"});
             try { await require('./tests/intranet-file-finder.browser.js')(browser, pathToFileURL(resolve('apps/intranet-file-finder.html')).href); }
             finally { await browser.close(); }
           })().catch(error => { console.error(error); process.exitCode = 1; });
