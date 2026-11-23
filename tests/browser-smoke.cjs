@@ -29,6 +29,7 @@ const vatContracts=require('./vat-contracts.browser.js');
 const vatLeases=require('./vat-leases.browser.js');
 const vatSamples=require('./vat-samples.browser.js');
 const vatToday=require('./vat-today.browser.js');
+const vatCalendar=require('./vat-calendar.browser.js');
 const vatOperations=require('./vat-operations.browser.js');
 const intranetFinder=require('./intranet-file-finder.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
@@ -512,6 +513,7 @@ async function vatPreviewPaperGeometry(p){
  for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatOperations))await check('vat workspace '+name+' navigation and edit controls',()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  await check('vat today reminder layout + grouped contracts + customer jump + shared header',()=>vatRevisionContext(p=>vatToday(p,vatNoticeHelpers)));
+ await check('vat calendar source filters + crowded dates + compact chronological list + actions',()=>vatRevisionContext(p=>vatCalendar(p,vatNoticeHelpers)));
  await check('vat sample volumes + module navigation + draft, backup and storage isolation',()=>vatRevisionContext(p=>vatSamples(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.29.0</title>
+<title>營業稅工作台 v2.30.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -1477,6 +1477,92 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .notice-reminder-table229 .badge{font-size:11px;white-space:normal}
  .client-editor229 .contact-row{grid-template-columns:minmax(0,1fr)}
 }
+/* Month cells summarize dense days. The list and day drawer use the same rows. */
+@media screen{
+ #view-calendar .calendar-toolbar{padding:0}
+ #view-calendar .calendar-toolbar>.card-b{padding:9px 10px;width:100%}
+ #view-calendar .calendar-filter-grid{
+  grid-template-columns:minmax(160px,1.3fr) repeat(4,minmax(118px,1fr)) auto!important;gap:8px
+ }
+ #view-calendar:has(#calendarListTab.active) .calendar-filter-grid{
+  grid-template-columns:minmax(150px,1.3fr) repeat(5,minmax(112px,1fr)) auto!important
+ }
+ #view-calendar .calendar-filter-grid>label{min-width:0}
+ #view-calendar .calendar-filter-grid [hidden],#calendarMonthControls230[hidden]{display:none!important}
+ #view-calendar .calendar-day{
+  display:flex;min-width:0;min-height:90px;flex-direction:column;align-items:stretch;gap:3px;
+  padding:5px 7px;border:0;border-inline-end:1px solid var(--line);border-bottom:1px solid var(--line);
+  border-radius:0;background:var(--panel);font:inherit;text-align:left;color:var(--text);cursor:pointer
+ }
+ #view-calendar .calendar-day:nth-child(7n){border-inline-end:0}
+ #view-calendar .calendar-day:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+ #view-calendar .calendar-day:hover{background:var(--brand-soft)}
+ #view-calendar .calendar-day.outside{color:var(--muted);background:var(--panel2)}
+ #view-calendar .calendar-day.today{box-shadow:inset 0 0 0 1px var(--brand)}
+ #view-calendar .calendar-date-num{display:flex;align-items:center;justify-content:space-between;gap:2px;margin:0 0 1px}
+ #view-calendar .calendar-count211{min-width:1.45em;text-align:center;border-radius:4px;background:var(--brand-soft);color:var(--brand);font-variant-numeric:tabular-nums}
+ .calendar-day-preview230,.calendar-day-summary230 span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .calendar-day-preview230{padding:2px 4px;border-radius:4px;background:var(--panel2);font-size:12px;line-height:1.4}
+ .calendar-day-summary230{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:3px;font-size:11px}
+ .calendar-day-summary230 span{padding:2px 3px;border-radius:3px;background:var(--panel2);color:var(--muted)}
+ .calendar-day-summary230 strong{color:var(--text);font-variant-numeric:tabular-nums}
+ .calendar-day-summary230 [data-event-source230=contract]{background:var(--orange-soft);color:var(--orange)}
+ .calendar-day-summary230 [data-event-source230=case]{background:var(--brand-soft);color:var(--brand)}
+ #calendarList{max-width:none}
+ #calendarListPane>.card-h{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:5px}
+ #calendarListPane .timeline-group{padding:6px 0;margin:0;gap:4px 12px}
+ #calendarListPane .timeline-group+.timeline-group{border-top:1px solid var(--line)}
+ #calendarListPane .timeline-date{margin:7px 0 3px;font-size:14px}
+ .calendar-row230{min-width:0}
+ .calendar-row230+.calendar-row230{border-top:1px solid var(--line)}
+ #view-calendar .calendar-row230 .note-card{
+  grid-template-columns:62px minmax(0,1fr) auto;align-items:center;gap:8px;padding:4px 6px;
+  min-height:45px;margin:0;border:0;border-radius:0;min-width:0;background:transparent
+ }
+ #view-calendar .calendar-row230 .note-time{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+ #view-calendar .calendar-row230 .note-card>div:nth-child(2){min-width:0;overflow-wrap:anywhere}
+ #calendarList .calendar-row230 .note-card>div:nth-child(2){
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);align-items:baseline;gap:3px 8px
+ }
+ #calendarList .calendar-row230 .note-card>div:nth-child(2)>:not(.note-client,.note-content){grid-column:1/-1}
+ #view-calendar .calendar-row230 .note-client{margin:0;font-size:14px}
+ #view-calendar .calendar-row230 .note-content{margin:0;font-size:14px}
+ #view-calendar .calendar-row230 .note-card .badge{margin:0}
+ #view-calendar .calendar-row230 .note-actions{grid-column:auto;gap:2px;justify-content:flex-end}
+ #view-calendar .calendar-row230 .note-actions .btn{padding-inline:6px;min-height:44px;border-color:transparent;background:none;color:var(--brand)}
+ #view-calendar .calendar-row230 .note-actions .btn:hover{background:var(--brand-soft)}
+ #view-calendar .calendar-row230 .note-actions .btn.danger{color:var(--red)}
+ .calendar-tools230{position:relative}
+ .calendar-tools230>summary{cursor:pointer;list-style:none;min-height:44px}
+ .calendar-tools230>summary::-webkit-details-marker{display:none}
+ .calendar-tools-menu230{
+  display:grid;position:absolute;z-index:12;top:calc(100% + 4px);right:0;min-width:max-content;
+  padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:var(--shadow)
+ }
+ .calendar-tools230:not([open])>.calendar-tools-menu230{display:none}
+ .calendar-tools-menu230>.btn{justify-content:flex-start;min-height:44px;transition:none}
+}
+@media screen and (max-width:1180px){
+ #view-calendar .calendar-filter-grid,#view-calendar:has(#calendarListTab.active) .calendar-filter-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important
+ }
+}
+@media screen and (max-width:800px){
+ #view-calendar .calendar-filter-grid,#view-calendar:has(#calendarListTab.active) .calendar-filter-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important
+ }
+ #view-calendar .calendar-filter-grid>label:first-child{grid-column:1/-1}
+ #calendarList .calendar-row230 .note-card>div:nth-child(2){display:block}
+ #view-calendar .calendar-row230 .note-card{grid-template-columns:50px minmax(0,1fr) auto}
+}
+@media screen and (max-width:520px){
+ #view-calendar .calendar-day{min-height:58px;padding:3px;gap:2px}
+ #view-calendar .calendar-date-num{flex-wrap:wrap;font-size:13px}
+ #view-calendar .calendar-count211{font-size:11px;min-width:0;padding:0 2px}
+ #view-calendar .calendar-day-preview230,#view-calendar .calendar-day-summary230{display:none}
+ #view-calendar .calendar-row230 .note-card{grid-template-columns:48px minmax(0,1fr)}
+ #view-calendar .calendar-row230 .note-actions{grid-column:2;justify-content:flex-start}
+}
 </style>
 <!-- VAT_WORKSPACE_STYLE_END -->
 </head>
@@ -1486,7 +1572,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.29.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.30.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -1554,12 +1640,17 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 </div>
 </section>
 <section class="view" id="view-calendar" data-review-id="vat-workbench-view-calendar" data-review-name="日曆記事">
-<div class="page-head"><div><h1 class="page-title">日曆記事</h1><div class="page-sub">用月曆看整體安排，也能切成清單逐日檢查提醒、記事與本期工作聯動項目。</div></div><div class="actions"><button class="btn" id="calendarMoreBtn">更多</button><button class="btn primary" id="addCalendarNoteBtn">新增記事</button></div></div>
+<div class="page-head"><div><h1 class="page-title">日曆記事</h1></div><div class="actions"><details class="calendar-tools230" id="calendarTools230"><summary class="btn" id="calendarMoreBtn">更多操作 <span aria-hidden="true">▾</span></summary><div class="calendar-tools-menu230">
+  <button class="btn ghost" type="button" id="calMoreHistory">操作紀錄</button>
+  <button class="btn ghost danger" type="button" id="calMoreClean">清理月份記事</button>
+ </div></details><button class="btn primary" id="addCalendarNoteBtn">新增記事</button></div></div>
 <div class="calendar-shell">
-<div class="calendar-overview card" data-review-id="vat-workbench-calendar-overview-1" data-review-name="日曆摘要"><div class="card-b"><div class="calendar-overview-grid"><div><div class="subtabs calendar-mode-tabs"><button class="subtab active" id="calendarMonthTab">月曆</button><button class="subtab" id="calendarListTab">清單</button></div></div><div><div class="calendar-month-title" id="calendarMonthTitle"></div></div><div><div class="actions compact-actions"><button class="btn small" id="calendarPrevMonth">‹ 上月</button><button class="btn small" id="calendarTodayBtn">今天</button><button class="btn small" id="calendarNextMonth">下月 ›</button></div></div></div></div></div>
-<div class="calendar-toolbar card" data-review-id="vat-workbench-calendar-toolbar-1" data-review-name="日曆篩選與切換"><div class="card-b"><div class="calendar-filter-grid"><label for="calendarSearch">搜尋記事與備註<input class="input" id="calendarSearch" placeholder="搜尋記事、客戶或來源備註"/></label><label for="calendarClientFilter">客戶<select class="select" id="calendarClientFilter"><option value="">全部客戶</option></select></label><label for="calendarDateFrom">開始日期<input class="input" id="calendarDateFrom" title="開始日期" type="date"/></label><label for="calendarDateTo">結束日期<input class="input" id="calendarDateTo" title="結束日期" type="date"/></label><label for="calendarSort">日期排序<select class="select" id="calendarSort" title="日期排序"><option value="desc">日期由大到小</option><option value="asc">日期由小到大</option></select></label><button class="btn small" id="calendarClearFilter">清除篩選</button></div></div></div>
+<div class="calendar-overview card" data-review-id="vat-workbench-calendar-overview-1" data-review-name="日曆摘要"><div class="card-b"><div class="calendar-overview-grid"><div><div class="subtabs calendar-mode-tabs"><button class="subtab active" id="calendarMonthTab">月曆</button><button class="subtab" id="calendarListTab">清單</button></div></div><div><div class="calendar-month-title" id="calendarMonthTitle"></div></div><div id="calendarMonthControls230"><div class="actions compact-actions"><button class="btn small" id="calendarPrevMonth">‹ 上月</button><button class="btn small" id="calendarTodayBtn">今天</button><button class="btn small" id="calendarNextMonth">下月 ›</button></div></div></div></div></div>
+<div class="calendar-toolbar card" data-review-id="vat-workbench-calendar-toolbar-1" data-review-name="日曆篩選與切換"><div class="card-b"><div class="calendar-filter-grid"><label for="calendarSearch">搜尋記事與備註<input class="input" id="calendarSearch" placeholder="搜尋記事、客戶或來源備註"/></label><label for="calendarClientFilter">客戶<select class="select" id="calendarClientFilter"><option value="">全部客戶</option></select></label><label for="calendarSource230">事件來源<select class="select" id="calendarSource230">
+ <option value="">全部來源</option><option value="note">手動記事</option><option value="case">案件</option><option value="contract">合約提醒／到期</option><option value="work">本期工作／待辦</option><option value="accounting">帳務完成</option><option value="other">其他聯動</option>
+ </select></label><label for="calendarDateFrom">開始日期<input class="input" id="calendarDateFrom" title="開始日期" type="date"/></label><label for="calendarDateTo">結束日期<input class="input" id="calendarDateTo" title="結束日期" type="date"/></label><label for="calendarSort" id="calendarSortField230">清單排序<select class="select" id="calendarSort"><option value="asc">日期由早到晚</option><option value="desc">日期由晚到早</option></select></label><button class="btn small" id="calendarClearFilter">清除篩選</button></div></div></div>
 <div class="calendar-pane-card card" id="calendarMonthPane" data-review-id="vat-workbench-calendarMonthPane" data-review-name="月曆區塊"><div class="card-b"><div id="calendarGrid"></div></div></div>
-<div class="hidden calendar-pane-card card" id="calendarListPane" data-review-id="vat-workbench-calendarListPane" data-review-name="日曆列表"><div class="card-h">記事清單</div><div class="card-b"><div class="note-timeline" id="calendarList"></div></div></div>
+<div class="hidden calendar-pane-card card" id="calendarListPane" data-review-id="vat-workbench-calendarListPane" data-review-name="日曆列表"><div class="card-h"><span>記事清單</span><span id="calendarListOrder230" class="muted small"></span></div><div class="card-b"><div class="note-timeline" id="calendarList"></div></div></div>
 </div>
 <aside aria-hidden="true" class="drawer" id="calendarDrawer" data-review-id="vat-workbench-calendarDrawer" data-review-name="日曆記事詳情"><div class="drawer-head"><div><div class="strong" id="calendarDrawerTitle"></div><div class="muted small" id="calendarDrawerCount"></div></div><div class="actions"><button class="btn small primary" id="calendarDrawerAdd">新增</button><button class="btn small" id="calendarDrawerClose">關閉</button></div></div><div class="drawer-body" id="calendarDrawerBody"></div></aside>
 </section>
@@ -1751,7 +1842,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.29.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.30.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
 const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
 const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
 const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
@@ -1775,7 +1866,7 @@ const DEFAULT_FIRST=`{聯繫人}您好：\n{客戶} {年度}年{期別}請款明
 const DEFAULT_FINAL=`[請設定事務所名稱]\n{客戶} {聯繫人}您好：\n請核對本期尚欠款項：{尚欠金額}\n銀行：[請設定銀行與分行]\n帳號：[請設定匯款帳號]\n戶名：[請設定收款戶名]\n聯絡電話：[請設定聯絡電話]`;
 let db=null;
 function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
-const state={view:'today',periodId:null,selectedPCId:null,templateType:'receiptAsk',selectedNotificationTypeId:'receiptAsk',selectedTemplateId:null,templateTab:'manage',clients:[],periods:[],periodClients:[],notificationTypes:[],templates:[],notifications:[],cases:[],contracts:[],contractCategories:[],calendarNotes:[],calendarHistory:[],completed:[],settings:null,laws:[],workDraft:null,workFilters:[],workTab:'main',clientSort:{key:'code',dir:'asc'},clientFilters:{shipType:'',addressSource:'',recipientSource:'',status:''},preShipSort:{key:'code',dir:'asc'},preShipFilters:{shipType:'',sent:'',date:''},calendarView:'month',calendarMonth:localDate().slice(0,7),calendarSelectedDate:localDate(),calendarFilters:{q:'',clientId:'',from:'',to:''},calendarSort:'desc',templatePCId:null,noticeMode:'single',mergeClientIds:[],mergeSalutation:'',accountingPCId:null,accountingFocus:null,accountingSearch:'',todoPages:{urgent:1,today:1,tracking:1},todoCollapsed:{urgent:false,today:false,tracking:false},donePage:1,doneCollapsed:true};
+const state={view:'today',periodId:null,selectedPCId:null,templateType:'receiptAsk',selectedNotificationTypeId:'receiptAsk',selectedTemplateId:null,templateTab:'manage',clients:[],periods:[],periodClients:[],notificationTypes:[],templates:[],notifications:[],cases:[],contracts:[],contractCategories:[],calendarNotes:[],calendarHistory:[],completed:[],settings:null,laws:[],workDraft:null,workFilters:[],workTab:'main',clientSort:{key:'code',dir:'asc'},clientFilters:{shipType:'',addressSource:'',recipientSource:'',status:''},preShipSort:{key:'code',dir:'asc'},preShipFilters:{shipType:'',sent:'',date:''},calendarView:'month',calendarMonth:localDate().slice(0,7),calendarSelectedDate:localDate(),calendarFilters:{q:'',clientId:'',from:'',to:''},calendarSort:'asc',templatePCId:null,noticeMode:'single',mergeClientIds:[],mergeSalutation:'',accountingPCId:null,accountingFocus:null,accountingSearch:'',todoPages:{urgent:1,today:1,tracking:1},todoCollapsed:{urgent:false,today:false,tracking:false},donePage:1,doneCollapsed:true};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const nowISO=()=>new Date().toISOString();
 const currentDateMode=()=>state.settings?.dateMode||vatPrefs.getItem('vatDateMode')||'gregorian';
@@ -2394,23 +2485,27 @@ function renderCalendar(){
   $('#calendarMonthTab').classList.toggle('active',state.calendarView==='month');$('#calendarListTab').classList.toggle('active',state.calendarView==='list');$('#calendarMonthPane').classList.toggle('hidden',state.calendarView!=='month');$('#calendarListPane').classList.toggle('hidden',state.calendarView!=='list');
   $('#calendarSearch').value=f.q||'';$('#calendarDateFrom').value=f.from||'';$('#calendarDateTo').value=f.to||'';
   const oldClient=f.clientId||'';$('#calendarClientFilter').innerHTML='<option value="">全部客戶</option>'+state.clients.slice().sort((a,b)=>String(a.code).localeCompare(String(b.code),'zh-Hant',{numeric:true})).map(c=>`<option value="${esc(c.id)}" ${c.id===oldClient?'selected':''}>${esc(c.code)}｜${esc(c.name)}</option>`).join('');
-  if(state.calendarView==='month')renderCalendarMonth();else renderCalendarList();
+  const month=state.calendarView==='month';
+  $('#calendarSource230').value=f.source||'';
+  $('#calendarSort').value=state.calendarSort||'asc';
+  $('#calendarSortField230').hidden=month;
+  $('#calendarMonthControls230').hidden=!month;
+  $('#calendarMonthTitle').textContent=month?calendarMonthTitle():'';
+  $('#calendarMonthTab').setAttribute('aria-pressed',String(month));
+  $('#calendarListTab').setAttribute('aria-pressed',String(!month));
+  const events=calendarFilteredNotes();
+  if(month)renderCalendarMonth(events);else renderCalendarList(events);
+  if($('#calendarDrawer').classList.contains('show'))renderCalendarDay230(state.calendarSelectedDate,events);
 }
-function renderCalendarMonth(){
-  $('#calendarMonthTitle').textContent=calendarMonthTitle();const [y,m]=state.calendarMonth.split('-').map(Number),first=new Date(y,m-1,1),offset=(first.getDay()+6)%7,start=new Date(y,m-1,1-offset),notes=calendarFilteredNotes(),by={};for(const n of notes)(by[n.date]??=[]).push(n);const week=['一','二','三','四','五','六','日'];let html='<div class="calendar-grid">'+week.map(x=>`<div class="calendar-weekday">${x}</div>`).join('');for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=localDate(d),inside=d.getMonth()===m-1,today=ds===localDate(),arr=(by[ds]||[]).sort((a,b)=>String(a.time).localeCompare(String(b.time)));html+=`<div class="calendar-day ${inside?'':'outside'} ${today?'today':''}" data-calendar-date="${esc(ds)}"><div class="calendar-date-num">${d.getDate()}</div>${arr.slice(0,2).map(n=>{const c=clientById(n.clientId),cls=calendarReminderClass(n);return `<div class="calendar-note-mini ${cls}">${esc(n.time||'')} ${esc(c?.name||n.content||'記事')}</div>`}).join('')}${arr.length>2?`<div class="calendar-more">+${arr.length-2} 筆</div>`:''}</div>`}html+='</div>';$('#calendarGrid').innerHTML=html;$$('[data-calendar-date]').forEach(x=>x.onclick=()=>openCalendarDrawer(x.dataset.calendarDate));
-}
-function renderCalendarList(){const rows=calendarFilteredNotes();if(!rows.length){$('#calendarList').innerHTML='<div class="calendar-empty">目前沒有符合條件的記事</div>';return}const groups={};for(const n of rows)(groups[n.date]??=[]).push(n);$('#calendarList').innerHTML=Object.keys(groups).sort().reverse().map(date=>`<div class="timeline-date">${fmtDate(date)}</div>${groups[date].sort((a,b)=>String(a.time).localeCompare(String(b.time))).map(noteCardHtml).join('')}`).join('');bindCalendarNoteActions()}
 function noteCardHtml(n){const c=clientById(n.clientId),st=calendarReminderState(n),cls=calendarReminderClass(n),tag=st==='none'?'':`　<span class="reminder-tag ${st}">${esc(calendarReminderLabel(n))}</span>`;return `<div class="note-card ${cls}"><div class="note-time">${esc(n.time||'—')}</div><div><div class="note-client">${esc(c?.name||'一般記事')}${tag}</div><div class="note-content">${esc(n.content||'')}</div></div><div class="note-actions"><button class="btn small" data-note-edit="${esc(n.id)}">編輯</button><button class="btn small danger" data-note-delete="${esc(n.id)}">刪除</button></div></div>`}
 
-function openCalendarDrawer(date){state.calendarSelectedDate=date;const drawer=$('#calendarDrawer'),notes=(state.calendarNotes||[]).filter(n=>n.date===date).sort((a,b)=>String(a.time).localeCompare(String(b.time)));$('#calendarDrawerTitle').textContent=fmtDate(date);$('#calendarDrawerCount').textContent=`${notes.length} 筆記事`;$('#calendarDrawerBody').innerHTML=notes.length?notes.map(n=>`<div class="drawer-note">${noteCardHtml(n)}</div>`).join(''):'<div class="empty">這一天還沒有記事</div>';drawer.classList.add('show');drawer.setAttribute('aria-hidden','false');bindCalendarNoteActions()}
 function closeCalendarDrawer(){$('#calendarDrawer')?.classList.remove('show');$('#calendarDrawer')?.setAttribute('aria-hidden','true')}
 function bindCalendarNoteActions(){$$('[data-note-edit]').forEach(b=>b.onclick=e=>{e.stopPropagation();openCalendarNoteModal(state.calendarNotes.find(n=>n.id===b.dataset.noteEdit))});$$('[data-note-delete]').forEach(b=>b.onclick=e=>{e.stopPropagation();deleteCalendarNote(b.dataset.noteDelete)})}
 async function deleteCalendarNote(id){const n=state.calendarNotes.find(x=>x.id===id);if(!n)return;if(!await confirm2('刪除記事','確定刪除這筆記事？','刪除'))return;await put('calendarHistory',{id:uid('calh'),noteId:n.id,action:'刪除',at:nowISO(),before:clone(n),after:null,createdAt:nowISO(),updatedAt:nowISO()});await del('calendarNotes',n.id);await loadAll();renderCalendar();if($('#calendarDrawer').classList.contains('show'))openCalendarDrawer(state.calendarSelectedDate);toast('記事已刪除')}
 function openCalendarNoteModal(note=null,presetDate=null){const isEdit=!!note,n=note||{},date=n.date||presetDate||state.calendarSelectedDate||localDate(),time=n.time||new Date().toTimeString().slice(0,5);const html=`<div class="form-grid two"><div class="field"><label>日期</label><input id="noteDate" class="input" type="date" value="${esc(date)}"></div><div class="field"><label>時間</label><input id="noteTime" class="input" type="time" value="${esc(time)}"></div><div class="field span-2"><label>客戶（選填）</label><select id="noteClient" class="select"><option value="">不指定客戶</option>${state.clients.slice().sort((a,b)=>String(a.code).localeCompare(String(b.code),'zh-Hant',{numeric:true})).map(c=>`<option value="${esc(c.id)}" ${c.id===n.clientId?'selected':''}>${esc(c.code)}｜${esc(c.name)}</option>`).join('')}</select></div><div class="field span-2"><label>記事內容</label><textarea id="noteContent" class="textarea" style="min-height:130px">${esc(n.content||'')}</textarea></div></div><div class="check-row" style="margin-top:9px"><input id="noteReminderEnabled" type="checkbox" ${n.reminderEnabled?'checked':''}><label for="noteReminderEnabled">設定提醒</label></div><div id="noteReminderFields" class="form-grid two ${n.reminderEnabled?'':'hidden'}" style="margin-top:5px"><div class="field"><label>提醒日期</label><input id="noteReminderDate" class="input" type="date" value="${esc(n.reminderDate||date)}"></div><div class="field"><label>提醒時間</label><input id="noteReminderTime" class="input" type="time" value="${esc(n.reminderTime||time)}"></div></div>`;showModal(isEdit?'編輯記事':'新增記事',html,[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],async ok=>{if(!ok)return;const content=$('#noteContent').value.trim(),nd=$('#noteDate').value,nt=$('#noteTime').value;if(!nd||!nt||!content){toast('請填日期、時間與記事內容');return}const enabled=$('#noteReminderEnabled').checked,rd=enabled?$('#noteReminderDate').value:'',rt=enabled?$('#noteReminderTime').value:'';if(enabled&&(!rd||!rt)){toast('請填提醒日期與時間');return}const before=isEdit?clone(note):null,next={id:note?.id||uid('cal'),date:nd,time:nt,clientId:$('#noteClient').value||'',content,reminderEnabled:enabled,reminderDate:rd,reminderTime:rt,reminderCompletedAt:note?.reminderCompletedAt||'',createdAt:note?.createdAt||nowISO(),updatedAt:nowISO()};if(isEdit&&(note.reminderEnabled!==enabled||note.reminderDate!==rd||note.reminderTime!==rt))next.reminderCompletedAt='';await put('calendarNotes',next);if(isEdit&&JSON.stringify(before)!==JSON.stringify(next))await put('calendarHistory',{id:uid('calh'),noteId:next.id,action:'編輯',at:nowISO(),before,after:clone(next),createdAt:nowISO(),updatedAt:nowISO()});await loadAll();state.calendarMonth=nd.slice(0,7);state.calendarSelectedDate=nd;renderCalendar();if($('#calendarDrawer').classList.contains('show'))openCalendarDrawer(nd);toast(isEdit?'記事已更新':'記事已新增')});setTimeout(()=>{$('#noteReminderEnabled').onchange=()=>$('#noteReminderFields').classList.toggle('hidden',!$('#noteReminderEnabled').checked)},0)}
 function openCalendarNoteMore(id){const n=state.calendarNotes.find(x=>x.id===id);if(!n)return;showModal('記事操作',`<div class="strong">${fmtDate(n.date)} ${esc(n.time)}</div><div class="muted small" style="margin-top:4px;white-space:pre-wrap">${esc(n.content)}</div>`,[{text:'取消',value:false},{text:'刪除',value:'delete',cls:'danger'}],async v=>{if(v!=='delete')return;if(!await confirm2('刪除記事','確定刪除這筆記事？','刪除'))return;await put('calendarHistory',{id:uid('calh'),noteId:n.id,action:'刪除',at:nowISO(),before:clone(n),after:null,createdAt:nowISO(),updatedAt:nowISO()});await del('calendarNotes',n.id);await loadAll();renderCalendar();if($('#calendarDrawer').classList.contains('show'))openCalendarDrawer(state.calendarSelectedDate);toast('記事已刪除')})}
-async function cleanCalendarMonth(key=state.calendarMonth){const notes=(state.calendarNotes||[]).filter(n=>n.date.startsWith(key));if(!notes.length){toast('這個月份沒有記事');return}const title=calendarMonthTitle(key);if(!await confirm2('清理本月',`將刪除 ${title} 全部 ${notes.length} 筆記事。`,'繼續'))return;if(!await confirm2('再次確認',`確定刪除 ${notes.length} 筆記事？清理操作會留下紀錄。`,'確認清理'))return;await put('calendarHistory',{id:uid('calh'),noteId:'',action:'清理月份',month:key,count:notes.length,at:nowISO(),before:clone(notes),after:null,createdAt:nowISO(),updatedAt:nowISO()});for(const n of notes)await del('calendarNotes',n.id);await loadAll();closeCalendarDrawer();toast(`已清理 ${notes.length} 筆記事`)}
+async function cleanCalendarMonth(key=state.calendarMonth){const notes=(state.calendarNotes||[]).filter(n=>n.date.startsWith(key)&&calendarSource230(n)==='note');if(!notes.length){toast('這個月份沒有記事');return}const title=calendarMonthTitle(key);if(!await confirm2('清理本月',`將刪除 ${title} 全部 ${notes.length} 筆記事。`,'繼續'))return;if(!await confirm2('再次確認',`確定刪除 ${notes.length} 筆記事？清理操作會留下紀錄。`,'確認清理'))return;await put('calendarHistory',{id:uid('calh'),noteId:'',action:'清理月份',month:key,count:notes.length,at:nowISO(),before:clone(notes),after:null,createdAt:nowISO(),updatedAt:nowISO()});for(const n of notes)await del('calendarNotes',n.id);await loadAll();closeCalendarDrawer();toast(`已清理 ${notes.length} 筆記事`)}
 function openCalendarHistory(){const rows=(state.calendarHistory||[]).slice().sort((a,b)=>String(b.at).localeCompare(String(a.at)));const html=rows.length?`<div style="max-height:480px;overflow:auto">${rows.map(h=>`<div class="history-item"><div class="strong small">${esc(h.action)}</div><div class="muted small">${fmtDateTime(h.at)}${h.month?`｜${esc(h.month)}`:''}${h.count!=null?`｜${h.count} 筆`:''}</div>${h.before&&!Array.isArray(h.before)?`<div class="small" style="margin-top:3px">${esc(h.before.content||'')}</div>`:''}</div>`).join('')}</div>`:'<div class="empty">尚無操作紀錄</div>';showModal('日曆記事操作紀錄',html,[{text:'關閉',value:false}],()=>{})}
-function openCalendarMore(){showModal('更多',`<div class="field"><label>清理月份</label><input id="calCleanMonth" class="input" type="month" value="${esc(state.calendarMonth)}"></div><div class="grid grid-2" style="margin-top:10px"><button id="calMoreHistory" class="btn">操作紀錄</button><button id="calMoreClean" class="btn danger">清理選定月份</button></div>`,[{text:'關閉',value:false}],()=>{});setTimeout(()=>{$('#calMoreHistory').onclick=()=>{const root=$('#modalRoot');root.classList.remove('show');root.innerHTML='';openCalendarHistory()};$('#calMoreClean').onclick=()=>{const key=$('#calCleanMonth').value||state.calendarMonth,root=$('#modalRoot');root.classList.remove('show');root.innerHTML='';cleanCalendarMonth(key)}},0)}
 
 function renderNoticeBody(pc){const enabled=state.templates.filter(t=>t.enabled!==false&&notificationTypeById(t.typeId)?.enabled!==false),rows=state.notifications.filter(n=>n.periodClientId===pc.id).sort((a,b)=>b.sentAt.localeCompare(a.sentAt));return `<div class="actions" style="justify-content:flex-start;margin-bottom:8px">${enabled.map(t=>`<button class="btn small" data-notice-template="${esc(t.id)}">${esc(notificationTypeName(t.typeId))}｜${esc(t.name)}</button>`).join('')}</div>${rows.length?`<div class="table-wrap"><table><thead><tr><th>時間</th><th>類型</th><th>內容</th></tr></thead><tbody>${rows.map(n=>`<tr><td>${fmtDateTime(n.sentAt)}</td><td>${esc(noticeDisplayName(n))}</td><td style="white-space:pre-wrap">${esc(n.content)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="muted small">尚無通知紀錄</div>'}`}
 function bindWorkNoticeButtons(){$$('[data-notice-template]').forEach(b=>b.onclick=()=>{const tpl=templateById(b.dataset.noticeTemplate);if(!tpl)return;state.selectedTemplateId=tpl.id;state.selectedNotificationTypeId=tpl.typeId;state.templateTab='manage';switchView('templates')})}
@@ -2589,14 +2684,9 @@ function calendarItemClient(n){if(isWorkCalendarItem(n))return {name:n.clientNam
 function appointmentCalendarItems(){const rows=[];for(const pc of state.periodClients||[]){if(!pc.appointmentDate||pc.notApplicable)continue;const p=state.periods.find(x=>x.id===pc.periodId);if(!p)continue;const c=pc.snapshot||clientById(pc.clientId)||{},slot=PERIOD_SLOTS[Number(p.slot)-1][1].replace(' 月','');rows.push({id:`workAppointment:${pc.id}`,source:'workAppointment',date:pc.appointmentDate,time:'',clientId:pc.clientId||'',clientName:c.name||'',clientCode:c.code||'',pcId:pc.id,periodId:p.id,content:`預約收發票（${slot}）`,periodShort:slot,reminderEnabled:false})}return rows}
 function calendarAllItems(){return [...(state.calendarNotes||[]).map(n=>({...n,source:n.source||'note'})),...appointmentCalendarItems()]}
 calendarFilteredNotes=function(){const f=state.calendarFilters||{};return calendarAllItems().filter(n=>{const c=calendarItemClient(n),q=String(f.q||'').trim().toLowerCase(),text=[n.content,c?.name,c?.code,n.periodShort].join(' ').toLowerCase();return(!q||text.includes(q))&&(!f.clientId||n.clientId===f.clientId)&&(!f.from||n.date>=f.from)&&(!f.to||n.date<=f.to)}).sort((a,b)=>(b.date+(b.time||'')).localeCompare(a.date+(a.time||'')))}
-const renderCalendarV18Base=renderCalendar;
-renderCalendar=function(){renderCalendarV18Base();if($('#calendarSort'))$('#calendarSort').value=state.calendarSort||'desc'}
-renderCalendarMonth=function(){const [y,m]=state.calendarMonth.split('-').map(Number),first=new Date(y,m-1,1),offset=(first.getDay()+6)%7,start=new Date(y,m-1,1-offset),notes=calendarFilteredNotes(),by={};for(const n of notes)(by[n.date]??=[]).push(n);$('#calendarMonthTitle').textContent=calendarMonthTitle();const week=['一','二','三','四','五','六','日'];let html='<div class="calendar-grid">'+week.map(x=>`<div class="calendar-weekday">${x}</div>`).join('');for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=localDate(d),inside=d.getMonth()===m-1,today=ds===localDate(),arr=(by[ds]||[]).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));html+=`<div class="calendar-day ${inside?'':'outside'} ${today?'today':''}" data-calendar-date="${esc(ds)}"><div class="calendar-date-num">${d.getDate()}</div>${arr.slice(0,2).map(n=>{const c=calendarItemClient(n),cls=isWorkCalendarItem(n)?'work-linked':calendarReminderClass(n),prefix=n.time?`${esc(n.time)} `:'';return `<div class="calendar-note-mini ${cls}">${prefix}${esc(c?.name||'一般記事')}｜${esc(n.content||'記事')}</div>`}).join('')}${arr.length>2?`<div class="calendar-more">+${arr.length-2} 筆</div>`:''}</div>`}html+='</div>';$('#calendarGrid').innerHTML=html;$$('[data-calendar-date]').forEach(x=>x.onclick=()=>openCalendarDrawer(x.dataset.calendarDate))}
-renderCalendarList=function(){const rows=calendarFilteredNotes();if(!rows.length){$('#calendarList').innerHTML='<div class="calendar-empty">目前沒有符合條件的記事</div>';return}const groups={};for(const n of rows)(groups[n.date]??=[]).push(n);const dates=Object.keys(groups).sort((a,b)=>(state.calendarSort||'desc')==='asc'?a.localeCompare(b):b.localeCompare(a));$('#calendarList').innerHTML=dates.map(date=>`<div class="timeline-group"><div class="timeline-date">${fmtDateWeekday(date)}</div><div class="timeline-items">${groups[date].sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''))).map(noteCardHtml).join('')}</div></div>`).join('');bindCalendarNoteActions()}
 noteCardHtml=function(n){const c=calendarItemClient(n);if(isWorkCalendarItem(n))return `<div class="note-card work-linked"><div class="note-time">—</div><div><div class="note-client">${esc(c?.name||'未命名客戶')}<span class="work-linked-tag">本期工作</span></div><div class="note-content">${esc(n.content||'預約收發票')}</div></div><div class="note-actions"><button class="btn small" data-calendar-work="${esc(n.id)}">查看本期工作</button></div></div>`;const st=calendarReminderState(n),cls=calendarReminderClass(n),tag=st==='none'?'':`　<span class="reminder-tag ${st}">${esc(calendarReminderLabel(n))}</span>`;return `<div class="note-card ${cls}"><div class="note-time">${esc(n.time||'—')}</div><div><div class="note-client">${esc(c?.name||'一般記事')}${tag}</div><div class="note-content">${esc(n.content||'')}</div></div><div class="note-actions"><button class="btn small" data-note-edit="${esc(n.id)}">編輯</button><button class="btn small danger" data-note-delete="${esc(n.id)}">刪除</button></div></div>`}
 const bindCalendarNoteActionsV18Base=bindCalendarNoteActions;
 bindCalendarNoteActions=function(){bindCalendarNoteActionsV18Base();$$('[data-calendar-work]').forEach(b=>b.onclick=e=>{e.stopPropagation();const item=appointmentCalendarItems().find(n=>n.id===b.dataset.calendarWork);if(!item)return;state.periodId=item.periodId;vatPrefs.setItem('vatCurrentPeriod',item.periodId);state.selectedPCId=item.pcId;closeCalendarDrawer();switchView('work')})}
-openCalendarDrawer=function(date){state.calendarSelectedDate=date;const drawer=$('#calendarDrawer'),notes=calendarFilteredNotes().filter(n=>n.date===date).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));$('#calendarDrawerTitle').textContent=fmtDateWeekday(date);$('#calendarDrawerCount').textContent=`${notes.length} 筆項目`;$('#calendarDrawerBody').innerHTML=notes.length?notes.map(n=>`<div class="drawer-note">${noteCardHtml(n)}</div>`).join(''):'<div class="empty">這一天目前沒有項目</div>';drawer.classList.add('show');drawer.setAttribute('aria-hidden','false');bindCalendarNoteActions()}
 calendarPdfNotes=function(from,to,clientMode){return calendarAllItems().filter(n=>n.date>=from&&n.date<=to&&(clientMode==='all'||(clientMode==='none'?!n.clientId:n.clientId===clientMode))).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')))}
 calendarSummaryPage=function(monthKey,notes,from,to,page,total){const [y,m]=monthKey.split('-').map(Number),first=new Date(y,m-1,1),offset=(first.getDay()+6)%7,start=new Date(y,m-1,1-offset),daysInMonth=new Date(y,m,0).getDate(),cellCount=Math.ceil((offset+daysInMonth)/7)*7,by={};for(const n of notes)(by[n.date]??=[]).push(n);const week=['一','二','三','四','五','六','日'];let grid='<div class="pdf-calendar-grid">'+week.map(x=>`<div class="pdf-calendar-weekday">${x}</div>`).join('');for(let i=0;i<cellCount;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=localDate(d),inside=d.getMonth()===m-1&&ds>=from&&ds<=to,arr=inside?(by[ds]||[]).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''))):[];grid+=`<div class="pdf-calendar-day ${inside?'':'outside'}"><div class="pdf-calendar-day-num">${d.getDate()}</div>${arr.slice(0,3).map(n=>{const c=calendarItemClient(n),cls=isWorkCalendarItem(n)?'work-linked':calendarReminderClass(n),prefix=n.time?`${esc(n.time)} `:'';return `<div class="pdf-calendar-note ${cls}">${prefix}${esc(c?.name||'一般記事')}｜${esc(String(n.content||'').replace(/\s+/g,' ').slice(0,18))}</div>`}).join('')}${arr.length>3?`<div class="pdf-calendar-more">+${arr.length-3} 筆</div>`:''}</div>`}grid+='</div>';return `<div class="pdf-page">${calendarPdfHead(monthKey,page,total,'月曆摘要')}${grid}<div class="pdf-foot"><span>月曆摘要｜${notes.length} 筆項目</span><span>${page} / ${total}</span></div></div>`}
 calendarDetailPage=function(monthKey,notes,page,total,part,parts){let body='';if(!notes.length)body='<div style="padding:12mm 0;text-align:center;color:#666">本月沒有符合條件的項目</div>';else{let last='';for(const n of notes){if(n.date!==last){body+=`<div class="pdf-note-day">${fmtDateWeekday(n.date)}</div>`;last=n.date}const c=calendarItemClient(n),st=calendarReminderState(n),cls=isWorkCalendarItem(n)?'work-linked':calendarReminderClass(n),rem=isWorkCalendarItem(n)?'<span class="pdf-work-tag">本期工作</span>':st==='none'?'':`<span class="pdf-reminder-status ${st}">${esc(calendarReminderLabel(n))}</span>`;body+=`<div class="pdf-note-entry ${cls}"><div class="pdf-note-entry-head"><span>${esc(n.time||'—')} <span class="pdf-note-client">｜${esc(c?.name||'一般記事')}</span></span>${rem}</div><div class="pdf-note-entry-body">${esc(n.content||'')}</div></div>`}}return `<div class="pdf-page">${calendarPdfHead(monthKey,page,total,parts>1?`記事明細 ${part}/${parts}`:'記事明細')}${body}<div class="pdf-foot"><span>記事明細</span><span>${page} / ${total}</span></div></div>`}
@@ -2966,8 +3056,8 @@ function wire(){
 
   // 日曆記事
   $('#addCalendarNoteBtn').onclick=()=>openCalendarNoteModal(null,state.calendarSelectedDate||localDate());$('#calendarMonthTab').onclick=()=>{state.calendarView='month';renderCalendar()};$('#calendarListTab').onclick=()=>{state.calendarView='list';closeCalendarDrawer();renderCalendar()};
-  $('#calendarSearch').oninput=e=>{state.calendarFilters.q=e.target.value;renderCalendar()};$('#calendarClientFilter').onchange=e=>{state.calendarFilters.clientId=e.target.value;renderCalendar()};$('#calendarDateFrom').onchange=e=>{state.calendarFilters.from=e.target.value;renderCalendar()};$('#calendarDateTo').onchange=e=>{state.calendarFilters.to=e.target.value;renderCalendar()};$('#calendarSort').onchange=e=>{state.calendarSort=e.target.value;renderCalendar()};$('#calendarClearFilter').onclick=()=>{state.calendarFilters={q:'',clientId:'',from:'',to:''};renderCalendar()};
-  $('#calendarPrevMonth').onclick=()=>{const [y,m]=state.calendarMonth.split('-').map(Number),d=new Date(y,m-2,1);state.calendarMonth=localDate(d).slice(0,7);renderCalendar()};$('#calendarNextMonth').onclick=()=>{const [y,m]=state.calendarMonth.split('-').map(Number),d=new Date(y,m,1);state.calendarMonth=localDate(d).slice(0,7);renderCalendar()};$('#calendarTodayBtn').onclick=()=>{state.calendarMonth=localDate().slice(0,7);state.calendarSelectedDate=localDate();renderCalendar()};$('#calendarMoreBtn').onclick=openCalendarMore;$('#calendarDrawerClose').onclick=closeCalendarDrawer;$('#calendarDrawerAdd').onclick=()=>openCalendarNoteModal(null,state.calendarSelectedDate||localDate());
+  $('#calendarSearch').oninput=e=>{state.calendarFilters.q=e.target.value;renderCalendar()};$('#calendarClientFilter').onchange=e=>{state.calendarFilters.clientId=e.target.value;renderCalendar()};$('#calendarDateFrom').onchange=e=>{state.calendarFilters.from=e.target.value;renderCalendar()};$('#calendarDateTo').onchange=e=>{state.calendarFilters.to=e.target.value;renderCalendar()};$('#calendarSort').onchange=e=>{state.calendarSort=e.target.value;renderCalendar()};$('#calendarSource230').onchange=e=>{state.calendarFilters.source=e.target.value;renderCalendar()};$('#calendarClearFilter').onclick=()=>{state.calendarFilters={q:'',clientId:'',from:'',to:''};renderCalendar()};
+  $('#calendarPrevMonth').onclick=()=>{const [y,m]=state.calendarMonth.split('-').map(Number),d=new Date(y,m-2,1);state.calendarMonth=localDate(d).slice(0,7);renderCalendar()};$('#calendarNextMonth').onclick=()=>{const [y,m]=state.calendarMonth.split('-').map(Number),d=new Date(y,m,1);state.calendarMonth=localDate(d).slice(0,7);renderCalendar()};$('#calendarTodayBtn').onclick=()=>{state.calendarMonth=localDate().slice(0,7);state.calendarSelectedDate=localDate();renderCalendar()};bindCalendarTools230();$('#calendarDrawerClose').onclick=closeCalendarDrawer;$('#calendarDrawerAdd').onclick=()=>openCalendarNoteModal(null,state.calendarSelectedDate||localDate());
 
   // 通知與模板
   $$('[data-template-tab]').forEach(b=>b.onclick=()=>setTemplateTab(b.dataset.templateTab));$('#addNotificationTypeBtn').onclick=addNotificationType;$('#editNotificationTypeBtn').onclick=editNotificationType;$('#addTemplateBtn').onclick=addTemplate;
@@ -3480,18 +3570,10 @@ function linkedCalendarNotes211(n,tasks=null){
 }
 const allCalendarBefore211=calendarAllItems;
 calendarAllItems=function(){const tasks=workTasks210();return allCalendarBefore211().map(n=>({...n,linkedNotes:linkedCalendarNotes211(n,tasks)}));};
-calendarFilteredNotes=function(){const f=state.calendarFilters||{},q=searchText211(f.q);return calendarAllItems().filter(n=>{const c=calendarItemClient(n);return(!q||searchText211([n.content,c?.name,c?.code,n.periodShort,...(n.linkedNotes||[]).map(x=>x.text)].join(' ')).includes(q))&&(!f.clientId||n.clientId===f.clientId)&&(!f.from||n.date>=f.from)&&(!f.to||n.date<=f.to)}).sort((a,b)=>String(b.date+(b.time||'')).localeCompare(String(a.date+(a.time||''))));};
+calendarFilteredNotes=function(){const f=state.calendarFilters||{},q=searchText211(f.q);return calendarAllItems().filter(n=>{const c=calendarItemClient(n);return(!q||searchText211([n.content,c?.name,c?.code,n.periodShort,...(n.linkedNotes||[]).map(x=>x.text)].join(' ')).includes(q))&&(!f.clientId||n.clientId===f.clientId)&&(!f.from||n.date>=f.from)&&(!f.to||n.date<=f.to)&&(!f.source||calendarSource230(n)===f.source)});};
 function linkedNotesHtml211(n){const notes=n.linkedNotes||linkedCalendarNotes211(n);return notes.length?`<dl class="calendar-linked-notes211">${notes.map(x=>`<div><dt>${esc(x.label)}</dt><dd>${esc(x.text)}</dd></div>`).join('')}</dl>`:'';}
 const noteCardBefore211=noteCardHtml;
 noteCardHtml=function(n){const html=noteCardBefore211(n),notes=linkedNotesHtml211(n);if(!notes)return html;return html.replace(/(<div class="note-content">[\s\S]*?<\/div>)/,match=>match+notes);};
-// Month remains scannable; full notes in day/list/focus views, searchable and included in PDF.
-renderCalendarMonth=function(){
- const [y,m]=state.calendarMonth.split('-').map(Number);if(!y||!m)return;const first=new Date(y,m-1,1),offset=(first.getDay()+6)%7,start=new Date(y,m-1,1-offset),notes=calendarFilteredNotes(),by={};for(const n of notes)(by[n.date]??=[]).push(n);$('#calendarMonthTitle').textContent=calendarMonthTitle();
- const week=['一','二','三','四','五','六','日'];let html='<div class="calendar-grid">'+week.map(x=>`<div class="calendar-weekday">週${x}</div>`).join('');const cells=Math.ceil((offset+new Date(y,m,0).getDate())/7)*7;
- for(let i=0;i<cells;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=localDate(d),arr=(by[ds]||[]).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''))),outside=d.getMonth()!==m-1;
- html+=`<div class="calendar-day ${outside?'outside':''} ${ds===localDate()?'today':''}" tabindex="0" role="button" aria-label="${esc(fmtDateWeekday(ds))}，${arr.length} 筆項目" data-calendar-date="${esc(ds)}"><div class="calendar-date-num">${d.getDate()}${arr.length?`<span class="calendar-count211">${arr.length}</span>`:''}</div>${arr.slice(0,3).map(n=>{const c=calendarItemClient(n),linked=(n.linkedNotes||[]).length,tip=[c?.name,n.content,...(n.linkedNotes||[]).map(x=>x.label+'：'+x.text)].filter(Boolean).join('\n');return `<div class="calendar-note-mini ${calendarReminderClass(n)} ${n.source==='note'?'':'source-linked211'}" title="${esc(tip)}">${n.time?esc(n.time)+' ':''}${esc(c?.name||'一般記事')}｜${esc(n.content||'記事')}${linked?'<span class="calendar-note-marker211" aria-label="附備註">備註</span>':''}</div>`}).join('')}${arr.length>3?`<div class="calendar-more">另 ${arr.length-3} 筆 · 點開查看</div>`:''}</div>`;
- }$('#calendarGrid').innerHTML=html+'</div>';$$('[data-calendar-date]').forEach(el=>{el.onclick=()=>openCalendarDrawer(el.dataset.calendarDate);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCalendarDrawer(el.dataset.calendarDate)}}});
-};
 function calendarPrintText211(n){return [String(n.content||''),...(n.linkedNotes||linkedCalendarNotes211(n)).map(x=>`${x.label}：${x.text}`)].filter(Boolean).join('\n');}
 // Expand long entries into explicit continued fragments before pagination; do not shrink note text.
 function calendarChunks211(notes,orientation){const limit=orientation==='landscape'?80:55;return notes.flatMap(n=>{const lines=[];for(const paragraph of calendarPrintText211(n).split('\n')){const a=Array.from(paragraph);if(!a.length)lines.push('');for(let i=0;i<a.length;i+=limit)lines.push(a.slice(i,i+limit).join(''));}const chunks=[];for(let i=0;i<Math.max(1,lines.length);i+=6)chunks.push({...n,printText211:lines.slice(i,i+6).join('\n'),continued211:i>0});return chunks;});}
@@ -7175,6 +7257,113 @@ function openLeaseBatch228(clientId=''){
  (clientId?list.querySelector('input'):common('clientId')).focus();
 }
 
+/* The screen list and month share source filters. PDF uses its own export scope. */
+const calendarSourceLabels230={note:'手動',case:'案件',contract:'合約',work:'工作',accounting:'帳務',other:'其他'};
+function calendarSource230(event){
+ const source=event.source||'note';
+ if(source==='workAppointment'||source==='workTask')return 'work';
+ if(source==='accountingComplete')return 'accounting';
+ return Object.hasOwn(calendarSourceLabels230,source)?source:'other';
+}
+function calendarSourceCounts230(events){
+ const counts=new Map();
+ for(const event of events){
+  const source=calendarSource230(event);
+  counts.set(source,(counts.get(source)||0)+1);
+ }
+ return Object.entries(calendarSourceLabels230).filter(([key])=>counts.has(key))
+  .map(([key,label])=>({key,label,count:counts.get(key)}));
+}
+function calendarGroups230(events){
+ const groups=new Map();
+ for(const event of events){
+  if(!groups.has(event.date))groups.set(event.date,[]);
+  groups.get(event.date).push(event);
+ }
+ return groups;
+}
+function calendarTimeOrder230(a,b){
+ return String(a.time||'99:99').localeCompare(String(b.time||'99:99'))||String(a.id).localeCompare(String(b.id));
+}
+function renderCalendarMonth(events){
+ const [year,month]=state.calendarMonth.split('-').map(Number);
+ if(!year||!month)return;
+ const first=new Date(year,month-1,1),offset=(first.getDay()+6)%7,groups=calendarGroups230(events),today=localDate();
+ const cells=Math.ceil((offset+new Date(year,month,0).getDate())/7)*7;
+ const root=$('#calendarGrid'),active=root.contains(document.activeElement)?document.activeElement.dataset.calendarDate:'';
+ const week=['一','二','三','四','五','六','日'];
+ const days=Array.from({length:cells},(_,index)=>{
+  const date=new Date(year,month-1,index+1-offset),key=localDate(date),items=groups.get(key)||[];
+  const counts=calendarSourceCounts230(items),summary=counts.map(({label,count})=>label+' '+count).join('、');
+  const content=items.length>2
+   ?`<span class="calendar-day-summary230">${counts.map(({key,label,count})=>`<span data-event-source230="${key}">${label} <strong>${count}</strong></span>`).join('')}</span>`
+   :items.sort(calendarTimeOrder230).map(event=>{
+    const client=calendarItemClient(event),title=[client?.name,event.content].filter(Boolean).join(' · ');
+    return `<span class="calendar-day-preview230" data-event-source230="${calendarSource230(event)}">${esc(event.time?event.time+' '+title:title)}</span>`;
+   }).join('');
+  const label=fmtDateWeekday(key)+'，'+items.length+' 筆'+(summary?'，'+summary:'');
+  return `<button type="button" class="calendar-day ${date.getMonth()!==month-1?'outside':''} ${key===today?'today':''}" data-calendar-date="${key}" aria-label="${esc(label)}" ${key===today?'aria-current="date"':''}>
+   <span class="calendar-date-num">${date.getDate()}${items.length?`<span class="calendar-count211" aria-hidden="true">${items.length}</span>`:''}</span>
+   ${content}
+  </button>`;
+ });
+ root.innerHTML=`<div class="calendar-grid">${week.map(day=>`<div class="calendar-weekday">週${day}</div>`).join('')}${days.join('')}</div>`;
+ root.querySelectorAll('[data-calendar-date]').forEach(button=>button.onclick=()=>openCalendarDrawer(button.dataset.calendarDate));
+ if(active)root.querySelector(`[data-calendar-date="${CSS.escape(active)}"]`)?.focus({preventScroll:true});
+}
+function calendarScreenRow230(event){
+ const details=noteCardHtml(event);
+ return `<div class="calendar-row230" data-event-source230="${calendarSource230(event)}">${details}</div>`;
+}
+function renderCalendarList(events){
+ const groups=calendarGroups230(events),ascending=state.calendarSort!=='desc';
+ const dates=[...groups.keys()].sort((a,b)=>ascending?a.localeCompare(b):b.localeCompare(a));
+ $('#calendarListOrder230').textContent=(ascending?'日期由早到晚':'日期由晚到早')+' · '+events.length+' 筆';
+ $('#calendarList').innerHTML=dates.length?dates.map(date=>`<section class="timeline-group">
+  <h3 class="timeline-date">${esc(fmtDateWeekday(date))}</h3>
+  <div class="timeline-items">${groups.get(date).sort(calendarTimeOrder230).map(calendarScreenRow230).join('')}</div></section>`).join('')
+  :'<div class="calendar-empty">沒有符合篩選條件的事件</div>';
+ bindCalendarNoteActions();
+}
+function renderCalendarDay230(date,events=calendarFilteredNotes()){
+ const rows=events.filter(event=>event.date===date).sort(calendarTimeOrder230);
+ const counts=calendarSourceCounts230(rows).map(({label,count})=>label+' '+count);
+ $('#calendarDrawerTitle').textContent=fmtDateWeekday(date);
+ $('#calendarDrawerCount').textContent=[rows.length+' 筆',...counts].join(' · ');
+ $('#calendarDrawerBody').innerHTML=rows.length?rows.map(calendarScreenRow230).join(''):'<div class="empty">這一天沒有符合篩選條件的事件</div>';
+ bindCalendarNoteActions();
+}
+function openCalendarDrawer(date){
+ state.calendarSelectedDate=date;
+ const drawer=$('#calendarDrawer'),alreadyOpen=drawer.classList.contains('show');
+ renderCalendarDay230(date);
+ drawer.classList.add('show');
+ drawer.setAttribute('aria-hidden','false');
+ if(!alreadyOpen&&state.view==='calendar')$('#calendarDrawerClose').focus({preventScroll:true});
+}
+function bindCalendarTools230(){
+ const menu=$('#calendarTools230');
+ const close=()=>{
+  menu.open=false;
+  $('#calendarMoreBtn').focus({preventScroll:true});
+ };
+ $('#calMoreHistory').onclick=()=>{close();openCalendarHistory();};
+ $('#calMoreClean').onclick=()=>{
+  close();
+  showModal('清理月份記事',`<label class="field" for="calCleanMonth">清理月份<input class="input" id="calCleanMonth" type="month" value="${esc(state.calendarMonth)}"></label>
+   <p class="small muted">清理範圍是所選月份的手動記事。</p>`,
+  [{text:'取消',value:false},{text:'繼續',value:true,cls:'danger'}],ok=>{
+   const month=$('#calCleanMonth').value;
+   if(ok&&month)queueMicrotask(()=>cleanCalendarMonth(month));
+  });
+ };
+ menu.addEventListener('keydown',event=>{if(event.key==='Escape'&&menu.open){event.preventDefault();close();}});
+ document.addEventListener('click',event=>{if(menu.open&&!menu.contains(event.target))menu.open=false;});
+ $('#calendarDrawerClose').addEventListener('click',()=>{
+  if(state.calendarView==='month')$('#calendarGrid').querySelector(`[data-calendar-date="${CSS.escape(state.calendarSelectedDate)}"]`)?.focus({preventScroll:true});
+ });
+}
+
 /* Synthetic fixtures are written only to the current tab's sample database. */
 const vatSampleViews={
  today:'今日待辦',calendar:'日曆記事',cases:'案件',contracts:'租約與合約',work:'本期工作',
@@ -7475,7 +7664,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.29.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.30.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
