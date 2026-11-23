@@ -240,7 +240,8 @@ async function renewal(page,h){
  assert.equal(await field(page,'endDate').inputValue(),'2027-08-31');
  await page.locator('#cancelContract220').click();
  await nav(page,'today');
- assert(!await strip.isVisible(),'Source reminder is suppressed during renewal');
+ assert.equal(await strip.locator(`[data-contract-complete220="${source}"]`).count(),0,'Source reminder is suppressed during renewal');
+ assert.match(await strip.innerText(),/目前沒有合約到期待辦/);
  await nav(page,'calendar');await page.locator('#calendarListTab').click();
  assert.equal(await page.locator('[data-contract-calendar-item220="contract-reminder:'+source+'"]').count(),0);
  assert.equal(await page.locator('[data-contract-calendar-item220="contract-reminder:'+next+'"]').count(),1);
