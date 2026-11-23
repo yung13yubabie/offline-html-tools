@@ -17,7 +17,8 @@
  position:absolute;z-index:12;right:0;top:calc(100% + 4px);min-width:max-content;
  display:grid;padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:var(--shadow)
 }
-.work-batch-items229>.btn{justify-content:flex-start;min-height:39px}
+.work-batch229:not([open])>.work-batch-items229{display:none}
+.work-batch-items229>.btn{justify-content:flex-start;min-height:39px;transition:none}
 .work-quick229{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:7px}
 .work-quick229>.btn{
  display:flex;justify-content:space-between;text-align:left;gap:5px;align-items:center;min-height:44px;

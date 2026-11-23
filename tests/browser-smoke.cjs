@@ -343,14 +343,20 @@ async function vatSave(p){await p.evaluate(()=>{window.__vatOldSaveToasts=new Se
 async function vatUIRevision(p){
  await vatWork(p);const save=p.locator('#saveWorkBtn');const original=await save.elementHandle();
  assert.equal(await save.count(),1);assert.equal(await p.locator('#workSaveHost211 #saveWorkBtn').count(),1);assert.match(await p.locator('#workDetail .detail-head').innerText(),/合成測試客戶甲.*[\s\S]*1,200/);
- const dates=p.locator('#workCommonSettings .work-date211');assert.equal(await dates.count(),3);assert.match(await dates.nth(0).innerText(),/2026\/03\/10/);assert.match(await dates.nth(1).innerText(),/尚未設定[\s\S]*待設定/);assert.match(await dates.nth(1).getAttribute('class'),/is-unset/);
- assert(await dates.nth(0).evaluate(e=>{const a=getComputedStyle(e.querySelector('.work-date-value211')),b=getComputedStyle(e.querySelector('.work-date-label211'));return parseFloat(a.fontSize)>parseFloat(b.fontSize)&&Number(a.fontWeight)>=600}));
- assert(await p.locator('#workDetail .work-module-card').first().evaluate(e=>{const a=getComputedStyle(e.querySelector('.module-title')),b=getComputedStyle(e.querySelector('.module-sub'));return parseFloat(a.fontSize)>parseFloat(b.fontSize)&&Number(a.fontWeight)>Number(b.fontWeight)}));
+ const dates=p.locator('#workCommonSettings .work-summary-date229');
+ assert.equal(await dates.count(),3);
+ assert.match(await dates.nth(0).innerText(),/最晚匯款 2026\/03\/10/);
+ assert.match(await dates.nth(1).innerText(),/最晚寄出 —/);
+ assert.match(await dates.nth(2).innerText(),/法定繳款 2026\/03\/15/);
+ assert.equal(await p.locator('#workModuleGrid [role="tab"]').count(),4);
  await vatScreenshot(p,'vat-revision-populated-work-desktop');await p.locator('#workDetail .detail-head').screenshot({path:path.join(OUT,'vat-revision-customer-header-desktop.png')});
  for(const id of ['b','a','b'])await p.locator(`[data-pcid="2026-1::synthetic-${id}"]`).click();
  assert(await save.evaluate((e,old)=>e===old,original),'Moved save control must retain its original DOM identity');assert.match(await save.getAttribute('aria-label'),/乙/);
- await p.locator('[data-work-focus="billing"]').click();assert(await p.locator('[data-focus-panel="billing"] .focus-section-heading').first().evaluate(e=>{const a=getComputedStyle(e.querySelector('.strong')),b=getComputedStyle(e.querySelector('.tiny'));return parseFloat(a.fontSize)>parseFloat(b.fontSize)&&Number(a.fontWeight)>Number(b.fontWeight)}));await p.locator('#wBookkeepingFee').fill('2468');await vatSave(p);await save.waitFor({state:'visible'});
- assert(await p.locator('#workModuleGrid').isVisible(),'Work tabs stay visible inside each panel');await p.locator('[data-work-focus="notes"]').click();await p.locator('#wNotes').fill('SYNTHETIC B saved notes');await vatSave(p);
+ await p.locator('[data-work-focus="billing"]').click();
+ assert.match(await p.locator('[data-focus-panel="billing"] h3').first().innerText(),/本期稅額與款項/);
+ assert(await p.locator('[data-section="carry"]').isVisible());
+ await p.locator('#wBookkeepingFee').fill('2468');await vatSave(p);await save.waitFor({state:'visible'});
+ assert(await p.locator('#workModuleGrid').isVisible(),'Work tabs stay visible inside each panel');await p.locator('[data-work-focus="receipt"]').click();await p.locator('#wNotes').fill('SYNTHETIC B saved notes');await vatSave(p);
  await p.waitForFunction(()=>!document.querySelector('#saveWorkBtn').disabled);
  let backup=await vatBackup(p),a=backup.data.periodClients.find(x=>x.id==='2026-1::synthetic-a'),b=backup.data.periodClients.find(x=>x.id==='2026-1::synthetic-b');assert.equal(a.notes,'原始 TEST-A');assert.equal(a.fees[0].amount,1200);assert.equal(b.notes,'SYNTHETIC B saved notes');assert.equal(b.fees.find(x=>x.name==='記帳費').amount,2468);
  await vatReload(p);await p.locator('#topPeriod').selectOption('2026-1');await vatWork(p);await p.locator('[data-pcid="2026-1::synthetic-b"]').click();assert.equal(await p.locator('#wNotes').inputValue(),'SYNTHETIC B saved notes');
@@ -489,6 +495,7 @@ async function vatPreviewPaperGeometry(p){
  await context.close();
  }
  await check('vat revision populated dates + save identity + persistence + locking + mobile',()=>vatRevisionContext(vatUIRevision));
+ await check('vat four work steps + ROC date drafts + shipping defaults + clean missing-document preview',()=>vatRevisionContext(p=>vatBulkWork.workAndClients(p,vatNoticeHelpers)));
  await check('vat period shared messages + revenue + dirty guards + one-pass variables',()=>vatRevisionContext(p=>vatWorkspace.periodAndRevenue(p,vatNoticeHelpers)));
  await check('vat group payments atomic shares + partial backup closure + restore safety + cancellation',()=>vatRevisionContext(p=>vatWorkspace.groupPayments(p,vatNoticeHelpers)));
  await check('vat batch export date/tax registration filters + zero/credit + TXT + collection guard',()=>vatRevisionContext(p=>vatBulkWork.exportFilters(p,vatNoticeHelpers)));

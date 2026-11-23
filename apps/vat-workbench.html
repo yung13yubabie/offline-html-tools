@@ -1406,7 +1406,8 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  position:absolute;z-index:12;right:0;top:calc(100% + 4px);min-width:max-content;
  display:grid;padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:var(--shadow)
 }
-.work-batch-items229>.btn{justify-content:flex-start;min-height:39px}
+.work-batch229:not([open])>.work-batch-items229{display:none}
+.work-batch-items229>.btn{justify-content:flex-start;min-height:39px;transition:none}
 .work-quick229{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:7px}
 .work-quick229>.btn{
  display:flex;justify-content:space-between;text-align:left;gap:5px;align-items:center;min-height:44px;
@@ -1945,7 +1946,7 @@ const deletePeriodDataV27Base=deletePeriodData;
 deletePeriodData=async function(id){const descendants=state.periodClients.filter(pc=>pc.periodId!==id&&[...accDocs(pc),...accReturns(pc)].some(x=>x.continuedFromPeriodId===id||x.sourcePeriodId===id&&x.isCarried));if(descendants.length){const p=state.periods.find(x=>x.id===id);if(!await confirm2('刪除來源期別',`「${periodLabel(p)}」已有 ${descendants.length} 位客戶的缺件／待歸資料延續到後續期別。後續期別仍保留同一事項及來源資訊；刪除本期不會移除後續紀錄。`,'繼續刪除'))return}return deletePeriodDataV27Base(id)};
 
 function renderAll(){renderPeriods();renderToday();renderClients();renderWork();renderTemplates();renderPdf();renderBackup();renderSettings()}
-function renderPeriods(){const opts=state.periods.slice().sort((a,b)=>b.id.localeCompare(a.id)).map(p=>`<option value="${esc(p.id)}" ${p.id===state.periodId?'selected':''}>${esc(periodLabel(p))}｜${esc(p.status)}</option>`).join('');$('#topPeriod').innerHTML=opts||'<option value="">尚未建立期別</option>';const pdf=$('#pdfPeriod'),last=pdf.value||state.periodId;
+function renderPeriods(){const opts=state.periods.slice().sort((a,b)=>b.id.localeCompare(a.id)).map(p=>`<option value="${esc(p.id)}" ${p.id===state.periodId?'selected':''}>${esc(periodLabel(p))}｜${esc(p.status)}</option>`).join('');$('#topPeriod').innerHTML=opts||'<option value="">尚未建立期別</option>';const pdf=$('#pdfPeriod'),last=state.periodId;
  pdf.innerHTML=state.periods.slice().sort((a,b)=>b.id.localeCompare(a.id)).map(p=>
   `<option value="${esc(p.id)}">${esc(periodLabel(p))}</option>`).join('')||'<option value="">尚未建立期別</option>';
  if([...pdf.options].some(option=>option.value===last))pdf.value=last;;}
