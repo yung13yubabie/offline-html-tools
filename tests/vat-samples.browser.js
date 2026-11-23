@@ -54,7 +54,7 @@ async function samples(p,h){
    ['today','#taskResultCount210',/\d/],['calendar','#calendarGrid',/樣本/],
    ['cases','#casesCount219',/6 位客戶.*6 件案件/],['contracts','#contractCount220',/6 位客戶.*6 筆合約/],
    ['accounting','#accountingClientList',/樣本001/],['clients','#clientTable',/DEMO-001/],
-   ['templates','#templateEditorCard',/樣本通知/],['pdf','#pdfPeriod',/進行中/],
+   ['templates','#templateEditorCard',/樣本通知/],['pdf','#pdfPeriod',/\d{4} 年.*月/],
    ['backup','#backupSummary',/客戶 6/],['settings','#courierSettings',/刪除/]
   ]){
    await nav(sample,view);

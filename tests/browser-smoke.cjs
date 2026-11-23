@@ -367,7 +367,7 @@ async function vatUIRevision(p){
  const header=await p.locator('#workFooter217').boundingBox(),button=await save.boundingBox();assert(button&&header&&button.x>=header.x-1&&button.x+button.width<=header.x+header.width+1);
 }
 async function vatAccountingRevision(p){
- await p.locator('.nav-btn[data-view="accounting"]').click();const cards=p.locator('#accountingStats > .card');assert.equal(await cards.count(),4);
+ await p.locator('.nav-btn[data-view="accounting"]').click();const cards=p.locator('#accountingStats > button[data-record-status227]');assert.equal(await cards.count(),4);
  const boxes=await cards.evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width}}));assert(Math.max(...boxes.map(x=>x.y))-Math.min(...boxes.map(x=>x.y))<=1,'Four summary cards on one desktop row');assert(Math.max(...boxes.map(x=>x.width))-Math.min(...boxes.map(x=>x.width))<=1,'Four equal desktop widths');await vatScreenshot(p,'vat-revision-accounting-desktop');
  await p.setViewportSize({width:390,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));for(let i=0;i<4;i++)assert(await cards.nth(i).evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1}));await vatScreenshot(p,'vat-revision-accounting-mobile');
 }
