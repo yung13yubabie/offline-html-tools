@@ -659,7 +659,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 @container record-list (min-width:661px){.record-cell220:last-child{justify-content:flex-end}}
 @container record-list (max-width:660px){
  .record-row220{grid-template-columns:repeat(2,minmax(0,1fr))}
- .record-cell220:first-child,.record-cell220:last-child{grid-column:1/-1}
+ .record-cell220:first-of-type,.record-cell220:last-child{grid-column:1/-1}
 }
 @container record-list (max-width:320px){
  .client-folder222>summary{grid-template-columns:9px minmax(0,1fr);gap:4px 9px;padding:8px 10px}
@@ -762,10 +762,10 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 }
 @container record-list (max-width:620px){
  .folder-actions-wrap228>.client-folder222>summary{
-  grid-template-columns:10px minmax(0,1fr);gap:3px 9px;padding-right:135px
+  grid-template-columns:10px minmax(0,1fr);gap:3px 9px;padding-right:min(135px,50%)
  }
  .folder-actions-wrap228 .folder-counts222{grid-column:2;justify-content:flex-start}
- .folder-actions-wrap228>[data-lease-batch228]{padding-inline:6px}
+ .folder-actions-wrap228>[data-lease-batch228]{padding-inline:6px;overflow-wrap:anywhere}
 }
 /* Accounting and notification workspaces */
 @media screen {

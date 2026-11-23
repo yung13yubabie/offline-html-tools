@@ -55,7 +55,7 @@
 @container record-list (min-width:661px){.record-cell220:last-child{justify-content:flex-end}}
 @container record-list (max-width:660px){
  .record-row220{grid-template-columns:repeat(2,minmax(0,1fr))}
- .record-cell220:first-child,.record-cell220:last-child{grid-column:1/-1}
+ .record-cell220:first-of-type,.record-cell220:last-child{grid-column:1/-1}
 }
 @container record-list (max-width:320px){
  .client-folder222>summary{grid-template-columns:9px minmax(0,1fr);gap:4px 9px;padding:8px 10px}

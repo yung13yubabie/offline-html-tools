@@ -50,8 +50,8 @@
 }
 @container record-list (max-width:620px){
  .folder-actions-wrap228>.client-folder222>summary{
-  grid-template-columns:10px minmax(0,1fr);gap:3px 9px;padding-right:135px
+  grid-template-columns:10px minmax(0,1fr);gap:3px 9px;padding-right:min(135px,50%)
  }
  .folder-actions-wrap228 .folder-counts222{grid-column:2;justify-content:flex-start}
- .folder-actions-wrap228>[data-lease-batch228]{padding-inline:6px}
+ .folder-actions-wrap228>[data-lease-batch228]{padding-inline:6px;overflow-wrap:anywhere}
 }
