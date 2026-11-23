@@ -124,15 +124,20 @@ module.exports = async function intranetFinder(browser, appURL) {
     await locationDialog.getByText("路徑應指向「範例資料」。").waitFor();
     await locationInput.fill(fixtureRoot);
     if (fromFile) {
+      const expectedUrl = pathToFileURL(fixtureFolder + "/").href;
+      async function checkDirectory(tab) {
+        await tab.waitForURL(expectedUrl);
+        // The headless shell returns Chromium's directory data without its visual listing template.
+        assert.match(await tab.content(), /目錄測試\.txt/);
+      }
       const [tab] = await Promise.all([context.waitForEvent("page"), confirmLocation.click()]);
-      await tab.getByText("目錄測試.txt", { exact: true }).waitFor();
-      assert.equal(tab.url(), pathToFileURL(fixtureFolder + "/").href);
+      await checkDirectory(tab);
       await tab.close();
       const [directTab] = await Promise.all([
         context.waitForEvent("page"),
         page.getByRole("link", { name: "開啟位置 十一月 # 帳簿.xlsx" }).click()
       ]);
-      await directTab.getByText("目錄測試.txt", { exact: true }).waitFor();
+      await checkDirectory(directTab);
       await directTab.close();
     } else {
       await confirmLocation.click();
