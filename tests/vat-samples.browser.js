@@ -97,9 +97,11 @@ async function samples(p,h){
    if(tier==='large'){
     const group=sample.locator('#contractsList220 [data-client-folder222="sample-client-001"]');
     await group.locator('summary').click();
-    assert.equal(await group.locator('[data-contract-id220]').count(),12);
+    const records=group.locator('[data-contract-id220]');
+    await records.first().waitFor();
+    assert.equal(await records.count(),12);
     await group.locator('[data-folder-more222]').click();
-    assert.equal(await group.locator('[data-contract-id220]').count(),16);
+    assert.equal(await records.count(),16);
     await sample.setViewportSize({width:320,height:800});
     assert(await sample.locator('#view-contracts').evaluate(view=>view.scrollWidth<=view.clientWidth+1));
     await h.screenshot(sample,'vat225-large-samples-mobile');
