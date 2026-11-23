@@ -19,13 +19,22 @@ function leasePeriodStatus224(period){
  return 'pending';
 }
 function leaseOutcomeBadge224(outcome){return statusBadge(...leaseOutcomes224[outcome]);}
+function leaseRentDisplay225(contract,today=localDate()){
+ const lease=contract.lease;
+ if(!lease?.steps.length)return {label:'月租',value:'未填'};
+ const date=today<contract.startDate?contract.startDate:today;
+ const step=lease.steps.reduce((latest,item)=>item.from<=date&&(!latest||item.from>latest.from)?item:latest,null);
+ let label='月租';
+ if(lease.steps.length>1)label=today<contract.startDate?'起租月租':today>contract.endDate?'末段月租':'目前月租';
+ return {label,value:leaseMoney224(step.cents)+' · '+(lease.rentBasis==='gross'?'含稅':'未稅')};
+}
 function leaseSummary224(contract){
  const data=contract.lease;
  if(!data)return '';
- const periods=leaseEngine224.calculate(contract,leaseRates224()),latest=data.steps.at(-1);
+ const periods=leaseEngine224.calculate(contract,leaseRates224()),rent=leaseRentDisplay225(contract);
  const issues=periods.filter(period=>['missing','different'].includes(leasePeriodStatus224(period))).length;
  return `<dl class="lease-summary224">
-  <div><dt>${data.steps.length>1?'末段月租':'月租'}</dt><dd>${esc(latest?leaseMoney224(latest.cents):'待填')}</dd></div>
+  <div><dt>${esc(rent.label)}</dt><dd>${esc(rent.value)}</dd></div>
   <div><dt>押金</dt><dd>${esc(leaseMoney224(data.deposit))}</dd></div>
   <div><dt>${esc(leaseFrequency224[data.frequency])}核對</dt><dd>${issues?statusBadge('待處理','orange')+' '+issues+' 期':periods.length+' 期'}</dd></div>
  </dl>`;
@@ -140,8 +149,8 @@ function leaseNotice224(contract,period,mode){
 function openLease224(id){
  let baseline=contractID220(id);
  if(!baseline){toast('合約已被刪除');return;}
- if(!baseline.startDate){toast('請先在合約明細設定租約開始日');return;}
- let draft=baseline.lease?clone(baseline.lease):leaseEngine224.defaultLease();
+ if(!baseline.startDate){openContract220(id);$('#contract-startDate220')?.focus();return;}
+ let draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
  const origin=document.activeElement;
  const tabs=[['setup','租金與押金'],['review','逐期核對'],['notice','通知']];
  const field=(id,label,type,properties='')=>`<label class="field" for="${id}">${label}<input id="${id}" class="input" type="${type}" ${properties}></label>`;
@@ -191,16 +200,17 @@ function openLease224(id){
  $('#leaseDeposit224').value=format(draft.deposit);
  $('#leaseVAT224').value=format(draft.vatRate,4);
 
- function appendStep(from='',cents=null){
+ function appendStep(from='',cents=null,opening=false){
   steps.insertAdjacentHTML('beforeend',`<div class="lease-step224">
-   <label class="field">生效日<input class="input lease-step-date" type="date" min="${esc(baseline.startDate)}" max="${esc(baseline.endDate)}" value="${esc(from)}"></label>
-   <label class="field">月租（元）<input class="input lease-step-rent" inputmode="decimal" value="${esc(format(cents))}"></label>
-   <button class="btn danger" type="button" data-lease-remove-step>移除</button></div>`);
+   <label class="field">生效日<input class="input lease-step-date" type="date" min="${esc(baseline.startDate)}" max="${esc(baseline.endDate)}" value="${esc(from)}" ${opening?'readonly':''}></label>
+   <label class="field">${opening?'首段月租（元）':'月租（元）'}<input class="input lease-step-rent" inputmode="decimal" value="${esc(format(cents))}"></label>
+   ${opening?'':'<button class="btn danger" type="button" data-lease-remove-step>移除</button>'}</div>`);
  }
- draft.steps.forEach(step=>appendStep(step.from,step.cents));
+ appendStep(baseline.startDate,draft.steps[0]?.cents??null,true);
+ draft.steps.slice(1).forEach(step=>appendStep(step.from,step.cents));
  $('#leaseAddStep224').onclick=()=>{
   if(steps.childElementCount>=120){toast('租金階段最多 120 筆');return;}
-  appendStep(steps.childElementCount?'':baseline.startDate);
+  appendStep();
   steps.lastElementChild.querySelector('.lease-step-rent').focus();
  };
  steps.onclick=event=>{const remove=event.target.closest('[data-lease-remove-step]');if(remove){remove.closest('.lease-step224').remove();$('#leaseAddStep224').focus();}};
@@ -241,6 +251,7 @@ function openLease224(id){
   const newSteps=[...steps.querySelectorAll('.lease-step224')].map(row=>({
    from:row.querySelector('.lease-step-date').value,cents:leaseEngine224.amount(row.querySelector('.lease-step-rent').value)
   }));
+  if(newSteps.length===1&&newSteps[0].cents===null)newSteps.pop();
   draft=leaseEngine224.normalize({...draft,frequency:Number(val('leaseFrequency224')),rentBasis,
    deposit:leaseEngine224.amount(val('leaseDeposit224')),regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},baseline.startDate,baseline.endDate);
   periods=leaseEngine224.calculate({...baseline,lease:draft},leaseRates224());
@@ -428,8 +439,7 @@ function openLease224(id){
   finally{busy=false;controls.forEach(control=>control.disabled=false);}
  };
  drawRateChips();
- if(baseline.lease)attempt(()=>showPane('review'));
- else activate('setup');
+ activate('setup');
  modal.querySelector('[data-lease-tab][aria-pressed=true]')?.focus();
 }
 function revealLease224(node){

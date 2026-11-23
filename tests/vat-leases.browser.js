@@ -17,19 +17,25 @@ async function review(p,h){
  await p.locator('#newContract220').click();
  await p.locator('#contract-title220').fill('合成商用租約');
  await p.locator('#contract-clientId220').selectOption('synthetic-a');
- await p.locator('#contract-startDate220').fill('2025-11-01');
  await p.locator('#contract-endDate220').fill('2026-04-30');
+ const monthly=p.locator('#contract-monthlyRent220');
+ assert(await monthly.isVisible());
+ await monthly.fill('20,000');
+ await p.locator('#saveContract220').click();
+ assert.match(await p.locator('[data-contract-field-error220="startDate"]').innerText(),/開始日/);
+ await p.locator('#contract-startDate220').fill('2025-11-01');
  await p.locator('#contract-reminderEnabled220').uncheck();
  await p.locator('#contract-note220').fill('合成兩段租金\n合約備註');
  await p.locator('#saveContract220').click();
  await toast(p,'合約已儲存');
  const record=p.locator('[data-contract-id220]'),details=record.locator('[data-record-toggle222]');
+ assert.match(await record.locator('.contract-rent-amount225').innerText(),/20,000 元 · 未稅/);
+ assert(await record.locator('[data-open-lease224]').isVisible());
  await details.click();
  assert.equal(await record.locator('.record-timeline224 li').count(),2);
  await record.locator('[data-open-lease224]').click();
+ assert.equal(await p.locator('.lease-step-rent').first().inputValue(),'20000');
  await p.locator('#leaseDeposit224').fill('120,000');
- await p.locator('#leaseAddStep224').click();
- await p.locator('.lease-step-rent').first().fill('20,000');
  await p.locator('#leaseAddStep224').click();
  await p.locator('.lease-step-date').last().fill('2026-02-15');
  await p.locator('.lease-step-rent').last().fill('24,000');
@@ -46,6 +52,7 @@ async function review(p,h){
  await close();
 
  await record.locator('[data-open-lease224]').click();
+ await tab(p,'review').click();
  await p.locator('#leaseQuickRate224').fill('1.725');
  await p.locator('#leaseSaveQuickRate224').click();
  await p.locator('#leaseQuickRate224').waitFor({state:'detached'});
@@ -98,6 +105,7 @@ async function review(p,h){
  await nav(p,'contracts');
  await details.click();
  await record.locator('[data-open-lease224]').click();
+ await tab(p,'review').click();
  assert.equal(await p.locator('#lease-rent-actual224').inputValue(),'41500');
  await tab(p,'setup').click();
  await p.locator('#leaseFrequency224').selectOption('1');
@@ -106,7 +114,14 @@ async function review(p,h){
  await p.locator('#leaseFrequency224').selectOption('2');
  await close();
 
+ await record.locator('[data-open-contract220]').click();
+ assert(await monthly.isVisible());
+ assert.equal(await monthly.inputValue(),'20000');
+ await monthly.fill('21000');
+ await p.locator('#saveContract220').click();
+ await p.locator('#contractForm220').waitFor({state:'detached'});
  const backup=await h.backup(p);
+ assert.deepEqual(backup.data.contracts[0].lease.steps,[{from:'2025-11-01',cents:2100000},{from:'2026-02-15',cents:2400000}]);
  assert.equal(backup.backupVersion,11);
  assert.deepEqual(backup.data.leaseRates.map(rate=>rate.id),['2025','2026']);
  assert.equal(backup.data.contracts[0].lease.checks[0].rentActual,4150000);
@@ -115,6 +130,20 @@ async function review(p,h){
  const partial=JSON.parse(file.toString());
  assert.deepEqual(partial.data.leaseRates,backup.data.leaseRates);
  assert.deepEqual(partial.data.contracts[0].lease,backup.data.contracts[0].lease);
+
+ await nav(p,'contracts');
+ await p.locator('#newContract220').click();
+ await p.locator('#contract-title220').fill('合成舊式租約');
+ await p.locator('#contract-clientId220').selectOption('synthetic-a');
+ await p.locator('#contract-endDate220').fill('2027-01-31');
+ await p.locator('#saveContract220').click();
+ await p.locator('#contractForm220').waitFor({state:'detached'});
+ const older=record.filter({hasText:'合成舊式租約'});
+ assert.match(await older.locator('.contract-rent-amount225').innerText(),/月租 未填/);
+ await older.locator('[data-open-lease224]').click();
+ assert(await monthly.isVisible());
+ assert(await p.locator('#contract-startDate220').evaluate(node=>document.activeElement===node));
+ await p.locator('#cancelContract220').click();
 }
 
 async function timeline(p,h){

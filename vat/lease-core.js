@@ -57,6 +57,21 @@ function createLeaseEngine224() {
   }
   return rows;
  }
+ function updateOpeningRent(current,start,value,basis){
+  const inputError=(field,message)=>{const error=new Error(message);error.field=field;throw error;};
+  let cents;
+  try{cents=amount(value);}
+  catch{inputError('monthlyRent','請輸入有效的月租金額，最多兩位小數');}
+  if(!current&&cents===null)return undefined;
+  const lease=current||defaultLease(),later=lease.steps.slice(1);
+  if(cents===null&&later.length)inputError('monthlyRent','請填寫首段月租');
+  if(cents!==null&&!date(start))inputError('startDate','填寫月租時請一併設定租約開始日');
+  if(cents!==null&&later.length&&start>=later[0].from)inputError('startDate','開始日須早於後續調租日期');
+  if(basis!==lease.rentBasis&&lease.checks.some(check=>check.rentActual!==null)){
+   inputError('rentBasis','請先清除已登記的實開租金，再變更含稅／未稅基準');
+  }
+  return {...lease,rentBasis:basis,steps:cents===null?[]:[{from:start,cents},...later]};
+ }
  function emptyCheck(key){
   return {key,rentStatus:'pending',rentActual:null,interestStatus:'pending',interestActual:null,interestMonths:null};
  }
@@ -126,6 +141,6 @@ function createLeaseEngine224() {
    return {...period,check,rent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
   });
  }
- return {amount,rate,format,frequencies,defaultLease,validateRates,normalize,periods,emptyCheck,calculate};
+ return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,validateRates,normalize,periods,emptyCheck,calculate};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};

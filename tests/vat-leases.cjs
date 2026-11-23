@@ -53,4 +53,13 @@ C.validate({clients:[client],contracts:[record],leaseRates:rates});
 assert.throws(()=>C.validate({clients:[client],contracts:[record],leaseRates:[{id:'2026',rate:-1}]}),/利率/);
 assert.throws(()=>C.validate({clients:[client],contracts:[{...record,lease:{...lease,steps:null}}]}),/費用資料/);
 C.validate({clients:[client],contracts:[{...record,lease:undefined}]});
+assert.equal(E.updateOpeningRent(undefined,'','','net'),undefined);
+assert.equal(E.updateOpeningRent(undefined,start,'0','gross').steps[0].cents,0);
+assert.throws(()=>E.updateOpeningRent(undefined,'','100','net'),{field:'startDate'});
+assert.throws(()=>E.updateOpeningRent(record.lease,start,'','net'),{field:'monthlyRent'});
+assert.throws(()=>E.updateOpeningRent(record.lease,start,'100','gross'),{field:'rentBasis'});
+const edited=E.updateOpeningRent(record.lease,start,'21,000','net');
+assert.deepEqual(edited.steps,[{from:start,cents:2100000},record.lease.steps[1]]);
+assert.deepEqual(edited.checks,record.lease.checks);
+
 console.log('PASS lease calendar cadence, step-rent cents, statutory interest, missing rates, partial months, reconciliation and legacy backups');

@@ -144,3 +144,14 @@
  .record-row220,.lease-period224{transition:none}
 }
 [data-motion=reduce] :is(.record-row220,.lease-period224){transition:none}
+
+.contract-rent-amount225{
+ display:block;margin-top:3px;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere
+}
+.contract-rent-amount225 strong{color:var(--brand)}
+.contract-rent-settings225>summary{cursor:pointer;padding:8px 0;font-weight:700}
+.contract-rent-fields225{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:7px;align-items:end}
+.contract-rent-count225{grid-column:1/-1;color:var(--muted);font-size:13px}
+@media(max-width:480px){
+ .contract-rent-fields225{grid-template-columns:minmax(0,1fr)}
+}
