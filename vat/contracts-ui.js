@@ -75,7 +75,7 @@ function mountContracts220() {
  if(!view||$('#contractsList220'))return;
  view.innerHTML=`<div class="page-head"><h1 class="page-title">租約與合約</h1>
   <div class="actions"><button class="btn" type="button" id="leaseRatesBtn224">年度郵政利率</button><button class="btn primary" type="button" id="newContract220">新增合約</button></div></div>
- <div class="contract-stats220" id="contractStats220" aria-label="合約狀態"></div>
+ <div class="contract-stats220" id="contractStats220" role="group" aria-label="依狀態篩選合約"></div>
  <div class="contract-filters220">
   <div class="field"><label for="contractSearch220">搜尋合約</label><input id="contractSearch220" class="input" type="search" placeholder="名稱、客戶或備註"></div>
   <div class="field"><label for="contractClientFilter220">客戶</label><select id="contractClientFilter220" class="select"></select></div>
@@ -119,28 +119,20 @@ function renderContracts220() {
  $('#contractYearFilter221').innerHTML='<option value="">全部年度</option>'+years.map(year=>
   `<option value="${esc(year)}" ${year===runtime.year?'selected':''}>${esc(fmtDate(year+'-01-01').split('/')[0])} 年</option>`).join('');
  const counts=Object.fromEntries(Object.keys(contractStatus220).map(key=>[key,0]));
- for(const item of all)counts[item.status]++;
- const stats=$('#contractStats220');
- stats.innerHTML=Object.entries(contractStatus220).map(([key,[label,tone]])=>
-  `<button class="cases-stat219 ${runtime.status===key?'active':''}" type="button" data-contract-status220="${key}" aria-pressed="${runtime.status===key}">${statusBadge(label,tone)}<strong>${counts[key]}</strong></button>`).join('');
- stats.querySelectorAll('[data-contract-status220]').forEach(button=>button.onclick=()=>{
-  const key=button.dataset.contractStatus220;
-  Object.assign(runtime,{status:runtime.status===key?'all':key,page:1});
-  renderContracts220();
-  stats.querySelector(`[data-contract-status220="${key}"]`)?.focus();
- });
  const clientFilter=$('#contractClientFilter220'),categoryFilter=$('#contractCategoryFilter220');
  clientFilter.innerHTML='<option value="">全部客戶</option>'+recordClientOptions220(runtime.clientId);
  categoryFilter.innerHTML='<option value="">全部類別</option>'+contractTypeOptions220(runtime.categoryId);
  $('#contractStatusFilter220').value=runtime.status;
  const filtered=all.filter(({row,status})=>{
-  if(runtime.status!=='all'&&runtime.status!==status)return false;
   if(runtime.clientId&&runtime.clientId!==row.clientId)return false;
   if(runtime.categoryId&&runtime.categoryId!==row.categoryId)return false;
   if(runtime.year&&!row.endDate.startsWith(runtime.year+'-'))return false;
   const customer=clientById(row.clientId);
-  return !query||[row.title,row.note,row.task,contractTypeName220(row.categoryId),customer?.code,customer?.name].join(' ').toLocaleLowerCase().includes(query);
+  if(query&&![row.title,row.note,row.task,contractTypeName220(row.categoryId),customer?.code,customer?.name].join(' ').toLocaleLowerCase().includes(query))return false;
+  counts[status]++;
+  return runtime.status==='all'||runtime.status===status;
  }).sort((a,b)=>Number(['closed','renewed'].includes(a.status))-Number(['closed','renewed'].includes(b.status))||a.row.endDate.localeCompare(b.row.endDate)||a.row.id.localeCompare(b.row.id));
+ renderRecordStatusFilters227($('#contractStats220'),Object.entries(contractStatus220).map(([key,[label,tone]])=>[key,label,counts[key],tone]),runtime,'all',renderContracts220);
  const statusById=new Map(all.map(({row,status})=>[row.id,status]));
  const makeRow=row=>{
   const status=statusById.get(row.id),type=contractTypeName220(row.categoryId);
@@ -157,16 +149,16 @@ function renderContracts220() {
     `<h2>${esc(row.title)}</h2><small>${esc(type)}</small>${rent?`<span class="contract-rent-amount225">${esc(rent.label)} <strong>${esc(rent.value)}</strong></span>`:''}`,
     contractBadge220(status),
     `<strong>${esc(fmtDate(row.endDate))}</strong><small>${esc(next?'下一期 '+fmtDate(next.startDate):due?'待辦未完成':row.taskCompletedAt?'待辦已完成':row.reminderEnabled&&!row.closed?'提醒 '+reminder:'')}</small>`,
-    `<button class="btn" type="button" data-open-contract220="${esc(row.id)}">查看合約</button>
-     ${isLease?`<button class="btn" type="button" data-open-lease224="${esc(row.id)}">租金與押息</button>`:''}
-     ${!next&&contractEngine220.shiftDay(row.endDate,1)?`<button class="btn" type="button" data-contract-renew221="${esc(row.id)}">續約</button>`:''}`
+    `<button class="btn" type="button" data-open-contract220="${esc(row.id)}" aria-label="編輯合約：${esc(row.title)}">編輯</button>
+     ${isLease?`<button class="btn record-secondary-action227" type="button" data-open-lease224="${esc(row.id)}">租金與押息</button>`:''}
+     ${!next&&contractEngine220.shiftDay(row.endDate,1)?`<button class="btn record-secondary-action227" type="button" data-contract-renew221="${esc(row.id)}">續約</button>`:''}`
    ],
-   schedule:[['開始',row.startDate?fmtDate(row.startDate):'',row.startDate],['到期',fmtDate(row.endDate),row.endDate],['提醒',reminder,contractReminderDate220(row)]],
+   schedule:[['開始',row.startDate?fmtDate(row.startDate):'',row.startDate],['提醒',reminder,contractReminderDate220(row)],['到期',fmtDate(row.endDate),row.endDate]],
    extra:leaseSummary224(row),
    facts:[['提醒狀態',row.reminderEnabled?taskStatus:''],['待辦',row.reminderEnabled?row.task:''],
     ...(previous?[['上期合約',previous.title+' · '+fmtDate(previous.endDate)]]:[]),
     ...(next?[['續約期間',fmtDate(next.startDate)+' ～ '+fmtDate(next.endDate)]]:[])],note:row.note,
-   detailActions:`<div class="record-detail-actions220"><button class="btn" type="button" data-contract-calendar220="${esc(row.id)}">查看日曆</button>${previous?`<button class="btn" type="button" data-open-contract220="${esc(previous.id)}">查看上期</button>`:''}${next?`<button class="btn" type="button" data-open-contract220="${esc(next.id)}">查看續約</button>`:''}${action}</div>`
+   detailActions:`<div class="record-detail-actions220"><button class="btn record-secondary-action227" type="button" data-contract-calendar220="${esc(row.id)}">查看日曆</button>${previous?`<button class="btn record-secondary-action227" type="button" data-open-contract220="${esc(previous.id)}">查看上期</button>`:''}${next?`<button class="btn record-secondary-action227" type="button" data-open-contract220="${esc(next.id)}">查看續約</button>`:''}${action}</div>`
   };
  };
  const count=clientFolders222({host,pager:$('#contractPagination220'),runtime,matched:filtered.map(item=>item.row),all:records,kind:'合約',
@@ -194,12 +186,11 @@ function openContract220(id,renewalFrom=null) {
  const input=(key,type,value,extra='')=>`<input id="contract-${key}220" class="input" type="${type}" value="${esc(value)}" ${extra}>`;
  const customer=`<select class="select" id="contract-clientId220" required><option value="">選擇客戶</option>${recordClientOptions220(draft.clientId)}</select>`;
  const category=`<select class="select" id="contract-categoryId220">${contractTypeOptions220(draft.categoryId)}<option value="__new">＋ 新增類別</option></select>`;
- showModal(renewalFrom?'續約':existing?'合約明細':'新增合約',`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
+ showModal(renewalFrom?'續約':existing?'編輯合約':'新增合約',`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
   ${renewalFrom?`<p class="cases-span219 contract-renew-info221">上期到期日 <strong>${esc(fmtDate(renewalFrom.endDate))}</strong></p>`:''}
   <div class="cases-span219">${field('title','合約名稱',input('title','text',draft.title,'required maxlength="200"'))}</div>
   ${field('clientId','客戶',customer)}${field('categoryId','類別',category)}
   <div class="cases-span219" id="contractNewCategory220" hidden>${field('categoryName','新類別名稱',input('categoryName','text','','maxlength="32"'))}</div>
-  <div class="record-client-inline222 cases-span219" id="contractClientPreview220" hidden></div>
   ${renewalFrom?`<div class="field cases-span219"><label for="contractRenewTerm221">續約期限</label><select class="select" id="contractRenewTerm221">
    <option value="1">1 年</option><option value="2">2 年</option><option value="3">3 年</option><option value="">自訂到期日</option></select></div>`:''}
   ${field('startDate',renewalFrom?'新約開始日期':'開始日期（選填）',input('startDate','date',draft.startDate))}
@@ -212,9 +203,9 @@ function openContract220(id,renewalFrom=null) {
     ${draft.lease?.steps.length>1?`<span class="contract-rent-count225">首段月租 · 共 ${draft.lease.steps.length} 段</span>`:''}
    </div>
   </details>
-  <div class="record-settings222 cases-span219">
+  <div class="record-reminder-settings227 cases-span219">
    <div class="record-setting-head222">
-    <label class="cases-check219 record-toggle222"><input id="contract-reminderEnabled220" type="checkbox" ${draft.reminderEnabled?'checked':''}>到期提醒</label>
+    <label class="cases-check219 record-toggle222"><input id="contract-reminderEnabled220" type="checkbox" aria-controls="contractReminderFields222" ${draft.reminderEnabled?'checked':''}>到期提醒</label>
     <span class="record-preview-date222" id="contractPreviewDate220" aria-live="polite"></span>
    </div>
    <div class="contract-reminder-inputs222" id="contractReminderFields222" ${draft.reminderEnabled?'':'hidden'}>
@@ -265,10 +256,6 @@ function openContract220(id,renewalFrom=null) {
   get('startDate').required=requiresStart;
   if(!renewalFrom)form.querySelector('label[for="contract-startDate220"]').textContent=requiresStart?'開始日期（必填）':'開始日期（選填）';
   $('#contractNewCategory220').hidden=get('categoryId').value!=='__new';
-  const customer=clientById(get('clientId').value),preview=$('#contractClientPreview220');
-  const facts=recordClientFacts222(customer);
-  preview.hidden=!facts;
-  preview.innerHTML=facts;
   let date='';
   try{date=contractEngine220.reminderDate(get('endDate').value,get('leadMonths').value);}catch{}
   $('#contractReminderFields222').hidden=!get('reminderEnabled').checked;

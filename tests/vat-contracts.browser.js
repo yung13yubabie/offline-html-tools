@@ -9,7 +9,8 @@ async function createContract(page){
  await page.locator('#newContract220').click();
  await field(page,'title').fill('合成辦公室租用');
  await field(page,'clientId').selectOption('synthetic-a');
- assert.match(await page.locator('#contractClientPreview220').innerText(),/合成聯絡人[\s\S]*合成測試地址/);
+ assert.match(await field(page,'clientId').locator('option:checked').innerText(),/合成/);
+ assert.doesNotMatch(await page.locator('#contractForm220').innerText(),/合成聯絡人|合成測試地址/);
  await field(page,'categoryId').selectOption('__new');
  await field(page,'categoryName').fill('合成場地租用');
  await field(page,'startDate').fill('2026-04-01');
@@ -34,6 +35,7 @@ async function lifecycle(page,h){
  const id=await row.getAttribute('data-contract-id220');
  assert.match(await row.innerText(),/合成場地租用[\s\S]*有效/);
  await row.locator('[data-record-toggle222]').click();
+ assert.deepEqual(await row.locator('.record-timeline224 li div span').allTextContents(),['開始','提醒','到期']);
  assert.match(await page.locator('#contractsList220 .folder-contact222').innerText(),/合成聯絡人/);
  assert.match(await row.innerText(),/核對合成續租資料[\s\S]*這是完整備註/);
  await h.screenshot(page,'vat-contracts-list-desktop');
@@ -169,10 +171,14 @@ async function lists(page,h){
   await page.setViewportSize({width:1440,height:1000});
  }
  await nav(page,'contracts');
- await page.locator('#contractStatusFilter220').selectOption('closed');
+ const closed=page.locator('#contractStats220 [data-record-status227="closed"]');
+ await closed.press('Enter');
+ assert.equal(await page.locator('#contractStatusFilter220').inputValue(),'closed');
+ assert.equal(await closed.getAttribute('aria-pressed'),'true');
  assert.equal(await page.locator('[data-contract-id220]').count(),1);
  assert.match(await page.locator('#contractsList220 .folder-count222').innerText(),/1 \/ 14 合約/);
- await page.locator('#contractStatusFilter220').selectOption('all');
+ await closed.click();
+ assert.equal(await page.locator('#contractStatusFilter220').inputValue(),'all');
  await page.locator('#contractSearch220').fill('第 13 筆完整合約備註');
  assert.equal(await page.locator('[data-contract-id220]').count(),1);
  // v8 merge preserves the new independent records.
@@ -254,19 +260,20 @@ async function renewal(page,h){
  await h.reload(page);
  await nav(page,'contracts');
  assert.match(await oldRow().innerText(),/已續約/);
- await oldRow().getByRole('button',{name:'查看合約',exact:true}).click();
+ await oldRow().getByRole('button',{name:/^編輯合約/}).click();
+ assert.equal(await page.locator('#modalRoot .modal-title').innerText(),'編輯合約');
  page.once('dialog',dialog=>dialog.accept());
  await page.locator('#deleteContract220').click();
  await page.locator('#contractError220').waitFor();
  assert.match(await page.locator('#contractError220').innerText(),/下一期/);
  await page.locator('#cancelContract220').click();
- await page.locator('[data-contract-id220="'+next+'"]').getByRole('button',{name:'查看合約',exact:true}).click();
+ await page.locator('[data-contract-id220="'+next+'"]').getByRole('button',{name:/^編輯合約/}).click();
  page.once('dialog',dialog=>dialog.accept());
  await page.locator('#deleteContract220').click();
  await waitToast(page,'已刪除合約');
  assert.equal(await all.count(),1);
  assert.match(await oldRow().innerText(),/即將到期/);
- await oldRow().getByRole('button',{name:'查看合約',exact:true}).click();
+ await oldRow().getByRole('button',{name:/^編輯合約/}).click();
  await field(page,'closed').check();
  await page.locator('#saveContract220').click();
  await waitToast(page,'合約已儲存');

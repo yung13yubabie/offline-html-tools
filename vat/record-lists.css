@@ -32,12 +32,13 @@
 .record-cell220 h2{margin:0;font-size:15px;line-height:1.45}
 .record-cell220 small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
 .record-cell220 .btn{min-height:44px}
-.record-cell220:last-child{display:flex;flex-wrap:wrap;gap:6px}
+.record-cell220:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
 .record-label222{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-#view-cases .record-detail-toggle222,#view-contracts .record-detail-toggle222{
+.record-list220 :is(.record-detail-toggle222,.record-secondary-action227){
  display:inline-flex;align-items:center;gap:8px;padding-inline:8px;border-color:transparent;background:transparent;color:var(--brand)
 }
-.record-detail-body222{padding:10px 12px;margin:0 16px 8px;background:var(--panel2);border-left:2px solid var(--line);border-radius:4px}
+.record-list220 :is(.record-detail-toggle222,.record-secondary-action227):hover{background:var(--brand-soft)}
+.record-detail-body222{display:grid;gap:12px;min-width:0;padding:8px 16px 12px;background:var(--panel2)}
 .record-facts220{display:flex;flex-wrap:wrap;gap:6px 20px;margin:0}
 .record-facts220>div{display:flex;align-items:baseline;gap:6px;min-width:0;max-width:100%}
 .record-facts220 dt,.record-note222 strong{flex:none;color:var(--muted);font-size:13px;font-weight:650}
@@ -51,6 +52,7 @@
 .record-pager220 .btn,.record-pager220 .select{min-height:44px}
 .record-pager220 label{display:flex;align-items:center;gap:6px;color:var(--muted)}
 .record-pager220 .select{width:auto}
+@container record-list (min-width:661px){.record-cell220:last-child{justify-content:flex-end}}
 @container record-list (max-width:660px){
  .record-row220{grid-template-columns:repeat(2,minmax(0,1fr))}
  .record-cell220:first-child,.record-cell220:last-child{grid-column:1/-1}
@@ -59,7 +61,7 @@
  .client-folder222>summary{grid-template-columns:9px minmax(0,1fr);gap:4px 9px;padding:8px 10px}
  .folder-counts222{grid-column:2;justify-content:flex-start}
  .record-row220{padding-inline:10px}
- .record-detail-body222{margin-inline:10px}
+ .record-detail-body222{padding-inline:10px}
  .folder-contact222{padding-inline:10px}
 }
 @container record-list (max-width:175px){
@@ -77,13 +79,14 @@
 .record-form222.cases-form219{gap:11px 14px}
 .record-form222 .field{gap:4px}
 .record-form222 textarea.textarea{min-height:66px;resize:vertical}
-.record-client-inline222{padding:7px 10px;border-left:2px solid var(--line);background:var(--panel2);border-radius:4px}
-.record-client-inline222 .record-facts220 dd{font-size:13px}
 .record-settings222{min-width:0;padding:2px 10px 8px;border:1px solid var(--line);border-radius:7px;background:var(--panel2)}
+.record-reminder-settings227{min-width:0;border-top:1px solid var(--line)}
+.case-reminder-settings227{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 16px;align-items:center}
+.case-reminder-settings227>.record-toggle222{align-self:center}
 .record-setting-head222{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:8px}
 .record-toggle222.cases-check219{min-height:44px;padding:5px 0;border:0;background:none}
-.record-settings222 .cases-reminder-fields219{gap:8px 10px}
-.record-settings222:has(> .record-toggle222 + [hidden]),.record-settings222:has(> .record-setting-head222 + [hidden]){padding-bottom:2px}
+.record-reminder-settings227 .cases-reminder-fields219{gap:8px 10px;padding-top:7px}
+.record-reminder-settings227 .cases-reminder-fields219 .field{min-width:0}
 .record-preview-date222{font-size:13px;font-weight:650;color:var(--muted)}
 .record-preview-date222:empty{display:none}
 .contract-reminder-inputs222{display:grid;grid-template-columns:minmax(92px,.5fr) minmax(0,1fr);gap:8px 10px}
@@ -94,6 +97,11 @@
  .record-form222.cases-form219{gap:10px}
  .contract-reminder-inputs222{grid-template-columns:minmax(0,1fr)}
 }
+@media(max-width:799px){
+ .case-reminder-settings227{grid-template-columns:minmax(0,1fr);gap:0}
+ .record-reminder-settings227 .cases-reminder-fields219{padding-top:0}
+}
+@media(min-width:375px) and (max-width:799px){.cases-reminder-fields219{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .record-detail-body222[hidden]{display:none}
 .record-date-pair222{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}

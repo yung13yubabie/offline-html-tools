@@ -174,5 +174,20 @@ async function timeline(p,h){
  await p.setViewportSize({width:320,height:760});
  assert(await item.locator('.record-timeline224').evaluate(el=>el.scrollWidth<=el.clientWidth+1));
  await h.screenshot(p,'vat224-case-timeline-mobile');
+ await p.setViewportSize({width:1440,height:1000});
+ for(const [time,order] of [
+  ['08:00',['開始','截止','提醒']],
+  ['18:00',['開始','提醒','截止']],
+  ['',['開始','提醒','截止']]
+ ]){
+  await item.locator('[data-open-case219]').click();
+  await p.locator('#caseReminderDate219').fill('2026-11-30');
+  await p.locator('#caseReminderTime219').fill('09:00');
+  await p.locator('#caseDueTime219').fill(time);
+  await p.locator('#caseSave219').click();
+  await p.locator('#caseForm219').waitFor({state:'detached'});
+  assert.equal(await toggle.getAttribute('aria-expanded'),'true');
+  assert.deepEqual(await item.locator('.record-timeline224 li div span').allTextContents(),order);
+ }
 }
 module.exports={review,timeline};

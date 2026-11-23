@@ -75,6 +75,8 @@ async function samples(p,h){
   assert(demoBackup.data.notifications.every(row=>row.periodClientId.startsWith(row.periodId+'::sample-client-')));
   assert(demoBackup.data.periodClients.some(row=>row.taxAmount<0));
   assert(demoBackup.data.contracts.some(row=>row.lease?.steps.length>1));
+  for(const label of [...demoBackup.data.cases.map(row=>row.title),...demoBackup.data.contracts.map(row=>row.title),
+   ...demoBackup.data.calendarNotes.map(row=>row.content),...demoBackup.data.workTasks.map(row=>row.name)])assert.doesNotMatch(label,/^樣本\s*[｜|]/);
   assert.equal(await p.evaluate(()=>localStorage.getItem('vatCurrentPeriod')),preference);
 
   p.once('dialog',dialog=>dialog.accept()); // Leave the formal form only for the import check.

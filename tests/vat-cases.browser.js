@@ -19,7 +19,8 @@ async function create(p,withReminder){
  await p.locator('#newCase219').click();
  await p.locator('#caseTitle219').fill('合成案件 <示例>');
  await p.locator('#caseClient219').selectOption('synthetic-a');
- assert.match(await p.locator('#caseCustomerPreview219').innerText(),/合成聯絡人[\s\S]*合成測試地址/);
+ assert.match(await p.locator('#caseClient219 option:checked').innerText(),/合成/);
+ assert.doesNotMatch(await form(p).innerText(),/合成聯絡人|合成測試地址/);
  assert.equal(await p.locator('#caseStatus219').inputValue(),'inProgress');
  await p.locator('#caseStart219').fill('2026-10-30');
  await p.locator('#caseDue219').fill('2026-11-04');
@@ -184,4 +185,61 @@ async function upgrade(p,h){
  await nav(p,'cases');
  assert.equal(await p.locator('#casesCards219 [data-case-id219]').count(),1);
 }
-module.exports={lifecycle,backupAndReferences,upgrade};
+
+async function filtersAndEditor(p,h){
+ await create(p,true);
+ const backup=await h.backup(p),source=backup.data.cases[0];
+ for(const [status,title,clientId] of [
+  ['pending','合成待處理','synthetic-a'],['done','合成已完成','synthetic-a'],
+  ['cancelled','樣本｜合成已取消','synthetic-b']
+ ])backup.data.cases.push({...source,id:'filter-'+status,status,title,clientId,completedAt:status==='done'?source.updatedAt:''});
+ await upload(p,backup);
+ await p.locator('#restoreMergeBtn').click();
+ await p.locator('#modalRoot.show').getByRole('button',{name:'合併',exact:true}).click();
+ await toast(p,'合併完成');
+ await nav(p,'cases');
+ const select=p.locator('#casesStatus219'),client=p.locator('#casesClient219');
+ const card=status=>p.locator(`#casesStats219 [data-record-status227="${status}"]`);
+ const result=p.locator('#casesCount219');
+ for(const status of ['pending','inProgress','done','cancelled']){
+  await card(status).press('Space');
+  assert.equal(await select.inputValue(),status);
+  assert.equal(await card(status).getAttribute('aria-pressed'),'true');
+  assert(await card(status).evaluate(el=>document.activeElement===el&&el.matches(':focus-visible')));
+  assert.match(await result.innerText(),/1 件案件/);
+ }
+ const cancelled=p.locator('[data-case-id219="filter-cancelled"]');
+ assert.match(await cancelled.innerText(),/樣本｜合成已取消/,'Custom formal titles are preserved');
+ await card('cancelled').click();
+ assert.equal(await select.inputValue(),'active');
+ assert.equal(await card('cancelled').getAttribute('aria-pressed'),'false');
+ assert.match(await result.innerText(),/2 件案件/);
+ await client.selectOption('synthetic-a');
+ assert.equal(await card('cancelled').locator('strong').innerText(),'0');
+ await p.locator('#casesSearch219').fill('合成案件');
+ assert.equal(await card('pending').locator('strong').innerText(),'0');
+ await card('inProgress').click();
+ await h.screenshot(p,'vat227-case-filter-desktop');
+ const editor=p.locator('#casesCards219 [data-open-case219]');
+ await editor.click();
+ assert.equal(await p.locator('#modalRoot .modal-title').innerText(),'編輯案件');
+ const reminder=p.locator('#caseReminder219'),fields=p.locator('#caseReminderFields219');
+ assert(await fields.isVisible());
+ const expandedHeight=(await form(p).boundingBox()).height;
+ await reminder.uncheck();
+ assert(!await fields.isVisible());
+ assert((await form(p).boundingBox()).height<expandedHeight);
+ await reminder.check();
+ assert.equal(await p.locator('#caseReminderDate219').inputValue(),'2026-10-31');
+ assert.equal(await p.locator('#caseReminderTime219').inputValue(),'09:00');
+ for(const width of [390,320]){
+  await p.setViewportSize({width,height:800});
+  assert(await p.locator('.cases-modal219').evaluate(el=>el.scrollWidth<=el.clientWidth+1));
+ }
+ await reminder.uncheck();
+ await h.screenshot(p,'vat227-case-editor-mobile');
+ await reminder.check();
+ await p.locator('#caseCancel219').click();
+ assert(await editor.evaluate(el=>document.activeElement===el));
+}
+module.exports={lifecycle,backupAndReferences,upgrade,filtersAndEditor};

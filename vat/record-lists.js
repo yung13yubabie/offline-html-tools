@@ -9,10 +9,25 @@ function recordClientFacts222(client) {
  return client?recordFacts220([['聯絡人',contactSummary(client)],['地址',client.address]]):'';
 }
 function recordTimeline224(schedule){
- const values=(schedule||[]).filter(([,value])=>value&&value!=='—').sort((a,b)=>a[2].localeCompare(b[2]));
+ const values=(schedule||[]).filter(([,value,date])=>date&&value&&value!=='—')
+  .sort((a,b)=>a[2].localeCompare(b[2])||(a[3]||'').localeCompare(b[3]||''));
  if(!values.length)return '';
  return `<ol class="record-timeline224" aria-label="重要日期">${values.map(([label,value])=>
   `<li><span aria-hidden="true" class="record-node224"></span><div><span>${esc(label)}</span><strong>${esc(value)}</strong></div></li>`).join('')}</ol>`;
+}
+function renderRecordStatusFilters227(host,options,runtime,defaultStatus,render) {
+ const focused=host.contains(document.activeElement)?document.activeElement.dataset.recordStatus227:null;
+ host.innerHTML=options.map(([key,label,count,tone])=>
+  `<button class="cases-stat219" type="button" data-record-status227="${key}" aria-pressed="${runtime.status===key}">
+   ${tone?statusBadge(label,tone):`<span>${esc(label)}</span>`}<strong>${count}</strong></button>`).join('');
+ host.querySelectorAll('[data-record-status227]').forEach(button=>{
+  button.onclick=()=>{
+   const key=button.dataset.recordStatus227;
+   Object.assign(runtime,{status:runtime.status===key?defaultStatus:key,page:1});
+   render();
+  };
+  if(button.dataset.recordStatus227===focused)button.focus({preventScroll:true});
+ });
 }
 function buildRecordRows222(rows,columns,expanded,prefix) {
  return rows.map((row,index)=>{

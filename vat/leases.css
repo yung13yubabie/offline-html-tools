@@ -3,17 +3,12 @@
  background:color-mix(in srgb,var(--brand-soft) 38%,var(--panel));
 }
 .record-row220{transition:background-color 170ms ease-out}
-.record-detail-body222{
- display:grid;gap:10px;padding:12px;margin-top:2px;background:var(--panel2);
- border:1px solid var(--line);border-radius:8px;min-width:0
-}
 .record-timeline224{
- display:flex;gap:0;padding:9px 8px;margin:0;list-style:none;min-width:0;
- border:1px solid var(--line);border-radius:6px;background:var(--panel)
+ display:flex;gap:0;padding:4px 0;margin:0;list-style:none;min-width:0
 }
-.record-timeline224>li{position:relative;isolation:isolate;display:grid;flex:1;min-width:0;gap:8px;padding:4px 10px}
+.record-timeline224>li{position:relative;isolation:isolate;display:grid;flex:1;min-width:0;gap:8px;padding:4px 8px 4px 0}
 .record-timeline224>li::after{
- content:"";position:absolute;z-index:-1;inset:8px -10px auto 15px;height:2px;background:var(--line)
+ content:"";position:absolute;z-index:-1;inset:8px 0 auto 5px;height:2px;background:var(--line)
 }
 .record-timeline224>li:last-child::after{display:none}
 .record-node224{
@@ -24,16 +19,10 @@
 .record-timeline224 li>div{display:grid;gap:3px;min-width:0;overflow-wrap:anywhere}
 .record-timeline224 li>div>span{font-size:12px;color:var(--muted)}
 .record-timeline224 strong{font-size:14px;font-variant-numeric:tabular-nums;line-height:1.4}
-.record-detail-body222>.record-facts220{gap:7px;margin:0}
-.record-detail-body222>.record-facts220>div{
- flex:1 1 190px;flex-wrap:wrap;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel)
-}
-.record-detail-body222>.record-note222{
- grid-template-columns:minmax(0,1fr);gap:4px;padding:8px 10px;margin:0;
- background:var(--panel);border:1px solid var(--line);border-radius:6px
-}
+.record-detail-body222>.record-facts220>div{flex-wrap:wrap}
+.record-detail-body222>.record-note222{margin:0}
 .record-detail-body222>.record-audit222{margin:0}
-.record-detail-body222>.record-detail-actions220{margin:0;padding-top:7px;border-top:1px solid var(--line)}
+.record-detail-body222>.record-detail-actions220{margin:0;padding-top:3px;border-top:1px solid var(--line)}
 .lease-summary224{
  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0
 }
@@ -41,16 +30,15 @@
 .lease-summary224 dt{font-size:12px;color:var(--muted)}
 .lease-summary224 dd{margin:2px 0 0;font-size:14px;font-weight:700;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 @container record-list (max-width:410px){
- .record-timeline224{flex-direction:column;padding:6px}
- .record-timeline224>li{grid-template-columns:10px minmax(0,1fr);align-items:start;gap:9px;padding:6px 6px}
- .record-timeline224>li::after{inset:11px auto -13px 10px;width:2px;height:auto}
+ .record-timeline224{flex-direction:column}
+ .record-timeline224>li{grid-template-columns:10px minmax(0,1fr);align-items:start;gap:9px;padding:6px 0}
+ .record-timeline224>li::after{inset:11px auto -13px 4px;width:2px;height:auto}
  .record-node224{margin-top:3px}
  .record-timeline224 li>div{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
  .record-timeline224 strong{font-size:14px}
  .lease-summary224{grid-template-columns:repeat(2,minmax(0,1fr))}
  .lease-summary224>div:last-child{grid-column:1/-1}
 }
-@container record-list (max-width:320px){.record-detail-body222{padding:7px;gap:7px}}
 
 #modalRoot .lease-modal224{width:min(1000px,calc(100vw - 24px));max-width:none;display:flex;flex-direction:column;max-height:90dvh;overflow:hidden}
 .lease-modal224>.modal-head,.lease-modal224>.modal-foot{flex:none}

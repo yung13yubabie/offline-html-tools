@@ -114,7 +114,7 @@ async function seedVatSamples(){
   calendarNotes:[],workTasks:[],cases:[],contracts:[],leaseRates:[]};
  const dateNames=['青禾設計','遠帆商行','四季咖啡','北岸製作','暖光服務','日常選物','在地物流','晨讀工作室'];
  const longName='跨部門聯絡窗口與多據點發票收集、採購驗收及帳務彙整';
- const note='樣本｜已整理本期發票與附件。\n待核對分店寄件日期，並與會計窗口確認後續補件。';
+ const note='已整理本期發票與附件。\n待核對分店寄件日期，並與會計窗口確認後續補件。';
  const workNames=['收齊紙本發票','核對進項與扣抵憑證','整理繳稅資料','確認銀行入帳','更新客戶共用備註','補齊期末附件'];
  const caseNames=['公司登記事項變更','待補文件追蹤','分店租約與發票核對','年度帳務複核','一般客服與交件','跨年度資料整理'];
  const caseEngine=createCasesEngine219();
@@ -175,7 +175,7 @@ async function seedVatSamples(){
    const recordKey=key+'-'+i;
    const status=statuses[(index+i)%statuses.length];
    stores.cases.push(caseEngine.planSave({draft:{id:'sample-case-'+recordKey,clientId:client.id,
-    title:'樣本｜'+caseNames[(index+i)%caseNames.length]+(i?' '+(i+1):''),
+    title:caseNames[(index+i)%caseNames.length]+(i?' '+(i+1):''),
     status,startDate:day(-(9+i)),dueDate:day((index+i)%11-2),dueTime:'16:30',
     reminderEnabled:i%3!==2,reminderDate:day((index+i)%6-2),reminderTime:'09:30',
     note:index%4===1?note+'\n'+longName:i%3===0?note:''},clients:[client],at,today}));
@@ -192,18 +192,18 @@ async function seedVatSamples(){
     if(period)lease.checks.push({...leaseEngine224.emptyCheck(period.key),rentStatus:'issued',rentActual:lease.steps[0].cents,interestStatus:'missing'});
    }
    stores.contracts.push(contractEngine220.save({draft:{id:'sample-contract-'+recordKey,clientId:client.id,
-    categoryId:isLease?'lease':'other',title:'樣本｜'+(isLease?'營業據點租約':'委託服務合約')+(i?' '+(i+1):''),
+    categoryId:isLease?'lease':'other',title:(isLease?'營業據點租約':'委託服務合約')+(i?' '+(i+1):''),
     startDate,endDate,closed,leadMonths:2,reminderEnabled:!closed,task:'核對到期與續約文件',note:i===0?note:'',
     ...(lease?{lease}:{})},clients:[client],categories:[],at}));
   }
   if(index%2===0||depth===3){
    const completed=index%5===2;
    stores.workTasks.push({id:'sample-task-'+key,periodId:current.id,clientId:client.id,
-    name:'樣本｜'+workNames[index%workNames.length],note,taskPlan:{date:day(index%9-3),time:'14:00'},
+    name:workNames[index%workNames.length],note,taskPlan:{date:day(index%9-3),time:'14:00'},
     status:completed?'done':'pending',completedAt:completed?at:'',...audit});
    const date=day(index%13-5);
    stores.calendarNotes.push({id:'sample-calendar-'+key,clientId:client.id,date,time:index%4===0?'':'15:30',
-    content:'樣本｜'+caseNames[index%caseNames.length],reminderEnabled:index%4===2,reminderDate:date,reminderTime:'09:00',
+    content:caseNames[index%caseNames.length],reminderEnabled:index%4===2,reminderDate:date,reminderTime:'09:00',
     reminderCompletedAt:'',...audit});
    stores.notifications.push({id:'sample-notice-'+key,periodId:current.id,periodClientId:current.id+'::'+client.id,
     clientId:client.id,type:'receiptAsk',typeId:'receiptAsk',templateId:'receiptAsk',content:'樣本通知｜'+client.name+'，請確認收件日期。',sentAt:at,...audit});
