@@ -77,10 +77,33 @@
  #view-calendar .calendar-row230 .note-card{grid-template-columns:50px minmax(0,1fr) auto}
 }
 @media screen and (max-width:520px){
+ #view-calendar .calendar-overview-grid{grid-template-columns:minmax(0,1fr) auto!important;align-items:center;gap:6px}
+ #view-calendar .calendar-mode-tabs>.subtab{min-width:0;padding-inline:8px}
+ #view-calendar #calendarMonthTitle{font-size:16px;text-align:right}
+ #calendarMonthControls230{grid-column:1/-1}
+ #calendarMonthControls230 .compact-actions{flex-wrap:nowrap;justify-content:space-between;gap:4px}
+ #calendarMonthControls230 .btn{min-width:0;padding-inline:6px;font-size:14px}
+ #view-calendar .calendar-filter-grid>label[for=calendarSource230]{grid-column:1/-1}
+ #view-calendar .calendar-filter-grid>.calendar-extra-filters230:not([open])>div{display:none}
+ #view-calendar .calendar-extra-filters230>summary{
+  display:inline-flex;align-items:center;cursor:pointer;list-style:none;min-height:44px;
+  padding-inline:6px;font-size:14px;white-space:nowrap
+ }
+ #view-calendar #calendarClearFilter{padding-inline:6px;font-size:14px;white-space:nowrap}
+ #view-calendar .calendar-extra-filters230>summary::after{content:'▾';margin-inline-start:4px;color:var(--muted)}
+ #view-calendar .calendar-extra-filters230>summary::-webkit-details-marker{display:none}
+ #view-calendar .calendar-extra-filters230[open]{grid-column:1/-1}
+ #view-calendar .calendar-extra-fields230{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
+ #view-calendar .calendar-extra-fields230>label{min-width:0}
+ #view-calendar .calendar-grid{min-width:0!important;grid-template-columns:repeat(7,minmax(0,1fr))}
+ #view-calendar .calendar-weekday{padding:4px 0;font-size:11px}
  #view-calendar .calendar-day{min-height:58px;padding:3px;gap:2px}
  #view-calendar .calendar-date-num{flex-wrap:wrap;font-size:13px}
- #view-calendar .calendar-count211{font-size:11px;min-width:0;padding:0 2px}
+ #view-calendar .calendar-count211{font-size:11px;min-width:0;padding:0 2px;overflow:hidden}
  #view-calendar .calendar-day-preview230,#view-calendar .calendar-day-summary230{display:none}
  #view-calendar .calendar-row230 .note-card{grid-template-columns:48px minmax(0,1fr)}
  #view-calendar .calendar-row230 .note-actions{grid-column:2;justify-content:flex-start}
+}
+@media screen and (max-width:365px){
+ .calendar-extra-fields230>label[for^=calendarDate]{grid-column:1/-1}
 }

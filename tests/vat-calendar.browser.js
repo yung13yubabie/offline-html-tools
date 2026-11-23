@@ -87,10 +87,18 @@ async function crowdedCalendar(page,{reload,screenshot}){
  assert.equal(await day.locator('.calendar-count211').textContent(),'124');
  for(const width of [390,320]){
   await page.setViewportSize({width,height:820});
-  await page.locator('#view-calendar').evaluate(node=>node.getAnimations({subtree:true}).forEach(animation=>animation.cancel()));
+  await page.waitForFunction(()=>document.getAnimations().every(animation=>
+   animation.playState!=='running'||!Number.isFinite(animation.effect?.getComputedTiming().endTime)));
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   assert(await day.evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+  assert(await page.locator('#calendarGrid').evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+  assert(await source.isVisible());
+  assert(await page.locator('#calendarDateFrom').isHidden());
  }
+ const extra=page.locator('#view-calendar .calendar-extra-filters230 summary');
+ await extra.click();
+ assert(await page.locator('#calendarDateFrom').isVisible());
+ await extra.click();
  await screenshot(page,'vat230-calendar-crowded-mobile');
 }
 

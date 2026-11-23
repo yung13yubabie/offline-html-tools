@@ -84,6 +84,25 @@ function openCalendarDrawer(date){
 }
 function bindCalendarTools230(){
  const menu=$('#calendarTools230');
+ const clear=$('#calendarClearFilter');
+ const compact=matchMedia('(max-width: 520px)');
+ const extra=vatElement214('details','calendar-extra-filters230');
+ const fields=vatElement214('div','calendar-extra-fields230');
+ extra.append(vatElement214('summary','btn','其他篩選'),fields);
+ const controls=['calendarClientFilter','calendarDateFrom','calendarDateTo','calendarSort'].map(id=>$('#'+id).closest('label'));
+ const placeFilters=()=>{
+  if(compact.matches){
+   clear.before(extra);
+   fields.append(...controls);
+  }else{
+   const source=$('#calendarSource230').closest('label');
+   source.before(controls[0]);
+   clear.before(...controls.slice(1));
+   extra.remove();
+  }
+ };
+ compact.addEventListener('change',placeFilters);
+ placeFilters();
  const close=()=>{
   menu.open=false;
   $('#calendarMoreBtn').focus({preventScroll:true});
