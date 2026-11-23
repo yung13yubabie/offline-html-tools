@@ -3,6 +3,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),fs=require(
 module.exports=async function calculatorMathForms(p){
  const before={expression:await p.locator('#calcExpression').textContent(),result:await p.locator('#calcResult').textContent()},viewport=p.viewportSize();
  const out=path.resolve(__dirname,'../test-results/browser');fs.mkdirSync(out,{recursive:true});
+ const openTool=id=>p.locator('[data-panel="'+id+'"]').click();
  const coeff=(row,col)=>p.locator(`.equation-row[data-row="${row}"] .linear-coefficient[data-column="${col}"]`);
  const sign=(row,col)=>p.locator(`.equation-row[data-row="${row}"] .linear-sign[data-column="${col}"]`);
  const constant=row=>p.locator('#linearConstant'+row);
@@ -14,7 +15,7 @@ module.exports=async function calculatorMathForms(p){
  async function ratio(){await p.locator('#ratioCalculateBtn').click();}
  async function capture(id,name){await p.locator('#'+id).scrollIntoViewIfNeeded();await p.screenshot({path:path.join(out,name+'.png'),animations:'disabled'});}
  try{
-  await p.locator('[data-panel=generalPanel]').click();
+  await openTool('linearTool');
   assert.equal(await p.locator('#linearEntryMode').inputValue(),'form');assert(await p.locator('#linearBuilder').isVisible());assert(await p.locator('#linearTextEditor').isHidden());
   assert.equal(await p.locator('#linearTool').evaluate(e=>e.closest('.batch-card')),null,'Math worksheets are independently discoverable');
   assert.equal(await p.locator('.equation-row').count(),2);assert.equal(await p.locator('.linear-coefficient').count(),4);
@@ -38,6 +39,7 @@ module.exports=async function calculatorMathForms(p){
   await p.locator('#linearEntryMode').selectOption('form');await p.locator('#linearVariableCount').selectOption('10');await p.locator('#linearEquationCount').selectOption('20');assert.equal(await p.locator('.linear-coefficient').count(),200);await coeff(19,9).fill('8');assert.equal(await coeff(19,9).inputValue(),'8');
   assert(await p.locator('#linearRows').evaluate(e=>e.scrollHeight>e.clientHeight&&getComputedStyle(e).overflowY==='auto'),'Large form uses a bounded inner scroll area');
   await preset('two');await solve();await capture('linearTool','accounting-calculator-guided-linear-desktop');
+  await openTool('ratioTool');
   assert.equal(await p.locator('#ratioBasis').inputValue(),'whole');assert.equal(await p.locator('#ratioBasePercent').inputValue(),'100');assert(await p.locator('#ratioBasePercent').evaluate(e=>e.readOnly));
   await p.locator('#ratioBaseValue').fill('200');await p.locator('#ratioTarget').fill('50');await ratio();await state('ratio','success');assert.match(await p.locator('#ratioResult').textContent(),/q = 25%/);
   await p.locator('#ratioBasis').selectOption('custom');await clear('ratio');assert(!(await p.locator('#ratioBasePercent').evaluate(e=>e.readOnly)));await p.locator('#ratioBasePercent').fill('40');await p.locator('#ratioTarget').fill('100');await ratio();assert.match(await p.locator('#ratioResult').textContent(),/q = 20%/);
@@ -52,14 +54,14 @@ module.exports=async function calculatorMathForms(p){
   for(const width of [390,320]){
    await p.setViewportSize({width,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    for(const id of ['linearTool','ratioTool']){
-    await p.locator('#'+id).scrollIntoViewIfNeeded();assert(await p.locator('#'+id).evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1;}));
+    await openTool(id);await p.locator('#'+id).scrollIntoViewIfNeeded();assert(await p.locator('#'+id).evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1;}));
     const clipped=await p.locator('#'+id+' input,'+'#'+id+' select').evaluateAll(elements=>elements.filter(e=>e.getClientRects().length).filter(e=>{const r=e.getBoundingClientRect(),card=e.closest('.guided-tool').getBoundingClientRect();return r.left<card.left-1||r.right>card.right+1;}).map(e=>e.id||e.className));assert.deepEqual(clipped,[]);
     await p.locator('#'+id).screenshot({path:path.join(out,'accounting-calculator-guided-'+id+'-'+width+'.png'),animations:'disabled'});
    }
   }
-  await p.emulateMedia({reducedMotion:'reduce'});assert.equal(await p.locator('.guided-chevron').first().evaluate(e=>getComputedStyle(e).transitionDuration),'0s');await p.emulateMedia({reducedMotion:'no-preference'});
+  await p.emulateMedia({reducedMotion:'reduce'});assert.equal(await p.locator('#linearTool .guided-tool').first().evaluate(e=>getComputedStyle(e).transitionDuration),'0s');await p.emulateMedia({reducedMotion:'no-preference'});
   assert.equal(await p.locator('#calcExpression').textContent(),before.expression);assert.equal(await p.locator('#calcResult').textContent(),before.result);
  }finally{
-  await p.setViewportSize(viewport);await p.locator('#linearEntryMode').selectOption('text');await p.locator('#linearInput').fill('');await p.locator('#linearEntryMode').selectOption('form');await p.locator('#ratioMode').selectOption('forward');
+  await p.setViewportSize(viewport);await openTool('linearTool');await p.locator('#linearEntryMode').selectOption('text');await p.locator('#linearInput').fill('');await p.locator('#linearEntryMode').selectOption('form');await openTool('ratioTool');await p.locator('#ratioMode').selectOption('forward');
  }
 };

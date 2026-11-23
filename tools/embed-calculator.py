@@ -21,7 +21,7 @@ def build(text):
     ]
     blocks += [
         ('TAX_GROUPS_STYLE', (ROOT / 'calculator/tax-groups.css').read_text(), 'style', '</head>'),
-        ('TAX_GROUPS_MARKUP', (ROOT / 'calculator/tax-groups.html').read_text(), None, '<!-- GUIDED_MATH_ANCHOR -->'),
+        ('TAX_GROUPS_MARKUP', (ROOT / 'calculator/tax-groups.html').read_text(), None, '<!-- TAX_GROUPS_MARKUP_ANCHOR -->'),
         ('TAX_GROUPS_SCRIPT', '\n'.join((ROOT / ('calculator/' + name)).read_text() for name in ['tax-groups-core.js', 'tax-groups-ui.js']), 'script', '<!-- OFFLINE_REVIEW_BEGIN -->'),
     ]
     blocks += [

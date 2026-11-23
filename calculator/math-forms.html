@@ -1,7 +1,6 @@
-<section class="guided-math" data-review-id="accounting-calculator-guidedMath" data-review-name="選單式進階計算" aria-labelledby="guidedMathTitle">
-  <div class="guided-heading"><div><p class="workspace-kicker">選擇條件 · 填入數字 · 核對結果</p><h2 id="guidedMathTitle">把計算條件，逐項填好</h2></div><p>從選單開始，不必先寫好整條算式。</p></div>
-  <details id="linearTool" class="math-tool guided-tool" open data-review-id="accounting-calculator-linearTool" data-review-name="多元一次方程式">
-    <summary><span class="guided-tool-index">01</span><span class="guided-tool-title">多元一次方程式<span>選擇幾個未知數，再填每條條件的係數</span></span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+<section id="linearTool" class="panel" aria-labelledby="linearTitle" data-review-id="accounting-calculator-linearTool" data-review-name="多元一次方程式">
+  <div class="workspace-heading"><div><h1 id="linearTitle">多元一次方程式</h1><p>選擇未知數數量，再填每條方程式的係數。</p></div></div>
+  <div class="math-tool guided-tool">
     <div class="guided-workspace">
       <form id="linearForm" class="guided-form" novalidate data-review-id="accounting-calculator-linearForm" data-review-name="方程式條件填寫">
         <div class="guided-form-heading"><h3>設定題目</h3><label class="guided-mode-label" for="linearEntryMode">填寫方式<select id="linearEntryMode"><option value="form">選單與係數欄位</option><option value="text">進階：貼上完整方程式</option></select></label></div>
@@ -25,9 +24,11 @@
         <div id="linearResult" class="math-result guided-result" role="status" aria-live="polite" aria-atomic="true"></div>
       </aside>
     </div>
-  </details>
-  <details id="ratioTool" class="math-tool guided-tool" open data-review-id="accounting-calculator-ratioTool" data-review-name="比例換算">
-    <summary><span class="guided-tool-index">02</span><span class="guided-tool-title">比例換算<span>先選想求的結果，再填已知數值與比例</span></span><span class="guided-chevron" aria-hidden="true">⌄</span></summary>
+  </div>
+</section>
+<section id="ratioTool" class="panel" aria-labelledby="ratioTitle" data-review-id="accounting-calculator-ratioTool" data-review-name="比例換算">
+  <div class="workspace-heading"><div><h1 id="ratioTitle">比例換算</h1><p>按照已知的對應比例，求百分比或數值。</p></div></div>
+  <div class="math-tool guided-tool">
     <div class="guided-workspace">
       <form id="ratioForm" class="guided-form" novalidate data-review-id="accounting-calculator-ratioForm" data-review-name="比例條件填寫">
         <div class="guided-form-heading"><h3>選擇換算方式</h3><button type="button" id="ratioExampleBtn" class="btn small">試填範例</button></div>
@@ -45,5 +46,5 @@
         <p class="guided-help ratio-rules">可用正數、負數與小數；百分比欄只填數字，不需輸入 %。已知數值不可為 0；由百分比求數值時，已知百分比也不可為 0。</p>
       </aside>
     </div>
-  </details>
+  </div>
 </section>

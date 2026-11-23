@@ -5,7 +5,8 @@
 .allocation-heading19{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
 .allocation-heading19 h2{margin:0;font-size:18px;line-height:1.4}
 .allocation-heading19>.btn{min-height:44px;white-space:nowrap}
-.allocation-heading19>.btn:disabled{opacity:.55;cursor:not-allowed}
+.allocation-heading19>.btn:enabled{color:var(--blue-strong);border-color:var(--blue);font-weight:650}
+.allocation-heading19>.btn:disabled{opacity:1;cursor:not-allowed;color:var(--muted);background:var(--surface-2);border-color:var(--line)}
 .allocation-date-hint19{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.65}
 .allocation-fields19{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 24px}
 .allocation-field19{display:grid;align-content:start;gap:8px;min-width:0;color:var(--text);font-size:14px;font-weight:600}

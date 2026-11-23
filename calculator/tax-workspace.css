@@ -67,3 +67,21 @@ body.book-focus-mode #taxPanel{animation:none!important;transform:none!important
 #taxPanel .book-navigation{display:grid;grid-template-columns:minmax(0,1fr) minmax(70px,100px) auto auto;gap:8px;align-items:end;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line)}
 #taxPanel .book-navigation select{width:100%;min-width:0}#taxPanel .book-navigation .btn{min-height:44px;white-space:nowrap;font-size:14px}
 @media(max-width:540px){.session-actions{width:100%;justify-content:space-between;gap:8px}.session-actions .session-note{font-size:13px}#taxPanel .book-navigation{grid-template-columns:minmax(0,1fr) minmax(70px,100px)}#taxPanel .book-navigation .btn{width:100%}}
+
+#taxPanel .tax-toolbar{gap:12px;margin-bottom:16px}
+#taxPanel .tax-toolbar .copy-pref{min-height:44px}
+#taxPanel .tax-entry-note{margin:0;color:var(--muted);font-size:14px;line-height:1.55}
+#taxPanel .tax-settings{padding:16px;margin-bottom:16px}
+#taxPanel .settings-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:16px}
+#taxPanel .setting-item label,#taxPanel .carryover-label{font-size:14px;color:var(--muted);line-height:1.45}
+#taxPanel .setting-item :is(input,select){min-height:44px;font-size:16px}
+#taxPanel .final-grid{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-top:10px}
+#taxPanel .final-grid .setting-item{display:grid;flex:1 1 110px;gap:6px;min-width:0}
+#taxPanel .warn-nav{display:flex;flex:1 0 auto;flex-wrap:wrap;gap:8px;margin:0}
+#taxPanel .warn-nav>.btn{flex:1}
+#taxPanel :is(.tax-toolbar,.final-grid,.side-tabs,.side-header,.book-actions,.book-focus-toolbar) .btn,
+#taxPanel :is(.book-toggle,.add-book,.delete-row,.book-option select){min-height:44px}
+#taxPanel :is(.tax-toolbar,.final-grid,.side-tabs,.side-header) .btn{font-size:14px}
+#taxPanel .side-header{margin-bottom:10px}
+#taxPanel .book-option select{font-size:16px}
+#taxPanel .tax-field-cell{gap:8px}

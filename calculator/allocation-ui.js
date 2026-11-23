@@ -27,6 +27,9 @@
   errors[key].textContent = message;
   errors[key].hidden = !message;
  }
+ function updateCopyState() {
+  copy.disabled = copyBusy || !result || !Object.values(options()).some(Boolean);
+ }
  function clearCopy() {
   generation++;
   copyBusy = false;
@@ -38,7 +41,7 @@
   result = null;
   page = 0;
   clearCopy();
-  copy.disabled = true;
+  updateCopyState();
   summary.hidden = true;
   pager.hidden = true;
   live.textContent = '';
@@ -67,7 +70,7 @@
 
   details.dataset.state = 'success';
   details.replaceChildren();
-  copy.disabled = !visible || copyBusy;
+  updateCopyState();
   if (!visible) {
    details.append(element('p', 'allocation-empty19', '勾選上方項目即可顯示分攤明細。'));
    pager.hidden = true;
@@ -193,7 +196,7 @@
   if (!text || copyBusy) return false;
   const token = generation;
   copyBusy = true;
-  copy.disabled = true;
+  updateCopyState();
   copyStatus.textContent = '';
   try {
    if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') throw Error('clipboard unavailable');
@@ -213,7 +216,7 @@
   } finally {
    if (token === generation) {
     copyBusy = false;
-    copy.disabled = !result || !Object.values(options()).some(Boolean);
+    updateCopyState();
    }
   }
  }

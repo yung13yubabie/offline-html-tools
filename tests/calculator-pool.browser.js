@@ -64,11 +64,16 @@ module.exports = async function calculatorPool(p) {
     await p.locator('.mode-switch [data-panel="poolPanel"]').click();
     await p.locator('#poolPanel').waitFor({state: 'visible'});
     assert.equal(await p.locator('.mode-switch [data-panel="poolPanel"]').getAttribute('aria-pressed'), 'true');
+    assert.deepEqual(await p.locator('#poolPanel .pool-section-heading h2').allTextContents(),['放入數字','設定目標與差額','組合結果']);
+    assert.deepEqual(await p.locator('#poolPanel .step-label').allTextContents(),['01','02','03']);
+    const example=p.locator('#poolExample');assert.equal(await example.locator('h3').textContent(),'範例');
+    assert.equal(await p.locator('#poolResults').textContent(),'');
     await p.locator('#poolExampleBtn').click();
     assert.equal(await p.locator('#poolTarget').inputValue(), '1000');
     assert.equal(await p.locator('#poolTolerance').inputValue(), '2');
     assert.deepEqual((await snapshot()).map(row => row.value), ['600', '400', '250', '751', '249']);
     await successfulSearch();
+    assert(await example.isHidden());
     assert.deepEqual(await p.locator('.pool-group').evaluateAll(groups => groups.map(group => group.dataset.difference)), ['0', '1']);
     const exact = p.locator('.pool-group[data-exact="true"]');
     assert.deepEqual(compact(await equations(exact)).sort(), ['600+400=1000', '751+249=1000'].sort());

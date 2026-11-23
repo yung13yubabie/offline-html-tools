@@ -9,7 +9,7 @@ for(const value of [0,1,10,100,1000,10001,12957,2457,999999999,-1234,12.9]){
 }
 assert.equal(ctx.enterLabel('down'),'下一筆同一欄位');assert.equal(ctx.enterLabel('right'),'下一筆的預設欄位');
 assert(!source.includes('↵→'));assert(!source.includes('↵↓'));assert(!source.includes('資料直接內嵌於此 HTML'));
-assert(source.includes('提醒：計算內容重新整理後會清空。'));assert(source.includes('115.01.01 生效'));
+assert(source.includes('重新整理後會清空本次計算。'));assert(source.includes('115.01.01 生效'));
 assert(source.includes('沿用本類設定：${enterLabel(categoryEnterDefault[def.id])}'));
 assert(source.includes('<details class="cost-note">'));assert(source.includes('class="upper-guide"'));
 console.log(JSON.stringify({passed:true,scope:'inline script syntax, numeral presentation parity, explicit labels; not browser layout'}));

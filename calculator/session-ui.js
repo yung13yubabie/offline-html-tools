@@ -2,8 +2,10 @@
 (()=>{
  'use strict';
  const button=document.getElementById('clearCalculationsBtn');
- button.addEventListener('click',()=>{
-  if(!confirm('清除所有計算資料與結果？\n稅率、輸入設定、冊別分類及修改標註會保留。'))return;
+ const dialog=document.getElementById('clearCalculationsDialog');
+ button.addEventListener('click',()=>dialog.showModal());
+ dialog.querySelector('form').addEventListener('submit',event=>{
+  if(event.submitter?.value!=='clear')return;
   document.dispatchEvent(new Event('calculator:clear-data'));
   toast('計算資料已清除，設定已保留');
  });

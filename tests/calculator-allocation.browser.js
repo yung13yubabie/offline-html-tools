@@ -6,6 +6,7 @@ module.exports = async function allocationBrowser(sourcePage,{screenshot}){
  try{
   await page.goto(sourcePage.url());
   await page.locator('[data-panel="allocationPanel"]').click();
+  assert(await id('Copy').isDisabled());
   assert.equal(await id('Unit').inputValue(),'year');
   assert(await id('ShowAmount').isChecked());
   assert(await id('ShowRatio').isChecked());
@@ -16,6 +17,7 @@ module.exports = async function allocationBrowser(sourcePage,{screenshot}){
   await id('End').fill('20270831');
   const rows=page.locator('.allocation-equation19');
   await rows.first().waitFor();
+  assert(await id('Copy').isEnabled());
   assert.deepEqual(await rows.allTextContents(),['1,000 × 122/365','1,000 × 243/365']);
   assert.deepEqual(await page.locator('.allocation-row-amount19 strong').allTextContents(),['334.25','665.75']);
   assert.deepEqual(await page.locator('.allocation-row-dates19').allTextContents(),[
@@ -39,6 +41,7 @@ module.exports = async function allocationBrowser(sourcePage,{screenshot}){
   assert(await id('Copy').isDisabled());
   assert(!await id('CopyFallback').isVisible());
   await id('ShowRatio').check();
+  assert(await id('Copy').isEnabled());
   await id('Unit').selectOption('month');
   assert.equal(await rows.count(),12);
   assert.match(await rows.first().innerText(),/30\/365/);
@@ -73,8 +76,8 @@ module.exports = async function allocationBrowser(sourcePage,{screenshot}){
   await page.setViewportSize({width:390,height:844});
   await page.evaluate(()=>window.scrollTo(0,0));
   await screenshot?.(page,'calculator-allocation-mobile');
-  page.once('dialog',dialog=>dialog.accept());
   await page.locator('#clearCalculationsBtn').click();
+  await page.locator('#clearCalculationsDialog').getByRole('button',{name:'清除全部'}).click();
   assert.equal(await id('Amount').inputValue(),'');
   assert.equal(await id('Start').inputValue(),'');
   assert.equal(await id('Unit').inputValue(),'month');

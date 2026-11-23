@@ -241,17 +241,20 @@ async function calculatorMathTools(p){
  async function ratio(){await p.locator('#ratioCalculateBtn').click();}
  try{
   await p.locator('[data-panel="generalPanel"]').click();
+  assert.equal(await p.locator('#generalPanel :is(#linearTool,#ratioTool)').count(),0);
+  assert(await p.locator('#taxGroupsTool').isVisible());
+  assert(await p.locator('#taxGroupsRows').isHidden(),'Batch tax worksheet stays collapsed on the main page');
+  const openTool=id=>p.locator('[data-panel="'+id+'"]').press('Enter');
   for(const id of ['linearTool','ratioTool']){
+   await openTool(id);
+   assert(await p.locator('#'+id+' h1').isVisible());
    assert.equal(await p.locator('#'+id).getAttribute('data-review-id'),'accounting-calculator-'+id);
-   const summary=p.locator('#'+id+' > summary');
-   if(await p.locator('#'+id).getAttribute('open')!==null)await summary.click();
-   await summary.focus();await summary.press('Enter');
-   assert.notEqual(await p.locator('#'+id).getAttribute('open'),null,'Enter on a focused summary must open the tool');
-   await summary.press('Enter');assert.equal(await p.locator('#'+id).getAttribute('open'),null,'Enter must also close the tool');
-   await summary.press('Enter');assert.notEqual(await p.locator('#'+id).getAttribute('open'),null,'Repeated keyboard activation must reopen it');
+   assert.equal(await p.locator('[data-panel="'+id+'"]').getAttribute('aria-pressed'),'true');
+   assert(await p.locator('#generalPanel').isHidden());
   }
-  await p.locator('#linearEntryMode').selectOption('text');
   await p.locator('#ratioBasis').selectOption('custom');
+  await openTool('linearTool');
+  await p.locator('#linearEntryMode').selectOption('text');
   await p.locator('#linearInput').pressSequentially('x+y=5');await p.locator('#linearInput').press('Enter');await p.locator('#linearInput').pressSequentially('2*x-y=1');
   assert.equal(await p.locator('#calcExpression').textContent(),before.expression,'Typing equations must not trigger main calculator shortcuts');assert.equal(await p.locator('#calcResult').textContent(),before.result);
   await p.locator('#linearSolveBtn').click();await state('#linearResult','unique');
@@ -260,6 +263,8 @@ async function calculatorMathTools(p){
   await solve('x*y=2\nx+y=3');await state('#linearResult','error');assert.match(await p.locator('#linearResult').textContent(),/線性|一次式/);
   await solve('');await state('#linearResult','error');
   await solve('x+y=5\n2*x-y=1');await state('#linearResult','unique');
+  await openTool('ratioTool');
+  assert.equal(await p.locator('#ratioBasis').inputValue(),'custom','Tool switching preserves input settings');
   await p.locator('#ratioBaseValue').fill('200');await p.locator('#ratioBasePercent').fill('40');await p.locator('#ratioTarget').fill('100');
   await ratio();await state('#ratioResult','success');assert.match(await p.locator('#ratioResult').textContent(),/q\s*=\s*20\s*%/);
   await p.locator('#ratioMode').selectOption('reverse');await cleared('#ratioResult');assert.match(await p.locator('#ratioTargetLabel').textContent(),/百分比/);await p.locator('#ratioTarget').fill('20');
@@ -269,11 +274,11 @@ async function calculatorMathTools(p){
   await p.locator('#ratioBasePercent').fill('40');await p.locator('#ratioMode').selectOption('forward');await p.locator('#ratioBaseValue').fill('0');await ratio();await state('#ratioResult','error');
   await p.locator('#ratioBaseValue').fill('200');await p.locator('#ratioTarget').fill('0');await ratio();await state('#ratioResult','success');assert.match(await p.locator('#ratioResult').textContent(),/q\s*=\s*0\s*%/,'Zero target is valid, unlike a zero denominator');
   await p.locator('#ratioTarget').fill('100');await ratio();await state('#ratioResult','success');
-  await p.locator('#linearTool').scrollIntoViewIfNeeded();await calculatorScreenshot(p,'accounting-calculator-math-tools-desktop');
+  await openTool('linearTool');await calculatorScreenshot(p,'accounting-calculator-math-tools-desktop');
   await p.setViewportSize({width:390,height:844});
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'New math tools must not overflow 390px');
   for(const id of ['linearTool','ratioTool']){
-   const tool=p.locator('#'+id);await tool.scrollIntoViewIfNeeded();
+   await openTool(id);const tool=p.locator('#'+id);await tool.scrollIntoViewIfNeeded();
    assert(await tool.evaluate(e=>{const r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1}),'New math tool must fit the narrow viewport');
    await p.waitForFunction(()=>[...document.querySelectorAll('.toast')].every(e=>getComputedStyle(e).opacity==='0'||getComputedStyle(e).display==='none'));
    await tool.screenshot({path:path.join(OUT,`accounting-calculator-${id}-mobile.png`)});
@@ -281,6 +286,7 @@ async function calculatorMathTools(p){
   await p.setViewportSize({width:1440,height:1000});
   // The original calculator must still evaluate normally after both new tools were used.
   assert.equal(await p.locator('#calcExpression').textContent(),before.expression);assert.equal(await p.locator('#calcResult').textContent(),before.result);
+  await p.locator('[data-panel="generalPanel"]').click();
   await p.locator('[data-key="C"]').click();for(const key of '2+3')await p.locator(`[data-key="${key}"]`).click();await p.locator('[data-key="="]').click();assert.equal((await p.locator('#calcResult').textContent()).trim(),'5');
  }finally{await p.setViewportSize({width:1440,height:1000});}
 }

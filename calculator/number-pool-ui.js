@@ -179,6 +179,7 @@
     $('poolSummary').hidden = true; resultBox.replaceChildren();
     let data;
     try {data = snapshot();} catch(error) {status(error.message, 'error');return;}
+    $('poolExample').hidden = true;
     const request = generation;
     status('正在搜尋 ' + data.items.length + ' 筆數字的' + modes[data.mode].name + '組合…');
     $('poolBusy').hidden = false; $('poolCancelBtn').hidden = false; $('poolSearchBtn').disabled = true; resultBox.setAttribute('aria-busy','true');
@@ -205,7 +206,7 @@
   }
   function loadExample() {
     const hasData = [...rows.children].some(row => row.querySelector('.pool-value').value || row.querySelector('.pool-name').value);
-    if (hasData && !confirm('載入範例會取代下方清單，是否繼續？')) return;
+    if (hasData && !confirm('載入範例會取代目前清單，是否繼續？')) return;
     invalidate(); rows.replaceChildren(); $('poolTarget').value = '1000'; $('poolTolerance').value = '2'; setMode('add');
     [['貨款 A','600'],['貨款 B','400'],['備用品','250'],['設備尾款','751'],['運費與包材','249']].forEach(([name,value]) => addRow(name,value));
     status('範例已載入。按「找出組合」看看完全符合與差 1 的結果。');
@@ -236,19 +237,13 @@
   $('poolSearchBtn').addEventListener('click',search);
   $('poolEffort').addEventListener('change',invalidate);
   $('poolCancelBtn').addEventListener('click',() => {stop(); status('已取消搜尋，輸入內容已保留。');});
-  resultBox.addEventListener('click',event => {if (event.target.closest('#poolExampleBtn')) loadExample();});
-  document.querySelectorAll('[data-workspace-go]').forEach(button => button.addEventListener('click',() => {
-    const target = button.dataset.workspaceGo;
-    const isPanel = $(target).classList.contains('panel');
-    document.querySelector('[data-panel="' + (isPanel ? target : 'generalPanel') + '"]').click();
-    if (!isPanel) {$(target).open = true; $(target).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'}); $(target).querySelector('summary').focus({preventScroll:true});}
-    else $(target === 'poolPanel' ? 'poolTarget' : 'dateDiffStart').focus();
-  }));
+  $('poolExampleBtn').addEventListener('click', loadExample);
   document.addEventListener('calculator:clear-data',()=>{
     stop();latest=null;rows.replaceChildren();addRow();
     for(const id of ['poolTarget','poolPaste'])$(id).value='';
     $('poolImportStatus').textContent='';resultBox.replaceChildren();
     $('poolExportBtn').disabled=true;$('poolSummary').hidden=true;
+    $('poolExample').hidden=false;
     status('計算資料已清除，請輸入目標與數字。');updateCount();
   });
   const navButtons = [...document.querySelectorAll('.mode-switch button')];
