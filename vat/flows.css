@@ -1,0 +1,89 @@
+/* Dense workspaces keep controls close to the records they affect. */
+#workCommonSettings.work-period-summary229{
+ display:flex;gap:6px 16px;align-items:center;flex-wrap:wrap;
+ padding:0 0 10px!important;margin:0!important;background:none;box-shadow:none;border-radius:0;color:var(--muted)
+}
+#workCommonSettings[hidden]{display:none}
+.work-summary-date229{white-space:nowrap}
+.work-period-summary229 strong{color:var(--text);font-variant-numeric:tabular-nums}
+.work-summary-note229{flex:1 1 12rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#editCurrentPeriodSettings{min-height:44px;flex:none}
+#view-work .work-tabs{align-items:center;gap:5px 8px}
+.work-batch229{position:relative;margin-left:auto;flex:none}
+.work-batch229>summary{min-height:44px;list-style:none;cursor:pointer}
+.work-batch229>summary::-webkit-details-marker{display:none}
+#view-work .work-tabs:not(:has(#workMainTab.active)) .work-batch229{display:none}
+.work-batch-items229{
+ position:absolute;z-index:12;right:0;top:calc(100% + 4px);min-width:max-content;
+ display:grid;padding:4px;border:1px solid var(--line);border-radius:7px;background:var(--panel);box-shadow:var(--shadow)
+}
+.work-batch-items229>.btn{justify-content:flex-start;min-height:39px}
+.work-quick229{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:7px}
+.work-quick229>.btn{
+ display:flex;justify-content:space-between;text-align:left;gap:5px;align-items:center;min-height:44px;
+ padding:5px 7px;white-space:normal;overflow-wrap:anywhere;font-size:13px
+}
+.work-quick229>.btn[aria-pressed=true]{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+.work-quick229 strong{font-variant-numeric:tabular-nums}
+#workDetail .work-steps229{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 0 12px;border:0
+}
+.work-steps229>.btn{display:flex;gap:5px;align-items:center;justify-content:flex-start;min-height:46px;text-align:left;white-space:normal}
+.work-steps229>.btn>span{color:var(--muted);font-variant-numeric:tabular-nums}
+.work-steps229>.btn[aria-selected=true]{background:var(--brand-soft);border-color:var(--brand);color:var(--brand)}
+#workDetail .focus-section-shell+.focus-section-shell{margin-top:12px}
+#workDetail h3.focus-section-heading{margin-block:0;font-size:15px}
+#view-work .vat-help217:has(>summary[aria-label]){display:inline-block}
+#view-work .vat-help217>summary[aria-label]{display:inline-grid;place-items:center;min-width:28px;min-height:28px;border:1px solid var(--line);border-radius:50%}
+.work-native-hidden229,.work-roc-input229[hidden]{display:none!important}
+.work-roc-input229[aria-invalid=true]{border-color:var(--red)}
+#accountingStats .cases-stat219{font:inherit;min-height:56px}
+#accountingCompleteHint229{margin:0}
+#view-accounting .accounting-batch-actions[hidden]{display:none}
+#view-accounting .accounting-row-actions>.btn{white-space:nowrap;margin-bottom:3px}
+#clientTable .client-sales-column214{
+ min-width:8.5em;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums
+}
+#clientTable .revenue-edit214{
+ padding:0;min-height:36px;max-width:none;border:0;background:none;color:var(--text);font:inherit;font-weight:650
+}
+#clientTable .revenue-edit214:hover{text-decoration:underline;color:var(--brand)}
+#clientTable td:nth-child(2){min-width:12em}
+.client-editor229{display:grid;gap:14px}
+.client-editor229>section{min-width:0;display:grid;gap:8px}
+.client-editor229>section+section{padding-top:10px;border-top:1px solid var(--line)}
+.client-editor229 h3{margin:0;font-size:15px}
+.client-editor229 .form-grid{gap:7px 10px}
+.client-editor229 [hidden]{display:none!important}
+.client-editor229 .contact-row{margin:0 0 5px}
+.client-editor229 .client-history229 summary{cursor:pointer;color:var(--muted);font-weight:650}
+#templateReminderPane>.template-workspace{grid-template-columns:minmax(0,1fr)!important}
+#templateReminderPane .notice-library223[hidden]{display:none}
+.notice-reminder-table229{width:100%;border-collapse:collapse}
+.notice-reminder-table229 :is(th,td){padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.notice-reminder-table229 td>small{display:block;color:var(--muted);margin-top:2px}
+.notice-reminder-table229 th{color:var(--muted);font-weight:650}
+#view-templates #templateExportPane #exportFilters215{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media screen and (min-width:1280px){#view-templates #templateExportPane #exportFilters215{grid-template-columns:repeat(4,minmax(0,1fr))}}
+#templateExportPane #txtSelectAllBtn{white-space:normal}
+#view-pdf .pdf-field-row229{display:grid;grid-template-columns:minmax(0,1fr) 32px 32px;gap:3px;align-items:center}
+#view-pdf .pdf-field-row229>label{min-width:0;overflow-wrap:anywhere}
+#view-pdf .pdf-field-row229>.btn{padding-inline:4px}
+@media screen and (min-width:1001px){
+ #view-pdf .pdf-workspace217{grid-template-columns:minmax(232px,17%) minmax(0,1fr) minmax(200px,15%)}
+}
+@media screen and (max-width:1000px){
+ #view-pdf .pdf-workspace217{grid-template-columns:minmax(0,1fr)}
+}
+@media screen and (max-width:800px){
+ #workDetail .work-steps229{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .work-summary-note229{flex-basis:50%}
+}
+@media screen and (max-width:530px){
+ #view-work .work-tabs .work-tab{min-width:0;flex:1 1 auto}
+ .work-batch229{margin-left:auto}
+ .work-batch-items229>.btn{min-height:44px}
+ .notice-reminder-table229 :is(th,td){padding:6px 4px}
+ .notice-reminder-table229 .badge{font-size:11px;white-space:normal}
+ .client-editor229 .contact-row{grid-template-columns:minmax(0,1fr)}
+}

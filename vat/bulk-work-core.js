@@ -12,7 +12,9 @@ function createVATBulkPolicy215(){
  function hasTax(pc){if(pc.taxAmount==null||String(pc.taxAmount).trim()==='')return false;try{amount(pc.taxAmount);return true}catch{return false}}
  function matches(pc,filters={}){
   const date=validDate(pc[filters.dateField||'appointmentDate']),tax=hasTax(pc);
-  return (filters.date==='set'?date:filters.date==='missing'?!date:true)&&(filters.tax==='set'?tax:filters.tax==='missing'?!tax:true);
+  const due=tax&&amount(pc.taxAmount)>0;
+  const payment=filters.payment==='unpaid'?due&&!pc.taxPaid:filters.payment==='paid'?due&&!!pc.taxPaid:filters.payment==='none'?tax&&!due:true;
+  return payment&&(filters.date==='set'?date:filters.date==='missing'?!date:true)&&(filters.tax==='set'?tax:filters.tax==='missing'?!tax:true);
  }
  function eligible(pc,action){return !pc.notApplicable&&(action!=='paid'||hasTax(pc)&&amount(pc.taxAmount)>0&&!pc.taxPaid)}
  function priorCarry(pc,data){const ordered=data.periods.slice().sort((a,b)=>Number(a.year)-Number(b.year)||Number(a.slot)-Number(b.slot)),index=ordered.findIndex(p=>p.id===pc.periodId);if(pc.priorCarrySourcePCId218){const source=data.periodClients.find(x=>x.id===pc.priorCarrySourcePCId218),sourceIndex=ordered.findIndex(p=>p.id===source?.periodId);return !!source&&source.clientId===pc.clientId&&sourceIndex>=0&&sourceIndex<index&&!!source.carryInvoiceForward}const previous=ordered[index-1],candidates=previous?data.periodClients.filter(x=>x.periodId===previous.id&&x.clientId===pc.clientId):[];return candidates.length===1&&!!candidates[0].carryInvoiceForward}

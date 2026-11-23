@@ -86,7 +86,7 @@ module.exports=async function(p,h){
  await search.press('Enter');
  assert(await jump.isHidden());
  assert.match(await p.locator('#workDetail .detail-head').innerText(),/合成測試客戶乙/);
- await p.locator('[data-work-focus="notes"]').click();
+ await p.locator('[data-work-focus="receipt"]').click();
  await p.locator('#wNotes').fill('SYNTHETIC KEEP MY DRAFT');
  await p.locator('#globalSearchLaunch').click();
  await search.fill('TEST-A');

@@ -4,7 +4,7 @@ const a='2026-1::synthetic-a',b='2026-1::synthetic-b';
 async function records(p,store='periodClients'){return p.evaluate(async store=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('VAT_WORKBENCH_DB');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});try{return await new Promise((resolve,reject)=>{const r=db.transaction(store).objectStore(store).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}finally{db.close()}},store)}
 async function patch(p,store,changes){await p.evaluate(async({store,changes})=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('VAT_WORKBENCH_DB');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});await new Promise((resolve,reject)=>{const tx=db.transaction(store,'readwrite'),s=tx.objectStore(store);for(const change of changes){const r=s.get(change.id);r.onsuccess=()=>s.put({...r.result,...change})}tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)});db.close()},{store,changes})}
 async function extras(p,specs){await p.evaluate(async specs=>{const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('VAT_WORKBENCH_DB');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});await new Promise((resolve,reject)=>{const tx=db.transaction('periodClients','readwrite'),s=tx.objectStore('periodClients'),r=s.get('2026-1::synthetic-b');r.onsuccess=()=>{for(const spec of specs)s.put({...r.result,id:spec.id,clientId:spec.id,periodId:'2026-1',snapshot:{...r.result.snapshot,code:spec.id,name:'合成批次 '+spec.id},payments:[],fees:[],openingSnapshot210:[],taxAmount:'',appointmentDate:'',...spec})};tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)});db.close()},specs)}
-async function open(p,action){await p.locator('.nav-btn[data-view="work"]').click();await p.locator('#bulkWork215 [data-bulk-work215="'+action+'"]').click();await p.locator('#bulkWorkForm215').waitFor()}
+async function open(p,action){await p.locator('.nav-btn[data-view="work"]').click();await p.locator('#bulkWork215 > summary').click();await p.locator('#bulkWork215 [data-bulk-work215="'+action+'"]').click();await p.locator('#bulkWorkForm215').waitFor()}
 async function save(p){await p.locator('.bulk-work-modal215 .modal-foot button').last().click()}
 async function saved(p){await p.locator('#bulkWorkForm215').waitFor({state:'hidden'})}
 async function close(p,dirty=false){if(dirty)p.once('dialog',d=>d.accept());await p.locator('.bulk-work-modal215 [data-close]').click();await p.locator('#bulkWorkForm215').waitFor({state:'hidden'})}
@@ -16,6 +16,13 @@ async function exportFilters(p,h){
  await p.locator('#exportDateStatus215').selectOption('set');assert.deepEqual(await ids(),[]);assert.equal(await p.locator('#txtClients option:checked').count(),0,'Filter removes stale selections');await p.locator('#exportTaxStatus215').selectOption('set');assert.deepEqual(await ids(),[b,'negative'].sort(),'Zero and negative taxes are registered');
  await p.locator('#exportDateStatus215').selectOption('all');await p.locator('#exportDateField215').selectOption('plannedTaxPayDate');await p.locator('#exportDateStatus215').selectOption('set');assert.deepEqual(await ids(),['positive']);
  await p.locator('#txtSelectAllBtn').click();await p.locator('#txtClientSearch').fill('no-synthetic-match');assert.deepEqual(await ids(),[]);assert.equal(await p.locator('#txtClients option:checked').count(),0);await p.locator('#txtClientSearch').fill('');
+ const payment=p.locator('#exportTaxPayment229');
+ await payment.selectOption('unpaid');assert.deepEqual(await ids(),['positive']);
+ await payment.selectOption('paid');assert.deepEqual(await ids(),[]);
+ await p.locator('#exportDateStatus215').selectOption('all');
+ await payment.selectOption('none');assert.deepEqual(await ids(),[b,'negative'].sort());
+ await p.locator('#txtSelectAllBtn').click();assert.equal(await p.locator('#txtClients option:checked').count(),2);
+ await payment.selectOption('all');
  await p.locator('#exportDateStatus215').selectOption('all');await p.locator('#exportDateField215').selectOption('appointmentDate');await p.locator('#exportTaxStatus215').selectOption('all');await p.locator('#exportTemplateClearBtn').click();await p.locator('.txt-template-choice[value="collectionTomorrow211_default"]').check();assert.deepEqual(await ids(),[],'Existing target-date guard still applies to collection reminders');
  await p.setViewportSize({width:390,height:844});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await h.screenshot(p,'vat215-export-filters-mobile');
 }
@@ -38,7 +45,77 @@ async function taxAndGuards(p,h){
  await extras(p,[{id:'zero'},{id:'credit'}]);await h.reload(p);await open(p,'tax');await row(p,'zero').locator('.bulk-value215').fill('0');await row(p,'credit').locator('.bulk-value215').fill('-123.45');await h.screenshot(p,'vat215-batch-tax-desktop');
  await p.evaluate(()=>{window.originalBulkPut215=IDBObjectStore.prototype.put;let calls=0;IDBObjectStore.prototype.put=function(value,...args){if(this.name==='periodClients'&&['zero','credit'].includes(value.id)&&++calls===2)throw new DOMException('SYNTHETIC storage failure','QuotaExceededError');return window.originalBulkPut215.call(this,value,...args)}});await save(p);await p.locator('#bulkError215').filter({hasText:'SYNTHETIC storage failure'}).waitFor();await p.evaluate(()=>{IDBObjectStore.prototype.put=window.originalBulkPut215});rows=await records(p);assert.equal(rows.find(x=>x.id==='zero').taxAmount,'');assert.equal(rows.find(x=>x.id==='credit').taxAmount,'','Failure of the second write rolls back the first');assert.equal(await row(p,'credit').locator('.bulk-value215').inputValue(),'-123.45');await save(p);await saved(p);rows=await records(p);assert.equal(rows.find(x=>x.id==='zero').taxAmount,0);assert.equal(rows.find(x=>x.id==='credit').taxAmount,-123.45);
  await open(p,'tax');await row(p,'zero').locator('.bulk-value215').fill('123');await patch(p,'periodClients',[{id:'zero',notes:'SYNTHETIC concurrent change'}]);await save(p);await p.locator('#bulkError215').waitFor({state:'visible'});assert.match(await p.locator('#bulkError215').innerText(),/資料已更新/);rows=await records(p);assert.equal(rows.find(x=>x.id==='zero').taxAmount,0);assert.equal(rows.find(x=>x.id==='zero').notes,'SYNTHETIC concurrent change');assert.equal(await row(p,'zero').locator('.bulk-value215').inputValue(),'123');await close(p,true);
- await p.locator('#wNotes').evaluate(el=>{el.value='SYNTHETIC unsaved work draft';el.dispatchEvent(new Event('input',{bubbles:true}))});p.once('dialog',d=>d.dismiss());await p.locator('#bulkWork215 [data-bulk-work215="tax"]').click();assert.equal(await p.locator('#bulkWorkForm215').count(),0);assert.equal(await p.locator('#wNotes').inputValue(),'SYNTHETIC unsaved work draft');assert.notEqual((await records(p)).find(x=>x.id===a).notes,'SYNTHETIC unsaved work draft','Opening batch respects unsaved work');
- await patch(p,'periods',[{id:'2026-1',status:'已結束',unlocked:false}]);await h.reload(p);await p.locator('.nav-btn[data-view="work"]').click();await p.locator('#bulkWork215 [data-bulk-work215="paid"]').click();assert.equal(await p.locator('#bulkWorkForm215').count(),0);assert.match(await p.locator('.toast').last().innerText(),/解鎖/);
+ await p.locator('#wNotes').evaluate(el=>{el.value='SYNTHETIC unsaved work draft';el.dispatchEvent(new Event('input',{bubbles:true}))});p.once('dialog',d=>d.dismiss());await p.locator('#bulkWork215 > summary').click();await p.locator('#bulkWork215 [data-bulk-work215="tax"]').click();assert.equal(await p.locator('#bulkWorkForm215').count(),0);assert.equal(await p.locator('#wNotes').inputValue(),'SYNTHETIC unsaved work draft');assert.notEqual((await records(p)).find(x=>x.id===a).notes,'SYNTHETIC unsaved work draft','Opening batch respects unsaved work');
+ await patch(p,'periods',[{id:'2026-1',status:'已結束',unlocked:false}]);await h.reload(p);await p.locator('.nav-btn[data-view="work"]').click();await p.locator('#bulkWork215 > summary').click();await p.locator('#bulkWork215 [data-bulk-work215="paid"]').click();assert.equal(await p.locator('#bulkWorkForm215').count(),0);assert.match(await p.locator('.toast').last().innerText(),/解鎖/);
 }
-module.exports={exportFilters,datesAndPaid,taxAndGuards};
+async function workAndClients(p,h){
+ const nav=view=>p.locator(`.nav-btn[data-view="${view}"]`).click();
+ const docs=[{id:'synthetic-file-1',name:'・合成憑證',note:'（本期）',status:'pending'},
+  {id:'synthetic-file-2',name:'合成憑證',note:'本期',status:'pending'}];
+ await patch(p,'periodClients',[{id:a,appointmentDate:'2026-03-01',carryInvoiceForward:true,accountingMissingDocs:docs},{id:b,carryInvoiceForward:false}]);
+ await patch(p,'clients',[{id:'synthetic-a',shippingPreset:{type:'郵寄',addressSource:'client',recipientSource:'client'}}]);
+ await h.reload(p);
+ await nav('work');
+ const quick=p.locator('#workQuickFilters229 [data-work-quick229="carry"]');
+ assert(await quick.isVisible());
+ await quick.click();
+ assert.equal(await quick.getAttribute('aria-pressed'),'true');
+ assert.equal(await p.locator('#workClientList [data-pcid]').count(),1);
+ await quick.click();
+ assert.equal(await p.locator('#workClientList [data-pcid]').count(),2);
+ await p.locator(`#workClientList [data-pcid="${a}"]`).click();
+ await p.locator('[data-work-focus="receipt"]').click();
+ assert.equal(await p.locator('#workModuleGrid [role="tab"]').count(),4);
+ assert.equal(await p.locator('#bulkWork215 [data-bulk-work215]').count(),7);
+ await p.locator('#wNotes').fill('SYNTHETIC preserved after date mode');
+ await p.locator('#dateModeBtn').click();
+ await p.waitForFunction(()=>document.querySelector('#dateModeBtn').textContent==='民國');
+ const roc=p.locator('#wAppointment + .work-roc-input229');
+ await roc.waitFor();
+ assert.equal(await roc.inputValue(),'115/03/01');
+ assert.equal(await p.locator('#wNotes').inputValue(),'SYNTHETIC preserved after date mode');
+ assert.match(await p.locator('#workCommonSettings').innerText(),/115\/03\/10/);
+ await roc.fill('115/02/30');
+ await p.locator('#saveWorkBtn').click();
+ assert.equal(await roc.getAttribute('aria-invalid'),'true');
+ assert.equal((await records(p)).find(row=>row.id===a).appointmentDate,'2026-03-01');
+ await roc.fill('115/11/24');
+ await p.locator('#saveWorkBtn').click();
+ await p.locator('.toast').filter({hasText:'已儲存'}).last().waitFor();
+ assert.equal((await records(p)).find(row=>row.id===a).appointmentDate,'2026-11-24');
+ await p.locator('#editCurrentPeriodSettings').click();
+ assert.equal(await p.locator('#epRemit + .work-roc-input229').inputValue(),'115/03/10');
+ await p.locator('#modalRoot [data-close]').click();
+ await p.locator('#dateModeBtn').click();
+ await p.waitForFunction(()=>document.querySelector('#dateModeBtn').textContent==='西元');
+ assert(await p.locator('#wAppointment').isVisible());
+
+ await nav('clients');
+ assert.match(await p.locator('#clientTable thead').innerText(),/客戶資料/);
+ assert.doesNotMatch(await p.locator('#clientTable').innerText(),/\bclient\b/);
+ const edit=p.locator('[data-edit-client="synthetic-a"]');
+ await edit.click();
+ assert.equal(await p.locator('#mShipType').inputValue(),'郵寄');
+ assert(await p.locator('#mShipAddress').isHidden()&&await p.locator('#mShipRecipient').isHidden());
+ await p.locator('#mShipAddressSource').selectOption('自訂');
+ await p.locator('#mShipRecipientSource').selectOption('自訂');
+ await p.locator('#mShipAddress').fill('SYNTHETIC SHIPMENT ADDRESS');
+ await p.locator('#mShipRecipient').fill('SYNTHETIC RECIPIENT');
+ await p.locator('#modalRoot .modal-foot button').last().click();
+ await p.locator('#modalRoot.show').waitFor({state:'hidden'});
+ await edit.click();
+ assert.equal(await p.locator('#mShipType').inputValue(),'郵寄');
+ assert.equal(await p.locator('#mShipAddress').inputValue(),'SYNTHETIC SHIPMENT ADDRESS');
+ assert.equal(await p.locator('#mShipRecipient').inputValue(),'SYNTHETIC RECIPIENT');
+ await p.locator('#mShipAddressSource').selectOption('client');
+ assert(await p.locator('#mShipAddress').isHidden());
+ await p.locator('#mShipAddressSource').selectOption('自訂');
+ await h.screenshot(p,'vat229-client-editor');
+ await p.locator('#modalRoot [data-close]').click();
+ await nav('templates');
+ await p.locator('#notificationTypeList [data-select-type="accountingMissing"]').click();
+ await p.locator('#noticeClient').selectOption(a);
+ await p.locator('#templateText').fill('{欠缺文件明細}');
+ assert.equal(await p.locator('#templatePreview').inputValue(),'• 合成憑證（本期）');
+}
+module.exports={exportFilters,datesAndPaid,taxAndGuards,workAndClients};

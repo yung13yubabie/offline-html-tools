@@ -1,9 +1,10 @@
 /* VAT 2.17 global composition: preserve bound inputs/buttons and financial state. */
 function vatHelp217(root=document){
- const selector='.section-subtitle,.work-focus-sub,.tax-linked-note,.tax-register-source,.tax-other-sub,.motion-description211,.template-inline-hint211:not(.is-warning),.page-sub:not([id]),.fee-header211>div>p';
+ const selector='.section-subtitle,.work-focus-sub,#view-work .billing-completion210:not(.done),#salesRevenueHelp214,#view-work .tax-other-sub,.tax-linked-note,.tax-register-source,.tax-other-sub,.motion-description211,.template-inline-hint211:not(.is-warning),.page-sub:not([id]),.fee-header211>div>p';
  root.querySelectorAll(selector).forEach(node=>{
   if(node.closest('.vat-help217,.pdf-paper217,#pdfLayoutPreviewBody212')||!node.textContent.trim())return;
-  const disclosure=vatElement214('details','vat-help217'),summary=vatElement214('summary','','說明');
+  const work=node.closest('#view-work'),disclosure=vatElement214('details','vat-help217'),summary=vatElement214('summary','',work?'?':'說明');
+  if(work){summary.title=node.textContent.trim();summary.setAttribute('aria-label','操作說明');}
   node.before(disclosure);disclosure.append(summary,node);
  });
 }
@@ -15,13 +16,13 @@ function vatWorkCompose217(){
  footer.append(vatElement214('span','',`${pc?.snapshot?.name||'目前客戶'} · ${p?periodLabel(p):''}`),host);detail.append(footer);
  const tabs=$('#workModuleGrid');if(tabs){tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','本期工作項目');}
  $$('[data-work-focus]').forEach((b,i)=>{b.setAttribute('role','tab');b.id='workTab217-'+b.dataset.workFocus;b.setAttribute('aria-controls','workPanel217-'+b.dataset.workFocus);b.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const all=$$('[data-work-focus]');const n=e.key==='Home'?0:e.key==='End'?all.length-1:(i+(e.key==='ArrowRight'?1:-1)+all.length)%all.length;all[n].focus();all[n].click();});});
- $$('[data-focus-panel]').forEach(panel=>{const toolbar=panel.querySelector('.work-focus-toolbar');if(toolbar){const help=vatElement214('details','vat-help217');help.append(vatElement214('summary','','操作說明'),toolbar);panel.append(help);}panel.id='workPanel217-'+panel.dataset.focusPanel;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','workTab217-'+panel.dataset.focusPanel);});
+ $$('[data-focus-panel]').forEach(panel=>{panel.id='workPanel217-'+panel.dataset.focusPanel;panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby','workTab217-'+panel.dataset.focusPanel);});
  applyWorkFocusV24(state.workFocusSection,false);vatHelp217(detail);
 }
 const vatWorkRenderBefore217=renderWorkDetail;
 renderWorkDetail=function(){const result=vatWorkRenderBefore217();vatWorkCompose217();return result;};
 applyWorkFocusV24=function(id,scroll=true){
- const selected=id||'receipt';state.workFocusSection=selected;
+ const selected=({notes:'receipt',carry:'billing'}[id]||id||'receipt');state.workFocusSection=selected;
  $('#workModuleGrid')?.classList.remove('focus-hidden');$('#workFocusPanels')?.classList.add('active');
  $$('[data-focus-panel]').forEach(x=>x.classList.toggle('active',x.dataset.focusPanel===selected));
  $$('[data-work-focus]').forEach(b=>{const active=b.dataset.workFocus===selected;b.classList.toggle('is-current217',active);b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;});

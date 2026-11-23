@@ -4,7 +4,7 @@ const file=process.argv[2]||path.join(__dirname,'../apps/vat-workbench.html');
 const source=fs.readFileSync(file,'utf8');let checks=0;const check=f=>{f();checks++};
 for(const [,script] of source.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(script);
 const extract=(start,end)=>source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)));
-const ctx={PDF_LAYOUT_VERSION212:1,Number,Map,Set,JSON};vm.createContext(ctx);vm.runInContext(extract('function pdfLayoutSanitize212(', '\nfunction pdfLayoutApply212('),ctx);
+const ctx={PDF_LAYOUT_VERSION212:1,Number,Map,Set,JSON};vm.createContext(ctx);vm.runInContext(extract('function pdfLayoutDefaults229(', '\nfunction pdfLayoutApply212('),ctx);
 const schema=[{key:'c:代號'},{key:'c:客戶'},{key:'b:記事明細'}];
 const sanitize=x=>JSON.parse(JSON.stringify(ctx.pdfLayoutSanitize212(x,schema)));
 check(()=>assert.deepEqual(sanitize(null).fields.map(x=>x.visible),[true,true,true]));
@@ -12,7 +12,7 @@ check(()=>assert.equal(sanitize({version:999,fields:[{key:'c:代號',visible:fal
 check(()=>{const m=sanitize({version:1,fontSize:999,density:'x;color:red',wrap:'url(x)',fields:[{key:'c:代號',visible:false,width:'999',align:'left;color:red'},{key:'c:代號',visible:true},{key:'__proto__',width:5},{key:'c:客戶',width:-99,align:'right'}]});assert.equal(m.fontSize,9);assert.equal(m.density,'normal');assert.equal(m.wrap,'normal');assert.equal(m.fields.length,3);assert.equal(m.fields[0].visible,false);assert.equal(m.fields[0].width,60);assert.equal(m.fields[0].align,'left');assert.equal(m.fields[1].width,5)});
 check(()=>assert(sanitize({version:1,fields:schema.map(f=>({...f,visible:false}))}).fields.every(x=>x.visible)));
 check(()=>{const m=sanitize({version:1,fontSize:12,density:'compact',wrap:'preserve',fields:[{key:'c:客戶',width:31,align:'center'}]});assert.equal(m.fields[0].key,'c:客戶');assert.equal(m.fields[0].width,31);assert.deepEqual(sanitize(m),m)});
-check(()=>assert(sanitize({version:1,fields:[{key:'c:代號',width:Infinity}]}).fields[0].width===20));
+check(()=>assert(sanitize({version:1,fields:[{key:'c:代號',width:Infinity}]}).fields[0].width===17));
 check(()=>{assert.match(source,/function buildPdf\(prepareOnly=false\)/);assert.match(source,/originalBuildPdf210\(prepareOnly\)/);assert.match(source,/return currentPdf\(prepareOnly\)/);assert.match(source,/if\(prepareOnly\)return \{html:taskReportHtml210/)});
 check(()=>{assert.match(source,/transaction.oncomplete=\(\)=>resolve\(value\)/);assert.match(source,/transaction.onabort=/);assert.match(source,/JSON.stringify\(persisted\?\.printLayouts212\?\.profiles\?\.\[u.key\]\)!==JSON.stringify\(written.printLayouts212.profiles\[u.key\]\)/);assert.match(source,/profiles\[key\]=resetProfile\?model:pdfLayoutMerge212/)});
 check(()=>{assert.match(source,/pdfLayoutApply212\(prepared.html,persisted.printLayouts212/);assert.match(source,/u!==pdfLayoutUI212\|\|u.dirty\|\|u.key!==key\|\|state.view!=='pdf'\|\|key!==pdfLayoutKey212\(\)/);assert.match(source,/\$\('#exportPdfBtn'\)\.disabled=u.dirty\|\|u.busy/);assert.match(source,/\$\('#pdfLayoutPreview212'\)\.disabled=u.dirty\|\|u.busy/)});

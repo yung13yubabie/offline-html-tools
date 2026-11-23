@@ -1,7 +1,7 @@
 /* VAT 2.23: accounting and notice workspace controls. */
 function accountingStatusBadge223(pc,missing){
  if(pc.accountingCompletedAt)return statusBadge('已完成','green');
- return missing?statusBadge('帳務完成一半','blue'):statusBadge('未完成','gray');
+ return missing?statusBadge('待補文件','orange'):statusBadge('未完成','gray');
 }
 const operationsCompact223=matchMedia('(max-width: 799px)');
 function updateOperationsDisclosures223(){
@@ -61,6 +61,8 @@ bindAccountingDetail=function(pc){
   const panel=root.querySelector(`[data-acct-panel="${kind}"]`);
   const actions=panel.querySelector('.accounting-batch-actions');
   if(!actions)continue;
+  const link=actions.querySelector('#goMissingNoticeBtn');
+  if(link)panel.querySelector('.accounting-section-head .actions').append(link);
   const selected=vatElement214('span','accounting-selection223');
   selected.setAttribute('role','status');
   actions.prepend(selected);
@@ -69,11 +71,22 @@ bindAccountingDetail=function(pc){
   const update=()=>{
    const count=all.filter(input=>input.checked).length;
    selected.textContent=`已選 ${count} 筆`;
+   actions.hidden=!count;
    buttons.forEach(button=>button.disabled=locked||!count);
   };
   all.forEach(input=>input.addEventListener('change',update));
   update();
  }
+ root.querySelectorAll('[data-acct-quick229]').forEach(button=>button.onclick=async()=>{
+  if(button.disabled)return;
+  button.disabled=true;
+  try{
+   const result=await accountingBatchAction(pc,'missing','done',[button.dataset.acctQuick229]);
+   if(result!==false)toast('已標記補齊');
+  }finally{
+   if(button.isConnected)button.disabled=locked;
+  }
+ });
  root.querySelectorAll('input.acct-row-check').forEach(input=>{
   input.setAttribute('aria-label',`選取 ${input.closest('tr').querySelector('.accounting-doc-name')?.textContent||'項目'}`);
  });
@@ -176,9 +189,6 @@ $('#templateCards').addEventListener('click',event=>{
 });
 
 $('#variableChips').addEventListener('click',event=>{
- if(event.target.closest('[data-var]'))event.currentTarget.closest('details').open=false;
-});
-$('#variableChips').addEventListener('click',event=>{
  if(event.target.closest('[data-var]'))setNoticeCompose223('write');
 },{capture:true});
 
@@ -217,6 +227,7 @@ updateExportSummary=function(){
  const select=$('#txtClients');
  const selected=new Set([...select.selectedOptions].map(option=>option.value));
  $('#exportClients223').querySelectorAll('input').forEach(input=>input.checked=selected.has(input.value));
+ $('#txtSelectAllBtn').disabled=!select.options.length;
  const count=$('#exportFilterCount215');
  if(count)count.textContent=`符合 ${select.options.length} 家 · 已選 ${selected.size} 家`;
 };

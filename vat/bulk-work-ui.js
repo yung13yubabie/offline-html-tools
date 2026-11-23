@@ -3,7 +3,7 @@
  'use strict';
  const policy=createVATBulkPolicy215(),groups=createGroupPaymentEngine214();
  const dateFields={appointmentDate:'預約收發票日',plannedTaxPayDate:'預計繳稅日'};
- const filters={dateField:'appointmentDate',date:'all',tax:'all'};
+ const filters={dateField:'appointmentDate',date:'all',tax:'all',payment:'all'};
  function taxText(pc){if(!policy.hasTax(pc))return '未登記稅額';const value=policy.amount(pc.taxAmount);return value<0?'留底 '+money(-value)+' 元':money(value)+' 元';}
  function completedRecord(pc,p,type,result,at){const event={稅款已繳:'taxUnpaid',收件完成:'unreceived',本期工作完成:'today'}[type]||'unpaid';return {id:uid('done'),periodId:p.id,periodClientId:pc.id,clientName:pc.snapshot?.name||'',periodLabel:periodLabel(p),type,priority:PRIORITY_LABELS[priorityOf(event,p)]||'今天要處理',completedAt:at,result,createdAt:at,updatedAt:at};}
  function commitBulk(input,initialRows,initialPeriod){return new Promise((resolve,reject)=>{
@@ -50,21 +50,6 @@
   if(needsSettings){const sr=tr.objectStore('settings').getAll();sr.onsuccess=()=>{settingsRows=sr.result;build()};}
   tr.oncomplete=()=>resolve(result.changes.length);tr.onabort=()=>{if(!failed)reject(tr.error||new Error('整批未完成儲存，請保留畫面後重試'))};tr.onerror=()=>{};
  });}
- function workToolbar(){
-  if($('#bulkWork215'))return;const anchor=$('#workCommonSettings');if(!anchor)return;
-  const bar=vatElement214('section','bulk-work-toolbar215');bar.id='bulkWork215';bar.setAttribute('aria-label','本期批次登記');bar.dataset.reviewId='vat-workbench-bulkWork215';bar.dataset.reviewName='本期批次登記';
-  bar.innerHTML='<strong>批次登記</strong><div class="actions">'+[['receipt','收發票'],['date','建立日期'],['tax','稅額登記'],['carry','跨期事項'],['paid','繳納'],['payment','客戶付款'],['notes','補充事項']].map(([action,label])=>`<button type="button" class="btn ${action==='paid'?'primary':''}" data-bulk-work215="${action}">${label}</button>`).join('')+'</div>';
-  anchor.insertAdjacentElement('afterend',bar);
- }
- const renderBefore=renderWork;renderWork=function(){renderBefore();workToolbar();};
- for(const [name,action]of [['renderReceiptBody','receipt'],['renderBillingBody','tax'],['renderTaxPayBody','paid'],['renderCarryoverBody','carry'],['renderPaymentBody','payment']]){
-  // Functions live in the original standalone script's lexical scope.
-  const before=name==='renderReceiptBody'?renderReceiptBody:name==='renderBillingBody'?renderBillingBody:name==='renderTaxPayBody'?renderTaxPayBody:name==='renderCarryoverBody'?renderCarryoverBody:renderPaymentBody;
-  const label={receipt:'批次收發票',tax:'批次登記稅額',paid:'批次登記繳納',carry:'批次跨期事項',payment:'批次客戶付款'}[action];
-  const wrapped=(...args)=>`<div class="bulk-work-entry215"><button type="button" class="btn small" data-bulk-work215="${action}">${label}</button></div>`+before(...args);
-  if(name==='renderReceiptBody')renderReceiptBody=wrapped;else if(name==='renderBillingBody')renderBillingBody=wrapped;else if(name==='renderTaxPayBody')renderTaxPayBody=wrapped;else if(name==='renderCarryoverBody')renderCarryoverBody=wrapped;else renderPaymentBody=wrapped;
- }
- const detailBefore=renderWorkDetail;renderWorkDetail=function(){detailBefore();const panel=$('#workDetail [data-focus-panel="notes"] .section-body');if(panel&&!panel.querySelector('[data-bulk-work215="notes"]'))panel.insertAdjacentHTML('afterbegin','<div class="bulk-work-entry215"><button type="button" class="btn small" data-bulk-work215="notes">批次補充事項</button></div>');};
  function openBulk(action){
   if(!allowPeriodEntry214())return;const p=currentPeriod();if(!p){toast('請先選擇期別');return}if(p.status==='已結束'&&!p.unlocked){toast('此期已結束，請先解鎖再批次登記');return}
   const initialRows=clone(pcForPeriod()),initialPeriod=clone(p),root=$('#modalRoot');let field='appointmentDate',busy=false;
@@ -96,12 +81,12 @@
   };
   dialog.querySelector('#bulkSearch215').focus();
  }
- document.addEventListener('click',event=>{const button=event.target.closest('[data-bulk-work215]');if(!button)return;const action=button.dataset.bulkWork215;if(['receipt','carry','payment','notes'].includes(action))openBulkModule216(action,{policy,commitBulk});else openBulk(action);});
+ document.addEventListener('click',event=>{const button=event.target.closest('[data-bulk-work215]');if(!button)return;const action=button.dataset.bulkWork215;const menu=button.closest('details');if(menu){menu.open=false;menu.querySelector('summary').focus();}if(['receipt','carry','payment','notes'].includes(action))openBulkModule216(action,{policy,commitBulk});else openBulk(action);});
  function mountExportFilters(){
   if($('#exportFilters215'))return;const search=$('#txtClientSearch');if(!search)return;const box=vatElement214('div','export-filters215');box.id='exportFilters215';
-  box.innerHTML=`<div class="field"><label for="exportDateField215">日期欄位</label><select id="exportDateField215" class="select">${Object.entries(dateFields).map(([id,label])=>`<option value="${id}">${label}</option>`).join('')}</select></div><div class="field"><label for="exportDateStatus215">日期狀態</label><select id="exportDateStatus215" class="select"><option value="all">全部日期狀態</option><option value="set">已建立日期</option><option value="missing">未建立日期</option></select></div><div class="field"><label for="exportTaxStatus215">稅額狀態</label><select id="exportTaxStatus215" class="select"><option value="all">全部稅額狀態</option><option value="set">已登記稅額（含 0、留底）</option><option value="missing">未登記稅額</option></select></div><p id="exportFilterCount215" class="small" role="status"></p>`;
+  box.innerHTML=`<div class="field"><label for="exportDateField215">日期欄位</label><select id="exportDateField215" class="select">${Object.entries(dateFields).map(([id,label])=>`<option value="${id}">${label}</option>`).join('')}</select></div><div class="field"><label for="exportDateStatus215">日期狀態</label><select id="exportDateStatus215" class="select"><option value="all">全部日期狀態</option><option value="set">已建立日期</option><option value="missing">未建立日期</option></select></div><div class="field"><label for="exportTaxStatus215">稅額狀態</label><select id="exportTaxStatus215" class="select"><option value="all">全部稅額狀態</option><option value="set">已登記稅額（含 0、留底）</option><option value="missing">未登記稅額</option></select></div><div class="field"><label for="exportTaxPayment229">繳稅狀態</label><select id="exportTaxPayment229" class="select"><option value="all">全部</option><option value="unpaid">尚未繳稅</option><option value="paid">已繳納</option><option value="none">無應繳稅額</option></select></div><p id="exportFilterCount215" class="small" role="status"></p>`;
   search.insertAdjacentElement('beforebegin',box);
-  for(const [id,key]of [['exportDateField215','dateField'],['exportDateStatus215','date'],['exportTaxStatus215','tax']]){$('#'+id).value=filters[key];$('#'+id).onchange=event=>{filters[key]=event.target.value;renderTxtClientOptions();};}
+  for(const [id,key]of [['exportDateField215','dateField'],['exportDateStatus215','date'],['exportTaxStatus215','tax'],['exportTaxPayment229','payment']]){$('#'+id).value=filters[key];$('#'+id).onchange=event=>{filters[key]=event.target.value;renderTxtClientOptions();};}
  }
  const summaryBefore=updateExportSummary;
  updateExportSummary=function(){summaryBefore();const select=$('#txtClients'),hint=$('#exportFilterCount215');if(select&&hint)hint.textContent=`目前符合 ${select.options.length} 家；已選 ${select.selectedOptions.length} 家。${collectionExport213()?'提醒收發票仍依目標日期及收件狀態篩選。':''}`;};

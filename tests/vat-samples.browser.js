@@ -17,7 +17,7 @@ async function samples(p,h){
  assert.equal(before.sampleTier,undefined);
  const preference=await p.evaluate(()=>localStorage.getItem('vatCurrentPeriod'));
  await nav(p,'work');
- await p.locator('[data-work-focus="notes"]').click();
+ await p.locator('[data-work-focus="receipt"]').click();
  await p.locator('#wNotes').fill('SYNTHETIC UNSAVED FORMAL DRAFT');
  const popupPromise=p.context().waitForEvent('page');
  await choose(p,'small');
@@ -64,7 +64,7 @@ async function samples(p,h){
    assert.match(content,pattern,view+' · '+content.slice(0,180));
   }
   await nav(sample,'work');
-  await sample.locator('[data-work-focus="notes"]').click();
+  await sample.locator('[data-work-focus="receipt"]').click();
   await sample.locator('#wNotes').fill('SYNTHETIC SAVED SAMPLE EDIT');
   await sample.locator('#saveWorkBtn').click();
   await sample.locator('.toast').filter({hasText:'已儲存；'}).last().waitFor();

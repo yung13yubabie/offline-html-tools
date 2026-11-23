@@ -52,7 +52,7 @@ function bindGlobalSearch226(){
    return;
   }
   state.selectedPCId=pc.id;
-  state.workFilters=[];
+  state.workFilters=[];state.workQuick229='';
   $('#workSearch').value='';
   state.workTab='main';
   switchView('work');

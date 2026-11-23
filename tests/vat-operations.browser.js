@@ -7,6 +7,7 @@ async function accounting(p,{screenshot}){
  const section=key=>p.locator(`[data-account-focus="${key}"]`);
  const panel=key=>p.locator(`[data-acct-panel="${key}"]`);
  const search=p.locator('#accountingSearch'),status=p.locator('#accountingStatus223');
+ assert.match(await p.locator('.accounting-detail-name').textContent(),/甲/);
  await client('a').focus();
  await client('a').press('Enter');
  assert.equal(await client('a').getAttribute('aria-pressed'),'true');
@@ -14,8 +15,10 @@ async function accounting(p,{screenshot}){
  assert.equal(await section('missing').getAttribute('aria-pressed'),'true');
  const row=panel('missing').locator('.acct-row-check').first();
  const batch=panel('missing').locator('[data-acct-batch-action="done"]');
+ assert(await batch.isHidden());
  assert(await batch.isDisabled());
  await row.check();
+ assert(await batch.isVisible());
  assert(await batch.isEnabled());
  await section('return').click();
  assert(await panel('missing').isHidden());
@@ -49,6 +52,19 @@ async function accounting(p,{screenshot}){
  await p.locator('#modalRoot .modal-foot').getByRole('button',{name:'取消',exact:true}).click();
  assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await screenshot(p,'vat223-accounting-mobile');
+ await section('complete').click();
+ assert.equal(await section('complete').innerText(),'結案檢核');
+ assert.match(await p.locator('#accountingCompleteHint229').innerText(),/尚有 \d+ 筆待補，清零後可完成/);
+ assert(await p.locator('#markAccountingCompleteBtn').isDisabled());
+ await section('missing').click();
+ const quick=panel('missing').locator('[data-acct-quick229]').first();
+ await quick.click();
+ await p.locator('.toast').filter({hasText:'已標記補齊'}).last().waitFor();
+ assert.match(await panel('missing').locator('.accounting-row-status').first().innerText(),/已補/);
+ const card=p.locator('#accountingStats [data-record-status227="done"]');
+ await card.click();
+ assert.equal(await status.inputValue(),'done');
+ assert.equal(await card.getAttribute('aria-pressed'),'true');
 }
 
 async function notices(p,{screenshot,download}){
@@ -69,7 +85,8 @@ async function notices(p,{screenshot,download}){
  assert.match(await body.inputValue(),/original draft/);
  await tab('reminders').click();
  assert(await context.isHidden());
- assert(await p.locator('#templateReminderPane #noticeGroup212').isVisible());
+ assert(await p.locator('.notice-reminder-table229').isVisible());
+ assert(await p.locator('#templateReminderList [data-edit-reminders]').count()>1);
  await p.locator('[data-edit-reminders="receiptAsk"]').click();
  const modal=p.locator('#modalRoot .modal'),add=modal.locator('#addTplReminder'),rows=modal.locator('.rem-row');
  await modal.locator('#tplReminderEnabled').check();
@@ -87,6 +104,12 @@ async function notices(p,{screenshot,download}){
  assert.equal(await fixed.locator('.rem-date').inputValue(),'2026-11-20');
  await modal.getByRole('button',{name:'儲存',exact:true}).click();
  await p.locator('#modalRoot.show').waitFor({state:'hidden'});
+ const toggle=p.locator('[data-reminder-toggle229="receiptAsk"]');
+ assert(await toggle.isChecked());
+ await toggle.uncheck();
+ await p.waitForFunction(()=>document.querySelector('[data-reminder-toggle229="receiptAsk"]').closest('tr').textContent.includes('未加入'));
+ await toggle.check();
+ await p.waitForFunction(()=>document.querySelector('[data-reminder-toggle229="receiptAsk"]').closest('tr').textContent.includes('已加入'));
 
  await tab('manage').click();
  assert.match(await body.inputValue(),/original draft/);
