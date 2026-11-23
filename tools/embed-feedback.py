@@ -7,7 +7,7 @@ _maps=runpy.run_path(str(ROOT/'feedback/static-block-map.py'))
 ID_NAMES=_maps['ID_NAMES']; CLASS_NAMES=_maps['CLASS_NAMES']
 NAMES={'view-today':'今日工作','view-calendar':'日曆記事','calendarDrawer':'日曆記事詳情','view-clients':'客戶資料','view-work':'本期工作','view-accounting':'帳款管理','view-templates':'通知模板','view-pdf':'列印與 PDF','view-backup':'資料備份與還原','view-settings':'設定','generalPanel':'一般計算','taxPanel':'稅務計算','insurancePanel':'勞健保與勞退','summary':'分類帳總覽','offset':'沖銷配對','search':'摘要查詢','years':'年度比較','duplicates':'重複檢查','outputSection':'報表匯出','datasetStats':'資料統計','pagePane':'PDF 頁面','searchForm':'查詢條件','navigation':'工具切換'}
 KINDS={'header':'頂端操作','nav':'功能選單','aside':'側邊工具','main':'主要工作區','section':'功能區塊','form':'輸入表單','footer':'版本資訊'}
-VERSIONS={'vat-workbench':'2.24.1','ledger-analyzer':'4.4.1-ui.1','accounting-calculator':'1.9.1','pdf-workbench':'0.12.2-ui.1'}
+VERSIONS={'vat-workbench':'2.25.0','ledger-analyzer':'4.4.1-ui.1','accounting-calculator':'1.9.1','pdf-workbench':'0.12.2-ui.1'}
 class Tags(HTMLParser):
  def __init__(self, text, app):
   super().__init__(convert_charrefs=False);self.text=text;self.app=app;self.insertions=[];self.n=0;self.class_counts={}
@@ -44,7 +44,8 @@ for app, version in VERSIONS.items():
  parser=Tags(text,app);parser.feed(text)
  for pos, val in reversed(parser.insertions):text=text[:pos]+val+text[pos:]
  config=json.dumps({'appId':app,'appVersion':version},ensure_ascii=False)
- snippet='\n<!-- OFFLINE_REVIEW_BEGIN -->\n<script>window.OFFLINE_REVIEW_CONFIG='+config+';</script>\n<script>\n'+module+'\n</script>\n<!-- OFFLINE_REVIEW_END -->\n'
+ isolated="if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';" if app=='vat-workbench' else ''
+ snippet='\n<!-- OFFLINE_REVIEW_BEGIN -->\n<script>window.OFFLINE_REVIEW_CONFIG='+config+';'+isolated+'</script>\n<script>\n'+module+'\n</script>\n<!-- OFFLINE_REVIEW_END -->\n'
  matches=list(re.finditer(r'</body>',text,re.I))
  end=matches[-1].start() if matches else -1
  assert end>=0 and re.fullmatch(r'</body>\s*</html>\s*', text[end:],flags=re.I)

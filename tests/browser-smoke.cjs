@@ -27,6 +27,7 @@ const calculatorAllocation=require('./calculator-allocation.browser.js');
 const vatCases=require('./vat-cases.browser.js');
 const vatContracts=require('./vat-contracts.browser.js');
 const vatLeases=require('./vat-leases.browser.js');
+const vatSamples=require('./vat-samples.browser.js');
 const vatOperations=require('./vat-operations.browser.js');
 const intranetFinder=require('./intranet-file-finder.browser.js');
 const ROOT=path.resolve(__dirname,'..'), OUT=path.join(ROOT,'test-results','browser');
@@ -502,6 +503,7 @@ async function vatPreviewPaperGeometry(p){
  for(const [name,flow] of Object.entries(vatCases))await check('vat cases '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatGlobalEditor))await check('vat global/editor '+name,()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
  for(const [name,flow] of Object.entries(vatOperations))await check('vat workspace '+name+' navigation and edit controls',()=>vatRevisionContext(p=>flow(p,vatNoticeHelpers)));
+ await check('vat sample volumes + module navigation + draft, backup and storage isolation',()=>vatRevisionContext(p=>vatSamples(p,vatNoticeHelpers)));
  await check('vat revision accounting four-card desktop + phone geometry',()=>vatRevisionContext(vatAccountingRevision));
  await check('vat saved print layout actual output + explicit save + reload + shared periods + defaults + backup',()=>vatRevisionContext(vatPrintRevision));
  await check('vat saved print layout every scope uses actual printer HTML',()=>vatRevisionContext(vatPrintAllScopes));

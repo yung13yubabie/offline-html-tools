@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.24.1</title>
+<title>營業稅工作台 v2.25.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -1172,6 +1172,32 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 @media(max-width:480px){
  .contract-rent-fields225{grid-template-columns:minmax(0,1fr)}
 }
+@media screen {
+ .vat-sample-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+ .vat-sample-bar .badge{overflow-wrap:anywhere}
+ #vatSampleLaunch{white-space:nowrap}
+ #vatSampleIndicator{font-weight:700}
+ .vat-sample-progress{
+  position:fixed;inset:0;display:grid;place-content:center;gap:8px;text-align:center;z-index:1500;background:var(--bg);color:var(--text)
+ }
+ .vat-sample-progress span{color:var(--muted)}
+ .vat-sample-loading{visibility:hidden}
+ .vat-sample-picker{display:grid;gap:10px}
+ .vat-sample-picker p{margin:0}
+ .vat-sample-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .vat-sample-choice{
+  display:grid;align-content:center;gap:4px;min-height:64px;padding:10px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel2);color:var(--text);text-decoration:none;overflow-wrap:anywhere
+ }
+ .vat-sample-choice:hover{border-color:var(--brand);background:var(--brand-soft)}
+ .vat-sample-choice:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+ .vat-sample-choice span{color:var(--muted);font-size:13px}
+}
+@media screen and (max-width:520px){
+ .vat-sample-bar .btn{min-height:44px}
+ .vat-sample-choice{padding:8px 5px;text-align:center}
+}
+@media print {.vat-sample-bar{display:none!important}}
 </style>
 <!-- VAT_WORKSPACE_STYLE_END -->
 </head>
@@ -1181,7 +1207,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.24.1</small></div>
+<div class="brand">營業稅工作台 <small>v2.25.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -1434,7 +1460,17 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.24.1', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.25.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
+const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
+const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
+const vatSampleDatabase=vatSampleTier?DB_NAME+'_SAMPLE_'+Date.now()+'_'+Math.random().toString(36).slice(2):'';
+if(vatSampleTier)document.documentElement.dataset.vatSample=vatSampleTier;
+const vatPrefs=vatSampleTier?{
+ getItem:key=>localStorage.getItem('vatSample:'+key),setItem:(key,value)=>localStorage.setItem('vatSample:'+key,value)
+}:{
+ getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value)
+};
 const STORES=['clients','periods','periodClients','notificationTypes','templates','notifications','calendarNotes','calendarHistory','completed','settings','laws','workTasks','cases','contracts','contractCategories','leaseRates'];
 const PERIOD_SLOTS=[['01','1–2 月',3,15],['02','3–4 月',5,15],['03','5–6 月',7,15],['04','7–8 月',9,15],['05','9–10 月',11,15],['06','11–12 月',1,15]];
 const TEMPLATE_TYPES=[['receiptAsk','詢問收發票時間'],['dispatchReminder','最晚寄出提醒'],['firstBilling','首次請款'],['finalRemit','最後匯款日']];
@@ -1451,7 +1487,7 @@ function localDate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1
 const state={view:'today',periodId:null,selectedPCId:null,templateType:'receiptAsk',selectedNotificationTypeId:'receiptAsk',selectedTemplateId:null,templateTab:'manage',clients:[],periods:[],periodClients:[],notificationTypes:[],templates:[],notifications:[],cases:[],contracts:[],contractCategories:[],calendarNotes:[],calendarHistory:[],completed:[],settings:null,laws:[],workDraft:null,workFilters:[],workTab:'main',clientSort:{key:'code',dir:'asc'},clientFilters:{shipType:'',addressSource:'',recipientSource:'',status:''},preShipSort:{key:'code',dir:'asc'},preShipFilters:{shipType:'',sent:'',date:''},calendarView:'month',calendarMonth:localDate().slice(0,7),calendarSelectedDate:localDate(),calendarFilters:{q:'',clientId:'',from:'',to:''},calendarSort:'desc',templatePCId:null,noticeMode:'single',mergeClientIds:[],mergeSalutation:'',accountingPCId:null,accountingFocus:null,accountingSearch:'',todoPages:{urgent:1,today:1,tracking:1},todoCollapsed:{urgent:false,today:false,tracking:false},donePage:1,doneCollapsed:true};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const nowISO=()=>new Date().toISOString();
-const currentDateMode=()=>state.settings?.dateMode||localStorage.getItem('vatDateMode')||'gregorian';
+const currentDateMode=()=>state.settings?.dateMode||vatPrefs.getItem('vatDateMode')||'gregorian';
 const displayYearNumber=y=>currentDateMode()==='roc'?Number(y)-1911:Number(y);
 const displayYearLabel=y=>currentDateMode()==='roc'?`${Number(y)-1911} 年`:`${Number(y)} 年`;
 const fmtDate=s=>{if(!s)return '—';const d=new Date(s+'T00:00:00');if(isNaN(d))return s;const m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return currentDateMode()==='roc'?`${d.getFullYear()-1911}/${m}/${day}`:`${d.getFullYear()}/${m}/${day}`};
@@ -1464,16 +1500,19 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 function toast(msg){const e=document.createElement('div');e.className='toast';e.textContent=msg;$('#toastWrap').appendChild(e);setTimeout(()=>e.remove(),3200)}
 function confirm2(title,msg,ok='確認'){return new Promise(resolve=>{showModal(title,`<div class="notice warn">${esc(msg)}</div>`,[{text:'取消',value:false},{text:ok,value:true,cls:'danger'}],resolve)})}
 function showModal(title,html,buttons=[],cb){const root=$('#modalRoot');root.innerHTML=`<div class="modal"><div class="modal-head"><div class="modal-title">${esc(title)}</div><button class="close-x" data-close>×</button></div><div class="modal-body">${html}</div><div class="modal-foot">${buttons.map((b,i)=>`<button class="btn ${b.cls||''}" data-modal-value="${esc(i)}">${esc(b.text)}</button>`).join('')}</div></div>`;root.classList.add('show');const done=v=>{cb?.(v);root.classList.remove('show');root.innerHTML=''};root.querySelector('[data-close]').onclick=()=>done(null);buttons.forEach((b,i)=>root.querySelector(`[data-modal-value="${esc(i)}"]`).onclick=()=>done(b.value));root.onclick=e=>{if(e.target===root)done(null)}}
-function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB_NAME,DB_VERSION);r.onupgradeneeded=()=>{const d=r.result;for(const s of STORES)if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'})};r.onblocked=()=>{console.warn('資料庫升版等待舊分頁關閉');toast('請關閉所有舊版工作台分頁，再重新開啟新版')};r.onsuccess=()=>{db=r.result;db.onversionchange=()=>{db.close();toast('資料庫版本已變更，請重新開啟工作台')};res(db)};r.onerror=()=>rej(r.error)})}
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(vatSampleDatabase||DB_NAME,DB_VERSION);r.onupgradeneeded=()=>{const d=r.result;for(const s of STORES)if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'})};r.onblocked=()=>{console.warn('資料庫升版等待舊分頁關閉');toast('請關閉所有舊版工作台分頁，再重新開啟新版')};r.onsuccess=()=>{db=r.result;db.onversionchange=()=>{db.close();toast('資料庫版本已變更，請重新開啟工作台')};if(vatSampleTier){
+ window.addEventListener('pagehide',()=>{db.close();indexedDB.deleteDatabase(vatSampleDatabase);},{once:true});
+ window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
+}res(db)};r.onerror=()=>rej(r.error)})}
 function tx(store,mode='readonly'){return db.transaction(store,mode).objectStore(store)}
 function getAll(store){return new Promise((res,rej)=>{const r=tx(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
 function getOne(store,id){return new Promise((res,rej)=>{const r=tx(store).get(id);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 function put(store,obj){return new Promise((res,rej)=>{const r=tx(store,'readwrite').put(obj);r.onsuccess=()=>res(obj);r.onerror=()=>rej(r.error)})}
 function del(store,id){return new Promise((res,rej)=>{const r=tx(store,'readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
 function clearStore(store){return new Promise((res,rej)=>{const r=tx(store,'readwrite').clear();r.onsuccess=()=>res();r.onerror=()=>rej(r.error)})}
-async function loadAll(){const vals=await Promise.all(STORES.map(getAll));STORES.forEach((s,i)=>{if(s==='settings')state.settings=vals[i][0]||null;else state[s]=vals[i]});if(!state.settings)await seedDefaults();state.settings=(await getAll('settings'))[0];const hadOldStickerStock=Object.prototype.hasOwnProperty.call(state.settings,'stickerStock')||Object.prototype.hasOwnProperty.call(state.settings,'stickerHistory');if(hadOldStickerStock){delete state.settings.stickerStock;delete state.settings.stickerHistory;state.settings.updatedAt=nowISO();await put('settings',state.settings)}state.settings.cardFields=state.settings.cardFields||{code:true,name:true,receipt:true,appointment:true,payment:true,debt:true,taxPaid:true,closed:true,priority:true};state.settings.billingCompleteMode=state.settings.billingCompleteMode||'amount';state.settings.dateMode=state.settings.dateMode||localStorage.getItem('vatDateMode')||'gregorian';state.settings.sectionOrder=state.settings.sectionOrder||['receipt','billing','carry','payment','taxpay','late','notice','notes','close'];if(!state.settings.sectionOrder.includes('carry'))state.settings.sectionOrder.splice(Math.max(0,state.settings.sectionOrder.indexOf('billing')+1),0,'carry');state.settings.sectionCollapsed=state.settings.sectionCollapsed||{};state.settings.priorities=state.settings.priorities||{...DEFAULT_PRIORITIES};state.settings.reminderDays=state.settings.reminderDays||[];state.settings.couriers=state.settings.couriers||[];state.settings.receiptStatuses=(state.settings.receiptStatuses||[]).map(x=>({...x,active:x.active!==false}));state.templates=await getAll('templates');state.laws=await getAll('laws');state.periods=(await getAll('periods')).map(p=>({...p,latestDispatchDate:p.latestDispatchDate||''}));state.clients=await getAll('clients');state.clients=state.clients.map(c=>({...c,contacts:(c.contacts||[]).map(x=>({...x,title:x.title||''})),businessItem:c.businessItem||'',businessStatus:c.businessStatus||'',businessStatusExplicit:c.businessStatusExplicit===true,pauseStart:c.pauseStart||'',pauseEnd:c.pauseEnd||'',bookkeepingFee:c.bookkeepingFee??'',stickerCount:Math.max(0,Math.floor(Number(c.stickerCount||0))),stickerHistory:Array.isArray(c.stickerHistory)?c.stickerHistory:[],shippingPreset:normalizeShip(c.shippingPreset||{}),shippingSettingHistory:Array.isArray(c.shippingSettingHistory)?c.shippingSettingHistory:[]}));state.periodClients=(await getAll('periodClients')).map(pc=>({...pc,receiptNote:pc.receiptNote||'',receiptStatusHistory:Array.isArray(pc.receiptStatusHistory)?pc.receiptStatusHistory:[],payments:(pc.payments||[]).map(pay=>({...pay,account:pay.account||'',target:pay.target||'auto'})),carryInvoiceForward:!!pc.carryInvoiceForward,priorCarryInvoiceHandled:!!pc.priorCarryInvoiceHandled,preShipping:normalizeShip(pc.preShipping||pc.snapshot?.shippingPreset||{}),shippingHistory:Array.isArray(pc.shippingHistory)?pc.shippingHistory:[],preShippingChangeHistory:Array.isArray(pc.preShippingChangeHistory)?pc.preShippingChangeHistory:[],accountingCompletedAt:pc.accountingCompletedAt||'',accountingMissingDocs:Array.isArray(pc.accountingMissingDocs)?pc.accountingMissingDocs:[],accountingReturnItems:Array.isArray(pc.accountingReturnItems)?pc.accountingReturnItems:[]}));state.notifications=await getAll('notifications');state.calendarNotes=await getAll('calendarNotes');state.calendarHistory=await getAll('calendarHistory');state.notificationTypes=await getAll('notificationTypes');state.completed=await getAll('completed');await ensureNotificationModel();await ensureAccountingNotificationModel();state.notificationTypes=await getAll('notificationTypes');state.templates=await getAll('templates');if(!state.periodId||!state.periods.some(p=>p.id===state.periodId))state.periodId=localStorage.getItem('vatCurrentPeriod')||state.periods.sort((a,b)=>b.id.localeCompare(a.id))[0]?.id||null;if(!state.periods.some(p=>p.id===state.periodId))state.periodId=state.periods[0]?.id||null;syncTheme();syncDateMode();renderAll()}
+async function loadAll(){const vals=await Promise.all(STORES.map(getAll));STORES.forEach((s,i)=>{if(s==='settings')state.settings=vals[i][0]||null;else state[s]=vals[i]});if(!state.settings)await seedDefaults();state.settings=(await getAll('settings'))[0];const hadOldStickerStock=Object.prototype.hasOwnProperty.call(state.settings,'stickerStock')||Object.prototype.hasOwnProperty.call(state.settings,'stickerHistory');if(hadOldStickerStock){delete state.settings.stickerStock;delete state.settings.stickerHistory;state.settings.updatedAt=nowISO();await put('settings',state.settings)}state.settings.cardFields=state.settings.cardFields||{code:true,name:true,receipt:true,appointment:true,payment:true,debt:true,taxPaid:true,closed:true,priority:true};state.settings.billingCompleteMode=state.settings.billingCompleteMode||'amount';state.settings.dateMode=state.settings.dateMode||vatPrefs.getItem('vatDateMode')||'gregorian';state.settings.sectionOrder=state.settings.sectionOrder||['receipt','billing','carry','payment','taxpay','late','notice','notes','close'];if(!state.settings.sectionOrder.includes('carry'))state.settings.sectionOrder.splice(Math.max(0,state.settings.sectionOrder.indexOf('billing')+1),0,'carry');state.settings.sectionCollapsed=state.settings.sectionCollapsed||{};state.settings.priorities=state.settings.priorities||{...DEFAULT_PRIORITIES};state.settings.reminderDays=state.settings.reminderDays||[];state.settings.couriers=state.settings.couriers||[];state.settings.receiptStatuses=(state.settings.receiptStatuses||[]).map(x=>({...x,active:x.active!==false}));state.templates=await getAll('templates');state.laws=await getAll('laws');state.periods=(await getAll('periods')).map(p=>({...p,latestDispatchDate:p.latestDispatchDate||''}));state.clients=await getAll('clients');state.clients=state.clients.map(c=>({...c,contacts:(c.contacts||[]).map(x=>({...x,title:x.title||''})),businessItem:c.businessItem||'',businessStatus:c.businessStatus||'',businessStatusExplicit:c.businessStatusExplicit===true,pauseStart:c.pauseStart||'',pauseEnd:c.pauseEnd||'',bookkeepingFee:c.bookkeepingFee??'',stickerCount:Math.max(0,Math.floor(Number(c.stickerCount||0))),stickerHistory:Array.isArray(c.stickerHistory)?c.stickerHistory:[],shippingPreset:normalizeShip(c.shippingPreset||{}),shippingSettingHistory:Array.isArray(c.shippingSettingHistory)?c.shippingSettingHistory:[]}));state.periodClients=(await getAll('periodClients')).map(pc=>({...pc,receiptNote:pc.receiptNote||'',receiptStatusHistory:Array.isArray(pc.receiptStatusHistory)?pc.receiptStatusHistory:[],payments:(pc.payments||[]).map(pay=>({...pay,account:pay.account||'',target:pay.target||'auto'})),carryInvoiceForward:!!pc.carryInvoiceForward,priorCarryInvoiceHandled:!!pc.priorCarryInvoiceHandled,preShipping:normalizeShip(pc.preShipping||pc.snapshot?.shippingPreset||{}),shippingHistory:Array.isArray(pc.shippingHistory)?pc.shippingHistory:[],preShippingChangeHistory:Array.isArray(pc.preShippingChangeHistory)?pc.preShippingChangeHistory:[],accountingCompletedAt:pc.accountingCompletedAt||'',accountingMissingDocs:Array.isArray(pc.accountingMissingDocs)?pc.accountingMissingDocs:[],accountingReturnItems:Array.isArray(pc.accountingReturnItems)?pc.accountingReturnItems:[]}));state.notifications=await getAll('notifications');state.calendarNotes=await getAll('calendarNotes');state.calendarHistory=await getAll('calendarHistory');state.notificationTypes=await getAll('notificationTypes');state.completed=await getAll('completed');await ensureNotificationModel();await ensureAccountingNotificationModel();state.notificationTypes=await getAll('notificationTypes');state.templates=await getAll('templates');if(!state.periodId||!state.periods.some(p=>p.id===state.periodId))state.periodId=vatPrefs.getItem('vatCurrentPeriod')||state.periods.sort((a,b)=>b.id.localeCompare(a.id))[0]?.id||null;if(!state.periods.some(p=>p.id===state.periodId))state.periodId=state.periods[0]?.id||null;syncTheme();syncDateMode();renderAll()}
 async function seedDefaults(){const t=nowISO();const settings={id:'main',dispatchLeadDays:null,reminderDays:[],couriers:[],receiptStatuses:[{id:uid('st'),name:'未收到',complete:false,active:true},{id:uid('st'),name:'部分收到',complete:false,active:true},{id:uid('st'),name:'已收到',complete:true,active:true}],priorities:{...DEFAULT_PRIORITIES},theme:'light',sectionOrder:['receipt','billing','carry','payment','taxpay','late','notice','notes','close'],sectionCollapsed:{},cardFields:{code:true,name:true,receipt:true,appointment:true,payment:true,debt:true,taxPaid:true,closed:true,priority:true},billingCompleteMode:'amount',dateMode:'gregorian',createdAt:t,updatedAt:t};await put('settings',settings);for(const [id,name] of TEMPLATE_TYPES){await put('notificationTypes',{id,name,builtIn:true,enabled:true,createdAt:t,updatedAt:t});await put('templates',{id,typeId:id,name:'預設模板',text:id==='firstBilling'?DEFAULT_FIRST:id==='finalRemit'?DEFAULT_FINAL:'',builtIn:true,enabled:true,remindersEnabled:false,reminders:[],createdAt:t,updatedAt:t})};await put('laws',{id:'2026',year:2026,interest:1.725,lateEveryDays:3,latePct:1,lateMaxPct:10,latePeriodDays:30,createdAt:t,updatedAt:t})}
-function syncTheme(){const th=state.settings?.theme||localStorage.getItem('vatTheme')||'light';document.documentElement.dataset.theme=th}
+function syncTheme(){const th=state.settings?.theme||vatPrefs.getItem('vatTheme')||'light';document.documentElement.dataset.theme=th}
 function syncDateMode(){const mode=currentDateMode();const b=$('#dateModeBtn');if(b){b.textContent=mode==='roc'?'民國':'西元';b.title=mode==='roc'?'目前：民國日期，按一下切換西元':'目前：西元日期，按一下切換民國'}const s=$('#dateDisplayMode');if(s)s.value=mode}
 function currentPeriod(){return state.periods.find(p=>p.id===state.periodId)||null}
 function currentPC(){return state.periodClients.find(x=>x.id===state.selectedPCId)||null}
@@ -1901,15 +1940,15 @@ async function partialExport(){const scope=$('#partialScope').value,b=await back
 else if(scope==='calendar')b.data.cases=clone(state.cases||[]);
 else if(scope==='clients'||scope==='client'){const ids=new Set(b.data.clients.map(client=>client.id));b.data.cases=clone((state.cases||[]).filter(row=>ids.has(row.clientId)))}
 addContractPartial220(b.data,scope);
-b.data.settings=clone([state.settings]);const selectedCount214=b.data.periodClients.length;try{b.data=closeGroupBackup214(b.data)}catch(e){toast(e.message);return}if(b.data.periodClients.length>selectedCount214)toast('已連同跨期／合併付款關聯資料匯出，共 '+b.data.periodClients.length+' 筆工作紀錄');downloadBlob(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}),`營業稅部分資料_${localDate()}.taxbackup`)}
+b.data.settings=clone([state.settings]);const selectedCount214=b.data.periodClients.length;try{b.data=closeGroupBackup214(b.data)}catch(e){toast(e.message);return}if(b.data.periodClients.length>selectedCount214)toast('已連同跨期／合併付款關聯資料匯出，共 '+b.data.periodClients.length+' 筆工作紀錄');downloadBlob(new Blob([JSON.stringify(b,null,2)],{type:'application/json'}),`${vatSampleTier?'測試樣本_':''}營業稅部分資料_${localDate()}.taxbackup`)}
 function renderSettings(){const s=state.settings;syncDateMode();$('#setDispatchDays').value=s.dispatchLeadDays??'';$('#billingCompleteMode').value=s.billingCompleteMode||'amount';$('#receiptStatusSettings').innerHTML=(s.receiptStatuses||[]).map((x,i)=>`<div class="form-grid" style="grid-template-columns:1fr auto auto auto;align-items:end;margin-bottom:6px"><div class="field"><label>狀態</label><input class="input rs-name" data-i="${esc(i)}" value="${esc(x.name)}"></div><label class="check-row"><input class="rs-active" data-i="${esc(i)}" type="checkbox" ${x.active!==false?'checked':''}>啟用</label><label class="check-row"><input class="rs-complete" data-i="${esc(i)}" type="checkbox" ${x.complete?'checked':''}>視為完成</label><button class="btn small danger rs-del" data-i="${esc(i)}">刪除</button></div>`).join('');$('#reminderDaysSettings').innerHTML=(s.reminderDays||[]).map((n,i)=>`<div class="form-grid two" style="align-items:end;margin-bottom:6px"><div class="field"><label>提前天數</label><input class="input rd-val" data-i="${esc(i)}" type="number" min="1" value="${esc(n)}"></div><button class="btn small danger rd-del" data-i="${esc(i)}">刪除</button></div>`).join('');$('#courierSettings').innerHTML=(s.couriers||[]).map((x,i)=>`<div style="display:flex;gap:6px;margin-bottom:6px"><input class="input courier-val" data-i="${esc(i)}" value="${esc(x)}"><button class="btn small danger courier-del" data-i="${esc(i)}">刪除</button></div>`).join('');const law=state.laws.find(l=>Number(l.year)===new Date().getFullYear())||state.laws[0]||{};$('#lawYear').value=law.year||new Date().getFullYear();$('#lawInterest').value=law.interest??'';$('#lawDays').value=law.lateEveryDays??3;$('#lawPct').value=law.latePct??1;$('#lawMax').value=law.lateMaxPct??10;$('#lawPeriod').value=law.latePeriodDays??30;$('#prioritySettings').innerHTML=Object.entries(EVENT_LABELS).map(([k,n])=>`<div class="form-grid two" style="align-items:end;margin-bottom:6px"><div class="small">${esc(n)}</div><select class="select pri-val" data-k="${esc(k)}"><option value="urgent" ${s.priorities[k]==='urgent'?'selected':''}>緊急</option><option value="today" ${s.priorities[k]==='today'?'selected':''}>今天要處理</option><option value="tracking" ${s.priorities[k]==='tracking'?'selected':''}>持續追蹤</option></select></div>`).join('');const cfNames={code:'客戶代號',name:'客戶名稱',receipt:'收件狀態',appointment:'預約收件日',payment:'付款狀態',debt:'尚欠金額',taxPaid:'繳納狀態',closed:'結案狀態',priority:'今日優先級'};$('#cardFieldSettings').innerHTML=Object.entries(cfNames).map(([k,n])=>`<label class="check-row"><input class="card-field-opt" data-k="${esc(k)}" type="checkbox" ${s.cardFields[k]!==false?'checked':''}>${n}</label>`).join('');bindSettingsRows()}
 function bindSettingsRows(){$$('.rs-del').forEach(b=>b.onclick=async()=>{if(await confirm2('刪除收件狀態','刪除後舊紀錄中的這個狀態也不再保留。','刪除')){const i=Number(b.dataset.i),deleted=state.settings.receiptStatuses[i];state.settings.receiptStatuses.splice(i,1);for(const pc of state.periodClients)if(pc.receiptStatusId===deleted.id){pc.receiptStatusId='';pc.receiptStatusText='';await put('periodClients',pc)}renderSettings()}});$$('.rd-del').forEach(b=>b.onclick=()=>{state.settings.reminderDays.splice(Number(b.dataset.i),1);renderSettings()});$$('.courier-del').forEach(b=>b.onclick=()=>{state.settings.couriers.splice(Number(b.dataset.i),1);renderSettings()})}
-async function saveSettings(){const s=state.settings;s.dateMode=$('#dateDisplayMode')?.value||s.dateMode||'gregorian';localStorage.setItem('vatDateMode',s.dateMode);s.dispatchLeadDays=$('#setDispatchDays').value===''?null:Number($('#setDispatchDays').value);s.billingCompleteMode=$('#billingCompleteMode').value;s.receiptStatuses=$$('.rs-name').map((el,i)=>({...s.receiptStatuses[i],name:el.value.trim(),active:$$('.rs-active')[i].checked,complete:$$('.rs-complete')[i].checked})).filter(x=>x.name);s.reminderDays=[...new Set($$('.rd-val').map(x=>Number(x.value)).filter(x=>x>0))].sort((a,b)=>b-a);s.couriers=$$('.courier-val').map(x=>x.value.trim()).filter(Boolean);s.priorities=Object.fromEntries($$('.pri-val').map(x=>[x.dataset.k,x.value]));s.cardFields=Object.fromEntries($$('.card-field-opt').map(x=>[x.dataset.k,x.checked]));s.updatedAt=nowISO();await put('settings',s);const y=Number($('#lawYear').value);const old=state.laws.find(l=>Number(l.year)===y);await put('laws',{id:String(y),year:y,interest:Number($('#lawInterest').value||0),lateEveryDays:Number($('#lawDays').value||3),latePct:Number($('#lawPct').value||1),lateMaxPct:Number($('#lawMax').value||10),latePeriodDays:Number($('#lawPeriod').value||30),createdAt:old?.createdAt||nowISO(),updatedAt:nowISO()});await loadAll();toast('設定已儲存')}
+async function saveSettings(){const s=state.settings;s.dateMode=$('#dateDisplayMode')?.value||s.dateMode||'gregorian';vatPrefs.setItem('vatDateMode',s.dateMode);s.dispatchLeadDays=$('#setDispatchDays').value===''?null:Number($('#setDispatchDays').value);s.billingCompleteMode=$('#billingCompleteMode').value;s.receiptStatuses=$$('.rs-name').map((el,i)=>({...s.receiptStatuses[i],name:el.value.trim(),active:$$('.rs-active')[i].checked,complete:$$('.rs-complete')[i].checked})).filter(x=>x.name);s.reminderDays=[...new Set($$('.rd-val').map(x=>Number(x.value)).filter(x=>x>0))].sort((a,b)=>b-a);s.couriers=$$('.courier-val').map(x=>x.value.trim()).filter(Boolean);s.priorities=Object.fromEntries($$('.pri-val').map(x=>[x.dataset.k,x.value]));s.cardFields=Object.fromEntries($$('.card-field-opt').map(x=>[x.dataset.k,x.checked]));s.updatedAt=nowISO();await put('settings',s);const y=Number($('#lawYear').value);const old=state.laws.find(l=>Number(l.year)===y);await put('laws',{id:String(y),year:y,interest:Number($('#lawInterest').value||0),lateEveryDays:Number($('#lawDays').value||3),latePct:Number($('#lawPct').value||1),lateMaxPct:Number($('#lawMax').value||10),latePeriodDays:Number($('#lawPeriod').value||30),createdAt:old?.createdAt||nowISO(),updatedAt:nowISO()});await loadAll();toast('設定已儲存')}
 async function saveSettingsQuiet(){state.settings.updatedAt=nowISO();await put('settings',state.settings)}
-function openPeriodManager(){const rows=state.periods.slice().sort((a,b)=>b.id.localeCompare(a.id));const html=`<div class="actions" style="justify-content:flex-start;margin-bottom:10px"><button id="newPeriodBtn" class="btn primary">建立新一期</button></div>${rows.length?`<div class="table-wrap"><table><thead><tr><th>期別</th><th>狀態</th><th>本期最晚匯款日</th><th>本期最晚寄出日</th><th>未填寄出日時</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr><td>${esc(periodLabel(p))}</td><td>${esc(p.status)}</td><td>${fmtDate(p.latestRemitDate)}</td><td>${p.latestDispatchDate?fmtDate(p.latestDispatchDate):'—'}</td><td>${effectiveDispatchLeadDays(p)==null?'不自動推算':`預約日前 ${effectiveDispatchLeadDays(p)} 天${p.dispatchLeadDaysOverride==null?'（沿用平常設定）':''}`}</td><td><div class="row-actions"><button class="btn small" data-period-open="${esc(p.id)}">切換</button><button class="btn small" data-period-edit="${esc(p.id)}">本期設定</button>${p.status==='尚未開始'?`<button class="btn small" data-period-start="${esc(p.id)}">開始本期</button>`:''}${p.status!=='已結束'?`<button class="btn small" data-period-close="${esc(p.id)}">結束本期</button>`:''}<button class="btn small danger" data-period-delete="${esc(p.id)}">刪除</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">尚未建立期別</div>'}`;showModal('期別管理',html,[{text:'關閉',value:true}],()=>{});setTimeout(()=>{$('#newPeriodBtn').onclick=openNewPeriodModal;$$('[data-period-open]').forEach(b=>b.onclick=()=>{state.periodId=b.dataset.periodOpen;localStorage.setItem('vatCurrentPeriod',state.periodId);$('#modalRoot').classList.remove('show');renderAll()});$$('[data-period-edit]').forEach(b=>b.onclick=()=>openPeriodSettings(state.periods.find(p=>p.id===b.dataset.periodEdit)));$$('[data-period-start]').forEach(b=>b.onclick=async()=>{const p=state.periods.find(x=>x.id===b.dataset.periodStart);p.status='進行中';p.updatedAt=nowISO();await put('periods',p);await loadAll();openPeriodManager()});$$('[data-period-close]').forEach(b=>b.onclick=()=>attemptClosePeriod(b.dataset.periodClose));$$('[data-period-delete]').forEach(b=>b.onclick=()=>deletePeriodData(b.dataset.periodDelete))},0)}
-async function deletePeriodData(id){const p=state.periods.find(x=>x.id===id);if(!p)return;if(!await confirm2('刪除本期工作',`確定刪除「${periodLabel(p)}」？本期客戶工作、通知與已完成紀錄都會一併刪除；客戶庫不受影響。`,'刪除本期'))return;for(const x of state.periodClients.filter(x=>x.periodId===id))await del('periodClients',x.id);for(const x of state.notifications.filter(x=>x.periodId===id))await del('notifications',x.id);for(const x of state.completed.filter(x=>x.periodId===id))await del('completed',x.id);await del('periods',id);if(state.periodId===id){state.periodId=null;state.selectedPCId=null;localStorage.removeItem('vatCurrentPeriod')}await loadAll();if(state.periodId)localStorage.setItem('vatCurrentPeriod',state.periodId);toast('本期工作已刪除');openPeriodManager()}
+function openPeriodManager(){const rows=state.periods.slice().sort((a,b)=>b.id.localeCompare(a.id));const html=`<div class="actions" style="justify-content:flex-start;margin-bottom:10px"><button id="newPeriodBtn" class="btn primary">建立新一期</button></div>${rows.length?`<div class="table-wrap"><table><thead><tr><th>期別</th><th>狀態</th><th>本期最晚匯款日</th><th>本期最晚寄出日</th><th>未填寄出日時</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr><td>${esc(periodLabel(p))}</td><td>${esc(p.status)}</td><td>${fmtDate(p.latestRemitDate)}</td><td>${p.latestDispatchDate?fmtDate(p.latestDispatchDate):'—'}</td><td>${effectiveDispatchLeadDays(p)==null?'不自動推算':`預約日前 ${effectiveDispatchLeadDays(p)} 天${p.dispatchLeadDaysOverride==null?'（沿用平常設定）':''}`}</td><td><div class="row-actions"><button class="btn small" data-period-open="${esc(p.id)}">切換</button><button class="btn small" data-period-edit="${esc(p.id)}">本期設定</button>${p.status==='尚未開始'?`<button class="btn small" data-period-start="${esc(p.id)}">開始本期</button>`:''}${p.status!=='已結束'?`<button class="btn small" data-period-close="${esc(p.id)}">結束本期</button>`:''}<button class="btn small danger" data-period-delete="${esc(p.id)}">刪除</button></div></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">尚未建立期別</div>'}`;showModal('期別管理',html,[{text:'關閉',value:true}],()=>{});setTimeout(()=>{$('#newPeriodBtn').onclick=openNewPeriodModal;$$('[data-period-open]').forEach(b=>b.onclick=()=>{state.periodId=b.dataset.periodOpen;vatPrefs.setItem('vatCurrentPeriod',state.periodId);$('#modalRoot').classList.remove('show');renderAll()});$$('[data-period-edit]').forEach(b=>b.onclick=()=>openPeriodSettings(state.periods.find(p=>p.id===b.dataset.periodEdit)));$$('[data-period-start]').forEach(b=>b.onclick=async()=>{const p=state.periods.find(x=>x.id===b.dataset.periodStart);p.status='進行中';p.updatedAt=nowISO();await put('periods',p);await loadAll();openPeriodManager()});$$('[data-period-close]').forEach(b=>b.onclick=()=>attemptClosePeriod(b.dataset.periodClose));$$('[data-period-delete]').forEach(b=>b.onclick=()=>deletePeriodData(b.dataset.periodDelete))},0)}
+async function deletePeriodData(id){const p=state.periods.find(x=>x.id===id);if(!p)return;if(!await confirm2('刪除本期工作',`確定刪除「${periodLabel(p)}」？本期客戶工作、通知與已完成紀錄都會一併刪除；客戶庫不受影響。`,'刪除本期'))return;for(const x of state.periodClients.filter(x=>x.periodId===id))await del('periodClients',x.id);for(const x of state.notifications.filter(x=>x.periodId===id))await del('notifications',x.id);for(const x of state.completed.filter(x=>x.periodId===id))await del('completed',x.id);await del('periods',id);if(state.periodId===id){state.periodId=null;state.selectedPCId=null;vatPrefs.removeItem('vatCurrentPeriod')}await loadAll();if(state.periodId)vatPrefs.setItem('vatCurrentPeriod',state.periodId);toast('本期工作已刪除');openPeriodManager()}
 function openPeriodSettings(p){if(!p)return;const html=`<div class="form-grid two"><div class="field"><label>本期共用最晚匯款日</label><input id="epRemit" class="input" type="date" value="${esc(p.latestRemitDate||'')}"><div class="tiny muted" style="margin-top:5px">本期所有客戶共用。</div></div><div class="field"><label>本期最晚寄出日</label><input id="epDispatchDate" class="input" type="date" value="${esc(p.latestDispatchDate||'')}"><div class="tiny muted" style="margin-top:5px">本期共用；個別客戶可再提前。</div></div><div class="field"><label>未填最晚寄出日時，自動往前幾天</label><input id="epDispatch" class="input" type="number" min="0" placeholder="沿用平常設定" value="${esc(p.dispatchLeadDaysOverride??'')}"><div class="tiny muted" style="margin-top:5px">最晚寄出日留空時才使用。</div></div><div class="field"><label>法定繳款日</label><input id="epDue" class="input" type="date" value="${esc(p.dueDate||statutoryDueDate(p.year,p.slot))}"></div></div><div class="hr"></div><div class="strong small" style="margin-bottom:7px">本期優先級</div><div class="grid grid-2">${Object.entries(EVENT_LABELS).map(([k,n])=>`<div class="field"><label>${esc(n)}</label><select class="select ep-pri" data-k="${esc(k)}"><option value="">沿用平常設定</option><option value="urgent" ${p.priorityOverrides?.[k]==='urgent'?'selected':''}>緊急</option><option value="today" ${p.priorityOverrides?.[k]==='today'?'selected':''}>今天要處理</option><option value="tracking" ${p.priorityOverrides?.[k]==='tracking'?'selected':''}>持續追蹤</option></select></div>`).join('')}</div>`;showModal(`本期設定｜${periodLabel(p)}`,html,[{text:'取消',value:false},{text:'儲存',value:true,cls:'primary'}],async ok=>{if(!ok)return;if(!$('#epRemit').value){toast('請設定本期最晚匯款日');return}p.latestRemitDate=$('#epRemit').value;p.latestDispatchDate=$('#epDispatchDate').value;p.dispatchLeadDaysOverride=$('#epDispatch').value===''?null:Number($('#epDispatch').value);p.dueDate=$('#epDue').value;p.priorityOverrides=Object.fromEntries($$('.ep-pri').filter(x=>x.value).map(x=>[x.dataset.k,x.value]));p.updatedAt=nowISO();await put('periods',p);await loadAll();toast('本期設定已儲存')})}
-function openNewPeriodModal(){const y=new Date().getFullYear(),showYear=displayYearNumber(y),yearText=currentDateMode()==='roc'?'民國年度':'西元年度';const html=`<div class="form-grid two"><div class="field"><label>${yearText}</label><input id="npYear" class="input" type="number" value="${esc(showYear)}"></div><div class="field"><label>期別</label><select id="npSlot" class="select">${PERIOD_SLOTS.map((x,i)=>`<option value="0${i+1}">${x[1]}</option>`).join('')}</select></div><div class="field"><label>本期共用最晚匯款日</label><input id="npRemit" class="input" type="date"><div class="tiny muted" style="margin-top:5px">本期共用。</div></div><div class="field"><label>本期最晚寄出日</label><input id="npDispatchDate" class="input" type="date"><div class="tiny muted" style="margin-top:5px">本期共用；個別客戶可再提前。</div></div><div class="field"><label>未填最晚寄出日時，自動往前幾天（可留空）</label><input id="npDispatch" class="input" type="number" min="0" placeholder="沿用平常設定"><div class="tiny muted" style="margin-top:5px">最晚寄出日留空時才使用。</div></div><div class="field"><label>法定繳款日</label><input id="npDue" class="input" type="date"></div></div>`;showModal('建立新一期',html,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;if(!$('#npRemit').value){toast('請設定本期最晚匯款日');return}const year=currentDateMode()==='roc'?Number($('#npYear').value)+1911:Number($('#npYear').value),slot=$('#npSlot').value,id=`${year}-${slot}`;if(state.periods.some(p=>p.id===id)){toast('這一期已存在');return}const t=nowISO(),p={id,year,slot,status:'尚未開始',latestRemitDate:$('#npRemit').value,latestDispatchDate:$('#npDispatchDate').value,dispatchLeadDaysOverride:$('#npDispatch').value===''?null:Number($('#npDispatch').value),dueDate:$('#npDue').value||statutoryDueDate(year,slot),priorityOverrides:{},unlockHistory:[],createdAt:t,updatedAt:t};await put('periods',p);let added=0,skipped=0;for(const c of state.clients){if(await addClientToPeriod(c,p))added++;else skipped++}state.periodId=id;localStorage.setItem('vatCurrentPeriod',id);await loadAll();toast(`新期別已建立｜加入 ${added} 位${skipped?`，略過暫停 ${skipped} 位`:''}`)});setTimeout(()=>{const sync=()=>{const yy=currentDateMode()==='roc'?Number($('#npYear').value)+1911:Number($('#npYear').value);$('#npDue').value=statutoryDueDate(yy,$('#npSlot').value)};$('#npYear').onchange=sync;$('#npSlot').onchange=sync;sync()},0)}
+function openNewPeriodModal(){const y=new Date().getFullYear(),showYear=displayYearNumber(y),yearText=currentDateMode()==='roc'?'民國年度':'西元年度';const html=`<div class="form-grid two"><div class="field"><label>${yearText}</label><input id="npYear" class="input" type="number" value="${esc(showYear)}"></div><div class="field"><label>期別</label><select id="npSlot" class="select">${PERIOD_SLOTS.map((x,i)=>`<option value="0${i+1}">${x[1]}</option>`).join('')}</select></div><div class="field"><label>本期共用最晚匯款日</label><input id="npRemit" class="input" type="date"><div class="tiny muted" style="margin-top:5px">本期共用。</div></div><div class="field"><label>本期最晚寄出日</label><input id="npDispatchDate" class="input" type="date"><div class="tiny muted" style="margin-top:5px">本期共用；個別客戶可再提前。</div></div><div class="field"><label>未填最晚寄出日時，自動往前幾天（可留空）</label><input id="npDispatch" class="input" type="number" min="0" placeholder="沿用平常設定"><div class="tiny muted" style="margin-top:5px">最晚寄出日留空時才使用。</div></div><div class="field"><label>法定繳款日</label><input id="npDue" class="input" type="date"></div></div>`;showModal('建立新一期',html,[{text:'取消',value:false},{text:'建立',value:true,cls:'primary'}],async ok=>{if(!ok)return;if(!$('#npRemit').value){toast('請設定本期最晚匯款日');return}const year=currentDateMode()==='roc'?Number($('#npYear').value)+1911:Number($('#npYear').value),slot=$('#npSlot').value,id=`${year}-${slot}`;if(state.periods.some(p=>p.id===id)){toast('這一期已存在');return}const t=nowISO(),p={id,year,slot,status:'尚未開始',latestRemitDate:$('#npRemit').value,latestDispatchDate:$('#npDispatchDate').value,dispatchLeadDaysOverride:$('#npDispatch').value===''?null:Number($('#npDispatch').value),dueDate:$('#npDue').value||statutoryDueDate(year,slot),priorityOverrides:{},unlockHistory:[],createdAt:t,updatedAt:t};await put('periods',p);let added=0,skipped=0;for(const c of state.clients){if(await addClientToPeriod(c,p))added++;else skipped++}state.periodId=id;vatPrefs.setItem('vatCurrentPeriod',id);await loadAll();toast(`新期別已建立｜加入 ${added} 位${skipped?`，略過暫停 ${skipped} 位`:''}`)});setTimeout(()=>{const sync=()=>{const yy=currentDateMode()==='roc'?Number($('#npYear').value)+1911:Number($('#npYear').value);$('#npDue').value=statutoryDueDate(yy,$('#npSlot').value)};$('#npYear').onchange=sync;$('#npSlot').onchange=sync;sync()},0)}
 async function attemptClosePeriod(id){const p=state.periods.find(x=>x.id===id),pcs=state.periodClients.filter(x=>x.periodId===id&&!x.notApplicable),open=pcs.filter(x=>!x.caseClosed);if(open.length){toast(`還有 ${open.length} 位適用客戶尚未結案`);return}if(await confirm2('結束本期',`全部適用客戶皆已結案。是否將「${periodLabel(p)}」標記為已結束並鎖定？`,'結束本期')){p.status='已結束';p.closedAt=nowISO();p.updatedAt=nowISO();await put('periods',p);await loadAll();toast('本期已結束')}}
 function switchView(v){if(v!=='work')closePreShipFilter291();state.view=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='templates')renderTemplates();if(v==='work')renderWork();if(v==='today')renderToday()}
 function openGlobalSearch(){const q=$('#globalSearch').value.trim().toLowerCase();if(!q)return;const matches=state.clients.filter(c=>[c.name,c.code,c.address,...(c.contacts||[]).flatMap(x=>[x.name,x.contact])].join(' ').toLowerCase().includes(q));const html=matches.length?`<div class="table-wrap"><table><thead><tr><th>代號</th><th>客戶</th><th>地址／聯絡</th><th></th></tr></thead><tbody>${matches.map(c=>`<tr><td>${esc(c.code)}</td><td>${esc(c.name)}</td><td>${esc(c.address||'')}<br>${(c.contacts||[]).map(x=>`${esc(x.name||'')} ${esc(x.contact||'')}`).join('；')}</td><td><button class="btn small" data-g-client="${esc(c.id)}">查看本期</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">找不到符合資料</div>';showModal(`搜尋「${q}」`,html,[{text:'關閉',value:true}],()=>{});setTimeout(()=>$$('[data-g-client]').forEach(b=>b.onclick=()=>{const pc=pcForPeriod().find(x=>x.clientId===b.dataset.gClient);if(pc){state.selectedPCId=pc.id;$('#modalRoot').classList.remove('show');switchView('work')}else toast('這位客戶不在目前期別')}),0)}
@@ -2163,7 +2202,7 @@ renderCalendarMonth=function(){const [y,m]=state.calendarMonth.split('-').map(Nu
 renderCalendarList=function(){const rows=calendarFilteredNotes();if(!rows.length){$('#calendarList').innerHTML='<div class="calendar-empty">目前沒有符合條件的記事</div>';return}const groups={};for(const n of rows)(groups[n.date]??=[]).push(n);const dates=Object.keys(groups).sort((a,b)=>(state.calendarSort||'desc')==='asc'?a.localeCompare(b):b.localeCompare(a));$('#calendarList').innerHTML=dates.map(date=>`<div class="timeline-group"><div class="timeline-date">${fmtDateWeekday(date)}</div><div class="timeline-items">${groups[date].sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''))).map(noteCardHtml).join('')}</div></div>`).join('');bindCalendarNoteActions()}
 noteCardHtml=function(n){const c=calendarItemClient(n);if(isWorkCalendarItem(n))return `<div class="note-card work-linked"><div class="note-time">—</div><div><div class="note-client">${esc(c?.name||'未命名客戶')}<span class="work-linked-tag">本期工作</span></div><div class="note-content">${esc(n.content||'預約收發票')}</div></div><div class="note-actions"><button class="btn small" data-calendar-work="${esc(n.id)}">查看本期工作</button></div></div>`;const st=calendarReminderState(n),cls=calendarReminderClass(n),tag=st==='none'?'':`　<span class="reminder-tag ${st}">${esc(calendarReminderLabel(n))}</span>`;return `<div class="note-card ${cls}"><div class="note-time">${esc(n.time||'—')}</div><div><div class="note-client">${esc(c?.name||'一般記事')}${tag}</div><div class="note-content">${esc(n.content||'')}</div></div><div class="note-actions"><button class="btn small" data-note-edit="${esc(n.id)}">編輯</button><button class="btn small danger" data-note-delete="${esc(n.id)}">刪除</button></div></div>`}
 const bindCalendarNoteActionsV18Base=bindCalendarNoteActions;
-bindCalendarNoteActions=function(){bindCalendarNoteActionsV18Base();$$('[data-calendar-work]').forEach(b=>b.onclick=e=>{e.stopPropagation();const item=appointmentCalendarItems().find(n=>n.id===b.dataset.calendarWork);if(!item)return;state.periodId=item.periodId;localStorage.setItem('vatCurrentPeriod',item.periodId);state.selectedPCId=item.pcId;closeCalendarDrawer();switchView('work')})}
+bindCalendarNoteActions=function(){bindCalendarNoteActionsV18Base();$$('[data-calendar-work]').forEach(b=>b.onclick=e=>{e.stopPropagation();const item=appointmentCalendarItems().find(n=>n.id===b.dataset.calendarWork);if(!item)return;state.periodId=item.periodId;vatPrefs.setItem('vatCurrentPeriod',item.periodId);state.selectedPCId=item.pcId;closeCalendarDrawer();switchView('work')})}
 openCalendarDrawer=function(date){state.calendarSelectedDate=date;const drawer=$('#calendarDrawer'),notes=calendarFilteredNotes().filter(n=>n.date===date).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||'')));$('#calendarDrawerTitle').textContent=fmtDateWeekday(date);$('#calendarDrawerCount').textContent=`${notes.length} 筆項目`;$('#calendarDrawerBody').innerHTML=notes.length?notes.map(n=>`<div class="drawer-note">${noteCardHtml(n)}</div>`).join(''):'<div class="empty">這一天目前沒有項目</div>';drawer.classList.add('show');drawer.setAttribute('aria-hidden','false');bindCalendarNoteActions()}
 calendarPdfNotes=function(from,to,clientMode){return calendarAllItems().filter(n=>n.date>=from&&n.date<=to&&(clientMode==='all'||(clientMode==='none'?!n.clientId:n.clientId===clientMode))).sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')))}
 calendarSummaryPage=function(monthKey,notes,from,to,page,total){const [y,m]=monthKey.split('-').map(Number),first=new Date(y,m-1,1),offset=(first.getDay()+6)%7,start=new Date(y,m-1,1-offset),daysInMonth=new Date(y,m,0).getDate(),cellCount=Math.ceil((offset+daysInMonth)/7)*7,by={};for(const n of notes)(by[n.date]??=[]).push(n);const week=['一','二','三','四','五','六','日'];let grid='<div class="pdf-calendar-grid">'+week.map(x=>`<div class="pdf-calendar-weekday">${x}</div>`).join('');for(let i=0;i<cellCount;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=localDate(d),inside=d.getMonth()===m-1&&ds>=from&&ds<=to,arr=inside?(by[ds]||[]).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''))):[];grid+=`<div class="pdf-calendar-day ${inside?'':'outside'}"><div class="pdf-calendar-day-num">${d.getDate()}</div>${arr.slice(0,3).map(n=>{const c=calendarItemClient(n),cls=isWorkCalendarItem(n)?'work-linked':calendarReminderClass(n),prefix=n.time?`${esc(n.time)} `:'';return `<div class="pdf-calendar-note ${cls}">${prefix}${esc(c?.name||'一般記事')}｜${esc(String(n.content||'').replace(/\s+/g,' ').slice(0,18))}</div>`}).join('')}${arr.length>3?`<div class="pdf-calendar-more">+${arr.length-3} 筆</div>`:''}</div>`}grid+='</div>';return `<div class="pdf-page">${calendarPdfHead(monthKey,page,total,'月曆摘要')}${grid}<div class="pdf-foot"><span>月曆摘要｜${notes.length} 筆項目</span><span>${page} / ${total}</span></div></div>`}
@@ -2456,7 +2495,7 @@ calendarItemClient=function(n){if(n?.source==='accountingComplete')return {name:
 const noteCardHtmlV26Base=noteCardHtml;
 noteCardHtml=function(n){if(n?.source==='accountingComplete'){return `<div class="note-card work-linked"><div class="note-time">${esc(n.time||'—')}</div><div><div class="note-client">${esc(n.clientName||'未命名客戶')}<span class="work-linked-tag">帳務處理</span></div><div class="note-content">${esc(n.content||'帳務完成')}</div></div><div class="note-actions"><button class="btn small" data-calendar-accounting="${esc(n.id)}">查看帳務處理</button></div></div>`}return noteCardHtmlV26Base(n)};
 const bindCalendarNoteActionsV26Base=bindCalendarNoteActions;
-bindCalendarNoteActions=function(){bindCalendarNoteActionsV26Base();$$('[data-calendar-accounting]').forEach(b=>b.onclick=e=>{e.stopPropagation();const item=accountingCompletionCalendarItems().find(x=>x.id===b.dataset.calendarAccounting);if(!item)return;state.periodId=item.periodId;localStorage.setItem('vatCurrentPeriod',item.periodId);state.accountingPCId=item.pcId;closeCalendarDrawer();switchView('accounting')})};
+bindCalendarNoteActions=function(){bindCalendarNoteActionsV26Base();$$('[data-calendar-accounting]').forEach(b=>b.onclick=e=>{e.stopPropagation();const item=accountingCompletionCalendarItems().find(x=>x.id===b.dataset.calendarAccounting);if(!item)return;state.periodId=item.periodId;vatPrefs.setItem('vatCurrentPeriod',item.periodId);state.accountingPCId=item.pcId;closeCalendarDrawer();switchView('accounting')})};
 
 function accountingStats(){const pcs=pcForPeriod(),complete=pcs.filter(x=>!!x.accountingCompletedAt).length,missing=pcs.reduce((a,x)=>a+accPendingDocs(x).length,0),returns=pcs.reduce((a,x)=>a+accPendingReturns(x).length+accPriorPending(x).items.length,0);return {total:pcs.length,complete,missing,returns}}
 function accountingClientCard(pc){
@@ -2511,16 +2550,16 @@ const togglePdfFieldsV26Base=togglePdfFields;
 togglePdfFields=function(){togglePdfFieldsV26Base();const show=$('#pdfScope')?.value==='section'&&$('#pdfSection')?.value==='accountingMissing';$('#pdfAccountingMissingField')?.classList.toggle('hidden',!show)};
 
 const deletePeriodDataV26Base=deletePeriodData;
-deletePeriodData=async function(id){const p=state.periods.find(x=>x.id===id);if(!p)return;const pcs=state.periodClients.filter(x=>x.periodId===id),hasAccounting=pcs.some(accHasData);if(!hasAccounting)return deletePeriodDataV26Base(id);if(!await confirm2('刪除含帳務資料的期別',`「${periodLabel(p)}」已有帳務處理資料。刪除後，本期工作、帳務處理、缺件、待歸資料、相關通知與日曆聯動都會一併移除。`,'繼續'))return;if(!await confirm2('再次確認刪除',`確定永久刪除「${periodLabel(p)}」全部本期資料？客戶庫不受影響。`,'永久刪除'))return;for(const x of pcs)await del('periodClients',x.id);for(const x of state.notifications.filter(x=>x.periodId===id))await del('notifications',x.id);for(const x of state.completed.filter(x=>x.periodId===id))await del('completed',x.id);await del('periods',id);if(state.periodId===id){state.periodId=null;state.selectedPCId=null;state.accountingPCId=null;localStorage.removeItem('vatCurrentPeriod')}await loadAll();if(state.periodId)localStorage.setItem('vatCurrentPeriod',state.periodId);toast('本期工作與帳務處理已刪除');openPeriodManager()};
+deletePeriodData=async function(id){const p=state.periods.find(x=>x.id===id);if(!p)return;const pcs=state.periodClients.filter(x=>x.periodId===id),hasAccounting=pcs.some(accHasData);if(!hasAccounting)return deletePeriodDataV26Base(id);if(!await confirm2('刪除含帳務資料的期別',`「${periodLabel(p)}」已有帳務處理資料。刪除後，本期工作、帳務處理、缺件、待歸資料、相關通知與日曆聯動都會一併移除。`,'繼續'))return;if(!await confirm2('再次確認刪除',`確定永久刪除「${periodLabel(p)}」全部本期資料？客戶庫不受影響。`,'永久刪除'))return;for(const x of pcs)await del('periodClients',x.id);for(const x of state.notifications.filter(x=>x.periodId===id))await del('notifications',x.id);for(const x of state.completed.filter(x=>x.periodId===id))await del('completed',x.id);await del('periods',id);if(state.periodId===id){state.periodId=null;state.selectedPCId=null;state.accountingPCId=null;vatPrefs.removeItem('vatCurrentPeriod')}await loadAll();if(state.periodId)vatPrefs.setItem('vatCurrentPeriod',state.periodId);toast('本期工作與帳務處理已刪除');openPeriodManager()};
 
 function renderAll(){renderPeriods();renderToday();renderCalendar();renderClients();renderWork();renderAccounting();renderTemplates();renderPdf();renderBackup();renderSettings()}
 function switchView(v){if(v!=='work')closePreShipFilter291();state.view=v;if(v!=='calendar')closeCalendarDrawer();$$('.view').forEach(x=>x.classList.toggle('active',x.id===`view-${v}`));$$('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.view===v));syncMiniDockActiveV29();if(v==='templates')renderTemplates();if(v==='calendar')renderCalendar();if(v==='work')renderWork();if(v==='accounting')renderAccounting();if(v==='today')renderToday()}
 
 function wire(){
   $$('.nav-btn').forEach(b=>b.onclick=()=>switchView(b.dataset.view));$$('[data-go]').forEach(b=>b.onclick=()=>switchView(b.dataset.go));
-  $('#dateModeBtn').onclick=async()=>{state.settings.dateMode=currentDateMode()==='roc'?'gregorian':'roc';localStorage.setItem('vatDateMode',state.settings.dateMode);await saveSettingsQuiet();syncDateMode();renderAll()};
-  $('#themeBtn').onclick=async()=>{state.settings.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('vatTheme',state.settings.theme);await saveSettingsQuiet();syncTheme()};
-  $('#topPeriod').onchange=()=>{state.periodId=$('#topPeriod').value;localStorage.setItem('vatCurrentPeriod',state.periodId);state.selectedPCId=null;state.workFilters=[];renderAll()};
+  $('#dateModeBtn').onclick=async()=>{state.settings.dateMode=currentDateMode()==='roc'?'gregorian':'roc';vatPrefs.setItem('vatDateMode',state.settings.dateMode);await saveSettingsQuiet();syncDateMode();renderAll()};
+  $('#themeBtn').onclick=async()=>{state.settings.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';vatPrefs.setItem('vatTheme',state.settings.theme);await saveSettingsQuiet();syncTheme()};
+  $('#topPeriod').onchange=()=>{state.periodId=$('#topPeriod').value;vatPrefs.setItem('vatCurrentPeriod',state.periodId);state.selectedPCId=null;state.workFilters=[];renderAll()};
   $('#globalSearch').onkeydown=e=>{if(e.key==='Enter')openGlobalSearch()};
   $('#clientSearch').oninput=renderClients;$('#addClientBtn').onclick=()=>openClientModal();$('#bulkImportBtn').onclick=openBulkImport;$('#downloadTemplateBtn').onclick=xlsxTemplate;
   $('#workMainTab').onclick=()=>switchWorkTab('main');$('#preShipTab').onclick=()=>{switchWorkTab('preShip');renderPreShipping()};$('#preShipSearch').oninput=e=>{if(!e.isComposing)renderPreShipping()};$('#preShipSearch').oncompositionend=renderPreShipping;$('#workSearch').oninput=renderWork;$('#workFilterBtn').onclick=openWorkFilterModal;$('#workSort').onchange=renderWork;$('#saveWorkBtn').onclick=saveWorkDraft;$('#periodManageBtn').onclick=openPeriodManager;
@@ -2574,7 +2613,7 @@ function syncMiniDockActiveV29(){
   document.querySelectorAll('#sidebarMiniActions .sidebar-mini-btn[data-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===current));
 }
 function setSidebarCollapsedV29(collapsed){
-  localStorage.setItem('vatSidebarCollapsed',collapsed?'1':'0');
+  vatPrefs.setItem('vatSidebarCollapsed',collapsed?'1':'0');
   applySidebarCollapsedV28(collapsed);
 }
 function applySidebarCollapsedV28(collapsed){
@@ -2604,7 +2643,7 @@ function applyMiniDockPositionV29(left,top){
   const clampedTop=Math.min(Math.max(72,top),maxTop);
   dock.style.left=clampedLeft+'px';
   dock.style.top=clampedTop+'px';
-  localStorage.setItem('vatMiniDockPos',JSON.stringify({left:clampedLeft,top:clampedTop}));
+  vatPrefs.setItem('vatMiniDockPos',JSON.stringify({left:clampedLeft,top:clampedTop}));
 }
 function initMiniDockDragV29(){
   const dock=document.getElementById('sidebarMiniDock');
@@ -2627,7 +2666,7 @@ function initMiniDockDragV29(){
     document.addEventListener('pointermove',onMove);
     document.addEventListener('pointerup',onUp);
   });
-  const saved=localStorage.getItem('vatMiniDockPos');
+  const saved=vatPrefs.getItem('vatMiniDockPos');
   if(saved){
     try{const pos=JSON.parse(saved);applyMiniDockPositionV29(+pos.left||12,+pos.top||120)}catch{}
   }else{applyMiniDockPositionV29(12,120)}
@@ -2640,7 +2679,7 @@ function initSidebarFloatToggleV28(){
   if(!b)return;
   miniDockButtonsV29();
   initMiniDockDragV29();
-  const collapsed=localStorage.getItem('vatSidebarCollapsed')==='1';
+  const collapsed=vatPrefs.getItem('vatSidebarCollapsed')==='1';
   applySidebarCollapsedV28(collapsed);
   b.addEventListener('click',()=>setSidebarCollapsedV29(true));
   if(launcher&&dock){
@@ -2652,7 +2691,7 @@ function initSidebarFloatToggleV28(){
   }
 }
 
-async function boot(){try{await openDB();await loadAll();wire();initSidebarFloatToggleV28();document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&state.view==='work'){e.preventDefault();saveWorkDraft()}})}catch(e){console.error(e);document.body.innerHTML=`<div style="padding:30px;font-family:sans-serif"><h2>無法開啟資料</h2><p>請確認使用 Chrome，並從固定位置重新開啟這個檔案。</p><pre>${esc(e.message||e)}</pre></div>`}}
+async function boot(){try{if(vatSampleTier)showVatSampleLoading();await openDB();if(vatSampleTier)await seedVatSamples();await loadAll();if(vatSampleTier)finishVatSampleLoading();wire();initSidebarFloatToggleV28();if(vatSampleView)switchView(vatSampleView);document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'&&state.view==='work'){e.preventDefault();saveWorkDraft()}})}catch(e){console.error(e);document.body.innerHTML=`<div style="padding:30px;font-family:sans-serif"><h2>無法開啟資料</h2><p>請確認使用 Chrome，並從固定位置重新開啟這個檔案。</p>${vatSampleTier?`<a href="${esc(vatSampleURL('',vatSampleView||'today'))}" onclick="location.hash=this.hash;location.reload();return false">返回正式資料</a>`:''}<pre>${esc(e.message||e)}</pre></div>`}}
 /* v2.10 — task/source invariants and persisted allocation records.
    Linked tasks are projections, not copied records. No network dependencies. */
 const taskRuntime210={tab:'work',status:'open',kind:'',client:'',scope:'current',q:'',page:1,size:12,selected:new Set(),dialogKey:null,busy:false};
@@ -2868,7 +2907,7 @@ function openTask210(key=null,focusSchedule=false){const x=key?selectedTask210(k
  requestAnimationFrame(()=>{(focusSchedule?$('#tdPlanDate210'):$('#tdName210'))?.focus()});
 }
 function closeTask210(force=false){const d=$('#taskDialog210');if(!force&&d?._isDirty210?.()&&!confirm('尚未儲存待辦變更，確定捨棄？'))return false;d?.close();taskRuntime210.dialogKey=null;const focus=taskRuntime210.returnFocus;if(focus?.isConnected)focus.focus();else $('#newWorkTask210')?.focus();return true}
-function goTaskSource210(x){if(!x||!allowDiscard210())return;state.periodId=x.periodId;state.accountingPCId=x.pcId;state.accountingFocus=x.kind;localStorage.setItem('vatCurrentPeriod',x.periodId);renderPeriods();switchView('accounting')}
+function goTaskSource210(x){if(!x||!allowDiscard210())return;state.periodId=x.periodId;state.accountingPCId=x.pcId;state.accountingFocus=x.kind;vatPrefs.setItem('vatCurrentPeriod',x.periodId);renderPeriods();switchView('accounting')}
 function goTaskCalendar210(key,eventKind='planned'){const x=selectedTask210(key);if(!x)return;const events=taskCalendarItems210().filter(e=>e.taskKey===key);const item=events.find(e=>e.eventKind===eventKind)||events[0];if(!item){openTask210(key,true);return}state.calendarFilters={q:'',clientId:'',from:'',to:''};state.calendarMonth=item.date.slice(0,7);state.calendarSelectedDate=item.date;switchView('calendar');renderCalendar();openCalendarDrawer(item.date);requestAnimationFrame(()=>{$$('.task-calendar210').find(el=>el.dataset.taskCalendarId===item.id)?.classList.add('task-highlight210')})}
 function taskFilterSummary210(){const f=taskRuntime210,names={open:'待處理',scheduled:'已安排',done:'已完成',all:'全部'};return [names[f.status],f.kind?TASK_KINDS210[f.kind]:'全部類型',f.client?('客戶 '+(clientById(f.client)?.name||f.client)):'全部客戶',f.q?('搜尋：'+f.q.slice(0,80)):''].filter(Boolean).join(' · ')}
 function clearTaskFilters210(){Object.assign(taskRuntime210,{q:'',kind:'',client:'',status:'open',page:1});taskRuntime210.selected.clear();renderWorkTasks210()}
@@ -2902,7 +2941,7 @@ togglePdfFields=function(){originalTogglePdf210();const on=$('#pdfScope')?.value
 const originalDeletePeriod210=deletePeriodData;
 deletePeriodData=async function(id){const p=state.periods.find(x=>x.id===id);if(!p)return;const pcs=state.periodClients.filter(x=>x.periodId===id),manual=(state.workTasks||[]).filter(x=>x.periodId===id);if(!await confirm2('刪除期別',`刪除 ${periodLabel(p)} 的 ${pcs.length} 筆本期客戶及 ${manual.length} 筆自訂待辦？本期來源待辦與日曆會一併移除，已承接到後期的獨立資料保留。`,'繼續'))return;if(!await confirm2('再次確認刪除','此動作無法復原，請先確認已下載完整備份。','刪除本期'))return;
  const ops=[];for(const clientId of new Set(pcs.map(x=>x.clientId))){const ledger=computeClientLedgerV19(clientId);for(const pc of state.periodClients.filter(x=>x.clientId===clientId&&x.periodId!==id)){const l=ledger.get(pc.id);if(l)ops.push({store:'periodClients',value:{...pc,openingSnapshot210:clone(l.openingItems)}})}}
- for(const pc of pcs)ops.push({store:'periodClients',action:'delete',id:pc.id});for(const s of ['notifications','completed','workTasks'])for(const x of state[s]||[])if(x.periodId===id)ops.push({store:s,action:'delete',id:x.id});ops.push({store:'periods',action:'delete',id});await writeBatch210(ops);if(state.periodId===id){state.periodId=null;state.selectedPCId=null;state.accountingPCId=null;localStorage.removeItem('vatCurrentPeriod')}taskRuntime210.selected.clear();await loadAll();toast('本期資料已刪除；後期已承接項目保留');};
+ for(const pc of pcs)ops.push({store:'periodClients',action:'delete',id:pc.id});for(const s of ['notifications','completed','workTasks'])for(const x of state[s]||[])if(x.periodId===id)ops.push({store:s,action:'delete',id:x.id});ops.push({store:'periods',action:'delete',id});await writeBatch210(ops);if(state.periodId===id){state.periodId=null;state.selectedPCId=null;state.accountingPCId=null;vatPrefs.removeItem('vatCurrentPeriod')}taskRuntime210.selected.clear();await loadAll();toast('本期資料已刪除；後期已承接項目保留');};
 
 // Restore safety for the newly versioned task store. Old full backups remain readable.
 // Backup hardening keeps the established DB name, store keys and backup version.
@@ -2943,7 +2982,7 @@ renderBackup=function(){originalBackupSummary210();const el=$('#backupSummary');
 
 // Keep the floating navigator within the viewport when expanded; do not hide recovery on small windows.
 const originalInitDock210=initSidebarFloatToggleV28;
-initSidebarFloatToggleV28=function(){originalInitDock210();const dock=$('#sidebarMiniDock'),launch=$('#sidebarMiniLauncher');const clamp=()=>{if(!dock||!document.body.classList.contains('sidebar-collapsed'))return;const r=dock.getBoundingClientRect();dock.style.maxHeight=Math.max(80,innerHeight-16)+'px';dock.style.overflowY='auto';const size=dock.getBoundingClientRect();const left=Math.max(8,Math.min(r.left,innerWidth-size.width-8)),top=Math.max(8,Math.min(r.top,innerHeight-size.height-8));dock.style.left=left+'px';dock.style.top=top+'px';localStorage.setItem('vatMiniDockPos',JSON.stringify({left,top}))};launch?.addEventListener('click',()=>requestAnimationFrame(clamp));window.addEventListener('resize',()=>requestAnimationFrame(clamp));}
+initSidebarFloatToggleV28=function(){originalInitDock210();const dock=$('#sidebarMiniDock'),launch=$('#sidebarMiniLauncher');const clamp=()=>{if(!dock||!document.body.classList.contains('sidebar-collapsed'))return;const r=dock.getBoundingClientRect();dock.style.maxHeight=Math.max(80,innerHeight-16)+'px';dock.style.overflowY='auto';const size=dock.getBoundingClientRect();const left=Math.max(8,Math.min(r.left,innerWidth-size.width-8)),top=Math.max(8,Math.min(r.top,innerHeight-size.height-8));dock.style.left=left+'px';dock.style.top=top+'px';vatPrefs.setItem('vatMiniDockPos',JSON.stringify({left,top}))};launch?.addEventListener('click',()=>requestAnimationFrame(clamp));window.addEventListener('resize',()=>requestAnimationFrame(clamp));}
 const oldWire210=wire;
 wire=function(){oldWire210();initWorkTasks210();$('#pdfTaskStatus210').onchange=()=>{};$('#pdfTaskKind210').onchange=()=>{};const after=window.onafterprint;window.onafterprint=()=>{after?.();$('#taskPrintStyle210')?.remove()};};
 
@@ -3079,7 +3118,7 @@ buildCalendarPdf=function(){
 let uiWired211=false;
 function motionEnabled211(){return document.documentElement.dataset.motion!=='reduce'&&!matchMedia('(prefers-reduced-motion: reduce)').matches;}
 function reveal211(el){if(!el||!motionEnabled211())return;el.getAnimations?.().forEach(a=>a.cancel());const animation=el.animate([{opacity:0,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:160,easing:'linear'});animation.id='workbench-reveal211';}
-function applyMotion211(value){const v=value==='reduce'?'reduce':'auto';document.documentElement.dataset.motion=v;if(v==='reduce'||matchMedia('(prefers-reduced-motion: reduce)').matches)document.getAnimations().filter(a=>a.id==='workbench-reveal211').forEach(a=>a.cancel());try{localStorage.setItem('vatMotion211',v)}catch{}if($('#motionPreference211'))$('#motionPreference211').value=v;}
+function applyMotion211(value){const v=value==='reduce'?'reduce':'auto';document.documentElement.dataset.motion=v;if(v==='reduce'||matchMedia('(prefers-reduced-motion: reduce)').matches)document.getAnimations().filter(a=>a.id==='workbench-reveal211').forEach(a=>a.cancel());try{vatPrefs.setItem('vatMotion211',v)}catch{}if($('#motionPreference211'))$('#motionPreference211').value=v;}
 function enhanceWorkspace211(){for(const view of $$('.view'))view.dataset.ui211='workspace';$('#globalSearch')?.setAttribute('aria-label','全域客戶搜尋');}
 const renderAllBefore211=renderAll;
 renderAll=function(){renderAllBefore211();renderFeeSearch211();enhanceWorkspace211();if($('#motionPreference211'))$('#motionPreference211').value=document.documentElement.dataset.motion||'auto'};
@@ -3090,7 +3129,7 @@ applyWorkFocusV24=function(id,scroll=true){const before=state.workFocusSection;f
 const calendarDrawerBefore211=openCalendarDrawer;
 openCalendarDrawer=function(date){calendarDrawerBefore211(date);reveal211($('#calendarDrawerBody'));};
 const wireBefore211=wire;
-wire=function(){wireBefore211();if(uiWired211)return;uiWired211=true;enhanceWorkspace211();let preference='auto';try{preference=localStorage.getItem('vatMotion211')||'auto'}catch{}applyMotion211(preference);matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',()=>applyMotion211(document.documentElement.dataset.motion||'auto'));
+wire=function(){wireBefore211();if(uiWired211)return;uiWired211=true;enhanceWorkspace211();let preference='auto';try{preference=vatPrefs.getItem('vatMotion211')||'auto'}catch{}applyMotion211(preference);matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',()=>applyMotion211(document.documentElement.dataset.motion||'auto'));
  $('#motionPreference211').onchange=e=>applyMotion211(e.target.value);window.addEventListener('resize',fitFeeViewport211);const resizeObserver=new ResizeObserver(()=>requestAnimationFrame(fitFeeViewport211));resizeObserver.observe($('#feeSearchPane211'));resizeObserver.observe($('.fee-query211'));
  $('#feeSearchTab211').onclick=()=>{switchWorkTab('fees');reveal211($('#feeSearchPane211'))};
  const fields={feeTarget211:'target',feeQuery211:'query',feeClient211:'client',feeMin211:'min',feeMax211:'max',feeSort211:'sort'};
@@ -3324,7 +3363,7 @@ openPeriodSettings=function(p){
 function newPeriodClient214(c,p){const t=nowISO(),fees=[];if(c.bookkeepingFee!==''&&c.bookkeepingFee!=null)fees.push({id:uid('fee'),name:'記帳費',amount:Number(c.bookkeepingFee||0),note:'',createdAt:t,updatedAt:t});return preparedPC210({id:p.id+'::'+c.id,periodId:p.id,clientId:c.id,snapshot:{code:c.code,name:c.name,businessItem:c.businessItem||'',bookkeepingFee:c.bookkeepingFee??'',businessStatus:clientBusinessStatus(c),businessStatusExplicit:clientBusinessStatus(c)!=='',pauseStart:c.pauseStart||'',pauseEnd:c.pauseEnd||'',address:c.address,courier:c.courier,contacts:clone(c.contacts||[]),note:c.note||'',stickerCountAtPeriodStart:clientStickerCount(c),shippingPreset:normalizeShip(c.shippingPreset||{})},preShipping:normalizeShip(c.shippingPreset||{}),shippingHistory:[],preShippingChangeHistory:[],notApplicable:false,notApplicableReason:'',appointmentDate:'',receiptNote:'',receiptStatusHistory:[],receiptStatusId:state.settings.receiptStatuses.find(s=>s.name==='未收到')?.id||state.settings.receiptStatuses[0]?.id||'',dispatchLeadDaysOverride:null,taxAmount:'',salesRevenue214:'',fees,payments:[],carryInvoiceForward:false,priorCarryInvoiceHandled:false,billingConfirmed:false,taxPaid:false,taxPaidDate:'',taxPaidAmount:'',plannedTaxPayDate:'',caseClosed:false,notes:'',scheduleHistory:[],dueDateOverride:'',lawSnapshot:lawSnapshotFor(p.dueDate||statutoryDueDate(p.year,p.slot)),createdAt:t,updatedAt:t});}
 openNewPeriodModal=function(){
  if(!allowPeriodEntry214())return;const year=new Date().getFullYear(),yearText=currentDateMode()==='roc'?'民國年度':'西元年度',html=`<div class="form-grid two"><div class="field"><label for="npYear">${yearText}</label><input id="npYear" class="input" type="number" value="${esc(displayYearNumber(year))}"></div><div class="field"><label for="npSlot">期別</label><select id="npSlot" class="select">${PERIOD_SLOTS.map((x,i)=>`<option value="0${i+1}">${x[1]}</option>`).join('')}</select></div></div>`+periodDateFields214('np',{dueDate:statutoryDueDate(year,'01')})+sharedMessagesMarkup214({});
- guardedPeriodModal214('建立新一期',html,async()=>{const rawYear=$('#npYear').value;if(!/^\d{1,4}$/.test(rawYear))throw new Error('請填寫有效年度');const year=Number(rawYear)+(currentDateMode()==='roc'?1911:0),slot=$('#npSlot').value;if(year<1||year>9998||Number(slot)<1||Number(slot)>6)throw new Error('年度或期別超出範圍');const periods=await getAll('periods');if(periods.some(p=>Number(p.year)===year&&Number(p.slot)===Number(slot)))throw new Error('這一期已存在');const values=periodFormValues214('np'),t=nowISO(),p={id:year+'-'+slot,year,slot,status:'尚未開始',...values,dueDate:values.dueDate||statutoryDueDate(year,slot),priorityOverrides:{},unlockHistory:[],createdAt:t,updatedAt:t},clients=await getAll('clients'),eligible=clients.filter(c=>clientEligibleForPeriod(c,p)),ops=[{store:'periods',value:p},...eligible.map(c=>({store:'periodClients',value:newPeriodClient214(c,p)}))];await writeBatch210(ops);state.periodId=p.id;localStorage.setItem('vatCurrentPeriod',p.id);await loadAll();toast(`新期別已建立｜加入 ${eligible.length} 位，略過 ${clients.length-eligible.length} 位`)},'建立');bindSharedMessages214();const sync=()=>{const yy=Number($('#npYear').value)+(currentDateMode()==='roc'?1911:0);$('#npDue').value=statutoryDueDate(yy,$('#npSlot').value)};$('#npYear').onchange=sync;$('#npSlot').onchange=sync;sync();
+ guardedPeriodModal214('建立新一期',html,async()=>{const rawYear=$('#npYear').value;if(!/^\d{1,4}$/.test(rawYear))throw new Error('請填寫有效年度');const year=Number(rawYear)+(currentDateMode()==='roc'?1911:0),slot=$('#npSlot').value;if(year<1||year>9998||Number(slot)<1||Number(slot)>6)throw new Error('年度或期別超出範圍');const periods=await getAll('periods');if(periods.some(p=>Number(p.year)===year&&Number(p.slot)===Number(slot)))throw new Error('這一期已存在');const values=periodFormValues214('np'),t=nowISO(),p={id:year+'-'+slot,year,slot,status:'尚未開始',...values,dueDate:values.dueDate||statutoryDueDate(year,slot),priorityOverrides:{},unlockHistory:[],createdAt:t,updatedAt:t},clients=await getAll('clients'),eligible=clients.filter(c=>clientEligibleForPeriod(c,p)),ops=[{store:'periods',value:p},...eligible.map(c=>({store:'periodClients',value:newPeriodClient214(c,p)}))];await writeBatch210(ops);state.periodId=p.id;vatPrefs.setItem('vatCurrentPeriod',p.id);await loadAll();toast(`新期別已建立｜加入 ${eligible.length} 位，略過 ${clients.length-eligible.length} 位`)},'建立');bindSharedMessages214();const sync=()=>{const yy=Number($('#npYear').value)+(currentDateMode()==='roc'?1911:0);$('#npDue').value=statutoryDueDate(yy,$('#npSlot').value)};$('#npYear').onchange=sync;$('#npSlot').onchange=sync;sync();
 };
 function openRevenueEditor214(pcId){
  if(!allowDiscard210())return;const pc=state.periodClients.find(x=>x.id===pcId),p=state.periods.find(x=>x.id===pc?.periodId);if(!pc||!p)return;const locked=p.status==='已結束'&&!p.unlocked;
@@ -6244,6 +6283,232 @@ function revealLease224(node){
  node.getAnimations().forEach(animation=>animation.cancel());
  node.animate([{opacity:.66,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:185,easing:'cubic-bezier(.2,.75,.2,1)'});
 }
+
+/* Synthetic fixtures are written only to the current tab's sample database. */
+const vatSampleViews={
+ today:'今日待辦',calendar:'日曆記事',cases:'案件',contracts:'租約與合約',work:'本期工作',
+ accounting:'帳務處理',clients:'客戶庫',templates:'通知／模板',pdf:'列印編輯',backup:'備份／匯入',settings:'設定'
+};
+const vatSampleView=Object.hasOwn(vatSampleViews,vatSampleQuery.get('vatView'))?vatSampleQuery.get('vatView'):'';
+function vatSampleURL(tier,view){
+ const url=new URL(location.href);
+ const params=new URLSearchParams({vatView:view});
+ if(tier)params.set('vatSample',tier);
+ url.hash=params.toString();
+ return url.href;
+}
+function reloadVatSample(tier){
+ history.replaceState(null,'',vatSampleURL(tier,state.view));
+ location.reload();
+}
+function chooseVatSamples(){
+ const name=vatSampleViews[state.view];
+ const choices=Object.entries(vatSampleTiers).map(([tier,{label,clients}])=>`
+  <a class="vat-sample-choice" data-vat-sample-choice="${tier}" href="${esc(vatSampleURL(tier,state.view))}" ${vatSampleTier?'':'target="_blank" rel="noopener"'}>
+   <strong>${label}</strong><span>${clients} 位客戶</span>
+  </a>`).join('');
+ showModal('測試樣本',`<div class="vat-sample-picker"><p>${esc(name)} · 獨立測試資料</p>
+  <div class="vat-sample-choices">${choices}</div>
+  <p class="muted small">${vatSampleTier?'切換份量會重新填入樣本。':'樣本會在新分頁開啟。'}</p></div>`,[{text:'關閉',value:false}],()=>{});
+ const links=$$('[data-vat-sample-choice]');
+ for(const link of links)link.onclick=event=>{
+  if(vatSampleTier){event.preventDefault();reloadVatSample(link.dataset.vatSampleChoice);}
+  else setTimeout(()=>$('#modalRoot [data-close]')?.click(),0);
+ };
+ links[0]?.focus();
+}
+let vatSampleLoading=!!vatSampleTier;
+const vatSampleBar=document.createElement('div');
+vatSampleBar.className='vat-sample-bar';
+if(vatSampleTier){
+ const {label,clients}=vatSampleTiers[vatSampleTier];
+ vatSampleBar.innerHTML=`<span class="badge b-orange" id="vatSampleIndicator">樣本模式 · ${label} · ${clients} 位</span>
+  <button class="btn small" type="button" id="vatSampleLaunch">切換樣本量</button>
+  <button class="btn small" type="button" id="vatSampleExit">返回正式資料</button>`;
+ vatSampleBar.querySelector('#vatSampleExit').onclick=()=>reloadVatSample('');
+}else vatSampleBar.innerHTML='<button class="btn small" type="button" id="vatSampleLaunch">測試樣本</button>';
+vatSampleBar.querySelector('#vatSampleLaunch').onclick=chooseVatSamples;
+function mountVatSampleBar(){
+ const view=$('#view-'+state.view);
+ if(!view)return;
+ const header=view.querySelector('.page-head');
+ if(header){
+  if(vatSampleBar.parentNode!==header)header.append(vatSampleBar);
+ }else if(vatSampleBar.parentNode!==view)view.prepend(vatSampleBar);
+}
+function showVatSampleLoading(){
+ const app=$('.app');
+ app.inert=true;
+ app.classList.add('vat-sample-loading');
+ app.insertAdjacentHTML('afterend',`<div class="vat-sample-progress" role="status"><strong>正在載入${vatSampleTiers[vatSampleTier].label}樣本</strong><span>${vatSampleTiers[vatSampleTier].clients} 位客戶與關聯紀錄</span></div>`);
+ $('.sidebar .side-note').textContent='測試樣本 · 離線可用';
+ document.title+='｜'+vatSampleTiers[vatSampleTier].label+'樣本';
+}
+function finishVatSampleLoading(){
+ vatSampleLoading=false;
+ renderAll();
+ $('.app').classList.remove('vat-sample-loading');
+ $('.app').inert=false;
+ $('.vat-sample-progress')?.remove();
+}
+const renderBeforeVatSample=renderAll;
+renderAll=function(){
+ if(vatSampleLoading)return;
+ const result=renderBeforeVatSample();
+ mountVatSampleBar();
+ return result;
+};
+const switchBeforeVatSample=switchView;
+switchView=function(view){
+ const previous=state.view,result=switchBeforeVatSample(view);
+ mountVatSampleBar();
+ if(vatSampleTier&&previous!==state.view)history.replaceState(null,'',vatSampleURL(vatSampleTier,state.view));
+ return result;
+};
+const backupBeforeVatSample=backupData;
+backupData=async function(kind){
+ const backup=await backupBeforeVatSample(kind);
+ if(vatSampleTier)backup.sampleTier=vatSampleTier;
+ return backup;
+};
+const validateBeforeVatSample=validateBackup210;
+validateBackup210=function(backup){
+ if(backup?.sampleTier&&!vatSampleTier)throw Error('測試樣本備份請在樣本模式內匯入');
+ if(vatSampleTier&&!Object.hasOwn(vatSampleTiers,backup?.sampleTier))throw Error('樣本模式僅匯入測試樣本備份');
+ return validateBeforeVatSample(backup);
+};
+const downloadBeforeVatSample=downloadBackup;
+downloadBackup=function(prefix){
+ return downloadBeforeVatSample(vatSampleTier?'測試樣本_'+(prefix||'營業稅備份'):prefix);
+};
+
+async function seedVatSamples(){
+ if(!vatSampleTier||db?.name!==vatSampleDatabase)throw Error('測試樣本資料庫未就緒');
+ await seedDefaults();
+ const {clients:count,depth}=vatSampleTiers[vatSampleTier],at=nowISO(),audit={createdAt:at,updatedAt:at};
+ const today=localDate(),anchor=new Date(today+'T12:00:00');
+ const day=(offset,base=anchor)=>{
+  const date=new Date(base);date.setDate(date.getDate()+offset);return localDate(date);
+ };
+ const stores={clients:[],periods:[],periodClients:[],notificationTypes:[],templates:[],notifications:[],
+  calendarNotes:[],workTasks:[],cases:[],contracts:[],leaseRates:[]};
+ const dateNames=['青禾設計','遠帆商行','四季咖啡','北岸製作','暖光服務','日常選物','在地物流','晨讀工作室'];
+ const longName='跨部門聯絡窗口與多據點發票收集、採購驗收及帳務彙整';
+ const note='樣本｜已整理本期發票與附件。\n待核對分店寄件日期，並與會計窗口確認後續補件。';
+ const workNames=['收齊紙本發票','核對進項與扣抵憑證','整理繳稅資料','確認銀行入帳','更新客戶共用備註','補齊期末附件'];
+ const caseNames=['公司登記事項變更','待補文件追蹤','分店租約與發票核對','年度帳務複核','一般客服與交件','跨年度資料整理'];
+ const caseEngine=createCasesEngine219();
+ const statuses=['inProgress','pending','done','cancelled'];
+ state.settings={...(await getOne('settings','main')),dispatchLeadDays:3,reminderDays:[5,2],
+  couriers:['樣本郵寄','樣本快遞','樣本自取'].slice(0,depth),
+  theme:vatPrefs.getItem('vatTheme')==='dark'?'dark':'light',
+  dateMode:vatPrefs.getItem('vatDateMode')==='roc'?'roc':'gregorian',updatedAt:at};
+ const receipts=state.settings.receiptStatuses;
+ const currentStart=new Date(anchor.getFullYear(),Math.floor(anchor.getMonth()/2)*2,1,12);
+ for(const offset of [-1,0,1].slice(0,depth===1?2:3)){
+  const start=new Date(currentStart.getFullYear(),currentStart.getMonth()+offset*2,1,12);
+  const year=start.getFullYear(),slot=Math.floor(start.getMonth()/2)+1;
+  stores.periods.push({id:year+'-'+slot,year,slot,status:offset<0?'已結束':offset>0?'尚未開始':'進行中',
+   dueDate:statutoryDueDate(year,String(slot).padStart(2,'0')),latestDispatchDate:day(5+offset*30),latestRemitDate:day(12+offset*30),
+   sharedMessages214:offset?[]:['樣本期間共用備註','請核對納稅與收件資料'],...audit});
+ }
+ const current=stores.periods[1];
+ for(let index=0;index<count;index++){
+  const key=String(index+1).padStart(3,'0'),varied=index%6;
+  const client={id:'sample-client-'+key,code:'DEMO-'+key,name:'樣本'+key+'｜'+(index%7===1?longName:dateNames[index%dateNames.length]),
+   businessItem:['零售','設計服務','租賃','餐飲'][index%4],
+   address:'樣本地址｜測試區 '+key+' 號',contacts:[{name:'樣本聯絡人',title:'帳務窗口',contact:'樣本聯繫方式'}],
+   bookkeepingFee:1800+varied*500,stickerCount:varied+1,note:index%3===0?note:'',
+   shippingPreset:{type:['郵寄','自取','快遞'][index%3],addressSource:'client',recipientSource:'client'},...audit};
+  stores.clients.push(client);
+  for(const period of stores.periods){
+   // Full current-period coverage, with overlapping customers for cross-period paths.
+   if(period!==current&&index>[2,11,23][depth-1])continue;
+   const pc=newPeriodClient214(client,period);
+   stores.periodClients.push(pc);
+   if(period.status==='尚未開始')continue;
+   const isCurrent=period===current;
+   const tax=[6320,-860,0,'',19400,4180][varied];
+   Object.assign(pc,{appointmentDate:isCurrent?day(index<2?1:varied-2):day(-32),
+    receiptStatusId:receipts[index<2?index:varied%3].id,receiptNote:index%2===0?note:'',
+    taxAmount:tax,salesRevenue214:[234000,69000,0,'',2850000,42300][varied],
+    billingConfirmed:varied!==3,taxPaid:index%5===4&&Number(tax)>0,
+    plannedTaxPayDate:isCurrent&&Number(tax)>0?day(8):'',notes:varied%2===0?note:'',
+    carryInvoiceForward:!isCurrent&&varied===1});
+   if(pc.taxPaid){pc.taxPaidDate=day(isCurrent?-1:-24);pc.taxPaidAmount=tax;}
+   if(varied===0||varied===4){
+    pc.fees.push({id:'sample-fee-'+pc.id,name:'樣本代辦費',amount:600+varied*160,note:'樣本附件費用',...audit});
+    pc.payments.push({id:'sample-payment-'+pc.id,date:day(isCurrent?-1:-26),amount:isCurrent?1580:860,target:'auto',account:'',note:'測試入帳',...audit});
+   }
+   const docs=(kind,qty)=>Array.from({length:qty},(_,i)=>{
+    const id='sample-'+kind+'-'+pc.id+'-'+i,done=i>0&&(index+i)%3===0;
+    return {id,name:kind==='missing'?workNames[i%workNames.length]:'樣本待歸資料 '+(i+1),note:i===0?note:'',
+     status:done?'done':'pending',completedAt:done?at:'',recordedAt:at,sourcePeriodId:period.id,sourceItemId:id,lineageRootId:id,
+     taskPlan:isCurrent?{date:day(i%5),time:'10:30'}:{},...audit};
+   });
+   if(varied===5){pc.accountingCompletedAt=at;}
+   else pc.accountingMissingDocs=docs('missing',isCurrent?(index===0?depth*3:varied%3):Number(varied===1));
+   pc.accountingReturnItems=isCurrent?docs('return',varied%3+1):[];
+  }
+  const makeCount=index===0?[1,6,16][depth-1]:depth===1?1:(1+index%depth);
+  for(let i=0;i<makeCount;i++){
+   const recordKey=key+'-'+i;
+   const status=statuses[(index+i)%statuses.length];
+   stores.cases.push(caseEngine.planSave({draft:{id:'sample-case-'+recordKey,clientId:client.id,
+    title:'樣本｜'+caseNames[(index+i)%caseNames.length]+(i?' '+(i+1):''),
+    status,startDate:day(-(9+i)),dueDate:day((index+i)%11-2),dueTime:'16:30',
+    reminderEnabled:i%3!==2,reminderDate:day((index+i)%6-2),reminderTime:'09:30',
+    note:index%4===1?note+'\n'+longName:i%3===0?note:''},clients:[client],at,today}));
+   const isLease=(index+i)%4!==2,closed=(index+i)%7===6;
+   const startDate=day([ -180,-350,-215,-40,12,-728 ][(index+i)%6]),endDate=day([ 45,18,-12,90,190,-21 ][(index+i)%6]);
+   let lease;
+   if(isLease){
+    lease=leaseEngine224.defaultLease();
+    lease.deposit=6000000;
+    lease.steps=[{from:startDate,cents:2400000+varied*250000}];
+    const later=day(16);
+    if(startDate<later&&later<endDate)lease.steps.push({from:later,cents:2500000+varied*250000});
+    const period=leaseEngine224.periods(startDate,endDate,lease.frequency).find(row=>row.end<today);
+    if(period)lease.checks.push({...leaseEngine224.emptyCheck(period.key),rentStatus:'issued',rentActual:lease.steps[0].cents,interestStatus:'missing'});
+   }
+   stores.contracts.push(contractEngine220.save({draft:{id:'sample-contract-'+recordKey,clientId:client.id,
+    categoryId:isLease?'lease':'other',title:'樣本｜'+(isLease?'營業據點租約':'委託服務合約')+(i?' '+(i+1):''),
+    startDate,endDate,closed,leadMonths:2,reminderEnabled:!closed,task:'核對到期與續約文件',note:i===0?note:'',
+    ...(lease?{lease}:{})},clients:[client],categories:[],at}));
+  }
+  if(index%2===0||depth===3){
+   const completed=index%5===2;
+   stores.workTasks.push({id:'sample-task-'+key,periodId:current.id,clientId:client.id,
+    name:'樣本｜'+workNames[index%workNames.length],note,taskPlan:{date:day(index%9-3),time:'14:00'},
+    status:completed?'done':'pending',completedAt:completed?at:'',...audit});
+   const date=day(index%13-5);
+   stores.calendarNotes.push({id:'sample-calendar-'+key,clientId:client.id,date,time:index%4===0?'':'15:30',
+    content:'樣本｜'+caseNames[index%caseNames.length],reminderEnabled:index%4===2,reminderDate:date,reminderTime:'09:00',
+    reminderCompletedAt:'',...audit});
+   stores.notifications.push({id:'sample-notice-'+key,periodId:current.id,periodClientId:current.id+'::'+client.id,
+    clientId:client.id,type:'receiptAsk',typeId:'receiptAsk',templateId:'receiptAsk',content:'樣本通知｜'+client.name+'，請確認收件日期。',sentAt:at,...audit});
+  }
+ }
+ const year=anchor.getFullYear();
+ stores.leaseRates.push({id:String(year-1),rate:15000},{id:String(year),rate:17250});
+ const receipt=await getOne('templates','receiptAsk');
+ stores.templates.push({...receipt,text:'【樣本通知】{聯繫人}您好：\n請協助確認 {客戶} 的收發票日期。\n本期銷貨收入：{銷貨收入} 元。'});
+ for(let i=0;i<depth*2;i++){
+  const typeId='sample-type-'+i;
+  stores.notificationTypes.push({id:typeId,name:'樣本通知｜'+workNames[i],noticeGroup212:'custom',enabled:true,...audit});
+  for(let j=0;j<depth;j++)stores.templates.push({id:typeId+'-'+j,typeId,name:'樣本模板 '+(j+1),
+   text:'{客戶} 您好：\n'+note+'\n本期尚欠 {尚欠金額} 元。',enabled:true,
+   remindersEnabled:j===0,reminders:j===0?[{id:'sample-reminder-'+i,mode:'relative',base:'latestRemitDate',days:2}]:[],...audit});
+ }
+ await new Promise((resolve,reject)=>{
+  const transaction=db.transaction([...Object.keys(stores),'settings'],'readwrite');
+  for(const [store,rows] of Object.entries(stores))for(const row of rows)transaction.objectStore(store).put(row);
+  transaction.objectStore('settings').put(state.settings);
+  transaction.oncomplete=resolve;
+  transaction.onabort=()=>reject(transaction.error||Error('測試樣本未能載入'));
+ });
+ state.periodId=current.id;
+}
 /* VAT_WORKSPACE_SCRIPT_END */
 
 boot();
@@ -6252,7 +6517,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.24.1"};</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.25.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {
