@@ -20,9 +20,9 @@
 }
 *, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; min-width: 0; }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; }
-button:disabled { cursor: default; opacity: .48; }
+button:disabled, select:disabled { cursor: default; opacity: .48; }
 [hidden] { display: none !important; }
 :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .masthead { background: #14233b; color: #fff; border-bottom: 3px solid #527ee5; }
@@ -69,13 +69,18 @@ main { padding-block: 26px 28px; }
 .tree-name.root { font-weight: 700; }
 .tree-name[aria-current="true"] { font-weight: 650; }
 .toggle-space { flex: 0 0 27px; }
-.results .pane-head { flex-wrap: wrap; }
+.results .pane-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; }
 .heading-group { min-width: 0; display: flex; align-items: center; gap: 9px; }
 .scope { color: var(--muted); font-size: .8125rem; max-width: 24ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.search-field { max-width: 440px; min-height: 40px; gap: 9px; }
+.search-field { justify-self: end; width: min(100%, 440px); min-height: 40px; gap: 9px; }
 .search-field input { min-height: 38px; font-size: .9rem; }
 kbd { font: .75rem var(--mono); border: 1px solid #d9e1ed; border-radius: 4px; padding: 2px 5px; white-space: nowrap; color: var(--muted); background: #fff; }
 .clear-search { padding: 0 3px; border: 0; background: none; color: var(--muted); font-size: 1.25rem; line-height: 1; }
+.sort-controls { display: flex; gap: 6px; min-height: 40px; }
+.sort-key { position: relative; display: flex; }
+.sort-key select { appearance: none; border-color: #c8d3e2; padding-inline: 10px 27px; }
+.sort-key::after { content: ""; position: absolute; right: 12px; top: 44%; width: 6px; height: 6px; border-bottom: 1.5px solid var(--muted); border-right: 1.5px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
+.sort-direction { min-width: 4rem; padding-inline: 8px; }
 .list-area { position: relative; height: clamp(350px, 59vh, 850px); overflow: auto; scrollbar-gutter: stable; }
 .list-head, .file-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) 108px; align-items: center; gap: 13px; }
 .list-head { position: sticky; top: 0; z-index: 1; min-height: 37px; padding: 0 16px; background: #f3f6fa; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .8125rem; font-weight: 650; }
@@ -87,8 +92,8 @@ kbd { font: .75rem var(--mono); border: 1px solid #d9e1ed; border-radius: 4px; p
 .file-copy:focus-visible::after { outline: 2px solid var(--blue); outline-offset: -2px; }
 .file-label, .folder-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .folder-label { color: var(--muted); font-size: .8125rem; }
-.row-open { position: relative; min-height: 33px; padding-inline: 7px; border-color: transparent; background: transparent; justify-self: end; }
-.row-open:enabled:hover { background: #fff; }
+.row-open { position: relative; min-height: 33px; padding-inline: 7px; border-color: transparent; background: transparent; justify-self: end; text-decoration: none; }
+.row-open:hover { background: #fff; border-color: #cad5e5; }
 .empty { position: absolute; inset: 37px 0 0; display: grid; place-content: center; justify-items: center; padding: 20px; text-align: center; }
 .empty-symbol { display: grid; place-items: center; width: 65px; height: 65px; margin-bottom: 14px; border: 1px solid #d8e4fd; border-radius: 16px; background: #edf3ff; color: #365fbd; }
 .empty-symbol .icon { transform: scale(1.6); }
@@ -102,7 +107,10 @@ dialog { width: min(510px, calc(100% - 30px)); padding: 20px; border: 1px solid 
 dialog::backdrop { background: #14233b55; }
 dialog h2 { margin-bottom: 10px; font-size: 1.1rem; }
 dialog p { margin-bottom: 10px; color: var(--muted); font-size: .875rem; }
-dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px solid #a9b9d2; border-radius: 8px; padding: 8px; color: var(--ink); font: .875rem var(--mono); }
+dialog textarea, .location-input { width: 100%; border: 1px solid #a9b9d2; border-radius: 8px; padding: 8px; color: var(--ink); font: .875rem var(--mono); }
+dialog textarea { min-height: 78px; resize: vertical; }
+.location-input { min-height: 40px; }
+.location-error { color: #a42d2d; margin-top: 8px; }
 .dialog-actions { margin-top: 12px; display: flex; justify-content: end; gap: 8px; }
 .icon { position: relative; display: inline-block; flex: 0 0 auto; width: 16px; height: 16px; color: inherit; }
 .icon.folder { height: 12px; margin-top: 3px; border: 1.5px solid currentColor; border-radius: 2px; background: #dce8fe; color: #3b66b9; }
@@ -118,8 +126,8 @@ dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px s
 .icon.file.pdf { background: #fff0ee; color: #a84943; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 @media (max-width: 920px) {
-  .results .pane-head { gap: 8px; }
-  .search-field { min-width: min(100%, 250px); }
+  .results .pane-head { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .search-field { grid-area: 2 / 1 / 3 / -1; width: 100%; }
   .list-head, .file-row { grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) 89px; gap: 8px; padding-inline: 10px; }
   .row-open { font-size: .8125rem; }
 }
@@ -136,7 +144,7 @@ dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px s
   .pane-head { padding: 8px 12px; min-height: 49px; }
   .tree { height: auto; max-height: 170px; min-height: 53px; padding-block: 5px; }
   .list-area { height: clamp(280px, 55vh, 620px); }
-  .search-field { max-width: none; flex: 1 1 100%; }
+  .search-field kbd { display: none; }
   .list-head, .file-row { grid-template-columns: minmax(0, 1fr) 89px; }
   .list-head .folder-label { display: none; }
   .file-row { grid-template-rows: auto auto; gap: 0 8px; padding-block: 5px; }
@@ -190,9 +198,20 @@ dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px s
         <div class="field search-field">
           <span class="icon search" aria-hidden="true"></span>
           <label for="search" class="sr-only">搜尋檔名或路徑</label>
-          <input id="search" type="text" placeholder="搜尋檔名或路徑" autocomplete="off" spellcheck="false" aria-keyshortcuts="Control+K Meta+K Control+F5">
+          <input id="search" type="text" placeholder="搜尋檔名、路徑或 -排除詞" autocomplete="off" spellcheck="false" aria-keyshortcuts="Control+K Meta+K Control+F5" title='例如 報表 -草稿 -# 或 -"舊 版本"'>
           <button id="clearSearch" class="clear-search" type="button" aria-label="清除搜尋" hidden>×</button>
           <kbd aria-hidden="true">Ctrl K</kbd>
+        </div>
+        <div class="sort-controls">
+          <label class="sort-key">
+            <span class="sr-only">排序依據</span>
+            <select id="sortKey" class="action" disabled>
+              <option value="name">檔名</option>
+              <option value="type">檔案格式</option>
+              <option value="folder">所在資料夾</option>
+            </select>
+          </label>
+          <button id="sortDirection" class="action sort-direction" type="button" title="反轉排序" disabled>升冪</button>
         </div>
       </div>
       <div class="list-area" id="listArea">
@@ -216,6 +235,19 @@ dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px s
   </section>
 </main>
 <div class="toast" id="toast" role="status" hidden></div>
+<dialog id="locationDialog" aria-labelledby="locationTitle">
+  <form id="locationForm">
+    <h2 id="locationTitle">資料夾完整路徑</h2>
+    <label class="sr-only" for="locationInput">完整路徑</label>
+    <p id="locationHint"></p>
+    <input id="locationInput" class="location-input" type="text" required autocomplete="off" spellcheck="false" aria-describedby="locationHint locationError">
+    <p class="location-error" id="locationError" role="alert" hidden></p>
+    <div class="dialog-actions">
+      <button class="action" id="locationCancel" type="button">取消</button>
+      <button class="action primary" type="submit">開啟位置</button>
+    </div>
+  </form>
+</dialog>
 <dialog id="pathDialog" aria-labelledby="pathDialogTitle">
   <form method="dialog">
     <h2 id="pathDialogTitle">路徑</h2>
@@ -233,16 +265,18 @@ dialog textarea { width: 100%; min-height: 78px; resize: vertical; border: 1px s
 const byId = id => document.getElementById(id);
 const ui = Object.fromEntries([
   "sourceForm", "rootPath", "read", "choose", "cancel", "message", "directoryInput",
-  "tree", "treeToolbar", "expand", "collapse", "scope", "search", "clearSearch",
+  "tree", "treeToolbar", "expand", "collapse", "scope", "search", "clearSearch", "sortKey", "sortDirection",
   "listArea", "files", "empty", "emptyTitle", "emptyDetail", "summary", "pages",
   "previous", "next", "pageLabel", "toast", "pathDialog", "pathDialogTitle",
-  "pathDialogHint", "manualPath", "manualCopy"
+  "pathDialogHint", "manualPath", "manualCopy", "locationDialog", "locationForm",
+  "locationHint", "locationInput", "locationError", "locationCancel"
 ].map(id => [id, byId(id)]));
 
 const pageSize = 100;
 const collator = new Intl.Collator("zh-Hant", { numeric: true, sensitivity: "base" });
 const formatNumber = new Intl.NumberFormat("zh-TW");
 const normalize = text => text.normalize("NFKC").toLocaleLowerCase("zh-Hant");
+const normalizePath = text => normalize(text).replaceAll("\\", "/");
 const afterPaint = () => new Promise(resolve => setTimeout(resolve, 0));
 const segment = name => encodeURIComponent(name);
 const state = {
@@ -252,6 +286,8 @@ const state = {
   results: [],
   selected: null,
   scopeFiles: [],
+  descending: false,
+  locationFolder: null,
   page: 0,
   controller: null,
   treeVersion: 0,
@@ -359,10 +395,21 @@ function fileUrl(location, relative) {
   }
   if (path.startsWith("\\\\")) {
     const [host, ...parts] = path.slice(2).split("\\");
-    return new URL("file://" + host + "/" + parts.map(segment).join("/")).href;
+    return new URL("file://" + segment(host) + "/" + parts.map(segment).join("/")).href;
   }
   const [drive, ...parts] = path.split("\\");
   return "file:///" + drive + "/" + parts.map(segment).join("/");
+}
+
+function folderUrl(folder, source) {
+  if (folder.url) return folder.url.href;
+  if (!source.base) return null;
+  try {
+    const url = fileUrl(source, folder.relative);
+    return url.endsWith("/") ? url : url + "/";
+  } catch {
+    return null;
+  }
 }
 
 function indexedPath(index, file) {
@@ -370,6 +417,17 @@ function indexedPath(index, file) {
   if (file.url) return file.url.href;
   if (source.base) return localPath(source, file.relative);
   return root.name + "/" + file.relative;
+}
+
+function updateSource(index, source) {
+  index.source = source;
+  const rootPath = normalizePath(source.base || index.root.name);
+  index.searchRoot = source.kind === "http" ? "" : rootPath.replace(/\/$/, "") + "/";
+}
+
+function updateSourceNotice(index) {
+  const notice = index.skipped ? "有 " + formatNumber.format(index.skipped) + " 個資料夾無法完整讀取。" : "";
+  setMessage(index.source.base ? notice : notice + "填入完整路徑後即可直接開啟位置。");
 }
 
 function scanProgress(folders, files) {
@@ -524,13 +582,15 @@ async function runScan(operation, source) {
   try {
     const index = await operation(controller.signal);
     controller.signal.throwIfAborted();
-    index.source = source;
+    updateSource(index, source);
+    index.orders = new Map();
     await afterPaint();
     for (const folder of index.folders) folder.children.sort((a, b) => collator.compare(a.name, b.name));
-    index.files.sort((a, b) => collator.compare(a.relative, b.relative));
     let clock = performance.now();
     for (const file of index.files) {
-      file.searchText = normalize(file.url ? decodeURIComponent(file.url.href) : indexedPath(index, file));
+      const dot = file.name.lastIndexOf(".");
+      file.extension = dot > 0 ? normalize(file.name.slice(dot + 1)) : "";
+      file.searchText = normalizePath(file.url ? decodeURIComponent(file.url.href) : file.relative);
       if (performance.now() - clock >= 18) {
         await afterPaint();
         controller.signal.throwIfAborted();
@@ -538,13 +598,15 @@ async function runScan(operation, source) {
       }
     }
     controller.signal.throwIfAborted();
+    if (ui.locationDialog.open) ui.locationDialog.close();
     state.index = index;
     state.scope = index.root;
     state.selected = null;
     state.collapsed.clear();
     ui.rootPath.value = source.base || "";
-    const notice = index.skipped ? "有 " + formatNumber.format(index.skipped) + " 個資料夾無法完整讀取。" : "";
-    setMessage(source.base ? notice : notice + "要複製完整路徑，請貼上資料夾路徑後讀取。");
+    ui.sortKey.disabled = false;
+    ui.sortDirection.disabled = false;
+    updateSourceNotice(index);
     renderTree(true);
     applyScope();
   } catch (error) {
@@ -696,23 +758,55 @@ function selectScope(folder) {
 }
 
 function applyScope() {
+  if (!state.index) return;
+  const { root, files, orders } = state.index;
   const folder = state.scope;
-  ui.scope.hidden = folder === state.index.root;
+  ui.scope.hidden = folder === root;
   ui.scope.textContent = folder.relative;
   ui.scope.title = folder.relative;
+  const order = ui.sortKey.value;
+  if (!orders.has(order)) {
+    const sorted = [...files].sort((a, b) => {
+      if (order === "type") {
+        const result = collator.compare(a.extension, b.extension);
+        if (result) return result;
+      } else if (order === "folder") {
+        const result = collator.compare(a.folder.relative, b.folder.relative);
+        if (result) return result;
+      }
+      return collator.compare(a.name, b.name) || collator.compare(a.relative, b.relative);
+    });
+    orders.set(order, sorted);
+  }
+  const sorted = orders.get(order);
   const prefix = folder.relative + "/";
   state.scopeFiles = folder.parent
-    ? state.index.files.filter(file => file.relative.startsWith(prefix))
-    : state.index.files;
+    ? sorted.filter(file => file.relative.startsWith(prefix))
+    : sorted;
   applySearch();
+}
+
+function searchTerms(value) {
+  const include = [];
+  const exclude = [];
+  for (const [, minus, phrase, word] of normalizePath(value).matchAll(/(?:^|\s)([-−])?(?:"([^"]*)"?|(\S+))/g)) {
+    const term = phrase ?? word;
+    if (!term || (!minus && phrase === undefined && /^[-−]$/.test(term))) continue;
+    (minus ? exclude : include).push(term);
+  }
+  return { include, exclude };
 }
 
 function applySearch() {
   clearTimeout(state.searchTimer);
-  const terms = normalize(ui.search.value.trim()).split(/\s+/).filter(Boolean);
+  const { include, exclude } = searchTerms(ui.search.value);
+  const rootPath = state.index?.searchRoot || "";
   ui.clearSearch.hidden = !ui.search.value;
-  state.results = terms.length
-    ? state.scopeFiles.filter(file => terms.every(term => file.searchText.includes(term)))
+  state.results = include.length || exclude.length
+    ? state.scopeFiles.filter(file => {
+      const text = rootPath + file.searchText;
+      return include.every(term => text.includes(term)) && !exclude.some(term => text.includes(term));
+    })
     : state.scopeFiles;
   state.page = 0;
   renderFiles(true);
@@ -739,7 +833,11 @@ function renderFiles(resetScroll = false) {
   ui.pageLabel.textContent = (state.page + 1) + " / " + formatNumber.format(pages);
   const fragment = document.createDocumentFragment();
   const start = state.page * pageSize;
-  for (const file of state.results.slice(start, start + pageSize)) fragment.append(fileRow(file));
+  const end = Math.min(total, start + pageSize);
+  for (let index = start; index < end; index++) {
+    const offset = state.descending ? total - 1 - index : index;
+    fragment.append(fileRow(state.results[offset]));
+  }
   ui.files.replaceChildren(fragment);
 }
 
@@ -753,7 +851,7 @@ function fileRow(file) {
   copy.setAttribute("aria-pressed", String(selected));
   copy.setAttribute("aria-label", "複製路徑 " + file.name);
   copy.title = indexedPath(state.index, file);
-  const type = /\.pdf$/i.test(file.name) ? " pdf" : /\.(?:csv|xlsx?|ods)$/i.test(file.name) ? " sheet" : "";
+  const type = file.extension === "pdf" ? " pdf" : /^(?:csv|xlsx?|ods)$/.test(file.extension) ? " sheet" : "";
   copy.append(icon("file" + type), element("span", "file-label", file.name));
   copy.addEventListener("click", () => {
     const old = ui.files.querySelector(".selected");
@@ -772,46 +870,71 @@ function fileRow(file) {
   folder.title = file.folder.url?.href || (state.index.source.base
     ? localPath(state.index.source, file.folder.relative)
     : file.folder.relative || state.index.root.name);
-  const open = element("button", "action row-open", "開啟位置");
-  open.type = "button";
+  const url = folderUrl(file.folder, state.index.source);
+  const direct = url && (file.folder.url || window.location.protocol === "file:");
+  const open = element(direct ? "a" : "button", "action row-open", "開啟位置");
   open.setAttribute("aria-label", "開啟位置 " + file.name);
-  open.addEventListener("click", () => openFolder(file.folder));
+  if (direct) {
+    open.href = url;
+    open.target = "_blank";
+    open.rel = "noopener noreferrer";
+  } else {
+    open.type = "button";
+    open.addEventListener("click", () => requestFolderLocation(file.folder));
+  }
   row.append(copy, folder, open);
   return row;
 }
 
-async function openFolder(folder) {
-  const { source } = state.index;
-  if (folder.url) {
-    window.open(folder.url.href, "_blank", "noopener,noreferrer");
-    return;
-  }
-  if (folder.handle && window.showOpenFilePicker) {
-    try {
-      await window.showOpenFilePicker({ startIn: folder.handle });
-      return;
-    } catch (error) {
-      if (error.name === "AbortError") return;
-      if (source.base) {
-        showManualPath(localPath(source, folder.relative), "資料夾位置", "將路徑貼到檔案總管或瀏覽器位址列。");
-        return;
-      }
-    }
-  } else if (source.base) {
-    try {
-      const url = fileUrl(source, folder.relative);
-      if (window.location.protocol === "file:") {
-        window.open(url.endsWith("/") ? url : url + "/", "_blank", "noopener,noreferrer");
-        return;
-      }
-    } catch {
-      // The path is still available for manual navigation.
-    }
+function requestFolderLocation(folder) {
+  const { source, root } = state.index;
+  if (source.base) {
     showManualPath(localPath(source, folder.relative), "資料夾位置", "將路徑貼到檔案總管或瀏覽器位址列。");
     return;
   }
-  selectScope(folder);
-  showToast("已切換到所在資料夾");
+  state.locationFolder = folder;
+  ui.locationHint.textContent = "填入「" + root.name + "」的完整路徑。";
+  ui.locationInput.value = ui.rootPath.value;
+  ui.locationError.hidden = true;
+  ui.locationInput.removeAttribute("aria-invalid");
+  ui.locationDialog.showModal();
+  ui.locationInput.select();
+}
+
+function attachFolderLocation() {
+  const folder = state.locationFolder;
+  if (!folder) return;
+  const index = state.index;
+  let source;
+  let url;
+  try {
+    source = parseLocation(ui.locationInput.value);
+    if (source?.kind !== "local") throw new Error("請輸入本機或共享資料夾的完整路徑。");
+    if (!locationMatches(source, index.root.name)) {
+      throw new Error("路徑應指向「" + index.root.name + "」。");
+    }
+    url = folderUrl(folder, source);
+    if (!url) throw new Error("無法開啟此路徑，請檢查資料夾位置。");
+  } catch (error) {
+    ui.locationError.textContent = error.message;
+    ui.locationError.hidden = false;
+    ui.locationInput.setAttribute("aria-invalid", "true");
+    ui.locationInput.focus();
+    return;
+  }
+
+  ui.locationDialog.close();
+  updateSource(index, source);
+  ui.rootPath.value = source.base;
+  updateSourceNotice(index);
+  const rootButton = state.folderButtons.get(index.root);
+  if (rootButton) rootButton.title = source.base;
+  applySearch();
+  if (window.location.protocol === "file:") {
+    window.open(url, "_blank", "noopener,noreferrer");
+  } else {
+    showManualPath(localPath(source, folder.relative), "資料夾位置", "將路徑貼到檔案總管或瀏覽器位址列。");
+  }
 }
 
 async function writeClipboard(path) {
@@ -901,6 +1024,13 @@ ui.clearSearch.addEventListener("click", () => {
   applySearch();
   ui.search.focus();
 });
+ui.sortKey.addEventListener("change", applyScope);
+ui.sortDirection.addEventListener("click", () => {
+  state.descending = !state.descending;
+  ui.sortDirection.textContent = state.descending ? "降冪" : "升冪";
+  state.page = 0;
+  renderFiles(true);
+});
 ui.previous.addEventListener("click", () => {
   state.page--;
   renderFiles(true);
@@ -912,8 +1042,14 @@ ui.next.addEventListener("click", () => {
   if (ui.next.disabled) ui.previous.focus();
 });
 ui.manualCopy.addEventListener("click", () => copyPath(ui.manualPath.value, "已複製路徑"));
+ui.locationForm.addEventListener("submit", event => {
+  event.preventDefault();
+  attachFolderLocation();
+});
+ui.locationCancel.addEventListener("click", () => ui.locationDialog.close());
+ui.locationDialog.addEventListener("close", () => { state.locationFolder = null; });
 document.addEventListener("keydown", event => {
-  if (ui.pathDialog.open || event.isComposing) return;
+  if (ui.pathDialog.open || ui.locationDialog.open || event.isComposing) return;
   const key = event.key.toLowerCase();
   if ((event.ctrlKey || event.metaKey) && !event.altKey && (key === "k" || key === "f5")) {
     event.preventDefault();
