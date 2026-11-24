@@ -259,6 +259,8 @@ PDF 家族的既有轉圖擷取頁面內影像，不保證包含文字、向量�
 
 ## 驗證與維護
 
+營業稅 v2.37.0 的 Chromium 離線開檔回歸 **100 組全數通過**，涵蓋續約調租、客戶與上期連結修復及新建清單定位。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/45330395421)
+
 營業稅 v2.36.0 的 Chromium 離線開檔回歸 **98 組全數通過**，涵蓋押息批量核對、各月實開金額與不計息月份。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/45324089173)
 
 營業稅 v2.35.0 的 Chromium 離線開檔回歸 **97 組全數通過**，涵蓋逐月押息、年度利率與舊版整期核對。[GitHub CI](https://github.com/yung13yubabie/offline-html-tools/actions/runs/45312567655)
