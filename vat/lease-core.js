@@ -57,8 +57,8 @@ function createLeaseEngine224() {
   }
   return rows;
  }
+ const inputError=(field,message)=>{throw Object.assign(new Error(message),{field});};
  function updateOpeningRent(current,start,value,basis){
-  const inputError=(field,message)=>{const error=new Error(message);error.field=field;throw error;};
   let cents;
   try{cents=amount(value);}
   catch{inputError('monthlyRent','請輸入有效的月租金額，最多兩位小數');}
@@ -71,6 +71,14 @@ function createLeaseEngine224() {
    inputError('rentBasis','請先清除已登記的實開租金，再變更含稅／未稅基準');
   }
   return {...lease,rentBasis:basis,steps:cents===null?[]:[{from:start,cents},...later]};
+ }
+ function updateDeposit(current,start,value){
+  let deposit;
+  try{deposit=amount(value);}
+  catch{inputError('deposit','請輸入有效的押金本金，最多兩位小數');}
+  if(deposit!==null&&!date(start))inputError('startDate','填寫押金時請一併設定租約開始日');
+  if(!current&&deposit===null)return undefined;
+  return {...(current||defaultLease()),deposit};
  }
  function emptyCheck(key){
   return {key,rentStatus:'pending',rentActual:null,interestStatus:'pending',interestActual:null,interestMonths:null};
@@ -130,7 +138,8 @@ function createLeaseEngine224() {
   const checks=new Map(lease.checks.map(row=>[row.key,row]));
   return periods(record.startDate,record.endDate,lease.frequency).map(period=>{
    const check=checks.get(period.key)||emptyCheck(period.key);
-   const rent=lease.steps.length?period.months.reduce((sum,month)=>sum+rentForMonth(month,lease.steps),0):null;
+   const monthlyRent=lease.steps.length?period.months.map(month=>rentForMonth(month,lease.steps)):[];
+   const rent=monthlyRent.length?monthlyRent.reduce((sum,cents)=>sum+cents,0):null;
    const annual=rateMap.get(period.year)??null,months=check.interestMonths??period.fullMonths;
    const needsRate=lease.deposit>0&&months>0&&annual===null;
    const raw=BigInt(lease.deposit||0)*BigInt(annual||0)*BigInt(months);
@@ -138,9 +147,9 @@ function createLeaseEngine224() {
    const interest=gross===null?null:lease.regime==='invoice'?round(raw,12n*(scale+BigInt(lease.vatRate))):gross;
    const rentResult=compare(rent,check.rentStatus,check.rentActual);
    const interestResult=compare(interest,check.interestStatus,check.interestActual);
-   return {...period,check,rent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
+   return {...period,check,rent,monthlyRent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
   });
  }
- return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,validateRates,normalize,periods,emptyCheck,calculate};
+ return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,calculate};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};

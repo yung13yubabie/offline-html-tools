@@ -35,7 +35,7 @@ function leaseSummary224(contract){
  const issues=periods.filter(period=>['missing','different'].includes(leasePeriodStatus224(period))).length;
  return `<dl class="lease-summary224">
   <div><dt>${esc(rent.label)}</dt><dd>${esc(rent.value)}</dd></div>
-  <div><dt>押金</dt><dd>${esc(leaseMoney224(data.deposit))}</dd></div>
+  <div><dt>押金本金</dt><dd>${esc(leaseMoney224(data.deposit))}</dd></div>
   <div><dt>${esc(leaseFrequency224[data.frequency])}核對</dt><dd>${issues?statusBadge('待處理','orange')+' '+issues+' 期':periods.length+' 期'}</dd></div>
  </dl>`;
 }
@@ -150,7 +150,7 @@ function leaseNotice224(contract,period,mode){
   ...lines.map((line,index)=>`${index+1}. ${line}`),'','煩請確認後回覆，謝謝。'].join('\n');
 }
 
-const contractTabs228=[['basic','基本資料'],['setup','租金與押息'],['review','逐期核對'],['notice','通知紀錄']];
+const contractTabs228=[['basic','基本資料'],['setup','每月租金'],['deposit','押金紀錄'],['review','逐期核對'],['notice','通知紀錄']];
 const leaseNoticeModes228={issues:'全部已確認異常',missing:'漏開發票',rent:'租金金額差異',interest:'押金設算利息'};
 const leaseField228=(id,label,type,properties='')=>`<label class="field" for="${id}">${label}<input id="${id}" class="input" type="${type}" ${properties}></label>`;
 function contractLeasePanels228(contract,basic){
@@ -161,18 +161,28 @@ function contractLeasePanels228(contract,basic){
   <nav class="lease-tabs224" role="tablist" aria-label="合約管理">${contractTabs228.map(([id,title])=>
    `<button class="btn" type="button" role="tab" data-lease-tab="${id}" id="lease-tab-${id}" aria-controls="lease-pane-${id}" aria-selected="${id==='basic'}" tabindex="${id==='basic'?0:-1}">${title}</button>`).join('')}</nav>
   <div id="leaseError224" class="notice warn" role="alert" tabindex="-1" hidden></div>
-  ${panel('basic',basic)}
+  ${panel('basic',`${basic}
+   <div class="lease-review-settings231">
+    <label class="field">發票核對週期<select id="leaseFrequency224" class="select">${leaseEngine224.frequencies.map(key=>leaseOption224(key,leaseFrequency224[key],lease.frequency)).join('')}</select></label>
+   </div>`)}
   ${panel('setup',`
-   <div class="lease-fields224">
-    <label class="field">核對週期<select id="leaseFrequency224" class="select">${leaseEngine224.frequencies.map(key=>leaseOption224(key,leaseFrequency224[key],lease.frequency)).join('')}</select></label>
+   <div class="lease-rent-settings231">
     <label class="field">月租金額基準<select id="leaseRentBasis224" class="select">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,lease.rentBasis)).join('')}</select></label>
-    ${field('leaseDeposit224','押金（元）','text','inputmode="decimal" placeholder="待填"')}
-    <label class="field">押息計算方式<select id="leaseRegime224" class="select">${[['invoice','一般稅額'],['assessed','查定計算']].map(([key,label])=>leaseOption224(key,label,lease.regime)).join('')}</select></label>
-    ${field('leaseVAT224','營業稅徵收率（%）','text','inputmode="decimal"')}
    </div>
    <section class="lease-section224">
-    <header><h3>租金階段</h3><button class="btn" type="button" id="leaseAddStep224">新增階段</button></header>
+    <header><h3>月租與調租</h3><button class="btn" type="button" id="leaseAddStep224">新增調租階段</button></header>
     <div id="leaseSteps224"></div>
+   </section>
+  `)}
+  ${panel('deposit',`
+   <section class="lease-deposit231" aria-labelledby="leaseDepositTitle231">
+    <h3 id="leaseDepositTitle231">押金與設算利息</h3>
+    <p>押金本金用於計算設算利息。無押金請填 0。</p>
+    <div class="lease-fields224">
+     ${field('leaseDeposit224','押金本金（元）','text','inputmode="decimal" placeholder="待填"')}
+     <label class="field">設算利息方式<select id="leaseRegime224" class="select">${[['invoice','一般稅額'],['assessed','查定計算']].map(([key,label])=>leaseOption224(key,label,lease.regime)).join('')}</select></label>
+     ${field('leaseVAT224','營業稅徵收率（%）','text','inputmode="decimal"')}
+    </div>
    </section>
    <details class="lease-section224 lease-post224"><summary>年度郵政利率</summary><div id="leaseRateChips224"></div></details>
   `)}
@@ -275,14 +285,18 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    from:row.querySelector('.lease-step-date').value,cents:leaseEngine224.amount(row.querySelector('.lease-step-rent').value)
   }));
   if(newSteps.length===1&&newSteps[0].cents===null)newSteps.pop();
-  draft=leaseEngine224.normalize({...draft,frequency:Number(val('leaseFrequency224')),rentBasis,
-   deposit:leaseEngine224.amount(val('leaseDeposit224')),regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},term.startDate,term.endDate);
+  const costs=leaseEngine224.updateDeposit(draft,term.startDate,val('leaseDeposit224'));
+  draft=leaseEngine224.normalize({...costs,frequency:Number(val('leaseFrequency224')),rentBasis,
+   regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},term.startDate,term.endDate);
   periods=leaseEngine224.calculate({...term,lease:draft},leaseRates224());
  }
  function attempt(action){
   if(busy)return;
   error.hidden=true;
-  try{action();}catch(failure){error.textContent=failure.message;error.hidden=false;error.focus();}
+  try{action();}catch(failure){
+   if(failure.field==='deposit')activate('deposit');
+   error.textContent=failure.message;error.hidden=false;error.focus();
+  }
  }
  function drawRateChips(){
   const target=$('#leaseRateChips224');
@@ -295,7 +309,8 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  }
  function activate(next){
   pane=next;
-  if(next==='basic')checkMounted=false;
+  if(next!=='review')checkMounted=false;
+  if(next==='deposit')drawRateChips();
   for(const [key] of contractTabs228){
    const tab=$('#lease-tab-'+key),active=key===pane;
    tab.setAttribute('aria-selected',String(active));
@@ -327,8 +342,13 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
      <label class="field">發票狀態<select class="select" id="lease-${part}-status224">${options.map(([key,title])=>leaseOption224(key,title,status)).join('')}</select></label>
      <label class="field" id="lease-${part}-field224" ${status==='issued'?'':'hidden'}>實開・${basis}<input class="input" id="lease-${part}-actual224" inputmode="decimal" value="${esc(format(actual))}"></label>
     </div>
-    ${part==='interest'?`<div class="lease-interest224"><div><span>年利率</span> <strong>${period.annual===null?'未設定':esc(format(period.annual,4))+'%'}</strong></div>
-      <div data-lease-gross>設算息 ${esc(leaseMoney224(period.gross))}</div>
+    ${part==='rent'&&period.monthlyRent.length>1?`<details class="lease-monthly231">
+     <summary>查看各月租金</summary>
+     <ul>${period.monthlyRent.map((cents,index)=>`<li><span>${esc(fmtDate(period.months[index].begin).split('/').slice(0,2).join('/'))}</span><strong>${esc(leaseMoney224(cents))}</strong></li>`).join('')}</ul>
+    </details>`:''}
+    ${part==='interest'?`<div class="lease-interest224"><div><span>押金本金</span> <strong data-lease-deposit>${esc(leaseMoney224(draft.deposit))}</strong></div>
+      <div><span>年利率</span> <strong>${period.annual===null?'未設定':esc(format(period.annual,4))+'%'}</strong></div>
+      <div data-lease-gross>設算利息 ${esc(leaseMoney224(period.gross))}</div>
       ${field('leaseInterestMonths224','計息月數','number',`min="0" max="${period.months.length}" step="1" placeholder="${period.fullMonths}" value="${esc(period.check.interestMonths??'')}"`)}</div>
       ${period.needsRate?`<div class="lease-rate-quick224">
        ${field('leaseQuickRate224',leaseYear224(period.year)+'郵政固定利率（%）','text','inputmode="decimal"')}
@@ -372,7 +392,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    checkPanel.querySelector(`[data-lease-delta="${part}"]`).textContent=expected!==null&&actual!==null?leaseMoney224(actual-expected):'—';
    checkPanel.querySelector(`[data-lease-outcome="${part}"]`).innerHTML=leaseOutcomeBadge224(period[part+'Result']);
   }
-  checkPanel.querySelector('[data-lease-gross]').textContent='設算息 '+leaseMoney224(period.gross);
+  checkPanel.querySelector('[data-lease-gross]').textContent='設算利息 '+leaseMoney224(period.gross);
   const button=[...list.children].find(button=>button.dataset.leasePeriod===selectedKey);
   if(button)button.querySelector('.badge').outerHTML=leaseOutcomeBadge224(leasePeriodStatus224(period));
  }
@@ -414,7 +434,6 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   if(next===pane)return;
   collectCheck();
   updateTerm();
-  if(next==='setup')drawRateChips();
   if(next==='review'||next==='notice'){
    const valid=validTerm();
    $('#leaseReviewEmpty228').hidden=valid;

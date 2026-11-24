@@ -211,14 +211,19 @@ function openContract220(id,renewalFrom=null) {
    <option value="1">1 年</option><option value="2">2 年</option><option value="3">3 年</option><option value="">自訂到期日</option></select></div>`:''}
   ${field('startDate',renewalFrom?'新約開始日期':'開始日期（選填）',input('startDate','date',draft.startDate))}
   ${field('endDate','到期日',input('endDate','date',draft.endDate,'required'))}
-  ${existing?'':`<details class="record-settings222 contract-rent-settings225 cases-span219" id="contractRent225" ${draft.categoryId==='lease'||draft.lease?'open':''}>
-   <summary>租金設定</summary>
-   <div class="contract-rent-fields225">
-    ${field('monthlyRent','月租（元）',input('monthlyRent','text',leaseEngine224.format(draft.lease?.steps[0]?.cents),'inputmode="decimal"'))}
-    ${field('rentBasis','金額基準',`<select id="contract-rentBasis220" class="select">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,draft.lease?.rentBasis||'net')).join('')}</select>`)}
-    ${draft.lease?.steps.length>1?`<span class="contract-rent-count225">首段月租 · 共 ${draft.lease.steps.length} 段</span>`:''}
-   </div>
-  </details>`}
+  ${existing?'':`<div class="contract-costs231 cases-span219">
+   <details class="record-settings222 contract-rent-settings225" id="contractRent225" ${draft.categoryId==='lease'?'open':''}>
+    <summary>每月租金</summary>
+    <div class="contract-rent-fields225">
+     ${field('monthlyRent','月租（元）',input('monthlyRent','text','','inputmode="decimal"'))}
+     ${field('rentBasis','金額基準',`<select id="contract-rentBasis220" class="select"><option value="net">未稅</option><option value="gross">含稅</option></select>`)}
+    </div>
+   </details>
+   <details class="record-settings222 contract-rent-settings225" id="contractDeposit231" ${draft.categoryId==='lease'?'open':''}>
+    <summary>押金紀錄</summary>
+    ${field('deposit','押金本金（元）',input('deposit','text','','inputmode="decimal" placeholder="無押金填 0"'))}
+   </details>
+  </div>`}
   <div class="record-reminder-settings227 cases-span219">
    <div class="record-setting-head222">
     <label class="cases-check219 record-toggle222"><input id="contract-reminderEnabled220" type="checkbox" aria-controls="contractReminderFields222" ${draft.reminderEnabled?'checked':''}>到期提醒</label>
@@ -267,16 +272,18 @@ function openContract220(id,renewalFrom=null) {
   get('startDate').addEventListener('input',updateTerm);
   updateTerm();
  }
- const rentPanel=$('#contractRent225');
+ const rentPanel=$('#contractRent225'),depositPanel=$('#contractDeposit231');
  if(rentPanel)get('categoryId').addEventListener('change',()=>{
-  rentPanel.open=get('categoryId').value==='lease'||!!get('monthlyRent').value.trim();
+  const isLease=get('categoryId').value==='lease';
+  rentPanel.open=isLease||!!get('monthlyRent').value.trim();
+  depositPanel.open=isLease||!!get('deposit').value.trim();
  });
  const lease=existing?mountContractLease228(modal,draft,collect,notice=>commit('save',notice)):null;
- const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value]);
+ const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value,get('deposit')?.value]);
  let initial=snapshot();
  let busy=false;
  function updatePreview(){
-  const requiresStart=!!renewalFrom||!!get('monthlyRent')?.value.trim()||!!existing?.lease;
+  const requiresStart=!!renewalFrom||!!get('monthlyRent')?.value.trim()||!!get('deposit')?.value.trim()||!!existing?.lease;
   get('startDate').required=requiresStart;
   if(!renewalFrom)form.querySelector('label[for="contract-startDate220"]').textContent=requiresStart?'開始日期（必填）':'開始日期（選填）';
   $('#contractNewCategory220').hidden=get('categoryId').value!=='__new';
@@ -330,7 +337,9 @@ function openContract220(id,renewalFrom=null) {
   try{
    if(action==='save'){
     if(fields.categoryId==='__new')contractEngine220.categoryFor(categoryName);
-    const costs=lease?lease.collect():leaseEngine224.updateOpeningRent(undefined,fields.startDate,get('monthlyRent').value,get('rentBasis').value);
+    const costs=lease?lease.collect():leaseEngine224.updateDeposit(
+     leaseEngine224.updateOpeningRent(undefined,fields.startDate,get('monthlyRent').value,get('rentBasis').value),
+     fields.startDate,get('deposit').value);
     if(costs)fields.lease=costs;
     if(notice)fields.leaseNotices=[...(fields.leaseNotices||[]),notice];
    }
@@ -341,10 +350,12 @@ function openContract220(id,renewalFrom=null) {
    if(target&&hint){
     lease?.activate('basic');
     if(rentPanel?.contains(target))rentPanel.open=true;
+    if(depositPanel?.contains(target))depositPanel.open=true;
     hint.textContent=failure.message;hint.hidden=false;hint.id='contract-field-error-'+key+'220';
     target.setAttribute('aria-invalid','true');target.setAttribute('aria-errormessage',hint.id);
    }
    else{
+    if(lease&&key==='deposit')lease.activate('deposit');
     const message=lease&&lease.active()!=='basic'?leaseError:error;
     message.textContent=failure.message||'合約未能儲存';
     message.hidden=false;

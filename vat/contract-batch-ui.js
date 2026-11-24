@@ -7,9 +7,9 @@ function openLeaseBatch228(clientId=''){
   ['categoryId','類別',contractTypeOptions220('lease')],
   ['frequency','核對週期',leaseEngine224.frequencies.map(key=>leaseOption224(key,leaseFrequency224[key],defaults.frequency)).join('')],
   ['rentBasis','月租基準',leaseOption224('net','未稅',defaults.rentBasis)+leaseOption224('gross','含稅',defaults.rentBasis)],
-  ['regime','押息計算方式',leaseOption224('invoice','一般稅額',defaults.regime)+leaseOption224('assessed','查定計算',defaults.regime)]
+  ['regime','設算利息方式',leaseOption224('invoice','一般稅額',defaults.regime)+leaseOption224('assessed','查定計算',defaults.regime)]
  ];
- const columns=[['title','合約／據點名稱'],['startDate','開始日'],['endDate','到期日'],['rent','月租（元）'],['deposit','押金（元）']];
+ const columns=[['title','合約／據點名稱'],['startDate','開始日'],['endDate','到期日'],['rent','月租（元）'],['deposit','押金本金（元）']];
  showModal('批量新增租約',`<form id="leaseBatchForm228" novalidate>
   <section class="lease-batch-settings228" aria-labelledby="leaseBatchCommon228">
    <h3 id="leaseBatchCommon228">共通設定</h3>

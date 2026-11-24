@@ -18,6 +18,18 @@ const calc=(leaseData=lease,table=rates,from=start,to=end)=>E.calculate({startDa
 let rows=calc();
 assert.deepEqual(rows.map(x=>x.key),['2025-11-01/2025-12-31','2026-01-01/2026-02-28','2026-03-01/2026-04-30']);
 assert.deepEqual(rows.map(x=>[x.rent,x.gross,x.interest]),[[4000000,30000,28571],[4200000,34500,32857],[4800000,34500,32857]]);
+assert.deepEqual(rows.map(x=>x.monthlyRent),[[2000000,2000000],[2000000,2200000],[2400000,2400000]]);
+const differentDeposit=calc(E.updateDeposit(lease,start,'60,000'));
+assert.deepEqual(differentDeposit.map(x=>x.rent),rows.map(x=>x.rent));
+assert.equal(differentDeposit[0].gross,15000);
+const depositOnly=calc(E.updateDeposit(undefined,start,'120,000'))[0];
+assert.equal(depositOnly.rent,null);
+assert.deepEqual(depositOnly.monthlyRent,[]);
+assert.equal(depositOnly.interest,28571);
+assert.equal(E.updateDeposit(undefined,start,''),undefined);
+assert.equal(E.updateDeposit(undefined,start,'0').deposit,0);
+assert.throws(()=>E.updateDeposit(undefined,'','120,000'),{field:'startDate'});
+assert.throws(()=>E.updateDeposit(lease,start,'-120,000'),{field:'deposit'});
 assert.deepEqual(calc({...lease,regime:'assessed'}).map(x=>x.interest),[30000,34500,34500]);
 assert.deepEqual(calc(lease,[]).map(x=>[x.rentResult,x.interestResult,x.needsRate]),Array(3).fill(['pending','unknown',true]));
 assert(calc({...lease,deposit:0},[]).every(x=>!x.needsRate&&x.interest===0));
@@ -61,5 +73,6 @@ assert.throws(()=>E.updateOpeningRent(record.lease,start,'100','gross'),{field:'
 const edited=E.updateOpeningRent(record.lease,start,'21,000','net');
 assert.deepEqual(edited.steps,[{from:start,cents:2100000},record.lease.steps[1]]);
 assert.deepEqual(edited.checks,record.lease.checks);
+assert.deepEqual(calc(edited).map(x=>x.interest),calc(record.lease).map(x=>x.interest));
 
 console.log('PASS lease calendar cadence, step-rent cents, statutory interest, missing rates, partial months, reconciliation and legacy backups');
