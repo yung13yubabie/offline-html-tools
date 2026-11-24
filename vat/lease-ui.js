@@ -3,6 +3,8 @@ const leaseRates224=()=>state.leaseRates||[];
 const leaseMoney224=cents=>cents===null?'待填':(cents/100).toLocaleString('zh-TW',{maximumFractionDigits:2})+' 元';
 const leaseYear224=year=>fmtDate(year+'-01-01').split('/')[0]+' 年';
 const leaseRange224=period=>fmtDate(period.start)+' ～ '+fmtDate(period.end);
+const rentBasisLabel234=basis=>basis==='gross'?'含稅':'未稅';
+const rentMonthLabel234=month=>fmtDate(month.begin).split('/').slice(0,2).join('/');
 const leaseOption224=(value,label,selected)=>`<option value="${esc(value)}" ${value===selected?'selected':''}>${esc(label)}</option>`;
 const leaseFrequency224={1:'每月',2:'雙月',3:'每季',12:'每年'};
 const leaseOutcomes224={
@@ -147,10 +149,21 @@ function leaseNotice224(contract,period,mode){
  const basis=contract.lease.rentBasis==='net'?'未稅':'含稅';
  const lines=[];
  const includeMissing=mode==='issues'||mode==='missing';
- if(includeMissing&&period.rentResult==='missing'){
+ if(period.hasMonthlyRent){
+  for(const row of period.rentRows){
+   const month=rentMonthLabel234(row),basis=rentBasisLabel234(row.basis);
+   if(includeMissing&&row.result==='missing'){
+    lines.push(`${month} 租金發票尚未開立${row.expected===null?'。':`，應開${basis}金額為 ${leaseMoney224(row.expected)}。`}`);
+   }
+   if((mode==='issues'||mode==='rent')&&row.result==='different'){
+    lines.push(`${month} 租金${basis}金額有差異，依約應開 ${leaseMoney224(row.expected)}，實際開立 ${leaseMoney224(row.actual)}。`);
+   }
+  }
+ }
+ if(!period.hasMonthlyRent&&includeMissing&&period.rentResult==='missing'){
   lines.push('租金發票尚未開立'+(period.rent===null?'。':`，應開${basis}金額為 ${leaseMoney224(period.rent)}。`));
  }
- if((mode==='issues'||mode==='rent')&&period.rentResult==='different'){
+ if(!period.hasMonthlyRent&&(mode==='issues'||mode==='rent')&&period.rentResult==='different'){
   lines.push(`租金${basis}金額有差異，依約應開 ${leaseMoney224(period.rent)}，實際開立 ${leaseMoney224(period.check.rentActual)}。`);
  }
  if(includeMissing&&period.interestResult==='missing'){
@@ -184,6 +197,7 @@ function contractLeasePanels228(contract,basic){
   ${panel('setup',`
    <div class="lease-rent-settings231">
     <label class="field">月租金額基準<select id="leaseRentBasis224" class="select">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,lease.rentBasis)).join('')}</select></label>
+    ${field('leaseRentVatRate234','租金稅率（%）','text','inputmode="decimal" value="'+esc(leaseEngine224.format(lease.rentVatRate??leaseEngine224.defaultRentTaxRate,4))+'"')}
    </div>
    <section class="lease-section224">
     <header><h3>月租與調租</h3><button class="btn" type="button" id="leaseAddStep224">新增調租階段</button></header>
@@ -245,6 +259,8 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  const interestYear=$('#leaseInterestYear232'),previewRate=$('#leaseRateInput232');
  const notices=new Map(),noticeMode=$('#leaseNoticeMode224'),noticeText=$('#leaseNoticeText224'),copy=$('#leaseCopy224');
  let pane='basic',periods=[],selectedKey='',noticeKey='',busy=false,checkMounted=false;
+ let rentDisplay=draft.rentBasis,rentDisplayPicked=false,rentScope='period';
+ const selectedRentMonths=new Set();
  const val=id=>$('#'+id).value;
  const format=leaseEngine224.format;
  $('#leaseDeposit224').value=format(draft.deposit);
@@ -309,10 +325,10 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  };
  showRegime();
  function setupSnapshot(){
-  return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
+  return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseRentVatRate234'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
    [...steps.querySelectorAll('input:not([readonly])')].map(input=>input.type==='checkbox'?input.checked:input.value)];
  }
- const snapshot=()=>JSON.stringify([setupSnapshot(),draft.checks]);
+ const snapshot=()=>JSON.stringify([setupSnapshot(),draft.checks,draft.rentMonths||[]]);
  const hasUnsaved=()=>{
   if(checkMounted){
    try{collectCheck();}catch{return true;}
@@ -335,20 +351,38 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   const months=val('leaseInterestMonths224');
   const row={key:selectedKey,interestMonths:months===''?null:Number(months)};
   for(const part of ['rent','interest']){
+   if(!$('#lease-'+part+'-status224')){
+    row[part+'Status']='pending';row[part+'Actual']=null;continue;
+   }
    const status=val('lease-'+part+'-status224');
    row[part+'Status']=status;
    row[part+'Actual']=status==='issued'?leaseEngine224.amount(val('lease-'+part+'-actual224')):null;
   }
-  const normalized=leaseEngine224.normalize({...draft,checks:[...draft.checks.filter(row=>row.key!==selectedKey),row]},term.startDate,term.endDate);
+  const entries=new Map((draft.rentMonths||[]).map(entry=>[entry.key,entry]));
+  const inputs=checkPanel.querySelectorAll('[data-rent-actual234]');
+  for(const input of inputs){
+   if(input.value===input.defaultValue)continue;
+   const key=input.dataset.rentActual234,actual=leaseEngine224.amount(input.value);
+   const saved=entries.get(key);
+   if(saved&&actual===projectRent(saved.actual,saved.basis))continue;
+   if(actual===null)entries.delete(key);
+   else entries.set(key,{key,actual,basis:rentDisplay,status:'issued'});
+  }
+  const normalized=leaseEngine224.normalize({...draft,rentMonths:[...entries.values()],
+   checks:[...draft.checks.filter(row=>row.key!==selectedKey),row]},term.startDate,term.endDate);
   draft.checks=normalized.checks.sort((a,b)=>a.key.localeCompare(b.key));
+  draft.rentMonths=normalized.rentMonths||[];
+  for(const input of inputs)input.defaultValue=input.value;
  }
  function collect(){
   collectCheck();
   updateTerm();
   const rentBasis=val('leaseRentBasis224');
-  if(rentBasis!==draft.rentBasis&&draft.checks.some(check=>check.rentActual!==null)){
-   throw Error('已有實開租金金額，請先清除該期金額再變更含稅／未稅基準');
+  if(rentBasis!==draft.rentBasis&&leaseEngine224.hasRentActual(draft)){
+   throw Error('已有實開租金金額，請先清除相關核對金額再變更合約的租金基準');
   }
+  const rentVatRate=leaseEngine224.rate(val('leaseRentVatRate234'));
+  if(rentVatRate===null)throw Error('請填寫租金稅率');
   const vatRate=leaseEngine224.rate(val('leaseVAT224'));
   if(val('leaseRegime224')==='invoice'&&vatRate===null)throw Error('請填寫營業稅徵收率');
   const newSteps=[...steps.querySelectorAll('.lease-step224')].map(row=>{
@@ -358,9 +392,10 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   });
   if(newSteps.length===1&&newSteps[0].cents===null)newSteps.pop();
   const costs=leaseEngine224.updateDeposit(draft,term.startDate,val('leaseDeposit224'));
-  draft=leaseEngine224.normalize({...costs,frequency:Number(val('leaseFrequency224')),rentBasis,
+  draft=leaseEngine224.normalize({...costs,frequency:Number(val('leaseFrequency224')),rentBasis,rentVatRate,
    regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},term.startDate,term.endDate);
   periods=leaseEngine224.calculate({...term,lease:draft},leaseRates224());
+  if(!rentDisplayPicked)rentDisplay=rentBasis;
  }
  function attempt(action){
   if(busy)return;
@@ -437,19 +472,16 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  }
  function metric(period,part,label,basis){
   const expected=period[part],actual=period.check[part+'Actual'],status=period.check[part+'Status'];
+  const metricKey=part==='rent'?'legacy-rent':part;
   const options=[['pending','待核對'],['issued','已開立'],['missing','未開立']];
   return `<section class="lease-metric224">
-    <header><h3>${label}</h3><span data-lease-outcome="${part}">${leaseOutcomeBadge224(period[part+'Result'])}</span></header>
-    <dl><div><dt>應開・${basis}</dt><dd data-lease-expected="${part}">${esc(leaseMoney224(expected))}</dd></div>
-    <div><dt>差額・實開減應開</dt><dd data-lease-delta="${part}">${expected!==null&&actual!==null?esc(leaseMoney224(actual-expected)):'—'}</dd></div></dl>
+    <header><h3>${label}</h3><span data-lease-outcome="${metricKey}">${leaseOutcomeBadge224(part==='rent'?period.legacyRentResult:period.interestResult)}</span></header>
+    <dl><div><dt>應開・${basis}</dt><dd data-lease-expected="${metricKey}">${esc(leaseMoney224(expected))}</dd></div>
+    <div><dt>差額・實開減應開</dt><dd data-lease-delta="${metricKey}">${expected!==null&&actual!==null?esc(leaseMoney224(actual-expected)):'—'}</dd></div></dl>
     <div class="lease-fields224">
      <label class="field">發票狀態<select class="select" id="lease-${part}-status224">${options.map(([key,title])=>leaseOption224(key,title,status)).join('')}</select></label>
      <label class="field" id="lease-${part}-field224" ${status==='issued'?'':'hidden'}>實開・${basis}<input class="input" id="lease-${part}-actual224" inputmode="decimal" value="${esc(format(actual))}"></label>
     </div>
-    ${part==='rent'&&period.monthlyRent.length>1?`<details class="lease-monthly231">
-     <summary>查看各月租金</summary>
-     <ul>${period.monthlyRent.map((cents,index)=>`<li><span>${esc(fmtDate(period.months[index].begin).split('/').slice(0,2).join('/'))}</span><strong>${esc(leaseMoney224(cents))}</strong></li>`).join('')}</ul>
-    </details>`:''}
     ${part==='interest'?`<div class="lease-interest224"><div><span>押金本金</span> <strong data-lease-deposit>${esc(leaseMoney224(draft.deposit))}</strong></div>
       <div><span>年利率</span> <strong>${period.annual===null?'未設定':esc(format(period.annual,4))+'%'}</strong></div>
       <div data-lease-gross>設算利息 ${esc(leaseMoney224(period.gross))}</div>
@@ -459,11 +491,99 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
        <button class="btn" type="button" id="leaseSaveQuickRate224">儲存利率</button></div>`:''}`:''}
    </section>`;
  }
+ function rentRowsFor(period){
+  return rentScope==='year'?periods.filter(row=>row.year===period.year).flatMap(row=>row.rentRows):period.rentRows;
+ }
+ const projectRent=(cents,basis)=>leaseEngine224.convertRent(cents,basis,rentDisplay,draft.rentVatRate);
+ function recordedRent(row){
+  return row.actual!==null&&row.basis!==rentDisplay?'原錄'+rentBasisLabel234(row.basis)+' '+leaseMoney224(row.actual):'';
+ }
+ function rentDelta(row){
+  return row.actual===null||row.expected===null?'—':leaseMoney224(projectRent(row.actual-row.expected,row.basis));
+ }
+ function rentTotal(rows){
+  return rows.every(row=>row.base===null)?null:rows.reduce((sum,row)=>sum+(projectRent(row.base,draft.rentBasis)??0),0);
+ }
+ function monthlyRentTable(period){
+  const rows=rentRowsFor(period),visibleKeys=new Set(rows.map(row=>row.key)),basis=rentBasisLabel234(rentDisplay);
+  for(const key of selectedRentMonths)if(!visibleKeys.has(key))selectedRentMonths.delete(key);
+  return `<section class="lease-metric224 lease-rent-review234" aria-labelledby="leaseRentReviewTitle234">
+   <header><div><h3 id="leaseRentReviewTitle234">逐月租金核對</h3><div class="lease-rent-total234">
+    ${rentScope==='year'?'本年度':'本期'}應開・${basis} <strong data-lease-expected="rent">${esc(leaseMoney224(rentTotal(rows)))}</strong></div></div>
+    <div class="lease-rent-options234">
+     <label class="field">顯示與輸入<select class="select" id="leaseRentDisplay234">${[['net','未稅'],['gross','含稅']].map(([key,label])=>leaseOption224(key,label,rentDisplay)).join('')}</select></label>
+     <label class="field">核對月份<select class="select" id="leaseRentScope234">${[['period','本期'],['year','本年度']].map(([key,label])=>leaseOption224(key,label,rentScope)).join('')}</select></label>
+    </div>
+   </header>
+   <div class="lease-rent-actions234">
+    <label class="cases-check219"><input type="checkbox" id="leaseRentSelectAll234">全選月份</label>
+    <p id="leaseRentSelected234" role="status"></p>
+    <button type="button" class="btn primary" data-rent-batch234="match">核對勾選</button>
+    <button type="button" class="btn" data-rent-batch234="missing">標記未開</button>
+    <button type="button" class="btn ghost" data-rent-batch234="clear">清除核對</button>
+   </div>
+   <p class="lease-rent-note234">已填金額按實開核對，空白會帶入應開金額。</p>
+   <div class="lease-rent-table234">
+    <div class="lease-rent-row234 lease-rent-head234" aria-hidden="true"><span></span><span>月份</span><span>應開・${basis}</span><span>實開・${basis}</span><span>差額／結果</span></div>
+    ${rows.map(row=>{
+     const month=rentMonthLabel234(row);
+     return `<div class="lease-rent-row234" data-rent-row234="${esc(row.key)}">
+      <label class="lease-rent-select234"><input type="checkbox" data-rent-select234="${esc(row.key)}" aria-label="勾選 ${esc(month)}" ${selectedRentMonths.has(row.key)?'checked':''}></label>
+      <strong class="lease-rent-month234">${esc(month)}</strong>
+      <div class="lease-rent-expected234"><small>應開・${basis}</small><strong>${esc(leaseMoney224(projectRent(row.base,draft.rentBasis)))}</strong></div>
+      <label class="lease-rent-actual234"><small>實開・${basis}</small>
+       <input class="input" inputmode="decimal" data-rent-actual234="${esc(row.key)}" aria-label="${esc(month)} 實開${basis}" value="${esc(format(projectRent(row.actual,row.basis)))}">
+       <span data-rent-recorded234>${esc(recordedRent(row))}</span>
+      </label>
+      <div class="lease-rent-result234"><span data-rent-result234>${leaseOutcomeBadge224(row.result)}</span><small data-rent-delta234>${esc(rentDelta(row))}</small></div>
+     </div>`;
+    }).join('')}
+   </div>
+  </section>`;
+ }
+ function updateRentSelection(){
+  const boxes=[...checkPanel.querySelectorAll('[data-rent-select234]')],count=selectedRentMonths.size;
+  const selectAll=$('#leaseRentSelectAll234');
+  selectAll.checked=count>0&&count===boxes.length;
+  selectAll.indeterminate=count>0&&count<boxes.length;
+  $('#leaseRentSelected234').textContent='已選 '+count+' 月';
+  checkPanel.querySelectorAll('[data-rent-batch234]').forEach(button=>button.disabled=!count);
+ }
+ checkPanel.addEventListener('click',event=>{
+  const button=event.target.closest('[data-rent-batch234]');
+  if(!button||!selectedRentMonths.size)return;
+  attempt(()=>{
+   collect();
+   const period=periods.find(row=>row.key===selectedKey),kind=button.dataset.rentBatch234;
+   const rows=rentRowsFor(period).filter(row=>selectedRentMonths.has(row.key));
+   if(kind==='match'&&rows.some(row=>row.actual===null&&row.base===null))throw Error('有勾選月份尚未設定租金，請先補填實開或月租。');
+   if(kind!=='match'&&rows.some(row=>row.actual!==null)&&
+    !window.confirm(kind==='clear'?'清除勾選月份的核對狀態與實開金額？':'標記未開會清除勾選月份已填的實開金額。繼續？'))return;
+   const entries=new Map((draft.rentMonths||[]).map(entry=>[entry.key,entry]));
+   for(const row of rows){
+    if(kind==='clear')entries.delete(row.key);
+    else if(kind==='missing')entries.set(row.key,{key:row.key,status:'missing',actual:null,basis:rentDisplay});
+    else if(row.actual===null)entries.set(row.key,{key:row.key,status:'issued',actual:row.base,basis:draft.rentBasis});
+   }
+   draft=leaseEngine224.normalize({...draft,rentMonths:[...entries.values()]},term.startDate,term.endDate);
+   periods=leaseEngine224.calculate({...term,lease:draft},leaseRates224());
+   selectedRentMonths.clear();
+   drawPeriods();drawCheck();
+   $('#leaseRentSelectAll234').focus({preventScroll:true});
+   toast(kind==='match'?'已核對 '+rows.length+' 月，請儲存合約':kind==='missing'?'已標記 '+rows.length+' 月未開，請儲存合約':'已清除 '+rows.length+' 月核對，請儲存合約');
+  });
+ });
  function drawCheck(){
   const period=periods.find(period=>period.key===selectedKey);
+  const legacy=period.check.rentStatus!=='pending'||period.check.rentActual!==null;
   checkPanel.innerHTML=`<header class="lease-check-head224"><h3>${esc(leaseRange224(period))}</h3><button class="btn" type="button" id="leaseDraftNotice224">建立通知</button></header>
-   <div class="lease-metrics224">${metric(period,'rent','租金',draft.rentBasis==='net'?'未稅':'含稅')}${metric(period,'interest','押金設算利息','銷售額')}</div>`;
+   ${monthlyRentTable(period)}
+   <div class="lease-secondary-review234">${metric(period,'interest','押金設算利息','銷售額')}
+    ${legacy?`<details class="lease-legacy-rent234"><summary>舊版整期租金核對</summary>
+     <p>此為整期紀錄。登記單月後，核對結果與通知依單月資料。</p>${metric(period,'rent','整期租金',rentBasisLabel234(draft.rentBasis))}</details>`:''}
+   </div>`;
   checkMounted=true;
+  updateRentSelection();
   $('#leaseDraftNotice224').onclick=()=>attempt(()=>showPane('notice'));
   const quick=$('#leaseSaveQuickRate224');
   if(quick)quick.onclick=async()=>{
@@ -491,18 +611,56 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  function refreshCheck(){
   const period=periods.find(period=>period.key===selectedKey);
   for(const part of ['rent','interest']){
+   const metricKey=part==='rent'?'legacy-rent':part;
+   const output=checkPanel.querySelector(`[data-lease-expected="${metricKey}"]`);
+   if(!output)continue;
    const actual=period.check[part+'Actual'],expected=period[part];
-   checkPanel.querySelector(`[data-lease-expected="${part}"]`).textContent=leaseMoney224(expected);
-   checkPanel.querySelector(`[data-lease-delta="${part}"]`).textContent=expected!==null&&actual!==null?leaseMoney224(actual-expected):'—';
-   checkPanel.querySelector(`[data-lease-outcome="${part}"]`).innerHTML=leaseOutcomeBadge224(period[part+'Result']);
+   output.textContent=leaseMoney224(expected);
+   checkPanel.querySelector(`[data-lease-delta="${metricKey}"]`).textContent=expected!==null&&actual!==null?leaseMoney224(actual-expected):'—';
+   checkPanel.querySelector(`[data-lease-outcome="${metricKey}"]`).innerHTML=leaseOutcomeBadge224(part==='rent'?period.legacyRentResult:period.interestResult);
+  }
+  const rentRows=new Map(rentRowsFor(period).map(row=>[row.key,row]));
+  for(const element of checkPanel.querySelectorAll('[data-rent-row234]')){
+   const row=rentRows.get(element.dataset.rentRow234);
+   element.querySelector('[data-rent-result234]').innerHTML=leaseOutcomeBadge224(row.result);
+   element.querySelector('[data-rent-delta234]').textContent=rentDelta(row);
+   element.querySelector('[data-rent-recorded234]').textContent=recordedRent(row);
   }
   checkPanel.querySelector('[data-lease-gross]').textContent='設算利息 '+leaseMoney224(period.gross);
   const button=[...list.children].find(button=>button.dataset.leasePeriod===selectedKey);
   if(button)button.querySelector('.badge').outerHTML=leaseOutcomeBadge224(leasePeriodStatus224(period));
  }
  checkPanel.onchange=event=>{
-  if(!checkMounted||!event.target.matches('input,select')||event.target.id==='leaseQuickRate224')return;
+  const target=event.target;
+  if(!checkMounted||!target.matches('input,select')||target.id==='leaseQuickRate224')return;
+  if(target.id==='leaseRentSelectAll234'){
+   for(const box of checkPanel.querySelectorAll('[data-rent-select234]')){
+    box.checked=target.checked;
+    if(box.checked)selectedRentMonths.add(box.dataset.rentSelect234);
+    else selectedRentMonths.delete(box.dataset.rentSelect234);
+   }
+   updateRentSelection();return;
+  }
+  if(target.matches('[data-rent-select234]')){
+   const key=target.dataset.rentSelect234;
+   if(target.checked)selectedRentMonths.add(key);
+   else selectedRentMonths.delete(key);
+   updateRentSelection();return;
+  }
+  if(['leaseRentDisplay234','leaseRentScope234'].includes(target.id)){
+   const isDisplay=target.id==='leaseRentDisplay234',value=target.value;
+   target.value=isDisplay?rentDisplay:rentScope;
+   attempt(()=>{
+    collect();
+    if(isDisplay){rentDisplay=value;rentDisplayPicked=true;}
+    else{rentScope=value;selectedRentMonths.clear();}
+    drawCheck();
+    $('#'+target.id).focus({preventScroll:true});
+   });
+   return;
+  }
   for(const part of ['rent','interest']){
+   if(!$('#lease-'+part+'-field224'))continue;
    const visible=val('lease-'+part+'-status224')==='issued';
    $('#lease-'+part+'-field224').hidden=!visible;
   }

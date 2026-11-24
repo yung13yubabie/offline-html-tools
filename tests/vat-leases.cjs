@@ -74,5 +74,21 @@ const edited=E.updateOpeningRent(record.lease,start,'21,000','net');
 assert.deepEqual(edited.steps,[{from:start,cents:2100000},record.lease.steps[1]]);
 assert.deepEqual(edited.checks,record.lease.checks);
 assert.deepEqual(calc(edited).map(x=>x.interest),calc(record.lease).map(x=>x.interest));
+assert.equal(E.convertRent(1050000,'gross','net'),1000000);
+assert.equal(E.convertRent(1070000,'gross','net',70000),1000000);
+assert.equal(E.convertRent(10,'gross','net'),10);
+assert.equal(E.convertRent(10,'net','gross'),11);
+assert.equal(E.convertRent(-10,'net','gross'),-11);
+const monthlyLease={...lease,rentBasis:'gross',rentVatRate:70000,rentMonths:[
+ {key:'2025-11-01/2025-11-30',status:'issued',actual:1869159,basis:'net'},
+ {key:'2025-12-01/2025-12-31',status:'missing',actual:null,basis:'gross'}
+]};
+const monthlyResult=calc(monthlyLease)[0];
+assert.deepEqual(monthlyResult.rentRows.map(row=>row.result),['matched','missing']);
+assert.equal(monthlyResult.rentResult,'missing');
+assert.equal(calc({...monthlyLease,frequency:1})[0].rentRows[0].actual,1869159);
+assert.throws(()=>calc({...monthlyLease,rentMonths:[monthlyLease.rentMonths[0],monthlyLease.rentMonths[0]]}),/單月租金紀錄/);
+assert.throws(()=>calc({...monthlyLease,rentMonths:[{...monthlyLease.rentMonths[0],status:'missing'}]}),/單月發票狀態/);
+assert.throws(()=>E.updateOpeningRent(monthlyLease,start,'20,000','net'),{field:'rentBasis'});
 
 console.log('PASS lease calendar cadence, step-rent cents, statutory interest, missing rates, partial months, reconciliation and legacy backups');
