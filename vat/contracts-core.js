@@ -80,6 +80,13 @@ function createContractsEngine220() {
  function isDue(record,today,renewed=false) {
   return !renewed&&!record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
  }
+ function rentReminderDate(change){
+  return change.remindDays===null?'':shiftDay(change.date,-change.remindDays)||'0001-01-01';
+ }
+ function rentReminderDue(record,change,today){
+  const date=rentReminderDate(change);
+  return !record.closed&&!!date&&!change.doneAt&&date<=today&&today<=change.date;
+ }
  function normalizeNotices(notices) {
   if(!Array.isArray(notices))fail('notice','通知紀錄格式錯誤');
   return notices.map(row=>{
@@ -118,6 +125,7 @@ function createContractsEngine220() {
   startWrite(current,baseline,at);
   if(!idOK(draft?.id)||current&&current.id!==draft.id)throw Error('合約編號無效');
   const fields=normalize(draft,{clients,categories});
+  if(fields.lease)fields.lease=leases.carryRentConfirmations(current?.lease,fields.lease);
   const changedSchedule=current&&['endDate','leadMonths','reminderEnabled'].some(key=>current[key]!==fields[key]);
   const restart=current?.closed&&!fields.closed;
   const taskCompletedAt=!current||changedSchedule||restart?'':current.taskCompletedAt;
@@ -128,6 +136,13 @@ function createContractsEngine220() {
   if(!current||!current.reminderEnabled||current.closed)throw Error('合約目前無啟用中的待辦');
   if(completed&&!isDue(current,today))throw Error('待辦尚未到提醒日或已完成');
   return {...current,taskCompletedAt:completed?at:'',revision:current.revision+1,updatedAt:at};
+ }
+ function confirmRentReminder({current,baseline,at,today,effectiveDate}){
+  startWrite(current,baseline,at);
+  const change=leases.rentChanges(current?.lease).find(row=>row.date===effectiveDate);
+  if(!change||!rentReminderDue(current,change,today))throw Error('這筆調租提醒目前無法確認');
+  const steps=current.lease.steps.map(step=>step.from===effectiveDate?{...step,reminderDoneAt:at}:step);
+  return {...current,lease:{...current.lease,steps},revision:current.revision+1,updatedAt:at};
  }
  function validate(data,{references=true}={}) {
   const {contracts=[],contractCategories=[],clients=[],leaseRates=[]}=data;
@@ -141,15 +156,19 @@ function createContractsEngine220() {
   for(const row of contracts){
    if(!row||!idOK(row.id)||ids.has(row.id))throw Error('合約編號重複或無效');
    ids.add(row.id);
-   normalize(row,{clients,categories:contractCategories,references});
+   const fields=normalize(row,{clients,categories:contractCategories,references});
    if(row.version!==1||!Number.isSafeInteger(row.revision)||row.revision<1||
     !dates.iso(row.createdAt)||!dates.iso(row.updatedAt)||row.updatedAt<row.createdAt||
     (row.taskCompletedAt!==''&&(!dates.iso(row.taskCompletedAt)||row.taskCompletedAt<row.createdAt||row.taskCompletedAt>row.updatedAt))){
     throw Error('合約版本或日期紀錄無效');
    }
+   if(fields.lease?.steps.some(step=>step.reminderDoneAt&&(step.reminderDoneAt<row.createdAt||step.reminderDoneAt>row.updatedAt))){
+    throw Error('調租提醒確認時間超出合約記錄範圍');
+   }
   }
   validateLinks(contracts,{references});
  }
- return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd};
+ return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd,
+  rentReminderDate,rentReminderDue,confirmRentReminder};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createContractsEngine220};

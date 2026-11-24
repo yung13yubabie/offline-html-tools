@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.32.0</title>
+<title>營業稅工作台 v2.33.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -1298,6 +1298,19 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 .lease-interest-preview232 p{margin:0;line-height:1.5}
 .contract-deposit-preview232{display:block;margin-top:8px;color:var(--brand);font-size:13px;line-height:1.5}
 .contract-deposit-preview232[hidden]{display:none}
+.lease-step-reminder233{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;padding:4px 0}
+.lease-step-reminder233 .field{display:flex;align-items:center;gap:8px}
+.lease-step-reminder233 .input{width:78px}
+.lease-changes233{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.lease-changes233 h3{margin:0 0 4px;font-size:15px}
+.lease-changes233 ul{list-style:none;padding:0;margin:0}
+.lease-changes233 li{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;align-items:center;gap:6px 12px;padding:8px 0}
+.lease-changes233 li+li{border-top:1px solid var(--line)}
+.lease-changes233 time,.lease-changes233 small{color:var(--muted);font-variant-numeric:tabular-nums}
+.lease-change-amount233{display:flex;align-items:center;flex-wrap:wrap;gap:5px 9px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+@container record-list (max-width:580px){
+ .lease-changes233 li{grid-template-columns:minmax(0,1fr)}
+}
 @media screen {
  .vat-sample-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
  .vat-sample-bar .badge{overflow-wrap:anywhere}
@@ -1638,7 +1651,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.32.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.33.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -1909,7 +1922,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.32.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.33.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
 const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
 const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
 const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
@@ -2535,7 +2548,7 @@ function renderToday(){
   groups.today.sort((a,b)=>(reminderOrder[b.source]||0)-(reminderOrder[a.source]||0));
   $('#todayLabel').textContent=`${fmtDate(localDate())}｜${periodLabel(currentPeriod())}`;const unpaidSum=pcForPeriod().reduce((a,pc)=>a+latestOutstanding218(pc),0);
   $('#todayStats').innerHTML=`<div class="card stat tone-orange"><div class="stat-label">緊急</div><div class="stat-num">${groups.urgent.length}</div><div class="stat-sub">需要優先處理</div></div><div class="card stat tone-blue"><div class="stat-label">今天要處理</div><div class="stat-num">${groups.today.length}</div><div class="stat-sub">本日工作</div></div><div class="card stat tone-yellow"><div class="stat-label">持續追蹤</div><div class="stat-num">${groups.tracking.length}</div><div class="stat-sub">尚未完成</div></div><div class="card stat"><div class="stat-label">本期尚欠</div><div class="stat-num mono">${money(unpaidSum)}</div><div class="stat-sub">元</div></div>`;
-  const item=e=>{const action=e.source==='contract'?`<button class="btn small" data-open-contract220="${esc(e.contractId)}">查看合約</button>`:e.source==='case'?`<button class="btn small" data-open-case219="${esc(e.caseId)}">查看案件</button>`:e.source==='workTask'?`<button class="btn small" data-task-open210="${esc(e.taskKey)}">處理待辦</button>`:e.source==='calendar'?`<button class="btn small primary" data-complete-calendar="${esc(e.calendarNoteId)}">完成</button>`:e.source==='templateReminder'?`<button class="btn small" data-open-template="${esc(e.templateId)}" data-template-pc="${esc(e.pcId||'')}">前往模板</button>`:'';const open=['case','contract'].includes(e.source)?'':e.source==='workTask'?'':e.source==='calendar'?`data-open-calendar-note="${esc(e.calendarNoteId)}"`:e.source==='templateReminder'?'':`data-open-pc="${esc(e.pcId||'')}"`;return `<div class="todo-item" ${open}><span class="todo-dot" style="background:var(--${e.tone})"></span><div class="todo-main"><div class="todo-title">${esc(e.client)}｜${esc(e.label)}</div><div class="todo-meta"><span>${esc(e.code||'')}</span><span>${esc(e.detail||'')}</span></div></div>${action}</div>`};
+  const item=e=>{const action=e.source==='contract'?(e.rentChange?rentReminderActions233(e.contractId,e.rentChange.date):`<button class="btn small" data-open-contract220="${esc(e.contractId)}">查看合約</button>`):e.source==='case'?`<button class="btn small" data-open-case219="${esc(e.caseId)}">查看案件</button>`:e.source==='workTask'?`<button class="btn small" data-task-open210="${esc(e.taskKey)}">處理待辦</button>`:e.source==='calendar'?`<button class="btn small primary" data-complete-calendar="${esc(e.calendarNoteId)}">完成</button>`:e.source==='templateReminder'?`<button class="btn small" data-open-template="${esc(e.templateId)}" data-template-pc="${esc(e.pcId||'')}">前往模板</button>`:'';const open=['case','contract'].includes(e.source)?'':e.source==='workTask'?'':e.source==='calendar'?`data-open-calendar-note="${esc(e.calendarNoteId)}"`:e.source==='templateReminder'?'':`data-open-pc="${esc(e.pcId||'')}"`;return `<div class="todo-item" ${open}><span class="todo-dot" style="background:var(--${e.tone})"></span><div class="todo-main"><div class="todo-title">${esc(e.client)}｜${esc(e.label)}</div><div class="todo-meta"><span>${esc(e.code||'')}</span><span>${esc(e.detail||'')}</span></div></div>${action}</div>`};
   const col=(key,title)=>{const all=groups[key],size=5,pages=Math.max(1,Math.ceil(all.length/size));state.todoPages[key]=Math.min(Math.max(1,state.todoPages[key]||1),pages);const start=(state.todoPages[key]-1)*size,visible=all.slice(start,start+size),collapsed=!!state.todoCollapsed[key];return `<div class="card todo-section ${collapsed?'collapsed':''}" data-todo-section="${esc(key)}"><div class="card-h"><span>${title} <span class="badge b-gray">${all.length}</span></span><div class="todo-section-tools"><button class="btn small" data-toggle-todo="${esc(key)}">${collapsed?'展開':'收合'}</button></div></div><div class="card-b"><div class="todo-list">${visible.length?visible.map(item).join(''):'<div class="empty">目前沒有項目</div>'}</div>${all.length?`<div class="pager"><span>每頁 5 筆</span><div class="pager-center"><button class="btn small" data-todo-page="${key}:prev" ${state.todoPages[key]<=1?'disabled':''}>上一頁</button><span>${state.todoPages[key]} / ${pages}</span><button class="btn small" data-todo-page="${key}:next" ${state.todoPages[key]>=pages?'disabled':''}>下一頁</button></div></div>`:''}</div></div>`};
   $('#todayTodos').innerHTML=col('urgent','緊急')+col('today','今天要處理')+col('tracking','持續追蹤');
   $$('[data-toggle-todo]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggleTodo;state.todoCollapsed[k]=!state.todoCollapsed[k];renderToday()});
@@ -5147,8 +5160,8 @@ if(typeof module!=='undefined'&&module.exports)module.exports={createCasesEngine
 
 /* Lease amounts are integer cents, and percentage rates use four decimal places. */
 function createLeaseEngine224() {
- const date=(typeof module!=='undefined'&&module.exports
-  ?require('./cases-core.js').createCasesEngine219:createCasesEngine219)().date;
+ const {date,iso}=(typeof module!=='undefined'&&module.exports
+  ?require('./cases-core.js').createCasesEngine219:createCasesEngine219)();
  const frequencies=[1,2,3,12],statuses=['pending','missing','issued'],scale=1000000n;
  const maxCents=999999999999;
  const fail=message=>{throw Error(message);};
@@ -5166,6 +5179,37 @@ function createLeaseEngine224() {
  }
  const amount=value=>decimal(value,2,maxCents);
  const rate=value=>decimal(value,4,Number(scale));
+ const defaultRentReminderDays=30;
+ function rentReminderDays(raw=defaultRentReminderDays){
+  if(raw===null)return null;
+  if(typeof raw==='string'&&/^\d{1,3}$/.test(raw))raw=Number(raw);
+  if(!valid(raw,365))fail('調租提醒請輸入 0 至 365 天的整數');
+  return raw;
+ }
+ function rentChanges(lease){
+  const steps=(lease?.steps||[]).slice().sort((a,b)=>a.from.localeCompare(b.from));
+  return steps.slice(1).flatMap((step,index)=>{
+   const before=steps[index].cents,difference=step.cents-before;
+   return difference?[{date:step.from,before,after:step.cents,difference,
+    remindDays:rentReminderDays(step.remindDays),doneAt:step.reminderDoneAt||''}]:[];
+  });
+ }
+ function carryRentConfirmations(previous,next){
+  const old=new Map(rentChanges(previous).map(change=>[change.date,change]));
+  const confirmed=new Map();
+  if(previous?.rentBasis===next.rentBasis){
+   for(const change of rentChanges(next)){
+    const before=old.get(change.date);
+    if(before?.doneAt&&before.before===change.before&&before.after===change.after&&before.remindDays===change.remindDays){
+     confirmed.set(change.date,before.doneAt);
+    }
+   }
+  }
+  return {...next,steps:next.steps.map(({reminderDoneAt,...step})=>{
+   const doneAt=confirmed.get(step.from);
+   return doneAt?{...step,reminderDoneAt:doneAt}:step;
+  })};
+ }
  const format=(units,places=2)=>{
   if(units==null)return '';
   const sign=units<0?'−':'',digits=String(Math.abs(units)).padStart(places+1,'0');
@@ -5237,7 +5281,11 @@ function createLeaseEngine224() {
   const ranges=new Map(periods(start,end,raw.frequency).map(row=>[row.key,row]));
   const steps=raw.steps.map(step=>{
    if(!step||!date(step.from)||step.from<start||step.from>end||!valid(step.cents))fail('請核對租金階段的生效日與月租');
-   return {from:step.from,cents:step.cents};
+   const remindDays=rentReminderDays(step.remindDays);
+   const doneAt=step.reminderDoneAt;
+   if(doneAt!==undefined&&(!iso(doneAt)||remindDays===null||step.from===start))fail('調租提醒確認時間無效');
+   return {from:step.from,cents:step.cents,...(step.from!==start&&remindDays!==defaultRentReminderDays?{remindDays}:{}),
+    ...(doneAt?{reminderDoneAt:doneAt}:{})};
   }).sort((a,b)=>a.from.localeCompare(b.from));
   if(steps.length&&steps[0].from!==start)fail('第一階段租金須從租約開始日生效');
   if(new Set(steps.map(step=>step.from)).size!==steps.length)fail('租金階段的生效日重複');
@@ -5301,7 +5349,8 @@ function createLeaseEngine224() {
    return {...period,check,rent,monthlyRent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
   });
  }
- return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate};
+ return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate,
+  defaultRentReminderDays,rentReminderDays,rentChanges,carryRentConfirmations};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};
 
@@ -5773,6 +5822,13 @@ function createContractsEngine220() {
  function isDue(record,today,renewed=false) {
   return !renewed&&!record.closed&&record.reminderEnabled&&!record.taskCompletedAt&&reminderDate(record.endDate,record.leadMonths)<=today;
  }
+ function rentReminderDate(change){
+  return change.remindDays===null?'':shiftDay(change.date,-change.remindDays)||'0001-01-01';
+ }
+ function rentReminderDue(record,change,today){
+  const date=rentReminderDate(change);
+  return !record.closed&&!!date&&!change.doneAt&&date<=today&&today<=change.date;
+ }
  function normalizeNotices(notices) {
   if(!Array.isArray(notices))fail('notice','通知紀錄格式錯誤');
   return notices.map(row=>{
@@ -5811,6 +5867,7 @@ function createContractsEngine220() {
   startWrite(current,baseline,at);
   if(!idOK(draft?.id)||current&&current.id!==draft.id)throw Error('合約編號無效');
   const fields=normalize(draft,{clients,categories});
+  if(fields.lease)fields.lease=leases.carryRentConfirmations(current?.lease,fields.lease);
   const changedSchedule=current&&['endDate','leadMonths','reminderEnabled'].some(key=>current[key]!==fields[key]);
   const restart=current?.closed&&!fields.closed;
   const taskCompletedAt=!current||changedSchedule||restart?'':current.taskCompletedAt;
@@ -5821,6 +5878,13 @@ function createContractsEngine220() {
   if(!current||!current.reminderEnabled||current.closed)throw Error('合約目前無啟用中的待辦');
   if(completed&&!isDue(current,today))throw Error('待辦尚未到提醒日或已完成');
   return {...current,taskCompletedAt:completed?at:'',revision:current.revision+1,updatedAt:at};
+ }
+ function confirmRentReminder({current,baseline,at,today,effectiveDate}){
+  startWrite(current,baseline,at);
+  const change=leases.rentChanges(current?.lease).find(row=>row.date===effectiveDate);
+  if(!change||!rentReminderDue(current,change,today))throw Error('這筆調租提醒目前無法確認');
+  const steps=current.lease.steps.map(step=>step.from===effectiveDate?{...step,reminderDoneAt:at}:step);
+  return {...current,lease:{...current.lease,steps},revision:current.revision+1,updatedAt:at};
  }
  function validate(data,{references=true}={}) {
   const {contracts=[],contractCategories=[],clients=[],leaseRates=[]}=data;
@@ -5834,16 +5898,20 @@ function createContractsEngine220() {
   for(const row of contracts){
    if(!row||!idOK(row.id)||ids.has(row.id))throw Error('合約編號重複或無效');
    ids.add(row.id);
-   normalize(row,{clients,categories:contractCategories,references});
+   const fields=normalize(row,{clients,categories:contractCategories,references});
    if(row.version!==1||!Number.isSafeInteger(row.revision)||row.revision<1||
     !dates.iso(row.createdAt)||!dates.iso(row.updatedAt)||row.updatedAt<row.createdAt||
     (row.taskCompletedAt!==''&&(!dates.iso(row.taskCompletedAt)||row.taskCompletedAt<row.createdAt||row.taskCompletedAt>row.updatedAt))){
     throw Error('合約版本或日期紀錄無效');
    }
+   if(fields.lease?.steps.some(step=>step.reminderDoneAt&&(step.reminderDoneAt<row.createdAt||step.reminderDoneAt>row.updatedAt))){
+    throw Error('調租提醒確認時間超出合約記錄範圍');
+   }
   }
   validateLinks(contracts,{references});
  }
- return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd};
+ return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd,
+  rentReminderDate,rentReminderDue,confirmRentReminder};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createContractsEngine220};
 
@@ -5862,7 +5930,7 @@ const contractReminderDate220=row=>contractEngine220.reminderDate(row.endDate,ro
 const nextContract220=id=>contracts220().find(row=>row.previousContractId===id);
 const contractDue220=(row,renewed=!!nextContract220(row.id))=>contractEngine220.isDue(row,localDate(),renewed);
 
-function writeContract220({id,draft,drafts,baseline=null,categoryName='',action='save',renewalFrom=null}) {
+function writeContract220({id,draft,drafts,baseline=null,categoryName='',action='save',renewalFrom=null,effectiveDate=''}) {
  return new Promise((resolve,reject)=>{
   let transaction;
   try{transaction=db.transaction(['contracts','clients','contractCategories'],'readwrite');}
@@ -5901,7 +5969,9 @@ function writeContract220({id,draft,drafts,baseline=null,categoryName='',action=
      return;
     }
     const at=nowISO();
-    if(action==='complete'||action==='reopen'){
+    if(action==='rent-confirm'){
+     result=contractEngine220.confirmRentReminder({current:before,baseline,at,today:localDate(),effectiveDate});
+    }else if(action==='complete'||action==='reopen'){
      if(renewed.has(id))throw Error('此合約已續約，請到下一期處理待辦');
      result=contractEngine220.updateTask({current:before,baseline,at,today:localDate(),completed:action==='complete'});
     }else{
@@ -6031,7 +6101,7 @@ function renderContracts220() {
  $('#contractCount220').textContent=`${count} 位客戶 · ${filtered.length} 筆合約`;
 }
 
-function openContract220(id,renewalFrom=null) {
+function openContract220(id,renewalFrom=null,initialPane='basic') {
  let existing=id?contractID220(id):null;
  if(id&&!existing){toast('合約已被刪除，請重新整理');return;}
  if(!existing&&!state.clients.length){toast('請先在客戶庫新增客戶');return;}
@@ -6264,7 +6334,10 @@ function openContract220(id,renewalFrom=null) {
   remove.onclick=()=>{if(!busy&&window.confirm(existing.previousContractId?'確定刪除這一期？上期會恢復原有狀態與提醒。':'確定刪除合約及其到期提醒？'))commit('delete');};
   footer.prepend(remove);
  }
- get('title')?.focus();
+ if(lease&&initialPane==='setup'){
+  lease.activate('setup');
+  $('#lease-tab-setup').focus();
+ }else get('title')?.focus();
 }
 
 function contractReminderEvents220() {
@@ -6275,8 +6348,25 @@ function contractReminderEvents220() {
   .map(row=>{
    const customer=clientById(row.clientId);
    return {id:'contract-task:'+row.id,source:'contract',contractId:row.id,clientId:row.clientId,label:'合約到期待辦',client:customer?.name||'客戶已移除',
-    code:customer?.code||'',detail:row.title+' · '+row.task,priority:'today',tone:'orange'};
+    code:customer?.code||'',detail:row.title+' · '+row.task,effectiveDate:row.endDate,priority:'today',tone:'orange'};
   });
+}
+function rentChangeReminderEvents233(){
+ const today=localDate();
+ return contracts220().flatMap(contract=>leaseEngine224.rentChanges(contract.lease)
+  .filter(change=>contractEngine220.rentReminderDue(contract,change,today))
+  .map(change=>{
+   const customer=clientById(contract.clientId);
+   return {id:'rent-task:'+contract.id+':'+change.date,source:'contract',contractId:contract.id,clientId:contract.clientId,
+    client:customer?.name||'客戶已移除',code:customer?.code||'',label:rentChangeLabel233(change),
+    detail:contract.title+' · '+fmtDate(change.date)+' 生效 · '+rentChangeAmounts233(change),effectiveDate:change.date,rentChange:change,priority:'today',tone:'orange'};
+  }));
+}
+function rentReminderActions233(contractId,date,{compact=false,due=true}={}){
+ const dateLabel=fmtDate(date);
+ return `<button type="button" class="${compact?'today-link226':'btn small'}" data-open-rent-change233="${esc(contractId)}" aria-label="查看 ${esc(dateLabel)} 調租">查看${compact?' <span aria-hidden="true">›</span>':'調租'}</button>
+  ${due?`<button type="button" class="${compact?'today-complete226':'btn small'}" data-confirm-rent-change233="${esc(contractId)}"
+   data-rent-effective233="${esc(date)}" aria-label="確認 ${esc(dateLabel)} 調租提醒" title="確認調租提醒">${compact?'<span aria-hidden="true">✓</span>':'確認提醒'}</button>`:''}`;
 }
 function contractCalendarItems220() {
  const rows=[],records=contracts220(),successors=contractEngine220.successors(records);
@@ -6291,6 +6381,15 @@ function contractCalendarItems220() {
    reminderEnabled:sameDay&&schedule.reminderEnabled,content:'合約到期｜'+contract.title+suffix});
   if(schedule.reminderEnabled&&!sameDay)rows.push({...base,...schedule,id:'contract-reminder:'+contract.id,date:reminderDate,
    content:'合約提醒｜'+contract.title+' · '+contract.task});
+  for(const change of leaseEngine224.rentChanges(contract.lease)){
+   const notify=contract.closed?'':contractEngine220.rentReminderDate(change),sameDay=notify===change.date;
+   const description=rentChangeLabel233(change)+'｜'+contract.title+' · '+rentChangeAmounts233(change);
+   const reminderState={rentChange:change,reminderDate:notify,reminderCompletedAt:change.doneAt};
+   const key=contract.id+':'+change.date;
+   rows.push({...base,...reminderState,id:'rent-effective:'+key,date:change.date,reminderEnabled:sameDay,content:description});
+   if(notify&&!sameDay)rows.push({...base,...reminderState,id:'rent-reminder:'+key,date:notify,reminderEnabled:true,
+    content:'調租提醒｜'+description+' · '+fmtDate(change.date)+' 生效'});
+  }
  }
  return rows;
 }
@@ -6305,19 +6404,19 @@ function openContractCalendar220(id) {
  openCalendarDrawer(contract.endDate);
 }
 const contractTaskBusy220=new Set();
-async function updateContractTask220(id,action) {
+async function updateContractTask220(id,action,effectiveDate='') {
  const before=contractID220(id);
  if(!before||contractTaskBusy220.has(id))return;
  contractTaskBusy220.add(id);
- const toggleButtons=disabled=>$$('[data-contract-complete220],[data-contract-reopen220]').forEach(button=>{
-  if((button.dataset.contractComplete220||button.dataset.contractReopen220)===id)button.disabled=disabled;
+ const toggleButtons=disabled=>$$('[data-contract-complete220],[data-contract-reopen220],[data-confirm-rent-change233]').forEach(button=>{
+  if((button.dataset.contractComplete220||button.dataset.contractReopen220||button.dataset.confirmRentChange233)===id)button.disabled=disabled;
  });
  toggleButtons(true);
  try{
-  await writeContract220({id,baseline:before,action});
+  await writeContract220({id,baseline:before,action,effectiveDate});
   await loadAll();
   if($('#calendarDrawer')?.classList.contains('show'))openCalendarDrawer(state.calendarSelectedDate);
-  toast(action==='complete'?'合約待辦已完成':'合約待辦已重開');
+  toast(action==='rent-confirm'?'調租提醒已確認':action==='complete'?'合約待辦已完成':'合約待辦已重開');
  }catch(error){toast(error.message||'待辦未能儲存');}
  finally{contractTaskBusy220.delete(id);toggleButtons(false);}
 }
@@ -6325,32 +6424,39 @@ function bindContractActions220(root) {
  if(!root)return;
  for(const [attr,action] of [
   ['leaseBatch228',id=>openLeaseBatch228(id)],['openContract220',id=>openContract220(id)],['contractRenew221',id=>{const source=contractID220(id);if(source)openContract220(null,source);}],['contractCalendar220',id=>openContractCalendar220(id)],
-  ['contractComplete220',id=>updateContractTask220(id,'complete')],['contractReopen220',id=>updateContractTask220(id,'reopen')]
+  ['contractComplete220',id=>updateContractTask220(id,'complete')],['contractReopen220',id=>updateContractTask220(id,'reopen')],
+  ['openRentChange233',id=>openContract220(id,null,'setup')],['confirmRentChange233',(id,button)=>updateContractTask220(id,'rent-confirm',button.dataset.rentEffective233)]
  ]){
   const selector='[data-'+attr.replace(/[A-Z]/g,char=>'-'+char.toLowerCase())+']';
-  root.querySelectorAll(selector).forEach(button=>button.onclick=event=>{event.stopPropagation();action(button.dataset[attr]);});
+  root.querySelectorAll(selector).forEach(button=>button.onclick=event=>{event.stopPropagation();action(button.dataset[attr],button);});
  }
 }
 function renderContractReminderStrip220(){
  const strip=$('#contractReminderStrip220');
  if(!strip)return;
- const due=contractReminderEvents220(),groups=new Map();
+ const due=[...contractReminderEvents220(),...rentChangeReminderEvents233()].sort((a,b)=>a.effectiveDate.localeCompare(b.effectiveDate)),groups=new Map();
  for(const event of due.slice(0,3)){
   if(!groups.has(event.clientId))groups.set(event.clientId,{name:event.client,items:[]});
-  groups.get(event.clientId).items.push(contractID220(event.contractId));
+  groups.get(event.clientId).items.push(event);
  }
  strip.innerHTML=`<header class="today-reminder-heading226">
-  <h2 id="todayContractsTitle226">合約到期待辦 <span class="badge b-orange">${due.length}</span></h2>
+  <h2 id="todayContractsTitle226">合約提醒 <span class="badge b-orange">${due.length}</span></h2>
   ${due.length>3?'<button class="today-link226" id="allContractTodos220" type="button">查看全部</button>':''}
  </header>
  ${groups.size?`<ul class="today-reminder-list226">${[...groups.values()].map(group=>`<li class="today-contract-group226">
   <strong class="today-reminder-client226">${esc(group.name)}</strong>
-  <ul>${group.items.map(contract=>`<li class="today-contract-row226">
+  <ul>${group.items.map(event=>{
+   const contract=contractID220(event.contractId),change=event.rentChange;
+   return `<li class="today-contract-row226">
+   ${change?`<div class="today-contract-caption226"><span>${esc(contract.title)} · ${esc(event.label)}</span>
+    <time datetime="${esc(change.date)}">${esc(fmtDate(change.date))} 生效</time></div>
+    ${rentReminderActions233(contract.id,change.date,{compact:true})}`:`
    <div class="today-contract-caption226"><span>${esc(contract.title)}</span><time datetime="${esc(contract.endDate)}">${esc(fmtDate(contract.endDate))}</time></div>
    <button type="button" class="today-link226" data-open-contract220="${esc(contract.id)}" aria-label="查看合約 · ${esc(contract.title)}">查看 <span aria-hidden="true">›</span></button>
    <button type="button" class="today-complete226" data-contract-complete220="${esc(contract.id)}" aria-label="完成待辦 · ${esc(contract.title)}" title="完成待辦"><span aria-hidden="true">✓</span></button>
-  </li>`).join('')}</ul>
- </li>`).join('')}</ul>`:'<p class="today-reminder-empty226">目前沒有合約到期待辦</p>'}`;
+   `}</li>`;
+  }).join('')}</ul>
+ </li>`).join('')}</ul>`:'<p class="today-reminder-empty226">目前沒有合約提醒</p>'}`;
  $('#allContractTodos220')?.addEventListener('click',()=>$('#todaySystemTab210')?.click());
 }
 
@@ -6362,17 +6468,20 @@ const noteCardBefore220=noteCardHtml;
 noteCardHtml=function(event){
  if(event.source!=='contract')return noteCardBefore220(event);
  const customer=calendarItemClient(event),contract=contractID220(event.contractId);
+ const change=event.rentChange;
+ const actions=change?rentReminderActions233(contract.id,change.date,{due:contractEngine220.rentReminderDue(contract,change,localDate())}):`
+  <button class="btn small" type="button" data-open-contract220="${esc(contract.id)}">查看合約</button>
+  ${event.reminderEnabled&&contractDue220(contract)?`<button class="btn small" type="button" data-contract-complete220="${esc(contract.id)}">完成待辦</button>`:''}`;
  return `<div class="note-card case-calendar219 ${calendarReminderClass(event)}" data-contract-calendar-item220="${esc(event.id)}">
   <div class="note-time">整日</div><div><div class="note-client">${esc(customer.name)} <span class="work-linked-tag">合約</span></div>
   <div class="note-content">${esc(event.content)}</div>${contractBadge220(event.contractStatus)}
-  ${event.reminderEnabled?`<div class="small muted">${esc(contractTaskLabel220(contract))}</div>`:''}</div>
-  <div class="note-actions"><button class="btn small" type="button" data-open-contract220="${esc(contract.id)}">查看合約</button>
-  ${event.reminderEnabled&&contractDue220(contract)?`<button class="btn small" type="button" data-contract-complete220="${esc(contract.id)}">完成待辦</button>`:''}</div></div>`;
+  ${event.reminderEnabled?`<div class="small muted">${esc(change?(change.doneAt?'調租提醒已確認':'調租提醒'):contractTaskLabel220(contract))}</div>`:''}</div>
+  <div class="note-actions">${actions}</div></div>`;
 };
 const bindCalendarBefore220=bindCalendarNoteActions;
 bindCalendarNoteActions=function(){bindCalendarBefore220();bindContractActions220($('#view-calendar'));};
 const reminderEventsBefore220=calendarReminderEvents;
-calendarReminderEvents=function(){return [...reminderEventsBefore220(),...contractReminderEvents220()];};
+calendarReminderEvents=function(){return [...reminderEventsBefore220(),...contractReminderEvents220(),...rentChangeReminderEvents233()];};
 const todayBefore220=renderToday;
 renderToday=function(){const result=todayBefore220();renderContractReminderStrip220();bindContractActions220($('#view-today'));return result;};
 const renderBefore220=renderAll;
@@ -6749,6 +6858,22 @@ function leaseRentDisplay225(contract,today=localDate()){
  if(lease.steps.length>1)label=today<contract.startDate?'起租月租':today>contract.endDate?'末段月租':'目前月租';
  return {label,value:leaseMoney224(step.cents)+' · '+(lease.rentBasis==='gross'?'含稅':'未稅')};
 }
+const rentChangeLabel233=change=>change.difference>0?'租金調漲':'租金調降';
+const rentChangeAmounts233=change=>leaseMoney224(change.before)+' → '+leaseMoney224(change.after);
+function rentChangeSchedule233(contract){
+ const changes=leaseEngine224.rentChanges(contract.lease);
+ if(!changes.length)return '';
+ return `<div class="lease-changes233"><h3>租金調整</h3><ul>${changes.map(change=>{
+  const reminder=contractEngine220.rentReminderDate(change);
+  const amount=(change.difference>0?'+':'−')+leaseMoney224(Math.abs(change.difference));
+  return `<li>
+   <time datetime="${esc(change.date)}">${esc(fmtDate(change.date))} 生效</time>
+   <span class="lease-change-amount233"><strong>${esc(rentChangeAmounts233(change))}</strong>
+    ${statusBadge(rentChangeLabel233(change)+' '+amount,change.difference>0?'orange':'blue')}</span>
+   <small>${esc(change.doneAt?'提醒已確認':contract.closed?'提醒已停止':reminder?'提醒 '+fmtDate(reminder):'提醒關閉')}</small>
+  </li>`;
+ }).join('')}</ul></div>`;
+}
 function leaseSummary224(contract){
  const data=contract.lease;
  if(!data)return '';
@@ -6758,7 +6883,7 @@ function leaseSummary224(contract){
   <div><dt>${esc(rent.label)}</dt><dd>${esc(rent.value)}</dd></div>
   <div><dt>押金本金</dt><dd>${esc(leaseMoney224(data.deposit))}</dd></div>
   <div><dt>${esc(leaseFrequency224[data.frequency])}核對</dt><dd>${issues?statusBadge('待處理','orange')+' '+issues+' 期':periods.length+' 期'}</dd></div>
- </dl>`;
+ </dl>${rentChangeSchedule233(contract)}`;
 }
 function bindLeaseRates224(button){
  if(button)button.onclick=()=>{
@@ -6955,20 +7080,30 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  $('#leaseDeposit224').value=format(draft.deposit);
  $('#leaseVAT224').value=format(draft.vatRate,4);
 
- function appendStep(from='',cents=null,opening=false){
+ function appendStep(from='',cents=null,opening=false,remindDays=leaseEngine224.defaultRentReminderDays){
   steps.insertAdjacentHTML('beforeend',`<div class="lease-step224">
    <label class="field">生效日<input class="input lease-step-date" type="date" min="${esc(term.startDate)}" max="${esc(term.endDate)}" value="${esc(from)}" ${opening?'readonly':''}></label>
    <label class="field">${opening?'首段月租（元）':'月租（元）'}<input class="input lease-step-rent" inputmode="decimal" value="${esc(format(cents))}"></label>
-   ${opening?'':'<button class="btn danger" type="button" data-lease-remove-step>移除</button>'}</div>`);
+   ${opening?'':`<button class="btn danger" type="button" data-lease-remove-step>移除</button>
+   <div class="lease-step-reminder233">
+    <label class="cases-check219"><input type="checkbox" data-rent-reminder-toggle233 ${remindDays===null?'':'checked'}>提醒調租</label>
+    <label class="field" ${remindDays===null?'hidden':''}>提前天數<input class="input" data-rent-reminder-days233 type="number" inputmode="numeric" min="0" max="365" step="1"
+     value="${esc(remindDays??leaseEngine224.defaultRentReminderDays)}"></label>
+   </div>`}</div>`);
  }
  appendStep(baseline.startDate,draft.steps[0]?.cents??null,true);
- draft.steps.slice(1).forEach(step=>appendStep(step.from,step.cents));
+ draft.steps.slice(1).forEach(step=>appendStep(step.from,step.cents,false,step.remindDays));
  $('#leaseAddStep224').onclick=()=>{
   if(steps.childElementCount>=120){toast('租金階段最多 120 筆');return;}
   appendStep();
   steps.lastElementChild.querySelector('.lease-step-rent').focus();
  };
  steps.onclick=event=>{const remove=event.target.closest('[data-lease-remove-step]');if(remove){remove.closest('.lease-step224').remove();$('#leaseAddStep224').focus();}};
+ steps.onchange=event=>{
+  if(event.target.matches('[data-rent-reminder-toggle233]')){
+   event.target.closest('.lease-step-reminder233').querySelector('[data-rent-reminder-days233]').closest('label').hidden=!event.target.checked;
+  }
+ };
  const showRegime=()=>{$('#leaseVAT224').closest('label').hidden=val('leaseRegime224')==='assessed';};
  $('#leaseRegime224').onchange=()=>{showRegime();drawMonthlyInterest();};
  for(const id of ['leaseDeposit224','leaseVAT224'])$('#'+id).oninput=drawMonthlyInterest;
@@ -7005,7 +7140,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  showRegime();
  function setupSnapshot(){
   return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
-   [...steps.querySelectorAll('input:not([readonly])')].map(input=>input.value)];
+   [...steps.querySelectorAll('input:not([readonly])')].map(input=>input.type==='checkbox'?input.checked:input.value)];
  }
  const snapshot=()=>JSON.stringify([setupSnapshot(),draft.checks]);
  const hasUnsaved=()=>{
@@ -7046,9 +7181,11 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   }
   const vatRate=leaseEngine224.rate(val('leaseVAT224'));
   if(val('leaseRegime224')==='invoice'&&vatRate===null)throw Error('請填寫營業稅徵收率');
-  const newSteps=[...steps.querySelectorAll('.lease-step224')].map(row=>({
-   from:row.querySelector('.lease-step-date').value,cents:leaseEngine224.amount(row.querySelector('.lease-step-rent').value)
-  }));
+  const newSteps=[...steps.querySelectorAll('.lease-step224')].map(row=>{
+   const toggle=row.querySelector('[data-rent-reminder-toggle233]');
+   return {from:row.querySelector('.lease-step-date').value,cents:leaseEngine224.amount(row.querySelector('.lease-step-rent').value),
+    ...(toggle?{remindDays:toggle.checked?leaseEngine224.rentReminderDays(row.querySelector('[data-rent-reminder-days233]').value):null}:{})};
+  });
   if(newSteps.length===1&&newSteps[0].cents===null)newSteps.pop();
   const costs=leaseEngine224.updateDeposit(draft,term.startDate,val('leaseDeposit224'));
   draft=leaseEngine224.normalize({...costs,frequency:Number(val('leaseFrequency224')),rentBasis,
@@ -7993,7 +8130,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.32.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.33.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

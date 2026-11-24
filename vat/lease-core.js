@@ -1,7 +1,7 @@
 /* Lease amounts are integer cents, and percentage rates use four decimal places. */
 function createLeaseEngine224() {
- const date=(typeof module!=='undefined'&&module.exports
-  ?require('./cases-core.js').createCasesEngine219:createCasesEngine219)().date;
+ const {date,iso}=(typeof module!=='undefined'&&module.exports
+  ?require('./cases-core.js').createCasesEngine219:createCasesEngine219)();
  const frequencies=[1,2,3,12],statuses=['pending','missing','issued'],scale=1000000n;
  const maxCents=999999999999;
  const fail=message=>{throw Error(message);};
@@ -19,6 +19,37 @@ function createLeaseEngine224() {
  }
  const amount=value=>decimal(value,2,maxCents);
  const rate=value=>decimal(value,4,Number(scale));
+ const defaultRentReminderDays=30;
+ function rentReminderDays(raw=defaultRentReminderDays){
+  if(raw===null)return null;
+  if(typeof raw==='string'&&/^\d{1,3}$/.test(raw))raw=Number(raw);
+  if(!valid(raw,365))fail('調租提醒請輸入 0 至 365 天的整數');
+  return raw;
+ }
+ function rentChanges(lease){
+  const steps=(lease?.steps||[]).slice().sort((a,b)=>a.from.localeCompare(b.from));
+  return steps.slice(1).flatMap((step,index)=>{
+   const before=steps[index].cents,difference=step.cents-before;
+   return difference?[{date:step.from,before,after:step.cents,difference,
+    remindDays:rentReminderDays(step.remindDays),doneAt:step.reminderDoneAt||''}]:[];
+  });
+ }
+ function carryRentConfirmations(previous,next){
+  const old=new Map(rentChanges(previous).map(change=>[change.date,change]));
+  const confirmed=new Map();
+  if(previous?.rentBasis===next.rentBasis){
+   for(const change of rentChanges(next)){
+    const before=old.get(change.date);
+    if(before?.doneAt&&before.before===change.before&&before.after===change.after&&before.remindDays===change.remindDays){
+     confirmed.set(change.date,before.doneAt);
+    }
+   }
+  }
+  return {...next,steps:next.steps.map(({reminderDoneAt,...step})=>{
+   const doneAt=confirmed.get(step.from);
+   return doneAt?{...step,reminderDoneAt:doneAt}:step;
+  })};
+ }
  const format=(units,places=2)=>{
   if(units==null)return '';
   const sign=units<0?'−':'',digits=String(Math.abs(units)).padStart(places+1,'0');
@@ -90,7 +121,11 @@ function createLeaseEngine224() {
   const ranges=new Map(periods(start,end,raw.frequency).map(row=>[row.key,row]));
   const steps=raw.steps.map(step=>{
    if(!step||!date(step.from)||step.from<start||step.from>end||!valid(step.cents))fail('請核對租金階段的生效日與月租');
-   return {from:step.from,cents:step.cents};
+   const remindDays=rentReminderDays(step.remindDays);
+   const doneAt=step.reminderDoneAt;
+   if(doneAt!==undefined&&(!iso(doneAt)||remindDays===null||step.from===start))fail('調租提醒確認時間無效');
+   return {from:step.from,cents:step.cents,...(step.from!==start&&remindDays!==defaultRentReminderDays?{remindDays}:{}),
+    ...(doneAt?{reminderDoneAt:doneAt}:{})};
   }).sort((a,b)=>a.from.localeCompare(b.from));
   if(steps.length&&steps[0].from!==start)fail('第一階段租金須從租約開始日生效');
   if(new Set(steps.map(step=>step.from)).size!==steps.length)fail('租金階段的生效日重複');
@@ -154,6 +189,7 @@ function createLeaseEngine224() {
    return {...period,check,rent,monthlyRent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
   });
  }
- return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate};
+ return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate,
+  defaultRentReminderDays,rentReminderDays,rentChanges,carryRentConfirmations};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};

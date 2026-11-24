@@ -247,7 +247,7 @@ async function renewal(page,h){
  await page.locator('#cancelContract220').click();
  await nav(page,'today');
  assert.equal(await strip.locator(`[data-contract-complete220="${source}"]`).count(),0,'Source reminder is suppressed during renewal');
- assert.match(await strip.innerText(),/目前沒有合約到期待辦/);
+ assert.match(await strip.innerText(),/目前沒有合約提醒/);
  await nav(page,'calendar');await page.locator('#calendarListTab').click();
  assert.equal(await page.locator('[data-contract-calendar-item220="contract-reminder:'+source+'"]').count(),0);
  assert.equal(await page.locator('[data-contract-calendar-item220="contract-reminder:'+next+'"]').count(),1);
@@ -353,4 +353,100 @@ async function batchLeases(page,h){
  }
 }
 
-module.exports={lifecycle,lists,renewal,batchLeases};
+async function rentReminders(page,h){
+ await page.clock.setFixedTime(formatDate(2026,10,30));
+ await nav(page,'contracts');
+ await page.locator('#newContract220').click();
+ await field(page,'title').fill('合成分段調租');
+ await field(page,'clientId').selectOption('synthetic-a');
+ await field(page,'startDate').fill('2026-10-01');
+ await field(page,'endDate').fill('2027-02-28');
+ await field(page,'monthlyRent').fill('10,000');
+ await field(page,'reminderEnabled').uncheck();
+ await page.locator('#saveContract220').click();
+ await page.locator('#contractForm220').waitFor({state:'detached'});
+ const row=page.locator('#contractsList220 [data-contract-id220]'),steps=page.locator('.lease-step224');
+ const saveSteps=async()=>{
+  await page.locator('#saveContract220').click();
+  await page.locator('#saveContract220:not([disabled])').waitFor();
+  assert(await page.locator('#leaseError224').isHidden());
+  await page.locator('#cancelContract220').click();
+  await page.locator('#contractForm220').waitFor({state:'detached'});
+ };
+ const editSteps=async()=>{
+  await nav(page,'contracts');
+  await row.locator('[data-open-contract220]').click();
+  await page.locator('#lease-tab-setup').click();
+ };
+ const add=async(date,amount)=>{
+  await page.locator('#leaseAddStep224').click();
+  const step=steps.last();
+  await step.locator('.lease-step-date').fill(date);
+  await step.locator('.lease-step-rent').fill(amount);
+  return step;
+ };
+ await editSteps();
+ const rise=await add('2026-11-30','12,000');
+ assert.equal(await rise.locator('[data-rent-reminder-days233]').inputValue(),'30');
+ const fall=await add('2026-12-20','11,500');
+ await fall.locator('[data-rent-reminder-toggle233]').uncheck();
+ assert(await fall.locator('[data-rent-reminder-days233]').isHidden());
+ await saveSteps();
+ await row.locator('[data-record-toggle222]').click();
+ const details=row.locator('.lease-changes233');
+ assert.deepEqual(await details.locator('time').evaluateAll(nodes=>nodes.map(node=>node.dateTime)),['2026-11-30','2026-12-20']);
+ assert.match(await details.innerText(),/10,000 元 → 12,000 元[\s\S]*租金調漲 \+2,000 元/);
+ assert.match(await details.innerText(),/租金調降 −500 元[\s\S]*提醒關閉/);
+ await page.setViewportSize({width:390,height:844});
+ assert(await details.evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+ await details.scrollIntoViewIfNeeded();
+ await h.screenshot(page,'vat233-rent-change-details-mobile');
+ await page.setViewportSize({width:1440,height:1000});
+
+ const strip=page.locator('#contractReminderStrip220'),confirm=strip.locator('[data-confirm-rent-change233]');
+ await nav(page,'today');assert.equal(await confirm.count(),0);
+ await page.clock.setFixedTime(formatDate(2026,10,31));
+ await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
+ await confirm.waitFor();
+ assert.match(await strip.innerText(),/合成分段調租 · 租金調漲/);
+ await page.locator('#todaySystemTab210').click();
+ const system=page.locator('#todayTodos');
+ assert.match(await system.innerText(),/10,000 元 → 12,000 元/);
+ await system.locator('[data-open-rent-change233]').click();
+ assert.equal(await page.locator('#lease-tab-setup').getAttribute('aria-selected'),'true');
+ await page.locator('#cancelContract220').click();
+ await system.locator('[data-confirm-rent-change233]').click();
+ await waitToast(page,'調租提醒已確認');
+ assert.equal(await confirm.count(),0);
+ const data=await h.backup(page);
+ assert(data.data.contracts[0].lease.steps[1].reminderDoneAt);
+ assert.equal(data.data.contracts[0].lease.steps[2].remindDays,null);
+ assert.equal(data.data.contracts[0].taskCompletedAt,'');
+ await h.reload(page);
+ await page.clock.setFixedTime(formatDate(2026,10,31));
+ await nav(page,'today');assert.equal(await confirm.count(),0);
+
+ await nav(page,'calendar');
+ await page.locator('#calendarListTab').click();
+ await page.locator('#calendarSource230').selectOption('contract');
+ const list=page.locator('#calendarList'),alerts=list.locator('[data-contract-calendar-item220^="rent-reminder:"]');
+ assert.equal(await alerts.count(),1);
+ assert.match(await alerts.first().innerText(),/調租提醒已確認/);
+ assert.equal(await list.locator('[data-contract-calendar-item220^="rent-effective:"]').count(),2);
+ await editSteps();
+ await steps.nth(1).locator('.lease-step-date').fill('2026-11-29');
+ await steps.nth(1).locator('.lease-step-rent').fill('12,500');
+ await saveSteps();
+ await nav(page,'today');
+ await confirm.waitFor();
+ assert.equal(await confirm.getAttribute('data-rent-effective233'),'2026-11-29');
+ await editSteps();
+ await steps.nth(1).locator('[data-lease-remove-step]').click();
+ await saveSteps();
+ await nav(page,'today');assert.equal(await confirm.count(),0);
+ await nav(page,'calendar');await page.locator('#calendarListTab').click();
+ assert.equal(await alerts.count(),0);
+ assert.equal(await list.locator('[data-contract-calendar-item220^="rent-effective:"]').count(),1);
+}
+
+module.exports={lifecycle,lists,renewal,batchLeases,rentReminders};

@@ -68,3 +68,41 @@ assert.throws(()=>engine.validateLinks([record,renewal,{...renewal,id:'extension
 assert.throws(()=>engine.validateLinks([record,{...renewal,clientId:'other-client'}]),/同一客戶/);
 assert.throws(()=>engine.validateLinks([record,{...renewal,startDate:record.endDate}]),/晚於上期/);
 console.log('PASS annual renewals, preserved links, independent statuses and end-date boundaries');
+
+const leases=require('../vat/lease-core.js').createLeaseEngine224();
+const lease={...leases.defaultLease(),steps:[
+ {from:'2026-05-05',cents:1000000},
+ {from:'2026-06-01',cents:1200000},
+ {from:'2026-07-01',cents:1200000,remindDays:0},
+ {from:'2026-08-01',cents:1150000,remindDays:null}
+]};
+const withRent=save({endDate:'2026-12-31',reminderEnabled:false,lease});
+const [rise,fall]=leases.rentChanges(withRent.lease);
+assert.equal(leases.rentChanges(withRent.lease).length,2);
+assert.equal(rise.before,1000000);assert.equal(rise.after,1200000);assert.equal(fall.difference,-50000);
+assert.equal(engine.rentReminderDate(rise),'2026-05-02');
+assert.equal(engine.rentReminderDate(fall),'');
+assert.equal(engine.rentReminderDate({...rise,remindDays:0}),rise.date);
+assert.equal(engine.rentReminderDate({date:'0001-01-05',remindDays:30}),'0001-01-01');
+assert(!engine.rentReminderDue(withRent,rise,'2026-05-01'));
+assert(engine.rentReminderDue(withRent,rise,'2026-05-02'));
+assert(engine.rentReminderDue(withRent,rise,'2026-06-01'));
+assert(!engine.rentReminderDue(withRent,rise,'2026-06-02'));
+assert(!engine.rentReminderDue({...withRent,closed:true},rise,'2026-05-02'));
+const confirmAt='2026-05-02T00:00:00.000Z';
+const confirmed=engine.confirmRentReminder({current:withRent,baseline:withRent,at:confirmAt,today:'2026-05-02',effectiveDate:rise.date});
+assert.equal(confirmed.taskCompletedAt,'');
+assert.equal(confirmed.lease.steps[1].reminderDoneAt,confirmAt);
+assert(!engine.rentReminderDue(confirmed,leases.rentChanges(confirmed.lease)[0],'2026-05-02'));
+engine.validate({contracts:[confirmed],clients,contractCategories});
+assert.equal(save({endDate:confirmed.endDate,lease,note:'無關的修改'},confirmed,confirmAt).lease.steps[1].reminderDoneAt,confirmAt);
+for(const steps of [
+ lease.steps.map((step,i)=>i===0?{...step,cents:990000}:step),
+ lease.steps.map((step,i)=>i===1?{...step,remindDays:2}:step),
+ lease.steps.map((step,i)=>i===1?{...step,from:'2026-06-02'}:step)
+]){
+ assert.equal(save({endDate:confirmed.endDate,lease:{...lease,steps}},confirmed,confirmAt).lease.steps[1].reminderDoneAt,undefined);
+}
+assert.throws(()=>leases.rentReminderDays('366'),/365/);
+assert.throws(()=>leases.rentReminderDays(''),/整數/);
+console.log('PASS staged rent changes, due windows, acknowledgement and rescheduling');

@@ -230,3 +230,16 @@
 .lease-interest-preview232 p{margin:0;line-height:1.5}
 .contract-deposit-preview232{display:block;margin-top:8px;color:var(--brand);font-size:13px;line-height:1.5}
 .contract-deposit-preview232[hidden]{display:none}
+.lease-step-reminder233{grid-column:1/-1;display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;padding:4px 0}
+.lease-step-reminder233 .field{display:flex;align-items:center;gap:8px}
+.lease-step-reminder233 .input{width:78px}
+.lease-changes233{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.lease-changes233 h3{margin:0 0 4px;font-size:15px}
+.lease-changes233 ul{list-style:none;padding:0;margin:0}
+.lease-changes233 li{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;align-items:center;gap:6px 12px;padding:8px 0}
+.lease-changes233 li+li{border-top:1px solid var(--line)}
+.lease-changes233 time,.lease-changes233 small{color:var(--muted);font-variant-numeric:tabular-nums}
+.lease-change-amount233{display:flex;align-items:center;flex-wrap:wrap;gap:5px 9px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+@container record-list (max-width:580px){
+ .lease-changes233 li{grid-template-columns:minmax(0,1fr)}
+}
