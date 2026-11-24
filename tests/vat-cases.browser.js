@@ -242,4 +242,85 @@ async function filtersAndEditor(p,h){
  await p.locator('#caseCancel219').click();
  assert(await editor.evaluate(el=>document.activeElement===el));
 }
-module.exports={lifecycle,backupAndReferences,upgrade,filtersAndEditor};
+async function progressAndPrint(p,h){
+ const scope=p.locator('#pdfScope'),paper=p.locator('#pdfPaper217'),font=p.locator('#pdfFont217');
+ await nav(p,'pdf');
+ await scope.selectOption('cases');
+ assert(await p.locator('#pdfPeriodField').isHidden());
+ assert.equal(await paper.locator('.pdf-title').textContent(),'案件進度清單');
+ assert.match(await paper.innerText(),/沒有符合條件/);
+ await font.selectOption('11');
+ await p.locator('#pdfSave217').click();
+ await p.locator('#pdfDirectStatus217').filter({hasText:'版面已儲存'}).waitFor();
+
+ await create(p,false);
+ await openEditor(p);
+ await p.locator('.case-progress-editor232 summary').click();
+ const stage=p.locator('[data-progress-stage]'),date=p.locator('[data-progress-date]');
+ async function add(day,name){
+  await p.locator('#caseProgressAdd232').click();
+  await date.last().fill(day);
+  await stage.last().fill(name);
+ }
+ await add('2026-10-31','第一批送件');
+ await add('2026-10-30','備齊文件');
+ await p.locator('[data-progress-note]').last().fill('合成進度說明');
+ await p.setViewportSize({width:320,height:844});
+ assert(await p.locator('.cases-modal219').evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+ await stage.last().scrollIntoViewIfNeeded();
+ await h.screenshot(p,'vat232-case-progress-mobile');
+ await p.setViewportSize({width:1440,height:1000});
+ await save(p);
+ await openEditor(p);
+ assert.deepEqual(await stage.evaluateAll(nodes=>nodes.map(node=>node.value)),['第一批送件','備齊文件']);
+ await add('2026-10-31','');
+ await p.locator('#caseSave219').click();
+ await p.locator('#caseError219').waitFor({state:'visible'});
+ assert.match(await p.locator('#caseError219').textContent(),/第 3 筆進度階段/);
+ await stage.last().fill('第二批送件');
+ await save(p);
+ assert.equal(await p.locator('.case-current-progress232').textContent(),'第二批送件');
+ await p.locator('[data-record-toggle222]').click();
+ assert.deepEqual(await p.locator('.case-progress-log232 li strong').allTextContents(),['備齊文件','第一批送件','第二批送件']);
+ assert.equal((await h.backup(p)).data.cases[0].progress.length,3);
+ await nav(p,'pdf');
+ await scope.selectOption('cases');
+ assert.equal(await font.inputValue(),'11');
+ await p.locator('#pdfPeriod').evaluate(select=>select.value='');
+ await p.locator('#pdfAdvanced217>summary').click();
+ await p.locator('#pdfLayoutTab212').click();
+ const caseHtml=await h.printCapture(p,'vat232-case-report',{heading:'案件進度清單',contains:['第二批送件']});
+ assert.match(caseHtml,/第二批送件/);
+ assert.match(caseHtml,/案件進度清單/);
+ assert.doesNotMatch(caseHtml,/營業稅本期總表/);
+
+ await nav(p,'contracts');
+ await p.locator('#newContract220').click();
+ await p.locator('#contract-clientId220').selectOption('synthetic-b');
+ await p.locator('#contract-title220').fill('合成新增租約');
+ await p.locator('#contract-startDate220').fill('2026-11-01');
+ await p.locator('#contract-endDate220').fill('2027-10-31');
+ await p.locator('#contract-monthlyRent220').fill('10,000');
+ await p.locator('#contract-deposit220').fill('30,000');
+ await p.locator('#saveContract220').click();
+ await p.locator('#contractForm220').waitFor({state:'detached'});
+ await nav(p,'pdf');
+ await scope.selectOption('contracts');
+ assert.equal(await font.inputValue(),'9','The case layout does not alter the contract layout');
+ assert.match(await paper.innerText(),/合成新增租約/);
+ await p.locator('#pdfRecordClient232').selectOption('synthetic-a');
+ assert.match(await paper.innerText(),/沒有符合條件/);
+ await p.locator('#pdfRecordClient232').selectOption('synthetic-b');
+ assert.equal(await paper.locator('.pdf-title').textContent(),'租約與合約清單');
+ assert.match(await paper.innerText(),/10,000 元.*30,000 元/s);
+ await h.screenshot(p,'vat232-contracts-print-desktop');
+ const contractHtml=await h.printCapture(p,'vat232-contract-report',{heading:'租約與合約清單',contains:['合成新增租約','30,000 元']});
+ assert.match(contractHtml,/合成新增租約/);
+ assert.doesNotMatch(contractHtml,/合成案件|營業稅本期總表/);
+ await scope.selectOption('period');
+ assert(await p.locator('#pdfPeriodField').isVisible());
+ assert(await p.locator('#pdfRecordClientField232').isHidden());
+ await p.locator('#pdfPeriod').selectOption('2026-1');
+ assert.equal(await paper.locator('.pdf-title').first().textContent(),'營業稅本期總表');
+}
+module.exports={lifecycle,backupAndReferences,upgrade,filtersAndEditor,progressAndPrint};

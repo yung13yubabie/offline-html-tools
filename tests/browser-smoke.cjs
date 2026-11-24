@@ -389,19 +389,20 @@ function vatPdfEvidence(file,name,expected){
  for(const bin of ['pdfinfo','pdftotext','pdftoppm'])run(bin,['-v']);
  const info=run('pdfinfo',[file]),match=info.match(/^Pages:\s+(\d+)/m);assert(match,'Poppler reports a physical PDF page count');const pages=Number(match[1]);assert(pages>=1&&pages<=40,'Synthetic print evidence has a bounded physical page count');
  const text=run('pdftotext',['-enc','UTF-8','-raw',file,'-']);fs.writeFileSync(path.join(OUT,name+'-extracted.txt'),text);const compact=text.replace(/\s/g,'');assert(compact.includes(expected.heading.replace(/\s/g,'')),'Generated PDF retains the expected heading');assert(!/修改標註|結束標註/.test(compact),'Floating annotation controls must never appear in actual generated PDF text');
+ for(const value of expected.contains||[])assert(compact.includes(value.replace(/\s/g,'')),'Generated PDF retains the expected data');
  if(expected.long){assert.equal((text.match(/START/g)||[]).length,2,'Both long synthetic note starts remain in generated PDF');assert.equal((text.match(/END/g)||[]).length,2,'Both long synthetic note ends remain in generated PDF');for(const hidden of ['TEST-A','TEST-B'])assert(!text.includes(hidden),'Hidden code value must be absent from generated PDF');}
  const bbox=run('pdftotext',['-bbox-layout',file,'-']);assert.equal([...bbox.matchAll(/<page width=/g)].length,pages);assert(bbox.includes('<word '),'Generated PDF contains bounded text words');for(const page of bbox.matchAll(/<page width="([\d.]+)" height="([\d.]+)">([\s\S]*?)<\/page>/g)){const width=Number(page[1]),height=Number(page[2]);for(const word of page[3].matchAll(/<word xMin="([\d.-]+)" yMin="([\d.-]+)" xMax="([\d.-]+)" yMax="([\d.-]+)"/g)){assert(Number(word[1])>=-1&&Number(word[3])<=width+1,'PDF text stays inside physical page width');assert(Number(word[2])>=-1&&Number(word[4])<=height+1,'PDF text stays inside physical page height');}}
  const rendered=[];for(const page of [...new Set([1,pages])]){const prefix=path.join(OUT,name+'-paper-page-'+page);run('pdftoppm',['-f',String(page),'-l',String(page),'-r','96','-singlefile','-png',file,prefix]);const stat=fs.statSync(prefix+'.png');assert(stat.size>1000&&stat.size<12*1024*1024,'Bounded nonempty actual PDF rendering');rendered.push(path.basename(prefix)+'.png')}
  return {file:path.basename(file),physicalPages:pages,rendered,verification:'Poppler text/bounds and first+last physical PDF page render; not a physical printer test; not exhaustive pagination coverage'};
 }
 
-async function vatPrintCapture(p,name){
+async function vatPrintCapture(p,name,expectedReport){
  // Only the OS dialog is stubbed; actual production output builder still fills printRoot.
  await p.evaluate(()=>{window.__syntheticPrintCalls=0;window.print=()=>{window.__syntheticPrintCalls++}});
  const preview=await vatPreview(p);await p.locator('#exportPdfBtn').click();await p.waitForFunction(()=>window.__syntheticPrintCalls===1);
  assert.equal(await p.locator('#printRoot').innerHTML(),preview,'Saved preview and real printer HTML must be identical');
  await p.emulateMedia({media:'print'});try{assert.equal(await p.locator('#offline-review-host').evaluate(e=>getComputedStyle(e).display),'none','Floating annotation host must be hidden by real print CSS');}finally{await p.emulateMedia({media:'screen'});}
- if(name){await p.emulateMedia({media:'print'});const renderedPageLabels=await p.locator('#printRoot .pdf-foot').allTextContents();await vatScreenshot(p,name);const bytes=await p.pdf({path:path.join(OUT,name+'.pdf'),preferCSSPageSize:true,printBackground:true});assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert(bytes.length>1000);const expected=name.includes('long-note')?{heading:'本期款項／請款',long:true}:name.includes('saved-print')?{heading:'營業稅本期總表'}:name.includes('record-layout')?{heading:'客戶基本資料'}:{heading:'日曆記事'};const pdfEvidence=vatPdfEvidence(path.join(OUT,name+'.pdf'),name,expected);pdfEvidence.renderedPageLabels=renderedPageLabels;(report.pdfEvidence||=[]).push(pdfEvidence);await p.emulateMedia({media:'screen'});
+ if(name){await p.emulateMedia({media:'print'});const renderedPageLabels=await p.locator('#printRoot .pdf-foot').allTextContents();await vatScreenshot(p,name);const bytes=await p.pdf({path:path.join(OUT,name+'.pdf'),preferCSSPageSize:true,printBackground:true});assert.equal(bytes.subarray(0,5).toString(),'%PDF-');assert(bytes.length>1000);const expected=expectedReport??(name.includes('long-note')?{heading:'本期款項／請款',long:true}:name.includes('saved-print')?{heading:'營業稅本期總表'}:name.includes('record-layout')?{heading:'客戶基本資料'}:{heading:'日曆記事'});const pdfEvidence=vatPdfEvidence(path.join(OUT,name+'.pdf'),name,expected);pdfEvidence.renderedPageLabels=renderedPageLabels;(report.pdfEvidence||=[]).push(pdfEvidence);await p.emulateMedia({media:'screen'});
  // Chromium PDF generation fires the production afterprint cleanup. Rebuild only through the explicit export UI for subsequent live-DOM assertions.
  await p.locator('#exportPdfBtn').click();await p.waitForFunction(()=>window.__syntheticPrintCalls===2);assert.equal(await p.locator('#printRoot').innerHTML(),preview,'Explicit re-export after actual afterprint cleanup must reproduce saved output');}
  return preview;
@@ -455,7 +456,7 @@ async function vatPrintRecordsAndBlocks(p){
  const summary=p.locator('#pdfLayoutPanel212 [data-layout-row]').filter({hasText:'月曆摘要'});await summary.locator('[data-layout-field="visible"]').uncheck();await vatLayoutSave(p);await vatPrintCapture(p,'vat-revision-calendar-layout-browser-pdf');assert.equal(await p.locator('#printRoot [data-layout-block212="b:月曆摘要"]').count(),0);assert(await p.locator('#printRoot [data-layout-block212="b:記事明細"]').count()>0);assert.match(await p.locator('#printRoot').innerText(),/合成日曆記事/);
 }
 
-const vatNoticeHelpers={reload:vatReload,backup:vatBackup,screenshot:vatScreenshot,download};
+const vatNoticeHelpers={reload:vatReload,backup:vatBackup,screenshot:vatScreenshot,printCapture:vatPrintCapture,download};
 async function vatNoticeRevision(p){await vatCollection.originals(p,vatNoticeHelpers)}
 async function vatCollectionRevision(p){await vatCollection.collection(p,vatNoticeHelpers)}
 

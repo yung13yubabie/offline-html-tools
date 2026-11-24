@@ -132,6 +132,13 @@ function createLeaseEngine224() {
   if(status==='pending'||actual===null)return 'pending';
   return expected===actual?'matched':'different';
  }
+ function interestAmounts({deposit,annual,months,regime,vatRate}){
+  const needsRate=deposit>0&&months>0&&annual===null;
+  if(needsRate||deposit===null)return {gross:null,interest:null,needsRate};
+  const raw=BigInt(deposit)*BigInt(annual??0)*BigInt(months);
+  const gross=round(raw,12n*scale);
+  return {gross,interest:regime==='invoice'?round(raw,12n*(scale+BigInt(vatRate))):gross,needsRate};
+ }
  function calculate(record,rates){
   if(!record.lease)return [];
   const lease=record.lease,rateMap=new Map(rates.map(row=>[row.id,row.rate]));
@@ -141,15 +148,12 @@ function createLeaseEngine224() {
    const monthlyRent=lease.steps.length?period.months.map(month=>rentForMonth(month,lease.steps)):[];
    const rent=monthlyRent.length?monthlyRent.reduce((sum,cents)=>sum+cents,0):null;
    const annual=rateMap.get(period.year)??null,months=check.interestMonths??period.fullMonths;
-   const needsRate=lease.deposit>0&&months>0&&annual===null;
-   const raw=BigInt(lease.deposit||0)*BigInt(annual||0)*BigInt(months);
-   const gross=needsRate||lease.deposit===null?null:round(raw,12n*scale);
-   const interest=gross===null?null:lease.regime==='invoice'?round(raw,12n*(scale+BigInt(lease.vatRate))):gross;
+   const {gross,interest,needsRate}=interestAmounts({...lease,annual,months});
    const rentResult=compare(rent,check.rentStatus,check.rentActual);
    const interestResult=compare(interest,check.interestStatus,check.interestActual);
    return {...period,check,rent,monthlyRent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
   });
  }
- return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,calculate};
+ return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};

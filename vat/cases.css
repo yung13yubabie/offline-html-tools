@@ -32,3 +32,26 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .cases-result219{margin:12px 0 8px}
 }
 @media screen and (max-width:420px){.cases-stat219{padding:7px 8px}}
+.case-current-progress232{color:var(--brand);overflow-wrap:anywhere}
+.case-progress-editor232{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+.case-progress-editor232 summary{cursor:pointer;font-weight:700;padding-block:4px}
+.case-progress-editor232 summary span{margin-left:6px;color:var(--muted);font-size:13px;font-weight:500}
+.case-progress-editor232[open] summary{margin-bottom:8px}
+.case-progress-row232{display:grid;grid-template-columns:minmax(112px,.9fr) minmax(0,1.2fr) minmax(0,1.5fr) auto;gap:8px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line)}
+.case-progress-row232 .field,.case-progress-row232 :is(input,textarea){min-width:0}
+.case-progress-row232 textarea{min-height:39px;resize:vertical}
+#caseProgressAdd232{margin-top:8px}
+.case-progress-log232{padding:9px 12px;border-inline-start:2px solid var(--brand);background:var(--panel2);border-radius:5px}
+.case-progress-log232 h3{margin:0 0 5px;font-size:14px}
+.case-progress-log232 ol{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.case-progress-log232 li{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 12px;font-size:14px;overflow-wrap:anywhere}
+.case-progress-log232 time{color:var(--muted);font-variant-numeric:tabular-nums}
+.case-progress-log232 p{margin:2px 0 0;white-space:pre-wrap}
+@media(max-width:620px){
+ .case-progress-row232{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .case-progress-row232 .btn{justify-self:end}
+}
+@media(max-width:385px){
+ .case-progress-row232,.case-progress-log232 li{grid-template-columns:minmax(0,1fr)}
+ .case-progress-log232 li{gap:2px}
+}

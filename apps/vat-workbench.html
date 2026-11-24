@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.31.0</title>
+<title>營業稅工作台 v2.32.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -602,6 +602,29 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .cases-result219{margin:12px 0 8px}
 }
 @media screen and (max-width:420px){.cases-stat219{padding:7px 8px}}
+.case-current-progress232{color:var(--brand);overflow-wrap:anywhere}
+.case-progress-editor232{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+.case-progress-editor232 summary{cursor:pointer;font-weight:700;padding-block:4px}
+.case-progress-editor232 summary span{margin-left:6px;color:var(--muted);font-size:13px;font-weight:500}
+.case-progress-editor232[open] summary{margin-bottom:8px}
+.case-progress-row232{display:grid;grid-template-columns:minmax(112px,.9fr) minmax(0,1.2fr) minmax(0,1.5fr) auto;gap:8px;align-items:end;padding:8px 0;border-bottom:1px solid var(--line)}
+.case-progress-row232 .field,.case-progress-row232 :is(input,textarea){min-width:0}
+.case-progress-row232 textarea{min-height:39px;resize:vertical}
+#caseProgressAdd232{margin-top:8px}
+.case-progress-log232{padding:9px 12px;border-inline-start:2px solid var(--brand);background:var(--panel2);border-radius:5px}
+.case-progress-log232 h3{margin:0 0 5px;font-size:14px}
+.case-progress-log232 ol{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.case-progress-log232 li{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:8px 12px;font-size:14px;overflow-wrap:anywhere}
+.case-progress-log232 time{color:var(--muted);font-variant-numeric:tabular-nums}
+.case-progress-log232 p{margin:2px 0 0;white-space:pre-wrap}
+@media(max-width:620px){
+ .case-progress-row232{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .case-progress-row232 .btn{justify-self:end}
+}
+@media(max-width:385px){
+ .case-progress-row232,.case-progress-log232 li{grid-template-columns:minmax(0,1fr)}
+ .case-progress-log232 li{gap:2px}
+}
 .record-list220{display:grid;gap:8px;min-width:0;container:record-list / inline-size}
 .client-folder222{min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
 .client-folder222>summary{list-style:none;cursor:pointer}
@@ -1264,6 +1287,15 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 @media(max-width:365px){
  .lease-batch-row-fields228 .field:has(input[type=date]){grid-column:1/-1}
 }
+.lease-interest-preview232{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.lease-interest-preview232 header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.lease-interest-preview232 header h3{margin:0;font-size:16px}
+.lease-interest-preview232 header>.field{min-width:100px}
+.lease-interest-preview232 dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 8px}
+.lease-interest-preview232 dl>div{padding:9px 10px;background:var(--brand-soft);border-radius:6px;min-width:0}
+.lease-interest-preview232 dt,.lease-interest-preview232 p{font-size:13px;color:var(--muted)}
+.lease-interest-preview232 dd{margin:2px 0 0;font-size:19px;font-weight:750;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.lease-interest-preview232 p{margin:0;line-height:1.5}
 @media screen {
  .vat-sample-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
  .vat-sample-bar .badge{overflow-wrap:anywhere}
@@ -1604,7 +1636,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.31.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.32.0</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -1831,6 +1863,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="field hidden" id="pdfStatusField" style="margin-top:9px"><label>狀態</label><select class="select" id="pdfStatus" multiple="" size="6"><option value="unreceived">尚未收到發票</option><option value="partial">部分收到</option><option value="unpaid">尚未全額付款</option><option value="paidTaxUnpaid">已付款未繳納</option><option value="open">尚未結案</option><option value="overdue">已逾期／滯納</option></select></div>
 <div class="field hidden" id="pdfSectionField" style="margin-top:9px"><label>功能區塊</label><select class="select" id="pdfSection"><option value="client">客戶基本資料</option><option value="receipt">收發票追蹤</option><option value="billing">本期款項／請款</option><option value="accountingSummary">帳務處理總表</option><option value="accountingMissing">本期欠缺文件清單</option><option value="accountingReturn">本期待歸資料清單</option><option value="carryCurrent">本期跨期發票清單</option><option value="carry">跨期／尚欠完整表</option><option value="payment">收款／沖銷</option><option value="taxpay">繳稅／應繳清單</option><option value="late">逾期／滯納金／利息</option><option value="notices">通知歷史</option></select></div>
 <div class="field hidden" id="pdfAccountingMissingField" style="margin-top:9px"><label>欠缺文件範圍</label><select class="select" id="pdfAccountingMissingMode"><option selected="" value="pending">只輸出待補</option><option value="all">全部（含已補）</option></select></div>
+<div class="field hidden" id="pdfRecordClientField232" style="margin-top:9px"><label for="pdfRecordClient232">客戶</label><select id="pdfRecordClient232" class="select"><option value="">全部客戶</option></select></div>
 <div class="hidden" id="pdfCalendarField" style="margin-top:9px"><div class="form-grid two"><div class="field"><label>開始日期</label><input class="input" id="pdfCalendarFrom" type="date"/></div><div class="field"><label>結束日期</label><input class="input" id="pdfCalendarTo" type="date"/></div><div class="field span-2"><label>客戶</label><select class="select" id="pdfCalendarClient"><option value="all">全部內容</option><option value="none">未指定客戶</option></select></div></div><div class="small muted" style="margin-top:6px">跨月份時，每月依序輸出月曆摘要與當月記事明細。</div></div>
 <div class="field" style="margin-top:9px"><label>紙張方向</label><select class="select" id="pdfOrientation"><option value="portrait">A4 直式</option><option value="landscape" selected>A4 橫式</option></select></div>
 <div class="actions" style="justify-content:flex-start;margin-top:12px"><button class="btn primary" id="exportPdfBtn">輸出 A4 PDF</button></div>
@@ -1874,7 +1907,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.31.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.32.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
 const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
 const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
 const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
@@ -2353,9 +2386,14 @@ function renderPdf(){
  const pval=$('#pdfPeriod')?.value||state.periodId;if($('#pdfPeriod'))$('#pdfPeriod').value=pval||'';const pcs=pcForPeriod(pval);$('#pdfClient').innerHTML=pcs.map(pc=>`<option value="${esc(pc.id)}">${esc(pc.snapshot?.code||'')}｜${esc(pc.snapshot?.name||'')}</option>`).join('');
  const calClient=$('#pdfCalendarClient');if(calClient){const keep=calClient.value||'all';calClient.innerHTML='<option value="all">全部內容</option><option value="none">未指定客戶</option>'+state.clients.slice().sort((a,b)=>String(a.code).localeCompare(String(b.code),'zh-Hant',{numeric:true})).map(c=>`<option value="${esc(c.id)}">${esc(c.code)}｜${esc(c.name)}</option>`).join('');calClient.value=[...calClient.options].some(o=>o.value===keep)?keep:'all'}
  if($('#pdfCalendarFrom')&&!$('#pdfCalendarFrom').value){const [y,m]=state.calendarMonth.split('-').map(Number);$('#pdfCalendarFrom').value=localDate(new Date(y,m-1,1));$('#pdfCalendarTo').value=localDate(new Date(y,m,0))}
- if($('#pdfDateModeHint'))$('#pdfDateModeHint').textContent=`A4 輸出｜日期顯示：${currentDateMode()==='roc'?'民國':'西元'}｜資料過多會自動分頁。`;togglePdfFields()
+ const recordClient=$('#pdfRecordClient232'),keep=recordClient.value;
+ recordClient.innerHTML='<option value="">全部客戶</option>'+recordClientOptions220(keep);
+ if(!clientById(keep))recordClient.value='';
+ if($('#pdfDateModeHint'))$('#pdfDateModeHint').textContent=`A4 輸出｜日期顯示：${currentDateMode()==='roc'?'民國':'西元'}｜資料過多會自動分頁。`;togglePdfFields();
+ const scope=$('#pdfScope').value;
+ if(state.view==='pdf'&&isRecordPrint232(scope)&&pdfLayoutUI212.key===scope)pdfLayoutRender212();
 }
-function togglePdfFields(){const s=$('#pdfScope')?.value,isCal=s==='calendar';$('#pdfPeriodField')?.classList.toggle('hidden',isCal);$('#pdfClientField')?.classList.toggle('hidden',s!=='client');$('#pdfStatusField')?.classList.toggle('hidden',s!=='status');$('#pdfSectionField')?.classList.toggle('hidden',s!=='section');$('#pdfCalendarField')?.classList.toggle('hidden',!isCal)}
+function togglePdfFields(){const s=$('#pdfScope')?.value,isCal=s==='calendar',isRecord=isRecordPrint232(s);$('#pdfPeriodField')?.classList.toggle('hidden',isCal||isRecord);$('#pdfRecordClientField232')?.classList.toggle('hidden',!isRecord);$('#pdfClientField')?.classList.toggle('hidden',s!=='client');$('#pdfStatusField')?.classList.toggle('hidden',s!=='status');$('#pdfSectionField')?.classList.toggle('hidden',s!=='section');$('#pdfCalendarField')?.classList.toggle('hidden',!isCal)}
 function preShippingPage(p,pcs,page,total){return `<div class="pdf-page">${pdfHead(p,page,total,'前期寄送')}<table class="pdf-table"><thead><tr><th>代號</th><th>客戶</th><th>寄送種類</th><th>貼紙剩餘</th><th>地址</th><th>收件人</th><th>狀態</th><th>寄送日期</th></tr></thead><tbody>${pcs.map(pc=>{const c=pc.snapshot||{},sh=normalizeShip(pc.preShipping||{}),client=clientById(pc.clientId),last=(pc.shippingHistory||[]).slice(-1)[0],stickers=sh.sent&&last?.stickerBalanceAfter!=null?last.stickerBalanceAfter:clientStickerCount(client);return `<tr class="pdf-row"><td>${esc(c.code||'')}</td><td>${esc(c.name||'')}</td><td>${esc(sh.type||'')}</td><td>${money(stickers)}</td><td>${esc(sh.addressText||'')}${sh.addressSource?`<br>${esc(sh.addressSource)}`:''}</td><td>${esc(sh.recipientName||'')}${sh.recipientSource?`<br>${esc(sh.recipientSource)}`:''}</td><td>${sh.sent?'已寄送':'未寄送'}</td><td>${fmtDate(sh.sentDate)}</td></tr>`}).join('')}</tbody></table><div class="pdf-foot"><span>${esc(periodLabel(p))}</span><span>${page} / ${total}</span></div></div>`}
 function calendarPdfHead(monthKey,page,total,subtitle=''){return `<div class="pdf-head pdf-head-balanced"><div class="pdf-title">日曆記事｜${esc(calendarMonthTitle(monthKey))}</div><div class="pdf-head-meta"><div class="pdf-meta-item"><span class="pdf-meta-label">內容</span><span class="pdf-meta-value">${esc(subtitle||'日曆記事')}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">匯出日期</span><span class="pdf-meta-value">${fmtDate(localDate())}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">頁碼</span><span class="pdf-meta-value">${page} / ${total}</span></div></div></div>`}
 function calendarPdfMonthKeys(from,to){const out=[];let [y,m]=from.slice(0,7).split('-').map(Number),[ey,em]=to.slice(0,7).split('-').map(Number);while(y<ey||(y===ey&&m<=em)){out.push(`${y}-${String(m).padStart(2,'0')}`);m++;if(m>12){m=1;y++}}return out}
@@ -2364,7 +2402,7 @@ function calendarSummaryPage(monthKey,notes,from,to,page,total){const [y,m]=mont
 function calendarDetailPage(monthKey,notes,page,total,part,parts){let body='';if(!notes.length)body='<div style="padding:12mm 0;text-align:center;color:#666">本月沒有符合條件的記事</div>';else{let last='';for(const n of notes){if(n.date!==last){body+=`<div class="pdf-note-day">${fmtDate(n.date)}</div>`;last=n.date}const c=clientById(n.clientId),st=calendarReminderState(n),cls=calendarReminderClass(n),rem=st==='none'?'':`<span class="pdf-reminder-status ${st}">${esc(calendarReminderLabel(n))}</span>`;body+=`<div class="pdf-note-entry ${cls}"><div class="pdf-note-entry-head"><span>${esc(n.time||'—')} <span class="pdf-note-client">｜${esc(c?.name||'一般記事')}</span></span>${rem}</div><div class="pdf-note-entry-body">${esc(n.content||'')}</div></div>`}}return `<div class="pdf-page">${calendarPdfHead(monthKey,page,total,parts>1?`記事明細 ${part}/${parts}`:'記事明細')}${body}<div class="pdf-foot"><span>記事明細</span><span>${page} / ${total}</span></div></div>`}
 
 function buildCalendarPdf(){const from=$('#pdfCalendarFrom').value,to=$('#pdfCalendarTo').value,clientMode=$('#pdfCalendarClient').value||'all';if(!from||!to){toast('請選擇日曆記事的開始與結束日期');return null}if(from>to){toast('開始日期不能晚於結束日期');return null}const months=calendarPdfMonthKeys(from,to),all=calendarPdfNotes(from,to,clientMode),descs=[],detailSize=$('#pdfOrientation').value==='landscape'?12:8;for(const key of months){const notes=all.filter(n=>n.date.startsWith(key));descs.push({kind:'summary',key,notes});const parts=Math.max(1,Math.ceil(notes.length/detailSize));for(let i=0;i<parts;i++)descs.push({kind:'detail',key,notes:notes.slice(i*detailSize,(i+1)*detailSize),part:i+1,parts})}const total=descs.length;return descs.map((d,i)=>d.kind==='summary'?calendarSummaryPage(d.key,d.notes,from,to,i+1,total):calendarDetailPage(d.key,d.notes,i+1,total,d.part,d.parts)).join('')}
-function buildPdf(prepareOnly=false){const scope=$('#pdfScope').value;let p=null,html='';if(scope==='calendar'){html=buildCalendarPdf();if(html==null)return}else{const pid=$('#pdfPeriod').value;p=state.periods.find(x=>x.id===pid);if(!p){toast('請先選擇期別');return}let pcs=pcForPeriod(pid);if(scope==='preShip'){const rowsPerPage=$('#pdfOrientation').value==='landscape'?20:26,pages=[];for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(preShippingPage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,Math.max(1,Math.ceil(pcs.length/rowsPerPage))));html=pages.join('')}else if(scope==='client'){const pc=pcs.find(x=>x.id===$('#pdfClient').value);if(!pc){toast('請先選擇客戶');return}const mode=$('#pdfClientMode').value;if(mode==='basic')html=clientBasicPage(p,pc,1,1);else if(mode==='period')html=clientPage(p,pc,1,1);else{const yearPcs=state.periodClients.filter(x=>x.clientId===pc.clientId&&Number(state.periods.find(z=>z.id===x.periodId)?.year)===Number(p.year)).sort((a,b)=>a.periodId.localeCompare(b.periodId));html=mode==='yearTable'?clientYearTablePage(p,pc,yearPcs,1,1):clientYearBlocksPage(p,pc,yearPcs,1,1)}}else if(scope==='status'){const vals=[...$('#pdfStatus').selectedOptions].map(o=>o.value);pcs=pcs.filter(pc=>vals.every(v=>matchStatus(pc,p,v)));const rowsPerPage=$('#pdfOrientation').value==='landscape'?12:16,pages=[];for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(periodTablePage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,Math.max(1,Math.ceil(pcs.length/rowsPerPage))));html=pages.join('')}else if(scope==='section'){const sec=$('#pdfSection').value;if(sec==='receipt'){const rowsPerPage=$('#pdfOrientation').value==='landscape'?26:20,totalPages=Math.max(1,Math.ceil(pcs.length/rowsPerPage)),pages=[];if(!pcs.length)pages.push(receiptSectionPage(p,[],1,1));else for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(receiptSectionPage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,totalPages));html=pages.join('')}else if(sec==='carryCurrent'){const filtered=pcs.filter(pc=>!!pc.carryInvoiceForward),rowsPerPage=$('#pdfOrientation').value==='landscape'?42:32,totalPages=Math.max(1,Math.ceil(filtered.length/rowsPerPage)),pages=[];if(!filtered.length)pages.push(sectionPage(p,[],sec,1,1));else for(let i=0;i<filtered.length;i+=rowsPerPage)pages.push(sectionPage(p,filtered.slice(i,i+rowsPerPage),sec,Math.floor(i/rowsPerPage)+1,totalPages));html=pages.join('')}else html=sectionPage(p,pcs,sec,1,1)}else{const rowsPerPage=$('#pdfOrientation').value==='landscape'?12:16,pages=[];for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(periodTablePage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,Math.max(1,Math.ceil(pcs.length/rowsPerPage))));html=pages.join('')}}const orientation=$('#pdfOrientation').value==='landscape'?'landscape':'portrait';if(prepareOnly)return {html,orientation};const root=$('#printRoot');root.innerHTML=html||`<div class="pdf-page">${p?pdfHead(p,1,1,'營業稅資料'):'<div class="pdf-head"><div class="pdf-title">日曆記事</div></div>'}<div>沒有符合條件的資料</div></div>`;const style=document.createElement('style');style.id='printPageStyle';style.textContent=`@page{size:A4 ${orientation};margin:0}.pdf-page{width:${orientation==='landscape'?'297mm':'210mm'};min-height:0;height:auto}.pdf-table.tight{font-size:7pt}`;document.head.querySelector('#printPageStyle')?.remove();document.head.appendChild(style);root.style.cssText=`display:block;position:fixed;left:-99999px;top:0;width:${orientation==='landscape'?'297mm':'210mm'};`;requestAnimationFrame(()=>{root.querySelectorAll('.pdf-table').forEach(t=>{if(t.scrollWidth>t.clientWidth+2)t.classList.add('tight')});root.style.cssText='';setTimeout(()=>window.print(),80)})}
+function buildPdf(prepareOnly=false){const scope=$('#pdfScope').value;let p=null,html='';if(isRecordPrint232(scope)){html=recordPrintPages232(scope,$('#pdfRecordClient232').value,$('#pdfOrientation').value)}else if(scope==='calendar'){html=buildCalendarPdf();if(html==null)return}else{const pid=$('#pdfPeriod').value;p=state.periods.find(x=>x.id===pid);if(!p){toast('請先選擇期別');return}let pcs=pcForPeriod(pid);if(scope==='preShip'){const rowsPerPage=$('#pdfOrientation').value==='landscape'?20:26,pages=[];for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(preShippingPage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,Math.max(1,Math.ceil(pcs.length/rowsPerPage))));html=pages.join('')}else if(scope==='client'){const pc=pcs.find(x=>x.id===$('#pdfClient').value);if(!pc){toast('請先選擇客戶');return}const mode=$('#pdfClientMode').value;if(mode==='basic')html=clientBasicPage(p,pc,1,1);else if(mode==='period')html=clientPage(p,pc,1,1);else{const yearPcs=state.periodClients.filter(x=>x.clientId===pc.clientId&&Number(state.periods.find(z=>z.id===x.periodId)?.year)===Number(p.year)).sort((a,b)=>a.periodId.localeCompare(b.periodId));html=mode==='yearTable'?clientYearTablePage(p,pc,yearPcs,1,1):clientYearBlocksPage(p,pc,yearPcs,1,1)}}else if(scope==='status'){const vals=[...$('#pdfStatus').selectedOptions].map(o=>o.value);pcs=pcs.filter(pc=>vals.every(v=>matchStatus(pc,p,v)));const rowsPerPage=$('#pdfOrientation').value==='landscape'?12:16,pages=[];for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(periodTablePage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,Math.max(1,Math.ceil(pcs.length/rowsPerPage))));html=pages.join('')}else if(scope==='section'){const sec=$('#pdfSection').value;if(sec==='receipt'){const rowsPerPage=$('#pdfOrientation').value==='landscape'?26:20,totalPages=Math.max(1,Math.ceil(pcs.length/rowsPerPage)),pages=[];if(!pcs.length)pages.push(receiptSectionPage(p,[],1,1));else for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(receiptSectionPage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,totalPages));html=pages.join('')}else if(sec==='carryCurrent'){const filtered=pcs.filter(pc=>!!pc.carryInvoiceForward),rowsPerPage=$('#pdfOrientation').value==='landscape'?42:32,totalPages=Math.max(1,Math.ceil(filtered.length/rowsPerPage)),pages=[];if(!filtered.length)pages.push(sectionPage(p,[],sec,1,1));else for(let i=0;i<filtered.length;i+=rowsPerPage)pages.push(sectionPage(p,filtered.slice(i,i+rowsPerPage),sec,Math.floor(i/rowsPerPage)+1,totalPages));html=pages.join('')}else html=sectionPage(p,pcs,sec,1,1)}else{const rowsPerPage=$('#pdfOrientation').value==='landscape'?12:16,pages=[];for(let i=0;i<pcs.length;i+=rowsPerPage)pages.push(periodTablePage(p,pcs.slice(i,i+rowsPerPage),Math.floor(i/rowsPerPage)+1,Math.max(1,Math.ceil(pcs.length/rowsPerPage))));html=pages.join('')}}const orientation=$('#pdfOrientation').value==='landscape'?'landscape':'portrait';if(prepareOnly)return {html,orientation};const root=$('#printRoot');root.innerHTML=html||`<div class="pdf-page">${p?pdfHead(p,1,1,'營業稅資料'):'<div class="pdf-head"><div class="pdf-title">日曆記事</div></div>'}<div>沒有符合條件的資料</div></div>`;const style=document.createElement('style');style.id='printPageStyle';style.textContent=`@page{size:A4 ${orientation};margin:0}.pdf-page{width:${orientation==='landscape'?'297mm':'210mm'};min-height:0;height:auto}.pdf-table.tight{font-size:7pt}`;document.head.querySelector('#printPageStyle')?.remove();document.head.appendChild(style);root.style.cssText=`display:block;position:fixed;left:-99999px;top:0;width:${orientation==='landscape'?'297mm':'210mm'};`;requestAnimationFrame(()=>{root.querySelectorAll('.pdf-table').forEach(t=>{if(t.scrollWidth>t.clientWidth+2)t.classList.add('tight')});root.style.cssText='';setTimeout(()=>window.print(),80)})}
 function pdfHead(p,page,total,title){return `<div class="pdf-head pdf-head-balanced"><div class="pdf-title">${esc(title)}</div><div class="pdf-head-meta"><div class="pdf-meta-item"><span class="pdf-meta-label">期別</span><span class="pdf-meta-value">${esc(periodLabel(p))}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">匯出日期</span><span class="pdf-meta-value">${fmtDate(localDate())}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">頁碼</span><span class="pdf-meta-value">${page} / ${total}</span></div></div></div>`}
 function receiptPdfHead(p,page,total){return `<div class="pdf-head pdf-head-balanced"><div class="pdf-title">營業稅收發票追蹤表</div><div class="pdf-head-meta four"><div class="pdf-meta-item"><span class="pdf-meta-label">期別</span><span class="pdf-meta-value">${esc(periodLabel(p))}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">本期最晚寄出日</span><span class="pdf-meta-value">${p.latestDispatchDate?fmtDate(p.latestDispatchDate):'未設定'}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">匯出日期</span><span class="pdf-meta-value">${fmtDate(localDate())}</span></div><div class="pdf-meta-item"><span class="pdf-meta-label">頁碼</span><span class="pdf-meta-value">${page} / ${total}</span></div></div></div>`}
 function receiptSectionPage(p,pcs,page,total){return `<div class="pdf-page">${receiptPdfHead(p,page,total)}<table class="pdf-table"><thead><tr><th>代號</th><th>客戶</th><th>預約收件日</th><th>收件狀態</th><th>已收到時間</th><th>收發票備註</th></tr></thead><tbody>${pcs.length?pcs.map(pc=>`<tr class="pdf-row"><td>${esc(pc.snapshot?.code||'')}</td><td>${esc(pc.snapshot?.name||'')}</td><td>${fmtDate(pc.appointmentDate)}</td><td>${esc(receiptStatusName(pc))}</td><td>${latestReceivedAt(pc)?fmtDateTime(latestReceivedAt(pc)):'—'}</td><td style="white-space:pre-wrap">${esc(pc.receiptNote||'')}</td></tr>`).join(''):`<tr><td colspan="6" style="text-align:center">沒有符合條件的資料</td></tr>`}</tbody></table><div class="pdf-foot"><span>${esc(periodLabel(p))}</span><span>${page} / ${total}</span></div></div>`}
@@ -3692,7 +3730,7 @@ function pdfLayoutApply212(html,raw){const {root,schema}=pdfLayoutDocument212(ht
  // Renumber calendar pages after hidden/reordered summary/detail blocks.
  const pages=[...root.querySelectorAll('.pdf-page')];pages.forEach((p,i)=>{const foot=p.querySelector('.pdf-foot span:last-child');if(foot)foot.textContent=`${i+1} / ${pages.length}`;for(const item of p.querySelectorAll('.pdf-meta-item'))if(item.querySelector('.pdf-meta-label')?.textContent==='頁碼')item.querySelector('.pdf-meta-value').textContent=`${i+1} / ${pages.length}`});
  return root.innerHTML;}
-function pdfLayoutPrepare212(){if($('#pdfScope').value==='client'&&!$('#pdfClient').value)return null;if($('#pdfScope').value!=='calendar'&&!state.periods.some(p=>p.id===$('#pdfPeriod').value))return null;return pdfLayoutBuilder212(true)}
+function pdfLayoutPrepare212(){if($('#pdfScope').value==='client'&&!$('#pdfClient').value)return null;if($('#pdfScope').value!=='calendar'&&!isRecordPrint232($('#pdfScope').value)&&!state.periods.some(p=>p.id===$('#pdfPeriod').value))return null;return pdfLayoutBuilder212(true)}
 function pdfLayoutRefresh212(force=false){if(!$('#pdfLayoutPanel212'))return;const key=pdfLayoutKey212();if(!force&&pdfLayoutUI212.key===key&&pdfLayoutUI212.draft)return;const prepared=pdfLayoutPrepare212(),schema=prepared?pdfLayoutDocument212(prepared.html).schema:[];const saved=pdfLayoutSanitize212(state.settings?.printLayouts212?.version===1?state.settings.printLayouts212.profiles?.[key]:null,schema);pdfLayoutUI212={key,schema,draft:clone(saved),saved,dirty:false,busy:false,error:''};pdfLayoutRender212()}
 function pdfLayoutRender212(){const u=pdfLayoutUI212,root=$('#pdfLayoutPanel212');if(!root||!u.draft)return;const d=u.draft;if(u.dirty)$('#pdfLayoutPreviewBody212').hidden=true;root.innerHTML=`<p class="small">各期共用；每種輸出內容分開儲存。欄寬為相對比例，資料區塊可上下排序。切換輸出種類或離開本頁會捨棄未儲存調整。</p><p role="status" id="pdfLayoutStatus212">${esc(u.error||(u.dirty?'尚未儲存：請先儲存版面，才可預覽或列印。':'目前使用已儲存版面（未設定時使用預設）。'))}</p><div class="form-grid two"><label>字級<select class="select" data-layout-global="fontSize">${[8,9,10,11,12].map(v=>`<option value="${v}" ${v===d.fontSize?'selected':''}>${v} pt</option>`).join('')}</select></label><label>間距<select class="select" data-layout-global="density">${[['compact','緊密'],['normal','標準'],['relaxed','寬鬆']].map(([v,t])=>`<option value="${v}" ${v===d.density?'selected':''}>${t}</option>`).join('')}</select></label><label>換行<select class="select" data-layout-global="wrap"><option value="normal" ${d.wrap==='normal'?'selected':''}>自動換行</option><option value="preserve" ${d.wrap==='preserve'?'selected':''}>保留原始換行</option></select></label></div><div style="max-height:420px;overflow:auto;margin:12px 0">${d.fields.map((f,i)=>{const s=u.schema.find(x=>x.key===f.key);return `<div class="layout-row212" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:8px 0" data-layout-row="${i}"><label style="flex:1;min-width:120px"><input type="checkbox" data-layout-field="visible" ${f.visible?'checked':''}> ${esc(s?.label||f.key)}${s?.kind==='block'?'（區塊）':''}</label>${s?.kind!=='block'?`<label>寬度<input aria-label="${esc(s?.label)}寬度" class="input" style="width:65px" type="number" min="5" max="60" step="1" data-layout-field="width" value="${f.width}"></label><select aria-label="${esc(s?.label)}對齊" class="select" style="width:90px" data-layout-field="align">${[['left','靠左'],['center','置中'],['right','靠右']].map(([v,t])=>`<option value="${v}" ${f.align===v?'selected':''}>${t}</option>`).join('')}</select>`:''}<button type="button" class="btn small" data-layout-move="-1" aria-label="${esc(s?.label)}上移" ${i===0?'disabled':''}>↑</button><button type="button" class="btn small" data-layout-move="1" aria-label="${esc(s?.label)}下移" ${i===d.fields.length-1?'disabled':''}>↓</button></div>`}).join('')||'<p>目前範圍沒有可調整的資料欄位；請先選擇期別／客戶或有資料的範圍。</p>'}</div><div class="actions"><button class="btn" id="pdfLayoutReset212">恢復預設（待儲存）</button><button class="btn" id="pdfLayoutDiscard212">捨棄調整</button><button class="btn primary" id="pdfLayoutSave212" ${u.busy?'disabled':''}>${u.busy?'儲存中…':'儲存版面'}</button></div>`;
  root.querySelectorAll('button,input,select').forEach(el=>{if(u.busy)el.disabled=true});$('#exportPdfBtn').disabled=u.dirty||u.busy;$('#pdfLayoutPreview212').disabled=u.dirty||u.busy;root.onchange=e=>{const el=e.target;if(el.dataset.layoutGlobal){d[el.dataset.layoutGlobal]=el.dataset.layoutGlobal==='fontSize'?Number(el.value):el.value}else if(el.dataset.layoutField){const f=d.fields[Number(el.closest('[data-layout-row]').dataset.layoutRow)],k=el.dataset.layoutField;f[k]=k==='visible'?el.checked:k==='width'?Math.min(60,Math.max(5,Number(el.value)||20)):el.value}else return;u.dirty=true;u.error='';pdfLayoutRender212()};root.onclick=e=>{const b=e.target.closest('[data-layout-move]');if(!b)return;const i=Number(b.closest('[data-layout-row]').dataset.layoutRow),j=i+Number(b.dataset.layoutMove);[d.fields[i],d.fields[j]]=[d.fields[j],d.fields[i]];u.dirty=true;pdfLayoutRender212()};$('#pdfLayoutReset212').onclick=()=>{u.draft=pdfLayoutSanitize212(null,u.schema);u.resetProfile=true;u.dirty=true;u.error='已恢復此輸出種類的預設草稿，請儲存後輸出。';pdfLayoutRender212()};$('#pdfLayoutDiscard212').onclick=()=>pdfLayoutRefresh212(true);$('#pdfLayoutSave212').onclick=pdfLayoutSave212;}
@@ -5059,6 +5097,17 @@ function createCasesEngine219(){
  const iso=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString()===value;
  const id=value=>typeof value==='string'&&value.trim()===value&&value.length>0&&value.length<=300;
  const text=(value,label,max,{required=false,trim=false}={})=>{if(typeof value!=='string')throw new Error(label+'格式錯誤');const out=trim?value.trim():value;if(required&&!out)throw new Error('請填寫'+label);if(out.length>max)throw new Error(label+'最多 '+max+' 字');return out;};
+ const maxProgress=120;
+ function normalizeProgress(entries=[]){
+  if(!Array.isArray(entries)||entries.length>maxProgress)throw Error('每個案件最多 '+maxProgress+' 筆進度紀錄');
+  return entries.map((entry,index)=>{
+   const label='第 '+(index+1)+' 筆進度';
+   if(!date(entry?.date))throw Error(label+'的日期無效');
+   return {date:entry.date,stage:text(entry.stage,label+'階段',120,{required:true,trim:true}),
+    note:text(entry.note??'',label+'說明',1000,{trim:true})};
+  });
+ }
+ const progressInOrder=record=>(record.progress||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
  function normalize(raw,{clients=[],creation=false,today='',references=true}={}){
   if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('案件資料格式錯誤');
   const clientId=raw.clientId;if(!id(clientId)||references&&!clients.some(client=>client.id===clientId))throw new Error('請選擇客戶庫中的有效客戶');
@@ -5069,7 +5118,8 @@ function createCasesEngine219(){
   if(dueDate&&!date(dueDate))throw new Error('截止日期格式錯誤');if(dueDate&&dueDate<startDate)throw new Error('截止日期不可早於開始日期');if(dueTime&&(!dueDate||!time(dueTime)))throw new Error('填寫截止時間前，請先選擇有效截止日期');
   if(raw.reminderEnabled!==undefined&&typeof raw.reminderEnabled!=='boolean')throw new Error('案件提醒設定格式錯誤');const reminderEnabled=raw.reminderEnabled===true,reminderDate=optional(raw.reminderDate,'提醒日期'),reminderTime=optional(raw.reminderTime,'提醒時間');
   if(reminderDate&&!date(reminderDate))throw new Error('提醒日期格式錯誤');if(reminderTime&&!time(reminderTime))throw new Error('提醒時間格式錯誤');if(reminderEnabled&&(!date(reminderDate)||!time(reminderTime)))throw new Error('請填寫提醒日期與時間');
-  return {clientId,title,status,startDate,dueDate,dueTime,reminderEnabled,reminderDate,reminderTime,note};
+  const progress=normalizeProgress(raw.progress);
+  return {clientId,title,status,startDate,dueDate,dueTime,reminderEnabled,reminderDate,reminderTime,note,...(progress.length?{progress}:{})};
  }
  function canonical(record){if(!record)return null;const sort=value=>Array.isArray(value)?value.map(sort):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,sort(value[key])])):value;return JSON.stringify(sort(record));}
  function assertBaseline(current,baseline){if(!current)throw new Error('案件已被刪除，請重新整理');if(!baseline||current.id!==baseline.id||current.revision!==baseline.revision||canonical(current)!==canonical(baseline))throw new Error('案件已由其他分頁更新，請重新開啟後再儲存');}
@@ -5088,7 +5138,7 @@ function createCasesEngine219(){
  }
  function reminderDue(record,now=new Date()){if(!active(record?.status)||!record.reminderEnabled||record.reminderCompletedAt||!date(record.reminderDate)||!time(record.reminderTime))return false;const instant=new Date(record.reminderDate+'T'+record.reminderTime+':00');return Number.isFinite(instant.getTime())&&instant<=now;}
  function overdue(record,today,clock='23:59'){if(!active(record?.status)||!record.dueDate||!date(record.dueDate)||!date(today))return false;return record.dueDate<today||record.dueDate===today&&!!record.dueTime&&time(clock)&&record.dueTime<clock;}
- return {statuses:statuses.slice(),active,date,time,iso,normalize,planSave,acknowledge,assertBaseline,validateData,reminderDue,overdue};
+ return {statuses:statuses.slice(),active,date,time,iso,normalize,planSave,acknowledge,assertBaseline,validateData,reminderDue,overdue,maxProgress,progressInOrder};
 }
 function validateCases219(data,options){return createCasesEngine219().validateData(data,options);}
 if(typeof module!=='undefined'&&module.exports)module.exports={createCasesEngine219,validateCases219};
@@ -5227,6 +5277,13 @@ function createLeaseEngine224() {
   if(status==='pending'||actual===null)return 'pending';
   return expected===actual?'matched':'different';
  }
+ function interestAmounts({deposit,annual,months,regime,vatRate}){
+  const needsRate=deposit>0&&months>0&&annual===null;
+  if(needsRate||deposit===null)return {gross:null,interest:null,needsRate};
+  const raw=BigInt(deposit)*BigInt(annual??0)*BigInt(months);
+  const gross=round(raw,12n*scale);
+  return {gross,interest:regime==='invoice'?round(raw,12n*(scale+BigInt(vatRate))):gross,needsRate};
+ }
  function calculate(record,rates){
   if(!record.lease)return [];
   const lease=record.lease,rateMap=new Map(rates.map(row=>[row.id,row.rate]));
@@ -5236,16 +5293,13 @@ function createLeaseEngine224() {
    const monthlyRent=lease.steps.length?period.months.map(month=>rentForMonth(month,lease.steps)):[];
    const rent=monthlyRent.length?monthlyRent.reduce((sum,cents)=>sum+cents,0):null;
    const annual=rateMap.get(period.year)??null,months=check.interestMonths??period.fullMonths;
-   const needsRate=lease.deposit>0&&months>0&&annual===null;
-   const raw=BigInt(lease.deposit||0)*BigInt(annual||0)*BigInt(months);
-   const gross=needsRate||lease.deposit===null?null:round(raw,12n*scale);
-   const interest=gross===null?null:lease.regime==='invoice'?round(raw,12n*(scale+BigInt(lease.vatRate))):gross;
+   const {gross,interest,needsRate}=interestAmounts({...lease,annual,months});
    const rentResult=compare(rent,check.rentStatus,check.rentActual);
    const interestResult=compare(interest,check.interestStatus,check.interestActual);
    return {...period,check,rent,monthlyRent,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
   });
  }
- return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,calculate};
+ return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};
 
@@ -5479,7 +5533,8 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  const filtered=all.filter(record=>{
   if(runtime.clientId&&record.clientId!==runtime.clientId)return false;
   const customer=caseCustomer219(record);
-  const searchable=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):''].join(' ').toLocaleLowerCase();
+  const progress=(record.progress||[]).flatMap(entry=>[entry.stage,entry.note]);
+  const searchable=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):'',...progress].join(' ').toLocaleLowerCase();
   if(q&&!searchable.includes(q))return false;
   if(Object.hasOwn(counts,record.status))counts[record.status]++;
   return runtime.status==='all'||(runtime.status==='active'?engine.active(record.status):record.status===runtime.status);
@@ -5489,16 +5544,19 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  const host=$('#casesCards219');
  const makeRow=record=>{
   const overdue=engine.overdue(record,today,clock);
+  const progress=engine.progressInOrder(record),latest=progress.at(-1);
   const when=record.dueDate?fmtDate(record.dueDate)+(record.dueTime?' '+record.dueTime:''):fmtDate(record.startDate);
   const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`.trim():'';
   const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':'';
   return {id:record.id,keyAttribute:'data-case-id219',
-   cells:[`<h2>${esc(record.title)}</h2>`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
+   cells:[`<h2>${esc(record.title)}</h2>${latest?`<small class="case-current-progress232">${esc(latest.stage)}</small>`:''}`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
     `<strong>${esc(when)}</strong><small>${record.dueDate?'截止':'開始'}</small>`,
     `<button class="btn" type="button" data-open-case219="${esc(record.id)}" aria-label="編輯案件：${esc(record.title)}">編輯</button>`],
    schedule:[['開始',fmtDate(record.startDate),record.startDate],['提醒',reminder,record.reminderDate,record.reminderTime],
     ['截止',record.dueDate?when:'',record.dueDate,record.dueTime||'24:00']],
    facts:[['提醒狀態',reminderState]],
+   extra:progress.length?`<div class="case-progress-log232"><h3>進度紀錄</h3><ol>${progress.map(entry=>
+    `<li><time datetime="${esc(entry.date)}">${esc(fmtDate(entry.date))}</time><div><strong>${esc(entry.stage)}</strong>${entry.note?`<p>${esc(entry.note)}</p>`:''}</div></li>`).join('')}</ol></div>`:'',
    detailActions:`<div class="record-detail-actions220"><button class="btn record-secondary-action227" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button></div>`,
    note:record.note,
    meta:[['建立',fmtDateTime(record.createdAt)],['更新',fmtDateTime(record.updatedAt)],...(record.completedAt?[['完成',fmtDateTime(record.completedAt)]]:[])]
@@ -5530,6 +5588,11 @@ function openCase219(id=null){
    </div>
   </div>
   <div class="field cases-span219"><label for="caseNote219">備註</label><textarea id="caseNote219" class="textarea" rows="2" maxlength="12000">${esc(draft.note)}</textarea></div>
+  <details class="case-progress-editor232 cases-span219" ${draft.progress?.length?'open':''}>
+   <summary>進度紀錄 <span id="caseProgressCount232">${draft.progress?.length||0} 筆</span></summary>
+   <div id="caseProgressRows232"></div>
+   <button type="button" class="btn" id="caseProgressAdd232">＋ 新增進度</button>
+  </details>
   <p class="notice warn cases-span219" id="caseError219" role="alert" tabindex="-1" hidden></p>
  </form>`,[{text:'取消',value:false},{text:'儲存案件',value:true,cls:'primary'}],()=>{});
  const root=$('#modalRoot'),modal=root.querySelector('.modal'),form=$('#caseForm219');
@@ -5537,7 +5600,34 @@ function openCase219(id=null){
  const footer=modal.querySelector('.modal-foot'),cancel=footer.querySelector('button:first-child'),save=footer.querySelector('button:last-child');
  cancel.id='caseCancel219';save.id='caseSave219';
  if(orphan)$('#caseClient219').value=draft.clientId;
- const collect=()=>({...draft,title:$('#caseTitle219').value,clientId:$('#caseClient219').value,status:$('#caseStatus219').value,startDate:$('#caseStart219').value,dueDate:$('#caseDue219').value,dueTime:$('#caseDueTime219').value,reminderEnabled:$('#caseReminder219').checked,reminderDate:$('#caseReminderDate219').value,reminderTime:$('#caseReminderTime219').value,note:$('#caseNote219').value}),snapshot=()=>JSON.stringify(collect());let initial=snapshot(),busy=false;
+ const progressRows=$('#caseProgressRows232'),addProgress=$('#caseProgressAdd232'),progressLimit=caseEngine219().maxProgress;
+ function countProgress(){
+  $('#caseProgressCount232').textContent=progressRows.childElementCount+' 筆';
+  addProgress.disabled=progressRows.childElementCount>=progressLimit;
+ }
+ function addProgressRow({date=localDate(),stage='',note=''}={}){
+  progressRows.insertAdjacentHTML('beforeend',`<div class="case-progress-row232">
+   <label class="field">日期<input type="date" class="input" data-progress-date value="${esc(date)}"></label>
+   <label class="field">進度階段<input class="input" data-progress-stage maxlength="120" value="${esc(stage)}"></label>
+   <label class="field">說明（選填）<textarea class="textarea" rows="1" data-progress-note maxlength="1000">${esc(note)}</textarea></label>
+   <button class="btn ghost danger" type="button" data-remove-progress>移除</button>
+  </div>`);
+  countProgress();
+  return progressRows.lastElementChild.querySelector('[data-progress-stage]');
+ }
+ (draft.progress||[]).forEach(addProgressRow);
+ addProgress.onclick=()=>{if(progressRows.childElementCount<progressLimit)addProgressRow().focus();};
+ progressRows.onclick=event=>{
+  const remove=event.target.closest('[data-remove-progress]');
+  if(!remove)return;
+  const row=remove.closest('.case-progress-row232'),adjacent=row.nextElementSibling||row.previousElementSibling;
+  row.remove();
+  countProgress();
+  (adjacent?.querySelector('[data-remove-progress]')||addProgress).focus();
+ };
+ const collectProgress=()=>[...progressRows.children].map(row=>({date:row.querySelector('[data-progress-date]').value,
+  stage:row.querySelector('[data-progress-stage]').value,note:row.querySelector('[data-progress-note]').value}));
+ const collect=()=>({...draft,title:$('#caseTitle219').value,clientId:$('#caseClient219').value,status:$('#caseStatus219').value,startDate:$('#caseStart219').value,dueDate:$('#caseDue219').value,dueTime:$('#caseDueTime219').value,reminderEnabled:$('#caseReminder219').checked,reminderDate:$('#caseReminderDate219').value,reminderTime:$('#caseReminderTime219').value,note:$('#caseNote219').value,progress:collectProgress()}),snapshot=()=>JSON.stringify(collect());let initial=snapshot(),busy=false;
  const close=()=>{
   if(busy)return;
   if(snapshot()!==initial&&!window.confirm('案件尚未儲存，確定捨棄這次變更？'))return;
@@ -6797,6 +6887,18 @@ function contractLeasePanels228(contract,basic){
      ${field('leaseVAT224','營業稅徵收率（%）','text','inputmode="decimal"')}
     </div>
    </section>
+   <section class="lease-interest-preview232" aria-labelledby="leaseInterestTitle232">
+    <header><h3 id="leaseInterestTitle232">每月設算利息</h3>
+     <label class="field">試算年度<select class="select" id="leaseInterestYear232"></select></label>
+    </header>
+    <dl><div><dt>設算利息</dt><dd id="leaseMonthlyGross232">—</dd></div>
+     <div><dt>應列銷售額</dt><dd id="leaseMonthlySales232">—</dd></div></dl>
+    <p id="leaseMonthlyHint232" role="status"></p>
+    <div class="lease-rate-quick224" id="leasePreviewRate232" hidden>
+     ${field('leaseRateInput232','該年 1 月 1 日郵政一年期固定利率（%）','text','inputmode="decimal"')}
+     <button class="btn" type="button" id="leaseSavePreviewRate232">儲存年度利率</button>
+    </div>
+   </section>
    <details class="lease-section224 lease-post224"><summary>年度郵政利率</summary><div id="leaseRateChips224"></div></details>
   `)}
   ${panel('review',`
@@ -6827,6 +6929,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  let term={...baseline},draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
  const error=$('#leaseError224'),field=leaseField228;
  const steps=$('#leaseSteps224'),years=$('#leaseYear224'),list=$('#leasePeriods224'),checkPanel=$('#leaseCheck224');
+ const interestYear=$('#leaseInterestYear232'),previewRate=$('#leaseRateInput232');
  const notices=new Map(),noticeMode=$('#leaseNoticeMode224'),noticeText=$('#leaseNoticeText224'),copy=$('#leaseCopy224');
  let pane='basic',periods=[],selectedKey='',noticeKey='',busy=false,checkMounted=false;
  const val=id=>$('#'+id).value;
@@ -6849,7 +6952,38 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  };
  steps.onclick=event=>{const remove=event.target.closest('[data-lease-remove-step]');if(remove){remove.closest('.lease-step224').remove();$('#leaseAddStep224').focus();}};
  const showRegime=()=>{$('#leaseVAT224').closest('label').hidden=val('leaseRegime224')==='assessed';};
- $('#leaseRegime224').onchange=showRegime;
+ $('#leaseRegime224').onchange=()=>{showRegime();drawMonthlyInterest();};
+ for(const id of ['leaseDeposit224','leaseVAT224'])$('#'+id).oninput=drawMonthlyInterest;
+ interestYear.onchange=()=>{previewRate.value='';drawMonthlyInterest();};
+ $('#leaseSavePreviewRate232').onclick=async()=>{
+  if(busy||!interestYear.value)return;
+  const year=interestYear.value;
+  const controls=[...modal.querySelectorAll('input,select,textarea,button')].filter(control=>!control.disabled);
+  let saved=false;
+  error.hidden=true;
+  try{
+   const rate=leaseEngine224.rate(previewRate.value);
+   if(rate===null)throw Error('請填寫本年度利率');
+   busy=true;
+   controls.forEach(control=>control.disabled=true);
+   await commitLeaseRate224(year,rate,undefined);
+   state.leaseRates=await getAll('leaseRates');
+   renderContracts220();
+   drawRateChips();
+   previewRate.value='';
+   saved=true;
+   toast('年度郵政利率已儲存');
+  }catch(failure){
+   error.textContent=failure.message;
+   error.hidden=false;
+   error.focus();
+  }finally{
+   busy=false;
+   controls.forEach(control=>control.disabled=false);
+   interestYear.disabled=!interestYear.value;
+   if(saved)interestYear.focus({preventScroll:true});
+  }
+ };
  showRegime();
  function setupSnapshot(){
   return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
@@ -6914,11 +7048,43 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  function drawRateChips(){
   const target=$('#leaseRateChips224');
   target.parentElement.hidden=!validTerm();
-  if(target.parentElement.hidden)return;
+  const start=Number(term.startDate.slice(0,4)),end=Number(term.endDate.slice(0,4)),prior=interestYear.value;
+  const all=validTerm()?Array.from({length:Math.min(101,end-start+1)},(_,i)=>String(start+i).padStart(4,'0')):[];
+  const current=localDate().slice(0,4),preferred=all.includes(prior)?prior:current<all[0]?all[0]:current>all.at(-1)?all.at(-1):current;
+  interestYear.innerHTML=all.map(year=>leaseOption224(year,leaseYear224(year),preferred)).join('');
+  interestYear.disabled=!all.length;
+  if(interestYear.value!==prior)previewRate.value='';
   const rows=new Map(leaseRates224().map(rate=>[rate.id,rate.rate]));
-  const start=Number(term.startDate.slice(0,4)),end=Number(term.endDate.slice(0,4));
-  const all=Array.from({length:Math.min(101,end-start+1)},(_,i)=>String(start+i).padStart(4,'0'));
   target.innerHTML=all.map(year=>`<span class="lease-rate-chip224">${esc(leaseYear224(year))} ${rows.has(year)?'<strong>'+esc(format(rows.get(year),4))+'%</strong>':'<span>未設定</span>'}</span>`).join('');
+  drawMonthlyInterest();
+ }
+ function drawMonthlyInterest(){
+  const year=interestYear.value,annual=leaseRates224().find(row=>row.id===year)?.rate??null;
+  const hint=$('#leaseMonthlyHint232'),grossLabel=$('#leaseMonthlyGross232'),salesLabel=$('#leaseMonthlySales232');
+  const missingRate=$('#leasePreviewRate232');
+  grossLabel.textContent=salesLabel.textContent='—';
+  missingRate.hidden=true;
+  hint.textContent='請先填寫有效的租期起訖日。';
+  if(!year)return;
+  let deposit,vatRate;
+  const regime=val('leaseRegime224');
+  try{deposit=leaseEngine224.amount(val('leaseDeposit224'));}
+  catch{hint.textContent='請核對押金本金格式。';return;}
+  if(deposit===null){hint.textContent='填寫押金本金後即可試算。';return;}
+  const raw=leaseEngine224.interestAmounts({deposit,annual,months:1,regime:'assessed'});
+  if(raw.needsRate){
+   hint.textContent=leaseYear224(year)+'尚未設定郵政利率。儲存後套用至同年度租約。';
+   missingRate.hidden=false;
+   return;
+  }
+  grossLabel.textContent=leaseMoney224(raw.gross);
+  if(regime==='invoice'&&deposit>0){
+   try{vatRate=leaseEngine224.rate(val('leaseVAT224'));}
+   catch{hint.textContent='請核對營業稅徵收率。';return;}
+   if(vatRate===null){hint.textContent='請填寫營業稅徵收率。';return;}
+  }
+  salesLabel.textContent=leaseMoney224(leaseEngine224.interestAmounts({deposit,annual,months:1,regime,vatRate:vatRate??0}).interest);
+  hint.textContent=annual===null?'押金本金為 0。':'郵政年利率 '+format(annual,4)+'%。逐期金額可在「逐期核對」查看。';
  }
  function activate(next){
   pane=next;
@@ -7326,6 +7492,61 @@ function openLeaseBatch228(clientId=''){
  save.onclick=()=>commit();
  form.onsubmit=commit;
  (clientId?list.querySelector('input'):common('clientId')).focus();
+}
+
+const recordPrints232={
+ cases:{
+  title:'案件進度清單',
+  headings:['代號','客戶','案件名稱','狀態','開始日期','截止日期','目前進度','進度日期'],
+  rows:()=>{
+   const engine=caseEngine219();
+   return (state.cases||[]).map(record=>{
+    const progress=engine.progressInOrder(record).at(-1);
+    return {record,date:record.dueDate||record.startDate,values:[
+     record.title,CASE_STATUS219[record.status],fmtDate(record.startDate),
+     record.dueDate?[fmtDate(record.dueDate),record.dueTime].filter(Boolean).join(' '):'—',
+     progress?.stage||'—',progress?fmtDate(progress.date):'—'
+    ]};
+   });
+  }
+ },
+ contracts:{
+  title:'租約與合約清單',
+  headings:['代號','客戶','合約名稱','類別','狀態','開始日期','到期日期','月租金額','押金金額'],
+  rows:()=>{
+   const records=contracts220(),successors=contractEngine220.successors(records),today=localDate();
+   return records.map(record=>({record,date:record.endDate,values:[
+    record.title,contractTypeName220(record.categoryId),
+    contractStatus220[contractEngine220.status(record,today,successors.has(record.id))][0],
+    record.startDate?fmtDate(record.startDate):'—',fmtDate(record.endDate),
+    record.lease?.steps.length?leaseRentDisplay225(record,today).value:'—',
+    record.lease?.deposit!=null?leaseMoney224(record.lease.deposit):'—'
+   ]}));
+  }
+ }
+};
+const isRecordPrint232=scope=>Object.hasOwn(recordPrints232,scope);
+for(const {headings} of Object.values(recordPrints232))for(const label of headings)PDF_LAYOUT_KNOWN_KEYS212.add('c:'+label);
+
+function recordPrintPages232(scope,clientId,orientation){
+ const {title,headings,rows}=recordPrints232[scope];
+ const records=rows().filter(({record})=>!clientId||record.clientId===clientId)
+  .sort((a,b)=>a.date.localeCompare(b.date)||a.record.title.localeCompare(b.record.title,'zh-Hant')||a.record.id.localeCompare(b.record.id));
+ const pageSize=orientation==='landscape'?12:16,total=Math.max(1,Math.ceil(records.length/pageSize));
+ const heading=headings.map(label=>`<th>${esc(label)}</th>`).join('');
+ return Array.from({length:total},(_,index)=>{
+  const page=index+1;
+  const body=records.slice(index*pageSize,page*pageSize).map(({record,values})=>{
+   const client=clientById(record.clientId);
+   return `<tr class="pdf-row">${[client?.code||'—',client?.name||'—',...values].map(value=>`<td>${esc(value)}</td>`).join('')}</tr>`;
+  }).join('')||`<tr><td colspan="${headings.length}">沒有符合條件的資料</td></tr>`;
+  return `<div class="pdf-page">
+   <div class="pdf-head pdf-head-balanced"><div class="pdf-title">${esc(title)}</div>
+   <div class="pdf-head-meta"><div class="pdf-meta-item"><span class="pdf-meta-label">匯出日期</span><span class="pdf-meta-value">${esc(fmtDate(localDate()))}</span></div>
+   <div class="pdf-meta-item"><span class="pdf-meta-label">筆數</span><span class="pdf-meta-value">${records.length}</span></div></div></div>
+   <table class="pdf-table compact"><thead><tr>${heading}</tr></thead><tbody>${body}</tbody></table>
+   <div class="pdf-foot"><span>${esc(title)}</span><span>${page} / ${total}</span></div></div>`;
+ }).join('');
 }
 
 /* The screen list and month share source filters. PDF uses its own export scope. */
@@ -7754,7 +7975,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.31.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.32.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

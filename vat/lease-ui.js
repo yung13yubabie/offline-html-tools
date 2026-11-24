@@ -184,6 +184,18 @@ function contractLeasePanels228(contract,basic){
      ${field('leaseVAT224','營業稅徵收率（%）','text','inputmode="decimal"')}
     </div>
    </section>
+   <section class="lease-interest-preview232" aria-labelledby="leaseInterestTitle232">
+    <header><h3 id="leaseInterestTitle232">每月設算利息</h3>
+     <label class="field">試算年度<select class="select" id="leaseInterestYear232"></select></label>
+    </header>
+    <dl><div><dt>設算利息</dt><dd id="leaseMonthlyGross232">—</dd></div>
+     <div><dt>應列銷售額</dt><dd id="leaseMonthlySales232">—</dd></div></dl>
+    <p id="leaseMonthlyHint232" role="status"></p>
+    <div class="lease-rate-quick224" id="leasePreviewRate232" hidden>
+     ${field('leaseRateInput232','該年 1 月 1 日郵政一年期固定利率（%）','text','inputmode="decimal"')}
+     <button class="btn" type="button" id="leaseSavePreviewRate232">儲存年度利率</button>
+    </div>
+   </section>
    <details class="lease-section224 lease-post224"><summary>年度郵政利率</summary><div id="leaseRateChips224"></div></details>
   `)}
   ${panel('review',`
@@ -214,6 +226,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  let term={...baseline},draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
  const error=$('#leaseError224'),field=leaseField228;
  const steps=$('#leaseSteps224'),years=$('#leaseYear224'),list=$('#leasePeriods224'),checkPanel=$('#leaseCheck224');
+ const interestYear=$('#leaseInterestYear232'),previewRate=$('#leaseRateInput232');
  const notices=new Map(),noticeMode=$('#leaseNoticeMode224'),noticeText=$('#leaseNoticeText224'),copy=$('#leaseCopy224');
  let pane='basic',periods=[],selectedKey='',noticeKey='',busy=false,checkMounted=false;
  const val=id=>$('#'+id).value;
@@ -236,7 +249,38 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  };
  steps.onclick=event=>{const remove=event.target.closest('[data-lease-remove-step]');if(remove){remove.closest('.lease-step224').remove();$('#leaseAddStep224').focus();}};
  const showRegime=()=>{$('#leaseVAT224').closest('label').hidden=val('leaseRegime224')==='assessed';};
- $('#leaseRegime224').onchange=showRegime;
+ $('#leaseRegime224').onchange=()=>{showRegime();drawMonthlyInterest();};
+ for(const id of ['leaseDeposit224','leaseVAT224'])$('#'+id).oninput=drawMonthlyInterest;
+ interestYear.onchange=()=>{previewRate.value='';drawMonthlyInterest();};
+ $('#leaseSavePreviewRate232').onclick=async()=>{
+  if(busy||!interestYear.value)return;
+  const year=interestYear.value;
+  const controls=[...modal.querySelectorAll('input,select,textarea,button')].filter(control=>!control.disabled);
+  let saved=false;
+  error.hidden=true;
+  try{
+   const rate=leaseEngine224.rate(previewRate.value);
+   if(rate===null)throw Error('請填寫本年度利率');
+   busy=true;
+   controls.forEach(control=>control.disabled=true);
+   await commitLeaseRate224(year,rate,undefined);
+   state.leaseRates=await getAll('leaseRates');
+   renderContracts220();
+   drawRateChips();
+   previewRate.value='';
+   saved=true;
+   toast('年度郵政利率已儲存');
+  }catch(failure){
+   error.textContent=failure.message;
+   error.hidden=false;
+   error.focus();
+  }finally{
+   busy=false;
+   controls.forEach(control=>control.disabled=false);
+   interestYear.disabled=!interestYear.value;
+   if(saved)interestYear.focus({preventScroll:true});
+  }
+ };
  showRegime();
  function setupSnapshot(){
   return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
@@ -301,11 +345,43 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  function drawRateChips(){
   const target=$('#leaseRateChips224');
   target.parentElement.hidden=!validTerm();
-  if(target.parentElement.hidden)return;
+  const start=Number(term.startDate.slice(0,4)),end=Number(term.endDate.slice(0,4)),prior=interestYear.value;
+  const all=validTerm()?Array.from({length:Math.min(101,end-start+1)},(_,i)=>String(start+i).padStart(4,'0')):[];
+  const current=localDate().slice(0,4),preferred=all.includes(prior)?prior:current<all[0]?all[0]:current>all.at(-1)?all.at(-1):current;
+  interestYear.innerHTML=all.map(year=>leaseOption224(year,leaseYear224(year),preferred)).join('');
+  interestYear.disabled=!all.length;
+  if(interestYear.value!==prior)previewRate.value='';
   const rows=new Map(leaseRates224().map(rate=>[rate.id,rate.rate]));
-  const start=Number(term.startDate.slice(0,4)),end=Number(term.endDate.slice(0,4));
-  const all=Array.from({length:Math.min(101,end-start+1)},(_,i)=>String(start+i).padStart(4,'0'));
   target.innerHTML=all.map(year=>`<span class="lease-rate-chip224">${esc(leaseYear224(year))} ${rows.has(year)?'<strong>'+esc(format(rows.get(year),4))+'%</strong>':'<span>未設定</span>'}</span>`).join('');
+  drawMonthlyInterest();
+ }
+ function drawMonthlyInterest(){
+  const year=interestYear.value,annual=leaseRates224().find(row=>row.id===year)?.rate??null;
+  const hint=$('#leaseMonthlyHint232'),grossLabel=$('#leaseMonthlyGross232'),salesLabel=$('#leaseMonthlySales232');
+  const missingRate=$('#leasePreviewRate232');
+  grossLabel.textContent=salesLabel.textContent='—';
+  missingRate.hidden=true;
+  hint.textContent='請先填寫有效的租期起訖日。';
+  if(!year)return;
+  let deposit,vatRate;
+  const regime=val('leaseRegime224');
+  try{deposit=leaseEngine224.amount(val('leaseDeposit224'));}
+  catch{hint.textContent='請核對押金本金格式。';return;}
+  if(deposit===null){hint.textContent='填寫押金本金後即可試算。';return;}
+  const raw=leaseEngine224.interestAmounts({deposit,annual,months:1,regime:'assessed'});
+  if(raw.needsRate){
+   hint.textContent=leaseYear224(year)+'尚未設定郵政利率。儲存後套用至同年度租約。';
+   missingRate.hidden=false;
+   return;
+  }
+  grossLabel.textContent=leaseMoney224(raw.gross);
+  if(regime==='invoice'&&deposit>0){
+   try{vatRate=leaseEngine224.rate(val('leaseVAT224'));}
+   catch{hint.textContent='請核對營業稅徵收率。';return;}
+   if(vatRate===null){hint.textContent='請填寫營業稅徵收率。';return;}
+  }
+  salesLabel.textContent=leaseMoney224(leaseEngine224.interestAmounts({deposit,annual,months:1,regime,vatRate:vatRate??0}).interest);
+  hint.textContent=annual===null?'押金本金為 0。':'郵政年利率 '+format(annual,4)+'%。逐期金額可在「逐期核對」查看。';
  }
  function activate(next){
   pane=next;

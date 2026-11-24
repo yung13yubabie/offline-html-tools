@@ -7,6 +7,17 @@ function createCasesEngine219(){
  const iso=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString()===value;
  const id=value=>typeof value==='string'&&value.trim()===value&&value.length>0&&value.length<=300;
  const text=(value,label,max,{required=false,trim=false}={})=>{if(typeof value!=='string')throw new Error(label+'格式錯誤');const out=trim?value.trim():value;if(required&&!out)throw new Error('請填寫'+label);if(out.length>max)throw new Error(label+'最多 '+max+' 字');return out;};
+ const maxProgress=120;
+ function normalizeProgress(entries=[]){
+  if(!Array.isArray(entries)||entries.length>maxProgress)throw Error('每個案件最多 '+maxProgress+' 筆進度紀錄');
+  return entries.map((entry,index)=>{
+   const label='第 '+(index+1)+' 筆進度';
+   if(!date(entry?.date))throw Error(label+'的日期無效');
+   return {date:entry.date,stage:text(entry.stage,label+'階段',120,{required:true,trim:true}),
+    note:text(entry.note??'',label+'說明',1000,{trim:true})};
+  });
+ }
+ const progressInOrder=record=>(record.progress||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
  function normalize(raw,{clients=[],creation=false,today='',references=true}={}){
   if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('案件資料格式錯誤');
   const clientId=raw.clientId;if(!id(clientId)||references&&!clients.some(client=>client.id===clientId))throw new Error('請選擇客戶庫中的有效客戶');
@@ -17,7 +28,8 @@ function createCasesEngine219(){
   if(dueDate&&!date(dueDate))throw new Error('截止日期格式錯誤');if(dueDate&&dueDate<startDate)throw new Error('截止日期不可早於開始日期');if(dueTime&&(!dueDate||!time(dueTime)))throw new Error('填寫截止時間前，請先選擇有效截止日期');
   if(raw.reminderEnabled!==undefined&&typeof raw.reminderEnabled!=='boolean')throw new Error('案件提醒設定格式錯誤');const reminderEnabled=raw.reminderEnabled===true,reminderDate=optional(raw.reminderDate,'提醒日期'),reminderTime=optional(raw.reminderTime,'提醒時間');
   if(reminderDate&&!date(reminderDate))throw new Error('提醒日期格式錯誤');if(reminderTime&&!time(reminderTime))throw new Error('提醒時間格式錯誤');if(reminderEnabled&&(!date(reminderDate)||!time(reminderTime)))throw new Error('請填寫提醒日期與時間');
-  return {clientId,title,status,startDate,dueDate,dueTime,reminderEnabled,reminderDate,reminderTime,note};
+  const progress=normalizeProgress(raw.progress);
+  return {clientId,title,status,startDate,dueDate,dueTime,reminderEnabled,reminderDate,reminderTime,note,...(progress.length?{progress}:{})};
  }
  function canonical(record){if(!record)return null;const sort=value=>Array.isArray(value)?value.map(sort):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,sort(value[key])])):value;return JSON.stringify(sort(record));}
  function assertBaseline(current,baseline){if(!current)throw new Error('案件已被刪除，請重新整理');if(!baseline||current.id!==baseline.id||current.revision!==baseline.revision||canonical(current)!==canonical(baseline))throw new Error('案件已由其他分頁更新，請重新開啟後再儲存');}
@@ -36,7 +48,7 @@ function createCasesEngine219(){
  }
  function reminderDue(record,now=new Date()){if(!active(record?.status)||!record.reminderEnabled||record.reminderCompletedAt||!date(record.reminderDate)||!time(record.reminderTime))return false;const instant=new Date(record.reminderDate+'T'+record.reminderTime+':00');return Number.isFinite(instant.getTime())&&instant<=now;}
  function overdue(record,today,clock='23:59'){if(!active(record?.status)||!record.dueDate||!date(record.dueDate)||!date(today))return false;return record.dueDate<today||record.dueDate===today&&!!record.dueTime&&time(clock)&&record.dueTime<clock;}
- return {statuses:statuses.slice(),active,date,time,iso,normalize,planSave,acknowledge,assertBaseline,validateData,reminderDue,overdue};
+ return {statuses:statuses.slice(),active,date,time,iso,normalize,planSave,acknowledge,assertBaseline,validateData,reminderDue,overdue,maxProgress,progressInOrder};
 }
 function validateCases219(data,options){return createCasesEngine219().validateData(data,options);}
 if(typeof module!=='undefined'&&module.exports)module.exports={createCasesEngine219,validateCases219};

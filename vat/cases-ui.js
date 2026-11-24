@@ -45,7 +45,8 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  const filtered=all.filter(record=>{
   if(runtime.clientId&&record.clientId!==runtime.clientId)return false;
   const customer=caseCustomer219(record);
-  const searchable=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):''].join(' ').toLocaleLowerCase();
+  const progress=(record.progress||[]).flatMap(entry=>[entry.stage,entry.note]);
+  const searchable=[record.title,record.note,customer?.name,customer?.code,customer?contactSummary(customer):'',...progress].join(' ').toLocaleLowerCase();
   if(q&&!searchable.includes(q))return false;
   if(Object.hasOwn(counts,record.status))counts[record.status]++;
   return runtime.status==='all'||(runtime.status==='active'?engine.active(record.status):record.status===runtime.status);
@@ -55,16 +56,19 @@ function renderCases219(){mountCases219();if(!$('#casesCards219'))return;const r
  const host=$('#casesCards219');
  const makeRow=record=>{
   const overdue=engine.overdue(record,today,clock);
+  const progress=engine.progressInOrder(record),latest=progress.at(-1);
   const when=record.dueDate?fmtDate(record.dueDate)+(record.dueTime?' '+record.dueTime:''):fmtDate(record.startDate);
   const reminder=record.reminderEnabled?`${fmtDate(record.reminderDate)} ${record.reminderTime||''}`.trim():'';
   const reminderState=record.reminderCompletedAt?`已確認 ${fmtDateTime(record.reminderCompletedAt)}`:record.reminderEnabled&&!engine.active(record.status)?'已停止':'';
   return {id:record.id,keyAttribute:'data-case-id219',
-   cells:[`<h2>${esc(record.title)}</h2>`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
+   cells:[`<h2>${esc(record.title)}</h2>${latest?`<small class="case-current-progress232">${esc(latest.stage)}</small>`:''}`,caseStatusBadge219(record.status)+(overdue?' <span class="badge b-orange">已逾期</span>':''),
     `<strong>${esc(when)}</strong><small>${record.dueDate?'截止':'開始'}</small>`,
     `<button class="btn" type="button" data-open-case219="${esc(record.id)}" aria-label="編輯案件：${esc(record.title)}">編輯</button>`],
    schedule:[['開始',fmtDate(record.startDate),record.startDate],['提醒',reminder,record.reminderDate,record.reminderTime],
     ['截止',record.dueDate?when:'',record.dueDate,record.dueTime||'24:00']],
    facts:[['提醒狀態',reminderState]],
+   extra:progress.length?`<div class="case-progress-log232"><h3>進度紀錄</h3><ol>${progress.map(entry=>
+    `<li><time datetime="${esc(entry.date)}">${esc(fmtDate(entry.date))}</time><div><strong>${esc(entry.stage)}</strong>${entry.note?`<p>${esc(entry.note)}</p>`:''}</div></li>`).join('')}</ol></div>`:'',
    detailActions:`<div class="record-detail-actions220"><button class="btn record-secondary-action227" type="button" data-case-calendar219="${esc(record.id)}">查看日曆</button></div>`,
    note:record.note,
    meta:[['建立',fmtDateTime(record.createdAt)],['更新',fmtDateTime(record.updatedAt)],...(record.completedAt?[['完成',fmtDateTime(record.completedAt)]]:[])]
@@ -96,6 +100,11 @@ function openCase219(id=null){
    </div>
   </div>
   <div class="field cases-span219"><label for="caseNote219">備註</label><textarea id="caseNote219" class="textarea" rows="2" maxlength="12000">${esc(draft.note)}</textarea></div>
+  <details class="case-progress-editor232 cases-span219" ${draft.progress?.length?'open':''}>
+   <summary>進度紀錄 <span id="caseProgressCount232">${draft.progress?.length||0} 筆</span></summary>
+   <div id="caseProgressRows232"></div>
+   <button type="button" class="btn" id="caseProgressAdd232">＋ 新增進度</button>
+  </details>
   <p class="notice warn cases-span219" id="caseError219" role="alert" tabindex="-1" hidden></p>
  </form>`,[{text:'取消',value:false},{text:'儲存案件',value:true,cls:'primary'}],()=>{});
  const root=$('#modalRoot'),modal=root.querySelector('.modal'),form=$('#caseForm219');
@@ -103,7 +112,34 @@ function openCase219(id=null){
  const footer=modal.querySelector('.modal-foot'),cancel=footer.querySelector('button:first-child'),save=footer.querySelector('button:last-child');
  cancel.id='caseCancel219';save.id='caseSave219';
  if(orphan)$('#caseClient219').value=draft.clientId;
- const collect=()=>({...draft,title:$('#caseTitle219').value,clientId:$('#caseClient219').value,status:$('#caseStatus219').value,startDate:$('#caseStart219').value,dueDate:$('#caseDue219').value,dueTime:$('#caseDueTime219').value,reminderEnabled:$('#caseReminder219').checked,reminderDate:$('#caseReminderDate219').value,reminderTime:$('#caseReminderTime219').value,note:$('#caseNote219').value}),snapshot=()=>JSON.stringify(collect());let initial=snapshot(),busy=false;
+ const progressRows=$('#caseProgressRows232'),addProgress=$('#caseProgressAdd232'),progressLimit=caseEngine219().maxProgress;
+ function countProgress(){
+  $('#caseProgressCount232').textContent=progressRows.childElementCount+' 筆';
+  addProgress.disabled=progressRows.childElementCount>=progressLimit;
+ }
+ function addProgressRow({date=localDate(),stage='',note=''}={}){
+  progressRows.insertAdjacentHTML('beforeend',`<div class="case-progress-row232">
+   <label class="field">日期<input type="date" class="input" data-progress-date value="${esc(date)}"></label>
+   <label class="field">進度階段<input class="input" data-progress-stage maxlength="120" value="${esc(stage)}"></label>
+   <label class="field">說明（選填）<textarea class="textarea" rows="1" data-progress-note maxlength="1000">${esc(note)}</textarea></label>
+   <button class="btn ghost danger" type="button" data-remove-progress>移除</button>
+  </div>`);
+  countProgress();
+  return progressRows.lastElementChild.querySelector('[data-progress-stage]');
+ }
+ (draft.progress||[]).forEach(addProgressRow);
+ addProgress.onclick=()=>{if(progressRows.childElementCount<progressLimit)addProgressRow().focus();};
+ progressRows.onclick=event=>{
+  const remove=event.target.closest('[data-remove-progress]');
+  if(!remove)return;
+  const row=remove.closest('.case-progress-row232'),adjacent=row.nextElementSibling||row.previousElementSibling;
+  row.remove();
+  countProgress();
+  (adjacent?.querySelector('[data-remove-progress]')||addProgress).focus();
+ };
+ const collectProgress=()=>[...progressRows.children].map(row=>({date:row.querySelector('[data-progress-date]').value,
+  stage:row.querySelector('[data-progress-stage]').value,note:row.querySelector('[data-progress-note]').value}));
+ const collect=()=>({...draft,title:$('#caseTitle219').value,clientId:$('#caseClient219').value,status:$('#caseStatus219').value,startDate:$('#caseStart219').value,dueDate:$('#caseDue219').value,dueTime:$('#caseDueTime219').value,reminderEnabled:$('#caseReminder219').checked,reminderDate:$('#caseReminderDate219').value,reminderTime:$('#caseReminderTime219').value,note:$('#caseNote219').value,progress:collectProgress()}),snapshot=()=>JSON.stringify(collect());let initial=snapshot(),busy=false;
  const close=()=>{
   if(busy)return;
   if(snapshot()!==initial&&!window.confirm('案件尚未儲存，確定捨棄這次變更？'))return;

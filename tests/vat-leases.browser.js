@@ -50,6 +50,17 @@ async function review(p,h){
  const deposit=p.locator('#leaseDeposit224');
  assert.equal(await deposit.inputValue(),'120000');
  assert(await p.locator('.lease-step-rent').first().isHidden());
+ await p.locator('#leaseInterestYear232').selectOption('2025');
+ assert.equal(await p.locator('#leaseMonthlyGross232').textContent(),'150 元');
+ assert.equal(await p.locator('#leaseMonthlySales232').textContent(),'142.86 元');
+ await deposit.fill('60000');
+ assert.equal(await p.locator('#leaseMonthlyGross232').textContent(),'75 元');
+ assert.equal(await p.locator('#leaseMonthlySales232').textContent(),'71.43 元');
+ await p.locator('#leaseRegime224').selectOption('assessed');
+ assert.equal(await p.locator('#leaseMonthlySales232').textContent(),'75 元');
+ await p.locator('#leaseRegime224').selectOption('invoice');
+ await p.locator('#leaseInterestYear232').selectOption('2026');
+ assert(await p.locator('#leasePreviewRate232').isVisible());
  await deposit.fill('-120000');
  await tab(p,'review').click();
  assert.equal(await tab(p,'deposit').getAttribute('aria-selected'),'true');
@@ -72,9 +83,15 @@ async function review(p,h){
 
  await record.locator('[data-open-contract220]').click();
  await tab(p,'review').click();
- await p.locator('#leaseQuickRate224').fill('1.725');
- await p.locator('#leaseSaveQuickRate224').click();
- await p.locator('#leaseQuickRate224').waitFor({state:'detached'});
+ assert(await p.locator('#leaseQuickRate224').isVisible());
+ await tab(p,'deposit').click();
+ await p.locator('#leaseRateInput232').fill('1.725');
+ await p.locator('#leaseSavePreviewRate232').click();
+ await p.locator('#leasePreviewRate232').waitFor({state:'hidden'});
+ assert.equal(await p.locator('#leaseMonthlyGross232').textContent(),'172.5 元');
+ assert.equal(await p.locator('#leaseMonthlySales232').textContent(),'164.29 元');
+ await h.screenshot(p,'vat232-lease-interest-desktop');
+ await tab(p,'review').click();
  assert.equal(await money(p,'interest'),'328.57 元');
  assert.match(await p.locator('[data-lease-gross]').textContent(),/345 元/);
  await p.locator('#lease-rent-status224').selectOption('issued');

@@ -30,4 +30,17 @@ assert.equal(reopened.completedAt,'');
 assert.equal(reopened.reminderCompletedAt,'');
 assert.throws(()=>engine.planSave({current:confirmed,baseline:created,draft:created,clients,at}),/其他分頁/);
 assert.throws(()=>save(reopened,{dueDate:'2026-11-17'}),/不可早於/);
+const progress=[
+ {date:'2026-11-19',stage:' 第一批送件 ',note:' 建立追蹤 '},
+ {date:'2026-11-18',stage:'備齊文件'},
+ {date:'2026-11-19',stage:'受理'}
+];
+const progressed=save(created,{progress});
+assert.deepEqual(engine.progressInOrder(progressed).map(entry=>entry.stage),['備齊文件','第一批送件','受理']);
+assert.equal(progressed.progress[0].note,'建立追蹤');
+assert(engine.validateData({cases:[progressed],clients}));
+assert.deepEqual(acknowledge(progressed).progress,progressed.progress);
+assert.throws(()=>save(created,{progress:[{date:'2026-02-30',stage:'錯誤日期'}]}),/日期無效/);
+assert.throws(()=>save(created,{progress:[{date:'2026-11-18',stage:'  '}]}),/階段/);
+assert.throws(()=>save(created,{progress:Array(engine.maxProgress+1).fill(progress[0])}),/最多/);
 console.log('PASS case revisions, reminders, reopen, dates and backup references');
