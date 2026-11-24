@@ -379,4 +379,107 @@ async function monthlyBatch(p,h){
  assert.match(await p.locator('#contractError220').innerText(),/核對期間/);
 }
 
-module.exports={review,timeline,monthlyBatch};
+async function interestBatch(p,h){
+ await nav(p,'contracts');
+ await p.locator('#newContract220').click();
+ await p.locator('#contract-title220').fill('合成逐月押息核對');
+ await p.locator('#contract-clientId220').selectOption('synthetic-a');
+ await p.locator('#contract-startDate220').fill('2026-01-15');
+ await p.locator('#contract-endDate220').fill('2026-06-30');
+ await p.locator('#contract-monthlyRent220').fill('10000');
+ await p.locator('#contract-deposit220').fill('120000');
+ await p.locator('#saveContract220').click();
+ await p.locator('#contractForm220').waitFor({state:'detached'});
+ const open=async()=>{
+  await nav(p,'contracts');
+  await p.locator('[data-contract-id220] [data-open-contract220]').click();
+  await tab(p,'review').click();
+ };
+ await open();
+ const panel=p.locator('.lease-interest-review235');
+ const scope=panel.locator('#leaseInterestScope236'),all=panel.locator('#leaseInterestSelectAll236');
+ const rows=panel.locator('[data-interest-row235]'),count=panel.locator('#leaseInterestSelected236');
+ const action=kind=>panel.locator('[data-interest-batch236="'+kind+'"]');
+ const box=index=>rows.nth(index).locator('[data-interest-select236]');
+ const charge=index=>rows.nth(index).locator('[data-interest-charge235]');
+ const status=index=>rows.nth(index).locator('[data-interest-status235]');
+ const actual=index=>rows.nth(index).locator('[data-interest-actual235]');
+ assert.equal(await rows.count(),2);
+ assert(await box(0).isDisabled());
+ assert(await action('match').isDisabled());
+ await all.check();
+ assert.equal(await count.textContent(),'已選 1 月');
+ await action('match').click();
+ assert.match(await p.locator('#leaseError224').textContent(),/尚未算出押息/);
+ assert.equal(await status(1).inputValue(),'pending');
+ assert(await box(1).isChecked());
+ await p.locator('#leaseQuickRate224').fill('1.5');
+ await p.locator('#leaseSaveQuickRate224').click();
+ await toast(p,'年度郵政利率已儲存');
+ assert(await box(1).isChecked());
+ await scope.selectOption('year');
+ assert.equal(await rows.count(),6);
+ assert.equal(await p.locator('[data-rent-row234]').count(),2);
+ assert.equal(await money(p,'interest'),'714.3 元');
+ await p.locator('#leaseRentSelectAll234').check();
+ assert.equal(await count.textContent(),'已選 0 月');
+ await status(1).selectOption('issued');
+ await actual(1).fill('141.23');
+ await box(1).check();await box(2).check();await box(3).check();
+ await charge(3).uncheck();
+ assert(await box(3).isDisabled());
+ assert.equal(await count.textContent(),'已選 2 月');
+ await action('match').click();
+ assert.equal(await actual(1).inputValue(),'141.23');
+ assert.match(await rows.nth(1).locator('[data-interest-result235]').textContent(),/有差異/);
+ assert.equal(await actual(2).inputValue(),'142.86');
+ assert.match(await rows.nth(2).locator('[data-interest-result235]').textContent(),/金額相符/);
+ assert.equal(await status(3).inputValue(),'pending');
+ assert.equal(await status(4).inputValue(),'pending');
+ assert.equal(await p.locator('#leaseRentSelected234').textContent(),'已選 2 月');
+ await all.check();
+ assert.equal(await count.textContent(),'已選 4 月');
+ await all.uncheck();
+
+ await box(1).check();
+ p.once('dialog',dialog=>dialog.dismiss());
+ await action('missing').click();
+ assert.equal(await actual(1).inputValue(),'141.23');
+ await box(1).uncheck();
+ await box(4).check();await action('missing').click();
+ assert.equal(await status(4).inputValue(),'missing');
+ await charge(0).check();
+ await box(0).check();await action('missing').click();
+ await box(0).check();await action('clear').click();
+ assert(await charge(0).isChecked(),'Clearing the invoice check keeps the manual charging decision');
+ assert.equal(await status(0).inputValue(),'pending');
+ assert.equal(await money(p,'interest'),'714.3 元','Charges still follow the monthly deposit calculation');
+
+ await panel.locator('.lease-rent-actions234').scrollIntoViewIfNeeded();
+ await h.screenshot(p,'vat236-interest-batch-desktop');
+ for(const width of [390,320]){
+  await p.setViewportSize({width,height:844});
+  assert(await panel.evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+  await all.scrollIntoViewIfNeeded();
+  assert(await all.isEnabled());
+  await h.screenshot(p,'vat236-interest-batch-mobile-'+width);
+ }
+ await p.setViewportSize({width:1440,height:1000});
+ await p.locator('#saveContract220').click();
+ await p.locator('#saveContract220:not([disabled])').waitFor();
+ await p.locator('#cancelContract220').click();
+ const lease=(await h.backup(p)).data.contracts[0].lease;
+ assert.equal(lease.rentMonths,undefined);
+ assert.deepEqual(lease.interestChecks.map(row=>[row.key.slice(0,7),row.charged,row.status,row.actual]),[
+  ['2026-01',true,'pending',null],['2026-02',true,'issued',14123],['2026-03',true,'issued',14286],
+  ['2026-04',false,'pending',null],['2026-05',true,'missing',null]
+ ]);
+ await h.reload(p);
+ await open();
+ await scope.selectOption('year');
+ assert.equal(await actual(2).inputValue(),'142.86');
+ assert(await box(3).isDisabled());
+ assert.equal(await status(4).inputValue(),'missing');
+}
+
+module.exports={review,timeline,monthlyBatch,interestBatch};

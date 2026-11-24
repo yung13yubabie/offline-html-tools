@@ -235,8 +235,9 @@
  .lease-changes233 li{grid-template-columns:minmax(0,1fr)}
 }
 .lease-rent-settings231{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.lease-rent-review234{padding:12px;margin-bottom:10px}
-.lease-rent-review234>header{gap:10px}
+.lease-rent-review234,.lease-interest-review235{padding:12px}
+.lease-rent-review234{margin-bottom:10px}
+.lease-rent-review234>header,.lease-interest-review235>header{gap:10px}
 .lease-rent-options234,.lease-rent-actions234{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
 .lease-rent-options234>.field{min-width:98px}
 .lease-rent-actions234{align-items:center;margin-top:12px}
@@ -271,16 +272,18 @@
 }
 .lease-interest-source235{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:8px;color:var(--muted);font-size:13px}
 .lease-interest-source235 strong{color:var(--text);font-variant-numeric:tabular-nums}
-.lease-interest-row235{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);gap:9px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.lease-interest-row235{display:grid;grid-template-columns:24px minmax(0,.8fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);gap:8px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.lease-interest-row235 .lease-rent-select234:has(:disabled){opacity:.46}
 .lease-interest-month235{display:grid;gap:4px}
 .lease-interest-month235 .cases-check219{display:flex;min-height:36px;padding:4px 7px}
 .lease-interest-row235 dl{display:grid;grid-template-columns:minmax(0,1fr);margin:0}
 .lease-interest-row235 dl>div:first-child dd{font-size:15px;color:var(--text)}
 .lease-interest-row235 dd{overflow-wrap:anywhere}
 .lease-interest-row235 input[data-interest-actual235]{text-align:right;font-variant-numeric:tabular-nums}
-.lease-interest-result235{grid-column:5;text-align:right}
+.lease-interest-result235{grid-column:6;text-align:right}
 .lease-interest-result235 small{display:block;margin-top:3px;color:var(--muted);font-variant-numeric:tabular-nums}
 @media(max-width:620px){
- .lease-interest-row235{grid-template-columns:repeat(2,minmax(0,1fr))}
- .lease-interest-result235{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}
+ .lease-interest-row235{grid-template-columns:24px repeat(2,minmax(0,1fr))}
+ .lease-interest-status236{grid-column:2}
+ .lease-interest-result235{grid-column:2/-1;display:flex;justify-content:space-between;align-items:center}
 }
