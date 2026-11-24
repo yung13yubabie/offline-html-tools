@@ -170,11 +170,7 @@ function openLeaseBatch228(clientId=''){
    return;
   }
   root.classList.remove('show');root.replaceChildren();
-  Object.assign(contractRuntime220,{query:'',clientId:shared.clientId,categoryId:'',year:'',status:'all',page:1});
-  contractRuntime220.folders.set(shared.clientId,true);
-  const folder=$$('#contractsList220 [data-client-folder222]').find(node=>node.dataset.clientFolder222===shared.clientId);
-  if(folder)folder.open=true;
-  $('#contractSearch220').value='';
+  revealSavedContracts237(drafts,{focusClient:true});
   try{
    await loadAll();
    $('#contractsList220 [data-lease-batch228]')?.focus({preventScroll:true});

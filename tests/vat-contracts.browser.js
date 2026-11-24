@@ -449,4 +449,131 @@ async function rentReminders(page,h){
  assert.equal(await list.locator('[data-contract-calendar-item220^="rent-effective:"]').count(),1);
 }
 
-module.exports={lifecycle,lists,renewal,batchLeases,rentReminders};
+async function renewalCostsAndReferences(page,h){
+ await page.clock.setFixedTime(formatDate(2026,10,31));
+ await nav(page,'contracts');
+ await page.locator('#newContract220').click();
+ await field(page,'title').fill('合成續租據點');
+ await field(page,'clientId').selectOption('synthetic-a');
+ await field(page,'startDate').fill('2026-04-01');
+ await field(page,'endDate').fill('2026-11-30');
+ await field(page,'monthlyRent').fill('10000');
+ await field(page,'rentBasis').selectOption('gross');
+ await field(page,'deposit').fill('30000');
+ const form=page.locator('#contractForm220'),save=page.locator('#saveContract220'),steps=page.locator('.lease-step224');
+ const close=()=>page.locator('#cancelContract220').click();
+ const row=id=>page.locator('[data-contract-id220="'+id+'"]');
+ const addStep=async(date,rent)=>{
+  await page.locator('#leaseAddStep224').click();
+  await steps.last().locator('.lease-step-date').fill(date);
+  await steps.last().locator('.lease-step-rent').fill(rent);
+ };
+ await save.click();
+ await waitToast(page,'合約已儲存');
+ const source=await page.locator('[data-contract-id220]').getAttribute('data-contract-id220');
+ await row(source).locator('[data-open-contract220]').click();
+ await page.locator('#leaseFrequency224').selectOption('1');
+ await page.locator('#lease-tab-setup').click();
+ await page.locator('#leaseRentVatRate234').fill('3');
+ await addStep('2026-08-01','12500.25');
+ await save.click();
+ await waitToast(page,'租約費用已儲存');
+ await close();
+ const original=(await h.backup(page)).data.contracts[0];
+ // Existing filters and a long client folder must not obscure the new term.
+ const fillers=Array.from({length:12},(_,i)=>({...original,id:'older-lease-'+i,title:'合成較早租約 '+i,lease:undefined,endDate:'2026-10-30'}));
+ const writeRaw=rows=>page.evaluate(async data=>{
+  const connection=await new Promise((resolve,reject)=>{
+   const request=indexedDB.open('VAT_WORKBENCH_DB');
+   request.onsuccess=()=>resolve(request.result);
+   request.onerror=()=>reject(request.error);
+  });
+  try{
+   await new Promise((resolve,reject)=>{
+    const transaction=connection.transaction('contracts','readwrite');
+    for(const row of data)transaction.objectStore('contracts').put(row);
+    transaction.oncomplete=resolve;
+    transaction.onabort=()=>reject(transaction.error);
+   });
+  }finally{connection.close();}
+ },rows);
+ await writeRaw(fillers);
+ await h.reload(page);
+ await nav(page,'contracts');
+ await page.locator('#contractSearch220').fill(original.title);
+ await row(source).getByRole('button',{name:'續約',exact:true}).click();
+ assert.equal(await field(page,'monthlyRent').inputValue(),'12500.25');
+ assert.equal(await field(page,'deposit').inputValue(),'30000');
+ assert.equal(await field(page,'rentBasis').inputValue(),'gross');
+ await save.click();
+ await waitToast(page,'續約已儲存');
+ const renewal=page.locator('[data-contract-id220]').filter({hasText:'未生效'});
+ const next=await renewal.getAttribute('data-contract-id220');
+ await row(next).getByRole('button',{name:'管理合約',exact:true}).click();
+ assert.equal(await page.locator('#leaseFrequency224').inputValue(),'1');
+ assert.match(await form.innerText(),/上期合約.*合成續租據點/);
+ await page.locator('#lease-tab-setup').click();
+ assert.equal(await page.locator('#leaseRentVatRate234').inputValue(),'3');
+ assert.equal(await steps.count(),1);
+ assert.equal(await steps.first().locator('.lease-step-date').inputValue(),'2026-12-01');
+ assert.equal(await steps.first().locator('.lease-step-rent').inputValue(),'12500.25');
+ await addStep('2027-02-01','13200');
+ await save.click();
+ await waitToast(page,'租約費用已儲存');
+ await close();
+ let data=(await h.backup(page)).data;
+ const current=data.contracts.find(contract=>contract.id===next);
+ assert.equal(current.previousContractId,source);
+ assert.equal(current.lease.deposit,3000000);
+ assert.deepEqual(current.lease.steps.map(({from,cents})=>[from,cents]),[['2026-12-01',1250025],['2027-02-01',1320000]]);
+ assert.deepEqual(current.lease.checks,[]);
+ assert.deepEqual(data.contracts.find(contract=>contract.id===source),original);
+
+ await page.clock.setFixedTime(formatDate(2027,2,1));
+ await nav(page,'calendar');
+ await page.locator('#calendarTodayBtn').click();
+ await page.locator('[data-calendar-date="2027-02-01"]').click();
+ await page.locator('#calendarDrawer [data-open-rent-change233="'+next+'"]').click();
+ assert.equal(await page.locator('#lease-tab-setup').getAttribute('aria-selected'),'true');
+ await close();
+ await page.locator('#calendarDrawerClose').click();
+
+ // Reproduce both legacy forms of incomplete linkage without weakening import validation.
+ await writeRaw([{...current,lease:undefined},
+  {...current,id:'broken-prior',title:'合成缺上期',previousContractId:'absent-prior'},
+  {...original,id:'broken-client-a',title:'合成待連回客戶上期',clientId:'absent-client'},
+  {...current,id:'broken-client-b',title:'合成待連回客戶本期',clientId:'absent-client',previousContractId:'broken-client-a'}]);
+ await h.reload(page);
+ await nav(page,'contracts');
+ const manage=async(id,title,clientId='synthetic-a')=>{
+  await page.locator('#contractSearch220').fill(title);
+  const folder=page.locator('#contractsList220 [data-client-folder222="'+clientId+'"]');
+  if(await folder.getAttribute('open')===null)await folder.locator(':scope > summary').click();
+  await row(id).getByRole('button',{name:'管理合約',exact:true}).click();
+ };
+ await manage(next,current.title);
+ await page.locator('#lease-tab-setup').click();
+ assert.equal(await steps.first().locator('.lease-step-rent').inputValue(),'12500.25');
+ await addStep('2027-03-01','13500');
+ await save.click();
+ await waitToast(page,'租約費用已儲存');
+ await close();
+ await manage('broken-prior','合成缺上期');
+ await page.locator('#contractDetachPrevious237').check();
+ await save.click();
+ await form.waitFor({state:'detached'});
+ await manage('broken-client-b','合成待連回客戶本期','absent-client');
+ await field(page,'clientId').selectOption('synthetic-b');
+ await save.click();
+ await form.waitFor({state:'detached'});
+ data=(await h.backup(page)).data;
+ assert.equal(data.contracts.find(contract=>contract.id===next).lease.steps[1].cents,1350000);
+ assert.equal(data.contracts.find(contract=>contract.id==='broken-prior').previousContractId,undefined);
+ assert.deepEqual(data.contracts.find(contract=>contract.id==='broken-prior').lease,current.lease);
+ assert.equal(data.contracts.find(contract=>contract.id==='broken-client-a').clientId,'synthetic-b');
+ const relinked=data.contracts.find(contract=>contract.id==='broken-client-b');
+ assert.equal(relinked.clientId,'synthetic-b');
+ assert.equal(relinked.previousContractId,'broken-client-a');
+}
+
+module.exports={lifecycle,lists,renewal,batchLeases,rentReminders,renewalCostsAndReferences};

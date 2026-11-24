@@ -57,11 +57,13 @@ function createContractsEngine220() {
  function successors(rows) {
   return new Map(rows.filter(row=>row.previousContractId).map(row=>[row.previousContractId,row]));
  }
- function validateLinks(rows,{references=true}={}) {
+ function validateLinks(rows,{references=true,changedIds}={}) {
   const ids=new Map(rows.map(row=>[row.id,row])),seen=new Set();
+  const touched=new Set(changedIds||[]),previousIds=new Set([...touched].map(id=>ids.get(id)?.previousContractId));
   for(const row of rows){
    const prior=row.previousContractId;
    if(prior===undefined||prior==='')continue;
+   if(changedIds&&!touched.has(row.id)&&!touched.has(prior)&&!previousIds.has(prior))continue;
    if(!idOK(prior)||prior===row.id||seen.has(prior))throw Error('續約關聯格式錯誤或同一合約續約兩次');
    seen.add(prior);
    const previous=ids.get(prior);
@@ -69,6 +71,13 @@ function createContractsEngine220() {
    if(previous.clientId!==row.clientId)fail('clientId','續約前後必須是同一客戶');
    if(!row.startDate||row.startDate<=previous.endDate)fail('startDate','續約開始日須晚於上期到期日');
   }
+ }
+ function renewalLease(previous,startDate) {
+  if(!previous.lease)return undefined;
+  const old=leases.normalize(previous.lease,previous.startDate,previous.endDate);
+  const last=old.steps.at(-1);
+  return {...leases.defaultLease(),frequency:old.frequency,rentBasis:old.rentBasis,deposit:old.deposit,
+   regime:old.regime,vatRate:old.vatRate,rentVatRate:old.rentVatRate,steps:last?[{from:startDate,cents:last.cents}]:[]};
  }
  function status(record,today,renewed=false) {
   if(renewed)return 'renewed';
@@ -121,6 +130,21 @@ function createContractsEngine220() {
   assertBaseline(current,baseline);
   if(current.revision>=Number.MAX_SAFE_INTEGER||at<current.updatedAt)throw Error('合約版本或本機時間無效');
  }
+ function relinkMissingCustomer(rows,current,clientId,at){
+  const sameClient=rows.filter(row=>row.clientId===current.clientId);
+  const byId=new Map(sameClient.map(row=>[row.id,row])),next=successors(sameClient);
+  const visited=new Set([current.id]),queue=[current],relinked=[];
+  for(const row of queue){
+   for(const linked of [byId.get(row.previousContractId),next.get(row.id)]){
+    if(!linked||visited.has(linked.id))continue;
+    visited.add(linked.id);
+    startWrite(linked,linked,at);
+    queue.push(linked);
+    relinked.push({...linked,clientId,revision:linked.revision+1,updatedAt:at});
+   }
+  }
+  return relinked;
+ }
  function save({draft,current=null,baseline=null,clients,categories,at,previousContractId=current?.previousContractId}) {
   startWrite(current,baseline,at);
   if(!idOK(draft?.id)||current&&current.id!==draft.id)throw Error('合約編號無效');
@@ -168,7 +192,7 @@ function createContractsEngine220() {
   }
   validateLinks(contracts,{references});
  }
- return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd,
-  rentReminderDate,rentReminderDue,confirmRentReminder};
+ return {builtins,categoryFor,months,reminderDate,status,isDue,normalize,assertBaseline,save,updateTask,validate,validateLinks,successors,shiftDay,termEnd,renewalLease,
+  rentReminderDate,rentReminderDue,confirmRentReminder,relinkMissingCustomer};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createContractsEngine220};

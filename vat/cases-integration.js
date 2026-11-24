@@ -13,10 +13,14 @@ function guardRecordReferences220(transaction,ops,ready,fail){
   checked=true;
   try{
    const data=Object.fromEntries(recordReferenceStores220.map((store,index)=>[store,applyRowOps218(requests[index].result,ops,store)]));
-   if(ops.some(op=>op.store==='clients'&&op.action==='delete')){
+   const clientDeletes=ops.filter(op=>op.store==='clients'&&op.action==='delete');
+   if(clientDeletes.length){
+    const deleted=new Set(clientDeletes.map(op=>op.id));
     const ids=new Set(data.clients.map(client=>client.id));
-    if(data.cases.some(row=>!ids.has(row.clientId)))throw Error('此客戶仍有案件，請先改選案件的客戶或刪除案件');
-    if(data.contracts.some(row=>!ids.has(row.clientId)))throw Error('此客戶仍有合約，請先改選合約的客戶或刪除合約');
+    const losesClient=row=>deleted.has(row.clientId)&&!ids.has(row.clientId);
+    if(data.cases.some(losesClient))throw Error('此客戶仍有案件，請先改選案件的客戶或刪除案件');
+    if(data.contracts.some(losesClient))throw Error('此客戶仍有合約，請先改選合約的客戶或刪除合約');
+    if(ops.every(op=>op.store==='clients'&&op.action==='delete')){ready();return;}
    }
    validateCases219(data);
    contractEngine220.validate(data);

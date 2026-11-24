@@ -323,4 +323,48 @@ async function progressAndPrint(p,h){
  await p.locator('#pdfPeriod').selectOption('2026-1');
  assert.equal(await paper.locator('.pdf-title').first().textContent(),'營業稅本期總表');
 }
-module.exports={lifecycle,backupAndReferences,upgrade,filtersAndEditor,progressAndPrint};
+async function newCaseAndReferenceRepair(p,h){
+ await p.clock.setFixedTime(new Date(2026,9,31,12));
+ const id=await create(p,true);
+ const existing=(await h.backup(p)).data.cases[0];
+ await p.evaluate(async row=>{
+  const connection=await new Promise((resolve,reject)=>{
+   const request=indexedDB.open('VAT_WORKBENCH_DB');
+   request.onsuccess=()=>resolve(request.result);
+   request.onerror=()=>reject(request.error);
+  });
+  try{
+   await new Promise((resolve,reject)=>{
+    const transaction=connection.transaction('cases','readwrite');
+    transaction.objectStore('cases').put({...row,clientId:'absent-client'});
+    transaction.oncomplete=resolve;
+    transaction.onabort=()=>reject(transaction.error);
+   });
+  }finally{connection.close();}
+ },existing);
+ await h.reload(p);
+ await nav(p,'today');
+ assert.equal(await p.locator('#caseReminderStrip219 [data-open-case219]').count(),0);
+ await openEditor(p);
+ assert.match(await p.locator('#caseClient219 option:checked').innerText(),/找不到原客戶/);
+ await p.locator('#caseClient219').selectOption('synthetic-b');
+ await save(p);
+ assert.equal(await p.locator('[data-case-id219="'+id+'"]').count(),1);
+ await nav(p,'today');
+ await p.locator('#caseReminderStrip219 [data-open-case219]').waitFor();
+ await nav(p,'cases');
+ await p.locator('#casesSearch219').fill('沒有符合的新案件');
+ await p.locator('#casesClient219').selectOption('synthetic-b');
+ await p.locator('#newCase219').click();
+ await p.locator('#caseTitle219').fill('合成直接結案');
+ await p.locator('#caseClient219').selectOption('synthetic-a');
+ await p.locator('#caseStatus219').selectOption('done');
+ await save(p);
+ await p.locator('[data-case-id219]').filter({hasText:'合成直接結案'}).getByRole('button',{name:/編輯/}).waitFor();
+ const data=(await h.backup(p)).data;
+ assert.equal(data.cases.find(row=>row.id===id).clientId,'synthetic-b');
+ assert.equal(data.cases.find(row=>row.title==='合成直接結案').clientId,'synthetic-a');
+ assert.equal(data.calendarNotes.length,1);
+}
+
+module.exports={lifecycle,backupAndReferences,upgrade,filtersAndEditor,progressAndPrint,newCaseAndReferenceRepair};

@@ -101,6 +101,18 @@ function clientFolders222({host,pager,runtime,matched,all,kind,columns,makeRow,r
   const label=id=>clients.get(id)?.code||clients.get(id)?.name||id;
   return label(a).localeCompare(label(b),'zh-Hant',{numeric:true})||a.localeCompare(b);
  });
+ const revealIds=runtime.revealIds;
+ if(revealIds?.size){
+  const index=folders.findIndex(([,rows])=>rows.some(row=>revealIds.has(row.id)));
+  if(index!==-1){
+   const [clientId,rows]=folders[index];
+   const last=rows.findLastIndex(row=>revealIds.has(row.id));
+   runtime.page=Math.floor(index/runtime.size)+1;
+   runtime.folders.set(clientId,true);
+   runtime.limits.set(clientId,Math.max(runtime.limits.get(clientId)||12,last+1));
+  }
+  runtime.revealIds=null;
+ }
  runtime.page=Math.max(1,Math.min(runtime.page,Math.ceil(folders.length/runtime.size)));
  const visible=folders.slice((runtime.page-1)*runtime.size,runtime.page*runtime.size);
  if(!visible.length){

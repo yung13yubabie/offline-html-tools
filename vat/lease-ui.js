@@ -199,7 +199,7 @@ const contractTabs228=[['basic','基本資料'],['setup','每月租金'],['depos
 const leaseNoticeModes228={issues:'全部已確認異常',missing:'漏開發票',rent:'租金金額差異',interest:'押金設算利息'};
 const leaseInvoiceStatuses235=[['pending','待核對'],['issued','已開立'],['missing','未開立']];
 const leaseField228=(id,label,type,properties='')=>`<label class="field" for="${id}">${label}<input id="${id}" class="input" type="${type}" ${properties}></label>`;
-function contractLeasePanels228(contract,basic){
+function contractLeasePanels228(contract,basic,{recoveredRent=false}={}){
  const lease=contract.lease||leaseEngine224.defaultLease(),field=leaseField228;
  const panel=(key,html)=>`<section id="lease-pane-${key}" class="lease-pane224" role="tabpanel" aria-labelledby="lease-tab-${key}" ${key==='basic'?'':'hidden'}>${html}</section>`;
  return `<div class="lease-workspace224">
@@ -218,6 +218,7 @@ function contractLeasePanels228(contract,basic){
    </div>
    <section class="lease-section224">
     <header><h3>月租與調租</h3><button class="btn" type="button" id="leaseAddStep224">新增調租階段</button></header>
+    ${recoveredRent?'<p class="contract-renew-info221" id="leaseRecoveredRent237">首段月租已從上期最後一段帶入，可修改後儲存。</p>':''}
     <div id="leaseSteps224"></div>
    </section>
   `)}
@@ -416,7 +417,13 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    return {from:row.querySelector('.lease-step-date').value,cents:leaseEngine224.amount(row.querySelector('.lease-step-rent').value),
     ...(toggle?{remindDays:toggle.checked?leaseEngine224.rentReminderDays(row.querySelector('[data-rent-reminder-days233]').value):null}:{})};
   });
-  if(newSteps.length===1&&newSteps[0].cents===null)newSteps.pop();
+  if(newSteps[0].cents===null){
+   if(newSteps.length>1){
+    activate('setup');
+    throw Error('請先填寫首段月租，再儲存後續調租。');
+   }
+   newSteps.pop();
+  }
   const costs=leaseEngine224.updateDeposit(draft,term.startDate,val('leaseDeposit224'));
   draft=leaseEngine224.normalize({...costs,frequency:Number(val('leaseFrequency224')),rentBasis,rentVatRate,
    regime:val('leaseRegime224'),vatRate:vatRate??draft.vatRate,steps:newSteps},term.startDate,term.endDate);
@@ -885,6 +892,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   saved(row){
    baseline=row;
    initial=snapshot();
+   $('#leaseRecoveredRent237')?.remove();
    drawHistory();
   }
  };
