@@ -27,6 +27,7 @@ async function review(p,h){
  assert.match(await p.locator('[data-contract-field-error220="startDate"]').innerText(),/開始日/);
  await p.locator('#contract-startDate220').fill('2025-11-01');
  await p.locator('#contract-deposit220').fill('120,000');
+ assert.match(await p.locator('#contractDepositPreview232').textContent(),/每月設算利息 150 元 · 應列銷售額 142.86 元/);
  await p.locator('#contract-reminderEnabled220').uncheck();
  await p.locator('#contract-note220').fill('合成兩段租金\n合約備註');
  await p.locator('#saveContract220').click();

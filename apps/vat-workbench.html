@@ -1296,6 +1296,8 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 .lease-interest-preview232 dt,.lease-interest-preview232 p{font-size:13px;color:var(--muted)}
 .lease-interest-preview232 dd{margin:2px 0 0;font-size:19px;font-weight:750;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .lease-interest-preview232 p{margin:0;line-height:1.5}
+.contract-deposit-preview232{display:block;margin-top:8px;color:var(--brand);font-size:13px;line-height:1.5}
+.contract-deposit-preview232[hidden]{display:none}
 @media screen {
  .vat-sample-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
  .vat-sample-bar .badge{overflow-wrap:anywhere}
@@ -6069,6 +6071,7 @@ function openContract220(id,renewalFrom=null) {
    <details class="record-settings222 contract-rent-settings225" id="contractDeposit231" ${draft.categoryId==='lease'?'open':''}>
     <summary>押金紀錄</summary>
     ${field('deposit','押金本金（元）',input('deposit','text','','inputmode="decimal" placeholder="無押金填 0"'))}
+    <output id="contractDepositPreview232" class="contract-deposit-preview232" role="status" hidden></output>
    </details>
   </div>`}
   <div class="record-reminder-settings227 cases-span219">
@@ -6129,6 +6132,20 @@ function openContract220(id,renewalFrom=null) {
  const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value,get('deposit')?.value]);
  let initial=snapshot();
  let busy=false;
+ function updateNewDepositPreview(){
+  const output=$('#contractDepositPreview232'),value=get('deposit').value.trim();
+  output.hidden=!value;
+  if(!value)return;
+  let deposit;
+  try{deposit=leaseEngine224.amount(value);}
+  catch{output.textContent='請核對押金本金格式。';return;}
+  const year=get('startDate').value.slice(0,4);
+  if(!year){output.textContent='選擇開始日期後即可試算。';return;}
+  const annual=leaseRates224().find(row=>row.id===year)?.rate??null;
+  const {gross,interest,needsRate}=leaseEngine224.interestAmounts({...leaseEngine224.defaultLease(),deposit,annual,months:1});
+  output.textContent=needsRate?leaseYear224(year)+'尚未設定郵政利率，儲存合約後可在押金紀錄補填。':
+   leaseYear224(year)+'每月設算利息 '+leaseMoney224(gross)+' · 應列銷售額 '+leaseMoney224(interest);
+ }
  function updatePreview(){
   const requiresStart=!!renewalFrom||!!get('monthlyRent')?.value.trim()||!!get('deposit')?.value.trim()||!!existing?.lease;
   get('startDate').required=requiresStart;
@@ -6138,6 +6155,7 @@ function openContract220(id,renewalFrom=null) {
   try{date=contractEngine220.reminderDate(get('endDate').value,get('leadMonths').value);}catch{}
   $('#contractReminderFields222').hidden=!get('reminderEnabled').checked;
   $('#contractPreviewDate220').textContent=get('reminderEnabled').checked&&date?'提醒日 '+fmtDate(date):'';
+  if(depositPanel)updateNewDepositPreview();
   const context=$('#contractManagerContext228');
   if(context)context.textContent=[clientById(get('clientId').value)?.name,get('title').value.trim()].filter(Boolean).join(' · ');
  }

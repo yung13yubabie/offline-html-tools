@@ -228,3 +228,5 @@
 .lease-interest-preview232 dt,.lease-interest-preview232 p{font-size:13px;color:var(--muted)}
 .lease-interest-preview232 dd{margin:2px 0 0;font-size:19px;font-weight:750;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .lease-interest-preview232 p{margin:0;line-height:1.5}
+.contract-deposit-preview232{display:block;margin-top:8px;color:var(--brand);font-size:13px;line-height:1.5}
+.contract-deposit-preview232[hidden]{display:none}
