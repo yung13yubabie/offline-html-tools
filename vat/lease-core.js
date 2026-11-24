@@ -73,6 +73,7 @@ function createLeaseEngine224() {
   const leap=year%4===0&&(year%100!==0||year%400===0);
   return monthStart(index).slice(0,8)+[31,leap?29:28,31,30,31,30,31,31,30,31,30,31][month-1];
  }
+ const fullMonth=month=>month.begin===month.start&&month.finish===month.end;
  function periods(start,end,frequency){
   if(!date(start)||!date(end)||start>end||!frequencies.includes(frequency))fail('請設定有效的租期起訖日與核對週期');
   const first=monthIndex(start),last=monthIndex(end),rows=[];
@@ -84,7 +85,7 @@ function createLeaseEngine224() {
     return {begin,finish,start:begin<start?start:begin,end:finish>end?end:finish};
    });
    const periodStart=months[0].start,periodEnd=months.at(-1).end;
-   const fullMonths=months.filter(month=>month.begin===month.start&&month.finish===month.end).length;
+   const fullMonths=months.filter(fullMonth).length;
    rows.push({key:periodStart+'/'+periodEnd,start:periodStart,end:periodEnd,year:periodStart.slice(0,4),months,fullMonths});
   }
   return rows;
@@ -117,17 +118,16 @@ function createLeaseEngine224() {
  }
  const monthKey=month=>month.start+'/'+month.end;
  const hasRentActual=lease=>lease.checks.some(check=>check.rentActual!==null)||(lease.rentMonths||[]).some(month=>month.actual!==null);
- function normalizeRentMonths(raw,ranges){
+ function normalizeMonthChecks(raw,ranges,label,validate){
   if(raw===undefined)return [];
-  if(!Array.isArray(raw)||raw.length>1200)fail('逐月租金紀錄格式錯誤');
-  const keys=new Set([...ranges.values()].flatMap(period=>period.months.map(monthKey))),seen=new Set();
+  if(!Array.isArray(raw)||raw.length>1200)fail('逐月'+label+'紀錄格式錯誤');
+  const months=new Map([...ranges.values()].flatMap(period=>period.months.map(month=>[monthKey(month),month]))),seen=new Set();
   return raw.map(row=>{
-   if(!keys.has(row?.key)||seen.has(row.key))fail('此變更會使單月租金紀錄失去對應，請先處理該月核對');
+   const month=months.get(row?.key);
+   if(!month||seen.has(row.key))fail('此變更會使單月'+label+'紀錄失去對應，請先處理該月核對');
    seen.add(row.key);
-   if(!['issued','missing'].includes(row.status)||!['net','gross'].includes(row.basis)||
-    (row.status==='issued'?!valid(row.actual):row.actual!==null))fail('請核對單月發票狀態與金額');
-   return {key:row.key,status:row.status,actual:row.actual,basis:row.basis};
-  }).sort((a,b)=>a.key.localeCompare(b.key));
+   return validate(row,month);
+  }).filter(Boolean).sort((a,b)=>a.key.localeCompare(b.key));
  }
  function normalize(raw,start,end){
   if(!raw||raw.version!==1||!frequencies.includes(raw.frequency)||!['net','gross'].includes(raw.rentBasis)||
@@ -160,10 +160,20 @@ function createLeaseEngine224() {
    row.interestMonths=check.interestMonths;
    return row;
   }).filter(check=>Object.entries(check).some(([key,value])=>key!=='key'&&value!=='pending'&&value!==null));
-  const rentMonths=normalizeRentMonths(raw.rentMonths,ranges);
+  const rentMonths=normalizeMonthChecks(raw.rentMonths,ranges,'租金',row=>{
+   if(!['issued','missing'].includes(row.status)||!['net','gross'].includes(row.basis)||
+    (row.status==='issued'?!valid(row.actual):row.actual!==null))fail('請核對單月發票狀態與金額');
+   return {key:row.key,status:row.status,actual:row.actual,basis:row.basis};
+  });
+  const interestChecks=normalizeMonthChecks(raw.interestChecks,ranges,'押息',(row,month)=>{
+   if(typeof row.charged!=='boolean'||!statuses.includes(row.status)||
+    (row.actual!==null&&(row.status!=='issued'||!valid(row.actual))))fail('請核對單月押息的計息、發票狀態與金額');
+   return row.status==='pending'&&row.charged===fullMonth(month)?null:
+    {key:row.key,charged:row.charged,status:row.status,actual:row.actual};
+  });
   return {version:1,frequency:raw.frequency,rentBasis:raw.rentBasis,deposit:raw.deposit,regime:raw.regime,vatRate:raw.vatRate,steps,checks,
    ...(raw.rentVatRate!==undefined&&raw.rentVatRate!==defaultRentTaxRate?{rentVatRate:raw.rentVatRate}:{}),
-   ...(rentMonths.length?{rentMonths}:{})};
+   ...(rentMonths.length?{rentMonths}:{}),...(interestChecks.length?{interestChecks}:{})};
  }
  const round=(numerator,denominator)=>Number((numerator+denominator/2n)/denominator);
  function convertRent(cents,from,to,vatRate=defaultRentTaxRate){
@@ -198,32 +208,48 @@ function createLeaseEngine224() {
   const gross=round(raw,12n*scale);
   return {gross,interest:regime==='invoice'?round(raw,12n*(scale+BigInt(vatRate))):gross,needsRate};
  }
+ const monthlyInterestAmounts=values=>interestAmounts({...values,months:1});
+ const checkOutcome=outcomes=>['missing','different','unknown','pending'].find(key=>outcomes.includes(key))||'matched';
  function calculate(record,rates){
   if(!record.lease)return [];
   const lease=record.lease,rateMap=new Map(rates.map(row=>[row.id,row.rate]));
   const checks=new Map(lease.checks.map(row=>[row.key,row]));
   const rentChecks=new Map((lease.rentMonths||[]).map(row=>[row.key,row]));
+  const interestChecks=new Map((lease.interestChecks||[]).map(row=>[row.key,row]));
   return periods(record.startDate,record.endDate,lease.frequency).map(period=>{
    const check=checks.get(period.key)||emptyCheck(period.key);
    const monthlyRent=lease.steps.length?period.months.map(month=>rentForMonth(month,lease.steps)):[];
    const rent=monthlyRent.length?monthlyRent.reduce((sum,cents)=>sum+cents,0):null;
    const annual=rateMap.get(period.year)??null,months=check.interestMonths??period.fullMonths;
    const {gross,interest,needsRate}=interestAmounts({...lease,annual,months});
+   const monthlyInterest=monthlyInterestAmounts({...lease,annual});
+   const noInterest=interestAmounts({...lease,annual,months:0});
+   const interestRows=period.months.map(month=>{
+    const key=monthKey(month),entry=interestChecks.get(key),charged=entry?.charged??fullMonth(month);
+    const amounts=charged?monthlyInterest:noInterest;
+    const actual=entry?.actual??null,status=entry?.status??'pending';
+    const result=!charged&&status==='pending'?'matched':compare(amounts.interest,status,actual);
+    return {...month,key,charged,actual,status,result,...amounts};
+   });
+   const hasMonthlyInterest=interestRows.some(row=>interestChecks.has(row.key));
+   const hasLegacyInterest=check.interestStatus!=='pending'||check.interestActual!==null||check.interestMonths!==null;
+   const interestSalesTotal=interestRows.some(row=>row.interest===null)?null:interestRows.reduce((sum,row)=>sum+row.interest,0);
    const rentRows=period.months.map((month,index)=>{
     const key=monthKey(month),entry=rentChecks.get(key),base=monthlyRent[index]??null;
     const basis=entry?.basis??lease.rentBasis,actual=entry?.actual??null,status=entry?.status??'pending';
     const expected=convertRent(base,lease.rentBasis,basis,lease.rentVatRate);
     return {...month,key,base,expected,basis,actual,status,result:compare(expected,status,actual)};
    });
-   const comparisons=rentRows.map(row=>row.result),hasMonthlyRent=rentRows.some(row=>row.status!=='pending');
+   const hasMonthlyRent=rentRows.some(row=>row.status!=='pending');
    const legacyRentResult=compare(rent,check.rentStatus,check.rentActual);
-   const rentResult=hasMonthlyRent?['missing','different','unknown','pending'].find(key=>comparisons.includes(key))||'matched':
-    legacyRentResult;
-   const interestResult=compare(interest,check.interestStatus,check.interestActual);
-   return {...period,check,rent,monthlyRent,rentRows,hasMonthlyRent,legacyRentResult,interest,gross,annual,interestMonths:months,needsRate,rentResult,interestResult};
+   const rentResult=hasMonthlyRent?checkOutcome(rentRows.map(row=>row.result)):legacyRentResult;
+   const legacyInterestResult=compare(interest,check.interestStatus,check.interestActual);
+   const interestResult=hasLegacyInterest&&!hasMonthlyInterest?legacyInterestResult:checkOutcome(interestRows.map(row=>row.result));
+   return {...period,check,rent,monthlyRent,rentRows,hasMonthlyRent,legacyRentResult,interest,gross,annual,interestMonths:months,
+    needsRate,rentResult,interestResult,monthlyInterest,interestRows,interestSalesTotal,hasMonthlyInterest,hasLegacyInterest,legacyInterestResult};
   });
  }
  return {amount,rate,format,frequencies,defaultLease,updateOpeningRent,updateDeposit,validateRates,normalize,periods,emptyCheck,interestAmounts,calculate,
-  defaultRentReminderDays,rentReminderDays,rentChanges,carryRentConfirmations,defaultRentTaxRate,convertRent,hasRentActual};
+  defaultRentReminderDays,rentReminderDays,rentChanges,carryRentConfirmations,defaultRentTaxRate,convertRent,hasRentActual,monthlyInterestAmounts};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseEngine224};

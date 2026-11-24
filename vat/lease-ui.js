@@ -5,6 +5,7 @@ const leaseYear224=year=>fmtDate(year+'-01-01').split('/')[0]+' 年';
 const leaseRange224=period=>fmtDate(period.start)+' ～ '+fmtDate(period.end);
 const rentBasisLabel234=basis=>basis==='gross'?'含稅':'未稅';
 const rentMonthLabel234=month=>fmtDate(month.begin).split('/').slice(0,2).join('/');
+const interestRateNeeded235=period=>period.interestRows.some(row=>row.needsRate)||(period.hasLegacyInterest&&period.needsRate);
 const leaseOption224=(value,label,selected)=>`<option value="${esc(value)}" ${value===selected?'selected':''}>${esc(label)}</option>`;
 const leaseFrequency224={1:'每月',2:'雙月',3:'每季',12:'每年'};
 const leaseOutcomes224={
@@ -15,9 +16,10 @@ function leasePeriodStatus224(period){
  const outcomes=[period.rentResult,period.interestResult];
  if(outcomes.includes('missing'))return 'missing';
  if(outcomes.includes('different'))return 'different';
- if(period.needsRate&&outcomes.includes('unknown'))return 'unknown';
+ if(interestRateNeeded235(period)&&outcomes.includes('unknown'))return 'unknown';
+ const interest=period.hasLegacyInterest&&!period.hasMonthlyInterest?period.interest:period.interestSalesTotal;
  if(outcomes.every(value=>value==='matched')||
-   outcomes.includes('matched')&&(period.rent===null||period.interest===null))return 'matched';
+   outcomes.includes('matched')&&(period.rent===null||interest===null))return 'matched';
  return 'pending';
 }
 function leaseOutcomeBadge224(outcome){return statusBadge(...leaseOutcomes224[outcome]);}
@@ -149,6 +151,7 @@ function leaseNotice224(contract,period,mode){
  const basis=contract.lease.rentBasis==='net'?'未稅':'含稅';
  const lines=[];
  const includeMissing=mode==='issues'||mode==='missing';
+ const annualRate=period.annual===null?'':`，郵政年利率 ${leaseEngine224.format(period.annual,4)}%`;
  if(period.hasMonthlyRent){
   for(const row of period.rentRows){
    const month=rentMonthLabel234(row),basis=rentBasisLabel234(row.basis);
@@ -166,13 +169,26 @@ function leaseNotice224(contract,period,mode){
  if(!period.hasMonthlyRent&&(mode==='issues'||mode==='rent')&&period.rentResult==='different'){
   lines.push(`租金${basis}金額有差異，依約應開 ${leaseMoney224(period.rent)}，實際開立 ${leaseMoney224(period.check.rentActual)}。`);
  }
- if(includeMissing&&period.interestResult==='missing'){
-  lines.push('押金設算利息尚未開立'+(period.interest===null?'。':`，應列銷售額為 ${leaseMoney224(period.interest)}。`));
- }
- if((mode==='interest'&&period.interest!==null&&period.interest>0)||(mode==='issues'&&period.interestResult==='different')){
-  const annual=period.annual===null?'':`，郵政年利率 ${leaseEngine224.format(period.annual,4)}%，計 ${period.interestMonths} 個月`;
-  const actual=period.check.interestActual===null?'':`，實際列示 ${leaseMoney224(period.check.interestActual)}`;
-  lines.push(`押金設算利息銷售額為 ${leaseMoney224(period.interest)}${annual}${actual}。`);
+ if(period.hasMonthlyInterest||!period.hasLegacyInterest){
+  for(const row of period.interestRows){
+   const month=rentMonthLabel234(row);
+   if(includeMissing&&row.result==='missing'){
+    lines.push(`${month} 押金設算利息尚未開立${row.interest===null?'。':`，應列銷售額為 ${leaseMoney224(row.interest)}。`}`);
+   }
+   if((mode==='interest'&&row.interest!==null&&row.interest>0)||(mode==='issues'&&row.result==='different')){
+    const actual=row.actual===null?'':`，實際列示 ${leaseMoney224(row.actual)}`;
+    lines.push(`${month} 押金設算利息銷售額為 ${leaseMoney224(row.interest)}${annualRate}${actual}。`);
+   }
+  }
+ }else{
+  if(includeMissing&&period.interestResult==='missing'){
+   lines.push('押金設算利息尚未開立'+(period.interest===null?'。':`，應列銷售額為 ${leaseMoney224(period.interest)}。`));
+  }
+  if((mode==='interest'&&period.interest!==null&&period.interest>0)||(mode==='issues'&&period.interestResult==='different')){
+   const annual=annualRate?`${annualRate}，計 ${period.interestMonths} 個月`:'';
+   const actual=period.check.interestActual===null?'':`，實際列示 ${leaseMoney224(period.check.interestActual)}`;
+   lines.push(`押金設算利息銷售額為 ${leaseMoney224(period.interest)}${annual}${actual}。`);
+  }
  }
  if(!lines.length)return '';
  return [name?name+' 您好：':'您好：',`關於「${contract.title}」${leaseRange224(period)} 的租賃發票，想請您協助核對以下項目：`,
@@ -181,6 +197,7 @@ function leaseNotice224(contract,period,mode){
 
 const contractTabs228=[['basic','基本資料'],['setup','每月租金'],['deposit','押金紀錄'],['review','逐期核對'],['notice','通知紀錄']];
 const leaseNoticeModes228={issues:'全部已確認異常',missing:'漏開發票',rent:'租金金額差異',interest:'押金設算利息'};
+const leaseInvoiceStatuses235=[['pending','待核對'],['issued','已開立'],['missing','未開立']];
 const leaseField228=(id,label,type,properties='')=>`<label class="field" for="${id}">${label}<input id="${id}" class="input" type="${type}" ${properties}></label>`;
 function contractLeasePanels228(contract,basic){
  const lease=contract.lease||leaseEngine224.defaultLease(),field=leaseField228;
@@ -328,7 +345,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   return [val('leaseFrequency224'),val('leaseRentBasis224'),val('leaseRentVatRate234'),val('leaseDeposit224'),val('leaseRegime224'),val('leaseVAT224'),
    [...steps.querySelectorAll('input:not([readonly])')].map(input=>input.type==='checkbox'?input.checked:input.value)];
  }
- const snapshot=()=>JSON.stringify([setupSnapshot(),draft.checks,draft.rentMonths||[]]);
+ const snapshot=()=>JSON.stringify([setupSnapshot(),draft.checks,draft.rentMonths||[],draft.interestChecks||[]]);
  const hasUnsaved=()=>{
   if(checkMounted){
    try{collectCheck();}catch{return true;}
@@ -348,7 +365,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  }
  function collectCheck(){
   if(!checkMounted)return;
-  const months=val('leaseInterestMonths224');
+  const months=$('#leaseInterestMonths224')?.value||'';
   const row={key:selectedKey,interestMonths:months===''?null:Number(months)};
   for(const part of ['rent','interest']){
    if(!$('#lease-'+part+'-status224')){
@@ -368,10 +385,18 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    if(actual===null)entries.delete(key);
    else entries.set(key,{key,actual,basis:rentDisplay,status:'issued'});
   }
-  const normalized=leaseEngine224.normalize({...draft,rentMonths:[...entries.values()],
+  const interestChecks=new Map((draft.interestChecks||[]).map(entry=>[entry.key,entry]));
+  for(const row of checkPanel.querySelectorAll('[data-interest-row235]')){
+   const key=row.dataset.interestRow235,charged=row.querySelector('[data-interest-charge235]').checked;
+   const status=row.querySelector('[data-interest-status235]').value;
+   const actual=status==='issued'?leaseEngine224.amount(row.querySelector('[data-interest-actual235]').value):null;
+   interestChecks.set(key,{key,charged,status,actual});
+  }
+  const normalized=leaseEngine224.normalize({...draft,rentMonths:[...entries.values()],interestChecks:[...interestChecks.values()],
    checks:[...draft.checks.filter(row=>row.key!==selectedKey),row]},term.startDate,term.endDate);
   draft.checks=normalized.checks.sort((a,b)=>a.key.localeCompare(b.key));
   draft.rentMonths=normalized.rentMonths||[];
+  draft.interestChecks=normalized.interestChecks||[];
   for(const input of inputs)input.defaultValue=input.value;
  }
  function collect(){
@@ -431,7 +456,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   try{deposit=leaseEngine224.amount(val('leaseDeposit224'));}
   catch{hint.textContent='請核對押金本金格式。';return;}
   if(deposit===null){hint.textContent='填寫押金本金後即可試算。';return;}
-  const raw=leaseEngine224.interestAmounts({deposit,annual,months:1,regime:'assessed'});
+  const raw=leaseEngine224.monthlyInterestAmounts({deposit,annual,regime:'assessed'});
   if(raw.needsRate){
    hint.textContent=leaseYear224(year)+'尚未設定郵政利率。儲存後套用至同年度租約。';
    missingRate.hidden=false;
@@ -443,7 +468,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    catch{hint.textContent='請核對營業稅徵收率。';return;}
    if(vatRate===null){hint.textContent='請填寫營業稅徵收率。';return;}
   }
-  salesLabel.textContent=leaseMoney224(leaseEngine224.interestAmounts({deposit,annual,months:1,regime,vatRate:vatRate??0}).interest);
+  salesLabel.textContent=leaseMoney224(leaseEngine224.monthlyInterestAmounts({deposit,annual,regime,vatRate:vatRate??0}).interest);
   hint.textContent=annual===null?'押金本金為 0。':'郵政年利率 '+format(annual,4)+'%。逐期金額可在「逐期核對」查看。';
  }
  function activate(next){
@@ -472,24 +497,44 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  }
  function metric(period,part,label,basis){
   const expected=period[part],actual=period.check[part+'Actual'],status=period.check[part+'Status'];
-  const metricKey=part==='rent'?'legacy-rent':part;
-  const options=[['pending','待核對'],['issued','已開立'],['missing','未開立']];
+  const metricKey='legacy-'+part;
   return `<section class="lease-metric224">
-    <header><h3>${label}</h3><span data-lease-outcome="${metricKey}">${leaseOutcomeBadge224(part==='rent'?period.legacyRentResult:period.interestResult)}</span></header>
+    <header><h3>${label}</h3><span data-lease-outcome="${metricKey}">${leaseOutcomeBadge224(part==='rent'?period.legacyRentResult:period.legacyInterestResult)}</span></header>
     <dl><div><dt>應開・${basis}</dt><dd data-lease-expected="${metricKey}">${esc(leaseMoney224(expected))}</dd></div>
     <div><dt>差額・實開減應開</dt><dd data-lease-delta="${metricKey}">${expected!==null&&actual!==null?esc(leaseMoney224(actual-expected)):'—'}</dd></div></dl>
     <div class="lease-fields224">
-     <label class="field">發票狀態<select class="select" id="lease-${part}-status224">${options.map(([key,title])=>leaseOption224(key,title,status)).join('')}</select></label>
+     <label class="field">發票狀態<select class="select" id="lease-${part}-status224">${leaseInvoiceStatuses235.map(([key,title])=>leaseOption224(key,title,status)).join('')}</select></label>
      <label class="field" id="lease-${part}-field224" ${status==='issued'?'':'hidden'}>實開・${basis}<input class="input" id="lease-${part}-actual224" inputmode="decimal" value="${esc(format(actual))}"></label>
     </div>
-    ${part==='interest'?`<div class="lease-interest224"><div><span>押金本金</span> <strong data-lease-deposit>${esc(leaseMoney224(draft.deposit))}</strong></div>
-      <div><span>年利率</span> <strong>${period.annual===null?'未設定':esc(format(period.annual,4))+'%'}</strong></div>
-      <div data-lease-gross>設算利息 ${esc(leaseMoney224(period.gross))}</div>
-      ${field('leaseInterestMonths224','計息月數','number',`min="0" max="${period.months.length}" step="1" placeholder="${period.fullMonths}" value="${esc(period.check.interestMonths??'')}"`)}</div>
-      ${period.needsRate?`<div class="lease-rate-quick224">
-       ${field('leaseQuickRate224',leaseYear224(period.year)+'郵政固定利率（%）','text','inputmode="decimal"')}
-       <button class="btn" type="button" id="leaseSaveQuickRate224">儲存利率</button></div>`:''}`:''}
+    ${part==='interest'?field('leaseInterestMonths224','整期計息月數','number',`min="0" max="${period.months.length}" step="1" placeholder="${period.fullMonths}" value="${esc(period.check.interestMonths??'')}"`):''}
    </section>`;
+ }
+ const interestDelta=row=>row.actual===null||row.interest===null?'—':leaseMoney224(row.actual-row.interest);
+ const interestOutcome=row=>!row.charged&&row.status==='pending'?statusBadge('不計息','gray'):leaseOutcomeBadge224(row.result);
+ function monthlyInterestTable(period){
+  const rows=period.interestRows;
+  return `<section class="lease-metric224 lease-interest-review235" aria-labelledby="leaseInterestReview235">
+   <header><div><h3 id="leaseInterestReview235" tabindex="-1">逐月押金設算利息核對</h3>
+    <div class="lease-rent-total234">本期應列銷售額合計 <strong data-lease-expected="interest">${esc(leaseMoney224(period.interestSalesTotal))}</strong></div></div>
+    <span data-lease-outcome="interest">${leaseOutcomeBadge224(period.interestResult)}</span></header>
+   <div class="lease-interest-source235"><span>押金本金 <strong data-lease-deposit>${esc(leaseMoney224(draft.deposit))}</strong></span>
+    <span>${esc(leaseYear224(period.year))}郵政利率 <strong>${period.annual===null?'未設定':esc(format(period.annual,4))+'%'}</strong></span></div>
+   ${interestRateNeeded235(period)?`<div class="lease-rate-quick224">
+    ${field('leaseQuickRate224',leaseYear224(period.year)+'郵政固定利率（%）','text','inputmode="decimal"')}
+    <button class="btn" type="button" id="leaseSaveQuickRate224">儲存利率</button></div>`:''}
+   <div class="lease-interest-rows235">${rows.map(row=>{
+    const month=rentMonthLabel234(row);
+    return `<div class="lease-interest-row235" data-interest-row235="${esc(row.key)}">
+     <div class="lease-interest-month235"><strong>${esc(month)}</strong>
+      <label class="cases-check219"><input type="checkbox" aria-label="${esc(month)} 計息" data-interest-charge235 ${row.charged?'checked':''}>計息</label></div>
+     <dl><div><dt>設算利息</dt><dd data-interest-gross235>${esc(leaseMoney224(row.gross))}</dd></div>
+      <div><dt>應列銷售額</dt><dd data-interest-sales235>${esc(leaseMoney224(row.interest))}</dd></div></dl>
+     <label class="field">發票狀態<select class="select" data-interest-status235 aria-label="${esc(month)} 押息發票狀態">${leaseInvoiceStatuses235.map(([key,label])=>leaseOption224(key,label,row.status)).join('')}</select></label>
+     <label class="field" data-interest-actual-field235 ${row.status==='issued'?'':'hidden'}>實開銷售額<input class="input" inputmode="decimal" data-interest-actual235 aria-label="${esc(month)} 押息實開銷售額" value="${esc(format(row.actual))}"></label>
+     <div class="lease-interest-result235"><span data-interest-result235>${interestOutcome(row)}</span><small data-interest-delta235>${esc(interestDelta(row))}</small></div>
+    </div>`;
+   }).join('')}</div>
+  </section>`;
  }
  function rentRowsFor(period){
   return rentScope==='year'?periods.filter(row=>row.year===period.year).flatMap(row=>row.rentRows):period.rentRows;
@@ -578,7 +623,9 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
   const legacy=period.check.rentStatus!=='pending'||period.check.rentActual!==null;
   checkPanel.innerHTML=`<header class="lease-check-head224"><h3>${esc(leaseRange224(period))}</h3><button class="btn" type="button" id="leaseDraftNotice224">建立通知</button></header>
    ${monthlyRentTable(period)}
-   <div class="lease-secondary-review234">${metric(period,'interest','押金設算利息','銷售額')}
+   <div class="lease-secondary-review234">${monthlyInterestTable(period)}
+    ${period.hasLegacyInterest?`<details class="lease-legacy-rent234"><summary>舊版整期押息核對</summary>
+     <p>此為整期紀錄。登記單月後，核對結果與通知依單月資料。</p>${metric(period,'interest','整期押息','銷售額')}</details>`:''}
     ${legacy?`<details class="lease-legacy-rent234"><summary>舊版整期租金核對</summary>
      <p>此為整期紀錄。登記單月後，核對結果與通知依單月資料。</p>${metric(period,'rent','整期租金',rentBasisLabel234(draft.rentBasis))}</details>`:''}
    </div>`;
@@ -611,13 +658,13 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
  function refreshCheck(){
   const period=periods.find(period=>period.key===selectedKey);
   for(const part of ['rent','interest']){
-   const metricKey=part==='rent'?'legacy-rent':part;
+   const metricKey='legacy-'+part;
    const output=checkPanel.querySelector(`[data-lease-expected="${metricKey}"]`);
    if(!output)continue;
    const actual=period.check[part+'Actual'],expected=period[part];
    output.textContent=leaseMoney224(expected);
    checkPanel.querySelector(`[data-lease-delta="${metricKey}"]`).textContent=expected!==null&&actual!==null?leaseMoney224(actual-expected):'—';
-   checkPanel.querySelector(`[data-lease-outcome="${metricKey}"]`).innerHTML=leaseOutcomeBadge224(part==='rent'?period.legacyRentResult:period.interestResult);
+   checkPanel.querySelector(`[data-lease-outcome="${metricKey}"]`).innerHTML=leaseOutcomeBadge224(part==='rent'?period.legacyRentResult:period.legacyInterestResult);
   }
   const rentRows=new Map(rentRowsFor(period).map(row=>[row.key,row]));
   for(const element of checkPanel.querySelectorAll('[data-rent-row234]')){
@@ -626,7 +673,16 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    element.querySelector('[data-rent-delta234]').textContent=rentDelta(row);
    element.querySelector('[data-rent-recorded234]').textContent=recordedRent(row);
   }
-  checkPanel.querySelector('[data-lease-gross]').textContent='設算利息 '+leaseMoney224(period.gross);
+  const interestRows=new Map(period.interestRows.map(row=>[row.key,row]));
+  for(const element of checkPanel.querySelectorAll('[data-interest-row235]')){
+   const row=interestRows.get(element.dataset.interestRow235);
+   element.querySelector('[data-interest-gross235]').textContent=leaseMoney224(row.gross);
+   element.querySelector('[data-interest-sales235]').textContent=leaseMoney224(row.interest);
+   element.querySelector('[data-interest-result235]').innerHTML=interestOutcome(row);
+   element.querySelector('[data-interest-delta235]').textContent=interestDelta(row);
+  }
+  checkPanel.querySelector('[data-lease-expected="interest"]').textContent=leaseMoney224(period.interestSalesTotal);
+  checkPanel.querySelector('[data-lease-outcome="interest"]').innerHTML=leaseOutcomeBadge224(period.interestResult);
   const button=[...list.children].find(button=>button.dataset.leasePeriod===selectedKey);
   if(button)button.querySelector('.badge').outerHTML=leaseOutcomeBadge224(leasePeriodStatus224(period));
  }
@@ -664,12 +720,15 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    const visible=val('lease-'+part+'-status224')==='issued';
    $('#lease-'+part+'-field224').hidden=!visible;
   }
+  if(target.matches('[data-interest-status235]')){
+   target.closest('[data-interest-row235]').querySelector('[data-interest-actual-field235]').hidden=target.value!=='issued';
+  }
   attempt(()=>{
    collect();
    const period=periods.find(period=>period.key===selectedKey);
-   if(period.needsRate!==!!$('#leaseQuickRate224')){
+   if(interestRateNeeded235(period)!==!!$('#leaseQuickRate224')){
     drawPeriods();drawCheck();
-    $('#leaseInterestMonths224').focus({preventScroll:true});
+    $('#leaseInterestReview235').focus({preventScroll:true});
    }else refreshCheck();
   });
  };
@@ -703,7 +762,7 @@ function mountContractLease228(modal,baseline,readBasic,recordNotice){
    $('#leaseNoticeDraft228').hidden=!valid;
    if(valid){
     collect();
-    ensurePeriod();
+    ensurePeriod(next==='review'&&pane==='deposit'?interestYear.value:undefined);
     if(next==='review'){drawPeriods();drawCheck();}
     else{
      $('#leaseNoticeRange228').innerHTML=periods.map(period=>leaseOption224(period.key,leaseRange224(period),selectedKey)).join('');

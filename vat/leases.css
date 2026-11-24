@@ -92,13 +92,10 @@
  min-width:0;padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel2)
 }
 .lease-metric224 dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:7px 0;gap:6px}
-.lease-metric224 dt,.lease-interest224{color:var(--muted);font-size:12px}
+.lease-metric224 dt{color:var(--muted);font-size:12px}
 .lease-metric224 dd{margin:3px 0 0;font-variant-numeric:tabular-nums;font-weight:700;overflow-wrap:anywhere}
 .lease-metric224 dl>div:first-child dd{font-size:18px;color:var(--brand)}
 .lease-metric224 .lease-fields224{grid-template-columns:repeat(2,minmax(0,1fr))}
-.lease-interest224{display:flex;align-items:end;flex-wrap:wrap;gap:4px 8px;margin-top:8px;padding-top:7px;border-top:1px solid var(--line)}
-.lease-interest224 .field{width:6em;font-weight:650}
-.lease-interest224 strong{color:var(--text)}
 .lease-rate-quick224{display:flex;align-items:end;flex-wrap:wrap;gap:6px;padding-top:6px;margin-top:7px;border-top:1px solid var(--line)}
 .lease-rate-quick224 .field{flex:1 1 125px;min-width:0;font-size:13px;color:var(--muted)}
 
@@ -271,4 +268,19 @@
  .lease-rent-actual234>small,.lease-rent-expected234>small{display:block;color:var(--muted)}
  .lease-rent-row234 .lease-rent-expected234{grid-column:2;text-align:left;padding-top:0}
  .lease-rent-result234{grid-column:2/-1;display:flex;justify-content:space-between;align-items:center;padding-top:0}
+}
+.lease-interest-source235{display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:8px;color:var(--muted);font-size:13px}
+.lease-interest-source235 strong{color:var(--text);font-variant-numeric:tabular-nums}
+.lease-interest-row235{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.8fr);gap:9px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.lease-interest-month235{display:grid;gap:4px}
+.lease-interest-month235 .cases-check219{display:flex;min-height:36px;padding:4px 7px}
+.lease-interest-row235 dl{display:grid;grid-template-columns:minmax(0,1fr);margin:0}
+.lease-interest-row235 dl>div:first-child dd{font-size:15px;color:var(--text)}
+.lease-interest-row235 dd{overflow-wrap:anywhere}
+.lease-interest-row235 input[data-interest-actual235]{text-align:right;font-variant-numeric:tabular-nums}
+.lease-interest-result235{grid-column:5;text-align:right}
+.lease-interest-result235 small{display:block;margin-top:3px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:620px){
+ .lease-interest-row235{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lease-interest-result235{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}
 }

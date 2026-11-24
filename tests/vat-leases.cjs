@@ -18,6 +18,9 @@ const calc=(leaseData=lease,table=rates,from=start,to=end)=>E.calculate({startDa
 let rows=calc();
 assert.deepEqual(rows.map(x=>x.key),['2025-11-01/2025-12-31','2026-01-01/2026-02-28','2026-03-01/2026-04-30']);
 assert.deepEqual(rows.map(x=>[x.rent,x.gross,x.interest]),[[4000000,30000,28571],[4200000,34500,32857],[4800000,34500,32857]]);
+assert.deepEqual(rows.map(x=>x.interestSalesTotal),[28572,32858,32858]);
+assert.deepEqual(rows[0].interestRows.map(month=>[month.gross,month.interest]),[[15000,14286],[15000,14286]]);
+assert.deepEqual(rows[1].interestRows.map(month=>[month.gross,month.interest]),[[17250,16429],[17250,16429]]);
 assert.deepEqual(rows.map(x=>x.monthlyRent),[[2000000,2000000],[2000000,2200000],[2400000,2400000]]);
 const differentDeposit=calc(E.updateDeposit(lease,start,'60,000'));
 assert.deepEqual(differentDeposit.map(x=>x.rent),rows.map(x=>x.rent));
@@ -54,6 +57,18 @@ assert.equal(rows[0].interest,0);
 assert.equal(rows[1].interest,14286);
 const override={...E.emptyCheck(rows[0].key),interestMonths:1};
 assert.equal(calc({...leap,checks:[override]},[{id:'2024',rate:E.rate('1.5')}],leapStart,leapEnd)[0].interest,14286);
+assert.equal(rows[0].interestRows[0].charged,false);
+assert.equal(rows[0].interestRows[0].interest,0);
+const interestChecks=[
+ {key:'2024-02-15/2024-02-29',charged:true,status:'issued',actual:14286},
+ {key:'2024-03-01/2024-03-31',charged:true,status:'missing',actual:null}
+];
+const monthCheck=calc({...leap,interestChecks},[{id:'2024',rate:E.rate('1.5')}],leapStart,leapEnd);
+assert.equal(monthCheck[0].interestRows[0].interest,14286);
+assert.equal(monthCheck[0].interestResult,'matched');
+assert.equal(monthCheck[1].interestResult,'missing');
+assert.throws(()=>calc({...leap,steps:[{from:'2024-02-16',cents:E.amount('29000')}],interestChecks},[],'2024-02-16',leapEnd),/單月押息/);
+assert.throws(()=>calc({...leap,interestChecks:[{...interestChecks[0],charged:'true'}]},[],leapStart,leapEnd),/單月押息/);
 assert.equal(E.periods('9999-12-01','9999-12-31',1)[0].fullMonths,1);
 assert.throws(()=>E.periods('2024-01-01','2124-01-01',1),/100 年/);
 
