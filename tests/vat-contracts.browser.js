@@ -750,6 +750,30 @@ async function landlordBatchReview(page,h){
  assert.deepEqual(data.rental.withholding,{residency:'nonresident',nhiRule:'exempt'});
  assert.deepEqual(data.leasePayments.map(row=>[row.rentMonth,row.amount,row.nhiRule,row.taxActual,row.nhiActual]),
   [['2026-11',1_900_000,'special',380_000,0],['2026-12',3_000_000,'special',600_000,63_000]]);
+
+ // Model a v2.38.0 legacy manual entry, paid early at a different amount.
+ await nav(page,'contracts');await manage();await tab('review').click();await pay('New').click();
+ await pay('Date').fill('2026-12-29');
+ await pay('Amount').fill('28000');
+ await pay('TaxActual').fill('5600');
+ await pay('Apply').click();
+ await pay('Monthly').locator('summary').click();
+ await pay('MonthYear').selectOption('2027');
+ await month('2027-01').locator('input').fill('2027-01-03');
+ await pay('AddMonths').click();
+ assert.match(await pay('BatchError').innerText(),/未指定月份的既有給付/);
+ assert.equal(await rows.count(),3);
+ await rows.first().locator('[data-pay-edit238]').click();
+ assert.equal(await pay('RentMonth').inputValue(),'');
+ await pay('RentMonth').selectOption('2027-01');
+ assert.equal(await pay('Amount').inputValue(),'28000');
+ await pay('Apply').click();
+ assert.equal(await month('2027-01').count(),0);
+ assert.equal(await rows.count(),3);
+ await save.click();await waitToast(page,'租約費用已儲存');await cancel.click();
+ const saved=(await h.backup(page)).data.contracts.find(row=>row.id===data.id);
+ const early=saved.leasePayments.find(row=>row.rentMonth==='2027-01');
+ assert.deepEqual([early.date,early.amount,early.taxActual],['2026-12-29',2_800_000,560_000]);
 }
 
 module.exports={lifecycle,lists,renewal,batchLeases,rentReminders,renewalCostsAndReferences,landlordPayments,landlordBatchReview};
