@@ -4,6 +4,8 @@ function createContractsEngine220() {
   ? require('./cases-core.js').createCasesEngine219 : createCasesEngine219)();
  const leases=(typeof module!=='undefined'&&module.exports
   ? require('./lease-core.js').createLeaseEngine224 : createLeaseEngine224)();
+ const withholding=(typeof module!=='undefined'&&module.exports
+  ? require('./lease-withholding-core.js').createLeaseWithholding238 : createLeaseWithholding238)();
  const builtins = [{id:'lease',name:'租約'},{id:'other',name:'其他'}];
  const idOK = value => typeof value === 'string' && /^[^<>"'\x00-\x1f]{1,300}$/.test(value) && value.trim() === value;
  const fail = (field,message) => {const error=new Error(message);error.field=field;throw error;};
@@ -104,6 +106,14 @@ function createContractsEngine220() {
    return {at:row.at,start:row.start,end:row.end,mode:row.mode,content:text(row.content,'notice','通知內容',12000,true)};
   });
  }
+ function normalizeRental(raw={}) {
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('lessorKind','出租資料格式有誤');
+  const {kind='company',address='',name='',contact=''}=raw;
+  if(!['company','individual'].includes(kind))fail('lessorKind','請選擇出租對象');
+  const rental={kind,address:text(address,'rentalAddress','租賃地址',300),name:text(name,'lessorName','出租方名稱',120),
+   contact:text(contact,'lessorContact','出租方聯絡方式',120)};
+  return kind==='individual'||rental.address||rental.name||rental.contact?rental:undefined;
+ }
  function normalize(raw,{clients=[],categories=[],references=true}={}) {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');
   const {clientId,categoryId,startDate,endDate,closed,reminderEnabled}=raw;
@@ -114,11 +124,13 @@ function createContractsEngine220() {
   if(startDate&&startDate>endDate)fail('endDate','到期日不可早於開始日期');
   if(typeof closed!=='boolean'||typeof reminderEnabled!=='boolean')fail('closed','合約狀態或提醒設定格式錯誤');
   const leadMonths=months(raw.leadMonths);
+  const rental=normalizeRental(raw.rental),leasePayments=withholding.normalize(raw.leasePayments);
   return {clientId,categoryId,startDate,endDate,closed,reminderEnabled,leadMonths,
    title:text(raw.title,'title','合約名稱',200,true),
    task:text(raw.task,'task','待辦事項',240,reminderEnabled),
    note:text(raw.note,'note','備註',12000),...(raw.lease===undefined?{}:{lease:leases.normalize(raw.lease,startDate,endDate)}),
-   ...(raw.leaseNotices===undefined?{}:{leaseNotices:normalizeNotices(raw.leaseNotices)})};
+   ...(raw.leaseNotices===undefined?{}:{leaseNotices:normalizeNotices(raw.leaseNotices)}),
+   ...(rental?{rental}:{}),...(leasePayments.length?{leasePayments}:{})};
  }
  function assertBaseline(current,baseline) {
   if(!current)throw Error('合約已被刪除，請重新整理');

@@ -175,7 +175,7 @@
 .lease-batch-apply228 output,.lease-batch-count228{font-weight:650;color:var(--brand);font-variant-numeric:tabular-nums}
 .lease-batch-count228{margin-right:auto}
 .lease-batch-columns228,.lease-batch-row-fields228{
- display:grid;grid-template-columns:minmax(0,1.5fr) minmax(118px,1fr) minmax(118px,1fr) repeat(2,minmax(75px,.7fr)) max-content;
+ display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.35fr) minmax(118px,1fr) minmax(118px,1fr) repeat(2,minmax(75px,.7fr)) max-content;
  align-items:center;gap:7px;padding:0 7px
 }
 .lease-batch-columns228{padding-block:5px;font-weight:650;color:var(--muted)}
@@ -195,7 +195,7 @@
  #leaseBatchRows228{display:grid;gap:10px}
  .lease-batch-row228{border:1px solid var(--line);border-radius:7px;padding:6px}
  .lease-batch-row-fields228{grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}
- .lease-batch-row-fields228>:first-child,.lease-batch-row-actions228{grid-column:1/-1}
+ .lease-batch-row-fields228>:nth-child(-n+2),.lease-batch-row-actions228{grid-column:1/-1}
  .lease-batch-row-actions228{justify-content:flex-end}
  .lease-batch-row228 legend,.lease-batch-row-fields228 .field>span{
   position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal
@@ -286,4 +286,42 @@
  .lease-interest-row235{grid-template-columns:24px repeat(2,minmax(0,1fr))}
  .lease-interest-status236{grid-column:2}
  .lease-interest-result235{grid-column:2/-1;display:flex;justify-content:space-between;align-items:center}
+}
+
+.contract-rental238,.lease-batch-lessor238{display:grid;gap:8px 10px;align-items:end}
+.contract-rental238{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lease-batch-lessor238{grid-template-columns:repeat(3,minmax(0,1fr))}
+.lease-pay-toolbar238,.lease-pay-editor-head238{display:flex;justify-content:space-between;align-items:end;gap:8px 16px;flex-wrap:wrap}
+.lease-pay-rules238{font-size:13px;color:var(--muted);max-width:600px}
+.lease-pay-rules238 summary{cursor:pointer;color:var(--brand);font-weight:650}
+.lease-pay-rules238 p{margin:6px 0}
+.lease-pay-rules238 a{color:var(--brand);margin-inline-end:12px}
+.lease-pay-editor238{border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:12px;background:var(--panel)}
+.lease-pay-editor238 h4{font-size:14px;margin:0}
+.lease-pay-editor-head238>.field{max-width:min(100%,280px)}
+.lease-pay-fields238,.lease-pay-metrics238{display:grid;gap:8px;margin-top:10px}
+.lease-pay-fields238{grid-template-columns:repeat(3,minmax(0,1fr))}
+.lease-pay-metrics238{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lease-pay-metrics238 output{font-size:17px;font-weight:750;line-height:1.4;font-variant-numeric:tabular-nums;color:var(--brand)}
+.lease-pay-editor238 footer,.lease-pay-summary238,.lease-pay-actions238{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+.lease-pay-editor238 footer{justify-content:flex-end;margin-top:10px}
+.lease-pay-summary238{margin:12px 0 8px;color:var(--muted);font-size:13px}
+.lease-pay-summary238 strong{color:var(--brand);white-space:nowrap;font-variant-numeric:tabular-nums}
+.lease-pay-row238{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) repeat(2,minmax(0,1.3fr)) 116px;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line)}
+.lease-pay-row238>:not(.lease-pay-actions238){min-width:0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.lease-pay-row238 small{display:block;color:var(--muted);font-size:12px}
+.lease-pay-head238{color:var(--muted);font-size:13px;font-weight:650}
+.lease-pay-actions238{gap:4px}
+@media(max-width:700px){
+ .lease-pay-head238{display:none}
+ .lease-pay-row238,.lease-pay-fields238{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lease-pay-actions238{grid-column:1/-1;justify-content:flex-end}
+ .lease-pay-tax238::before,.lease-pay-nhi238::before{display:block;font-size:12px;color:var(--muted);font-weight:650}
+ .lease-pay-tax238::before{content:"應扣所得稅"}
+ .lease-pay-nhi238::before{content:"應扣補充保費"}
+}
+@media(max-width:480px){
+ .contract-rental238,.lease-batch-lessor238,.lease-pay-fields238,.lease-pay-metrics238{grid-template-columns:minmax(0,1fr)}
+ .lease-pay-editor238{padding:9px}
+ .lease-pay-toolbar238>.field,.lease-pay-editor-head238>.field{width:100%;max-width:none}
 }

@@ -9,13 +9,18 @@ function openLeaseBatch228(clientId=''){
   ['rentBasis','月租基準',leaseOption224('net','未稅',defaults.rentBasis)+leaseOption224('gross','含稅',defaults.rentBasis)],
   ['regime','設算利息方式',leaseOption224('invoice','一般稅額',defaults.regime)+leaseOption224('assessed','查定計算',defaults.regime)]
  ];
- const columns=[['title','合約／據點名稱'],['startDate','開始日'],['endDate','到期日'],['rent','月租（元）'],['deposit','押金本金（元）']];
+ const columns=[['title','合約／據點名稱'],['rentalAddress','租賃地址'],['startDate','開始日'],['endDate','到期日'],['rent','月租（元）'],['deposit','押金本金（元）']];
  showModal('批量新增租約',`<form id="leaseBatchForm228" novalidate>
   <section class="lease-batch-settings228" aria-labelledby="leaseBatchCommon228">
    <h3 id="leaseBatchCommon228">共通設定</h3>
    <div class="lease-batch-fields228">
     ${settings.map(([key,label,options])=>`<label class="field">${label}<select class="select" name="${key}">${options}</select></label>`).join('')}
     <label class="field">提前提醒（月）<input class="input" type="number" name="leadMonths" value="1" min="0" max="36" step="1"></label>
+   </div>
+   <div class="lease-batch-lessor238">
+    <label class="field">出租對象<select class="select" name="lessorKind">${leaseLessorOptions238()}</select></label>
+    <label class="field">出租方名稱<input class="input" name="lessorName" maxlength="120"></label>
+    <label class="field">出租方聯絡方式<input class="input" name="lessorContact" maxlength="120"></label>
    </div>
    <div class="lease-batch-apply228"><button class="btn" type="button" id="leaseBatchApply228">套用至所有列</button>
     <output id="leaseBatchApplied228" role="status"></output></div>
@@ -40,7 +45,8 @@ function openLeaseBatch228(clientId=''){
  const rows=()=>[...list.children];
  const common=key=>form.elements.namedItem(key);
  const read=row=>Object.fromEntries(columns.map(([key])=>[key,row.querySelector(`[data-batch-field="${key}"]`).value]));
- const snapshot=()=>JSON.stringify([...settings.map(([key])=>common(key).value),common('leadMonths').value,rows().map(read)]);
+ const rental=()=>({kind:common('lessorKind').value,name:common('lessorName').value,contact:common('lessorContact').value});
+ const snapshot=()=>JSON.stringify([...settings.map(([key])=>common(key).value),common('leadMonths').value,rental(),rows().map(read)]);
  let busy=false,serial=0;
  function drawCount(){
   const size=list.childElementCount;
@@ -56,7 +62,7 @@ function openLeaseBatch228(clientId=''){
   row.className='lease-batch-row228';
   row.innerHTML=`<legend></legend><div class="lease-batch-row-fields228">${columns.map(([key,label])=>`
    <label class="field"><span>${label}</span><input class="input" data-batch-field="${key}" type="${key.endsWith('Date')?'date':'text'}"
-    ${key==='title'?'maxlength="200"':key.endsWith('Date')?'':'inputmode="decimal"'}
+    ${key==='title'?'maxlength="200"':key==='rentalAddress'?'maxlength="300"':key.endsWith('Date')?'':'inputmode="decimal"'}
     aria-describedby="lease-batch-row-error-${index}" value="${esc(values[key]||'')}"></label>`).join('')}
    <div class="lease-batch-row-actions228"><button type="button" class="btn ghost" data-batch-copy>複製此列</button>
     <button type="button" class="btn ghost danger" data-batch-remove>刪除</button></div></div>
@@ -75,7 +81,7 @@ function openLeaseBatch228(clientId=''){
   let leadMonths;
   try{leadMonths=contractEngine220.months(common('leadMonths').value);}
   catch(failure){common('leadMonths').focus();throw failure;}
-  return {clientId:selected,categoryId:common('categoryId').value,leadMonths,
+  return {clientId:selected,categoryId:common('categoryId').value,leadMonths,rental:rental(),
    lease:{...defaults,frequency:Number(common('frequency').value),rentBasis:common('rentBasis').value,regime:common('regime').value}};
  }
  function showError(message){
@@ -106,6 +112,7 @@ function openLeaseBatch228(clientId=''){
   const rent=amount('rent'),deposit=amount('deposit');
   const lease={...shared.lease,deposit,steps:rent===null?[]:[{from:startDate,cents:rent}]};
   return {id:uid('contract'),...shared,title,startDate,endDate,closed:false,reminderEnabled:true,
+   rental:{...shared.rental,address:data.rentalAddress},
    task:'確認續約或結案',note:'',lease};
  }
  addRow();
@@ -124,6 +131,10 @@ function openLeaseBatch228(clientId=''){
   const row=event.target.closest('.lease-batch-row228');
   if(row)clearRow(row);
   else applied.textContent='';
+ };
+ common('lessorKind').onchange=()=>{
+  const personal=common('lessorKind').value==='individual';
+  for(const key of ['frequency','rentBasis','regime'])common(key).closest('label').hidden=personal;
  };
  $('#leaseBatchApply228').onclick=()=>{
   error.hidden=true;
