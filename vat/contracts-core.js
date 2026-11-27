@@ -112,7 +112,11 @@ function createContractsEngine220() {
   if(!['company','individual'].includes(kind))fail('lessorKind','請選擇出租對象');
   const rental={kind,address:text(address,'rentalAddress','租賃地址',300),name:text(name,'lessorName','出租方名稱',120),
    contact:text(contact,'lessorContact','出租方聯絡方式',120)};
-  return kind==='individual'||rental.address||rental.name||rental.contact?rental:undefined;
+  if(raw.withholding!==undefined){
+   let rules;try{rules=withholding.policy(raw.withholding);}catch(e){fail('lessorNhiMin','扣繳設定'+e.message);}
+   if(rules.residency!=='resident'||rules.nhiRule!=='standard')rental.withholding=rules;
+  }
+  return kind==='individual'||rental.address||rental.name||rental.contact||rental.withholding?rental:undefined;
  }
  function normalize(raw,{clients=[],categories=[],references=true}={}) {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');

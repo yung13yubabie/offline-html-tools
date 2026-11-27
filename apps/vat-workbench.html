@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>營業稅工作台 v2.38.0</title>
+<title>營業稅工作台 v2.38.1</title>
 <style>
 :root{
   --bg:#f4f7fb;--panel:#ffffff;--panel2:#f8fbff;--text:#1f2a3a;--muted:#66758a;--line:#dbe4ee;
@@ -1393,6 +1393,17 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
  .lease-pay-editor238{padding:9px}
  .lease-pay-toolbar238>.field,.lease-pay-editor-head238>.field{width:100%;max-width:none}
 }
+
+.lease-pay-batch239{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.lease-pay-batch239 small{width:100%;color:var(--muted)}
+.lease-pay-row238 .lease-pay-actual239{margin-top:5px;min-width:0}
+.lease-pay-actual239 input{width:100%;min-width:0}
+.lease-pay-month239{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,180px);align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.lease-pay-month239 small{display:block;color:var(--muted)}
+#leasePayMonthly238>summary{cursor:pointer;font-weight:650}
+#leasePayMonthly238>.field{max-width:12rem;margin:6px 0}
+#leasePayAddMonths238{margin-top:8px}
+@media(max-width:440px){.lease-pay-month239{grid-template-columns:minmax(0,1fr)}}
 @media screen {
  .vat-sample-bar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
  .vat-sample-bar .badge{overflow-wrap:anywhere}
@@ -1733,7 +1744,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="brand-wrap">
 <div aria-hidden="true" class="brand-mark"></div>
 <div class="brand-block">
-<div class="brand">營業稅工作台 <small>v2.38.0</small></div>
+<div class="brand">營業稅工作台 <small>v2.38.1</small></div>
 <div class="brand-sub">離線單檔｜稅務待辦、通知、日曆與 PDF 匯出</div>
 </div>
 </div>
@@ -2004,7 +2015,7 @@ body:has(#modalRoot.show .cases-modal219) #toastWrap{z-index:90;pointer-events:n
 <div class="toast-wrap" id="toastWrap"></div>
 <script>
 (()=>{'use strict';
-const APP_VERSION='2.38.0', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
+const APP_VERSION='2.38.1', BACKUP_VERSION=11, DB_NAME='VAT_WORKBENCH_DB', DB_VERSION=7;
 const vatSampleTiers={small:{label:'少量',clients:6,depth:1},medium:{label:'中量',clients:30,depth:2},large:{label:'大量',clients:120,depth:3}};
 const vatSampleQuery=new URLSearchParams(location.hash.slice(1));
 const vatSampleTier=Object.hasOwn(vatSampleTiers,vatSampleQuery.get('vatSample'))?vatSampleQuery.get('vatSample'):'';
@@ -5505,21 +5516,30 @@ function createLeaseWithholding238(){
  const money=value=>Number.isSafeInteger(value)&&value>=0&&value<=maxAmount;
  const specialMin=value=>money(value)&&value>=standardMin&&value<=nhiCap;
  const fail=message=>{throw Error(message);};
+ const defaultPolicy=()=>({residency:'resident',nhiRule:'standard'});
+ function policy(input=defaultPolicy()){
+  if(!input||!residencies.includes(input.residency)||!nhiRules.includes(input.nhiRule))fail('的扣繳身分或健保條件無效');
+  if(input.nhiRule==='special'&&!specialMin(input.nhiMin))fail('須填寫 20,000 元至 1,000 萬元的健保門檻');
+  return {residency:input.residency,nhiRule:input.nhiRule,...(input.nhiRule==='special'?{nhiMin:input.nhiMin}:{})};
+ }
  function normalize(rows=[]){
   if(!Array.isArray(rows)||rows.length>2400)fail('租金給付紀錄格式錯誤或超過 2,400 筆');
-  const ids=new Set();
+  const ids=new Set(),months=new Set();
   return rows.map((row,index)=>{
    const error=message=>fail('第 '+(index+1)+' 筆租金給付'+message);
    if(!row||typeof row.id!=='string'||!/^[-\w]{1,100}$/.test(row.id)||ids.has(row.id))error('編號無效或重複');
    ids.add(row.id);
    if(!dates.date(row.date)||row.date<minDate)error('日期須為 2021 年起的有效日期');
    if(!money(row.amount)||row.amount===0)error('應填寫大於 0 的給付總額');
-   if(!residencies.includes(row.residency)||!nhiRules.includes(row.nhiRule))error('的扣繳身分或健保條件無效');
-   if(row.nhiRule==='special'&&!specialMin(row.nhiMin))error('須填寫 20,000 元至 1,000 萬元的健保門檻');
+   let terms;try{terms=policy(row);}catch(e){error(e.message);}
+   if(row.rentMonth!==undefined){
+    if(typeof row.rentMonth!=='string'||!/^\d{4}-(0[1-9]|1[0-2])$/.test(row.rentMonth)||months.has(row.rentMonth))error('的月租月份無效或重複');
+    months.add(row.rentMonth);
+   }
    if(![row.taxActual,row.nhiActual].every(value=>value===null||money(value)))error('的實扣金額無效');
    if(typeof row.note!=='string'||row.note.length>240)error('的給付備註最多 240 字');
-   const {id,date,amount,residency,nhiRule,taxActual,nhiActual,note}=row;
-   return {id,date,amount,residency,nhiRule,...(nhiRule==='special'?{nhiMin:row.nhiMin}:{}),taxActual,nhiActual,note:note.trim()};
+   const {id,date,amount,taxActual,nhiActual,note,rentMonth}=row;
+   return {id,date,amount,...terms,taxActual,nhiActual,note:note.trim(),...(rentMonth===undefined?{}:{rentMonth})};
   });
  }
  function calculate({amount,residency,nhiRule,nhiMin}){
@@ -5532,7 +5552,14 @@ function createLeaseWithholding238(){
    Number((BigInt(Math.min(amount,nhiCap))*211n+500_000n)/1_000_000n)*100;
   return {tax,nhi};
  }
- return {normalize,calculate,minDate,specialMin};
+ function reconcile(rows,changes,{fill=false}={}){
+  return normalize(rows.map(row=>{
+   if(!changes.has(row.id))return row;
+   const actual=changes.get(row.id),expected=calculate(row);
+   return {...row,taxActual:actual.taxActual??(fill?expected.tax:null),nhiActual:actual.nhiActual??(fill?expected.nhi:null)};
+  }));
+ }
+ return {normalize,calculate,minDate,specialMin,policy,defaultPolicy,reconcile};
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={createLeaseWithholding238};
 
@@ -6063,7 +6090,11 @@ function createContractsEngine220() {
   if(!['company','individual'].includes(kind))fail('lessorKind','請選擇出租對象');
   const rental={kind,address:text(address,'rentalAddress','租賃地址',300),name:text(name,'lessorName','出租方名稱',120),
    contact:text(contact,'lessorContact','出租方聯絡方式',120)};
-  return kind==='individual'||rental.address||rental.name||rental.contact?rental:undefined;
+  if(raw.withholding!==undefined){
+   let rules;try{rules=withholding.policy(raw.withholding);}catch(e){fail('lessorNhiMin','扣繳設定'+e.message);}
+   if(rules.residency!=='resident'||rules.nhiRule!=='standard')rental.withholding=rules;
+  }
+  return kind==='individual'||rental.address||rental.name||rental.contact||rental.withholding?rental:undefined;
  }
  function normalize(raw,{clients=[],categories=[],references=true}={}) {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))fail('title','合約格式錯誤');
@@ -6409,12 +6440,18 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
  const input=(key,type,value,extra='')=>`<input id="contract-${key}220" class="input" type="${type}" value="${esc(value)}" ${extra}>`;
  const customer=`<select class="select" id="contract-clientId220" required><option value="">${clientMissing?'找不到原客戶，請重新選擇':'選擇客戶'}</option>${recordClientOptions220(draft.clientId)}</select>`;
  const category=`<select class="select" id="contract-categoryId220">${categoryMissing?'<option value="" selected>找不到原類別，請重新選擇</option>':''}${contractTypeOptions220(draft.categoryId)}<option value="__new">＋ 新增類別</option></select>`;
- const rental=draft.rental||{};
+ const rental=draft.rental||{},withholding=rental.withholding||leaseWithholding238.defaultPolicy();
  const rentalFields=`<div class="cases-span219 contract-rental238">
   ${field('lessorKind','出租對象',`<select class="select" id="contract-lessorKind220">${leaseLessorOptions238(rental.kind)}</select>`)}
   ${field('lessorName','出租方名稱',input('lessorName','text',rental.name||'','maxlength="120"'))}
   ${field('rentalAddress','租賃地址',input('rentalAddress','text',rental.address||'','maxlength="300"'))}
   ${field('lessorContact','出租方聯絡方式',input('lessorContact','text',rental.contact||'','maxlength="120"'))}
+ </div>
+ <div class="cases-span219 contract-rental238" id="contract-withholding238">
+  <p class="cases-span219 muted">個人房東扣繳預設：套用於新給付；已核對的舊資料不會被改寫。</p>
+  ${field('lessorResidency','所得人身分',`<select id="contract-lessorResidency220" class="select">${leaseResidencies238.map(([key,label])=>leaseOption224(key,label,withholding.residency)).join('')}</select>`)}
+  ${field('lessorNhiRule','二代健保條件',`<select id="contract-lessorNhiRule220" class="select">${leaseNhiRules238.map(([key,label])=>leaseOption224(key,label,withholding.nhiRule)).join('')}</select>`)}
+  ${field('lessorNhiMin','適用門檻（元）',input('lessorNhiMin','text',leaseEngine224.format(withholding.nhiMin),'inputmode="decimal"'))}
  </div>`;
  const basic=`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
   ${renewalFrom?`<p class="cases-span219 contract-renew-info221">上期到期日 <strong>${esc(fmtDate(renewalFrom.endDate))}</strong>${renewalCosts?' · 已帶入月租與押金，可修改':''}</p>`:''}
@@ -6498,9 +6535,14 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
   rentPanel.open=isLease||!!get('monthlyRent').value.trim();
   depositPanel.open=isLease||!!get('deposit').value.trim();
  });
- const lease=existing?mountContractLease228(modal,draft,collect,notice=>commit('save',notice)):null;
+ const readWithholding=()=>{
+  try{return leaseWithholding238.policy({residency:get('lessorResidency').value,nhiRule:get('lessorNhiRule').value,
+   nhiMin:get('lessorNhiRule').value==='special'?leaseEngine224.amount(get('lessorNhiMin').value):null});}
+  catch(e){throw Object.assign(Error('請核對個人房東的二代健保門檻（20,000 元至 1,000 萬元）'),{field:'lessorNhiMin'});}
+ };
+ const lease=existing?mountContractLease228(modal,draft,collect,notice=>commit('save',notice),readWithholding):null;
  const detach=$('#contractDetachPrevious237');
- const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value,get('deposit')?.value,detach?.checked]);
+ const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value,get('deposit')?.value,detach?.checked,...['lessorResidency','lessorNhiRule','lessorNhiMin'].map(key=>get(key).value)]);
  let initial=snapshot();
  let busy=false;
  function updateNewDepositPreview(){
@@ -6519,6 +6561,8 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
  }
  function updatePreview(){
   const personal=get('lessorKind').value==='individual';
+  $('#contract-withholding238').hidden=!personal;
+  get('lessorNhiMin').closest('.field').hidden=get('lessorNhiRule').value!=='special';
   if(rentPanel)get('rentBasis').closest('.field').hidden=personal;
   lease?.syncMode();
   const requiresStart=!!renewalFrom||!!get('monthlyRent')?.value.trim()||!!get('deposit')?.value.trim()||!!existing?.lease;
@@ -6576,6 +6620,8 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
   let saved;
   try{
    if(action==='save'){
+    if(fields.rental.kind==='individual')fields.rental.withholding=readWithholding();
+    else if(existing?.rental?.withholding)fields.rental.withholding=existing.rental.withholding;
     if(fields.categoryId==='__new')contractEngine220.categoryFor(categoryName);
     const costs=lease?lease.collect():leaseEngine224.updateDeposit(
      leaseEngine224.updateOpeningRent(renewalCosts?{...renewalCosts,steps:[]}:undefined,fields.startDate,get('monthlyRent').value,get('rentBasis').value),
@@ -7417,10 +7463,10 @@ function contractLeasePanels228(contract,basic,{recoveredRent=false}={}){
   `)}
  </div>`;
 }
-function mountContractLease228(modal,baseline,readBasic,recordNotice){
+function mountContractLease228(modal,baseline,readBasic,recordNotice,readWithholding){
  let term={...baseline},draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
  const error=$('#leaseError224'),field=leaseField228;
- const paymentReview=mountIndividualLease238(baseline);
+ const paymentReview=mountIndividualLease238(baseline,readWithholding);
  const personal=()=>readBasic().rental.kind==='individual';
  function syncMode(){
   const individual=personal();
@@ -8103,6 +8149,13 @@ function individualLeaseReview238(){
     <a href="https://www.nhi.gov.tw/ch/cp-3283-34642-2589-1.html" target="_blank" rel="noopener">健保署計算公式</a>
    </details>
   </div>
+  <details id="leasePayMonthly238" class="lease-pay-editor238" hidden>
+   <summary>按合約月租批量帶入</summary>
+   <p class="muted">依各月租金及基本資料的扣繳預設試算。只填已各自付款月份的實際給付日；一次合付多月，改用「新增給付」填該次總額。</p>
+   <label class="field">租金年度<select class="select" id="leasePayMonthYear238"></select></label>
+   <div id="leasePayMonthRows238"></div>
+   <button class="btn" type="button" id="leasePayAddMonths238">帶入已填給付日的月份</button>
+  </details>
   <form id="leasePayEditor238" class="lease-pay-editor238" hidden novalidate>
    <div class="lease-pay-editor-head238"><h4 id="leasePayEditorTitle238"></h4>
     <label class="field" id="leasePayImportField238">帶入契約月租<select class="select" id="leasePayImport238"></select></label></div>
@@ -8129,16 +8182,27 @@ function individualLeaseReview238(){
     <button class="btn primary" type="submit" id="leasePayApply238">套用給付</button></footer>
   </form>
   <div id="leasePaySummary238" class="lease-pay-summary238" aria-live="polite"></div>
+  <div class="lease-pay-batch239" id="leasePayBatch238" hidden>
+   <label class="cases-check219"><input type="checkbox" id="leasePaySelectAll238">全選顯示的給付</label>
+   <span id="leasePaySelection238" role="status"></span>
+   <button class="btn primary" id="leasePayCompare238" type="button">核對勾選</button>
+   <button class="btn" id="leasePayFill238" type="button">空白帶入應扣後核對</button>
+   <button class="btn ghost" id="leasePayClear238" type="button">清除勾選的實扣</button>
+   <small>填了實扣才會判定相符或有差額。只有「空白帶入應扣後核對」會補入空白；已填金額不變。</small>
+  </div>
+  <p id="leasePayBatchError238" class="notice warn" role="alert" tabindex="-1" hidden></p>
   <div id="leasePayList238"></div>
  </section>`;
 }
 
-function mountIndividualLease238(baseline){
+function mountIndividualLease238(baseline,readWithholding=leaseWithholding238.defaultPolicy){
  let rows=clone(baseline.leasePayments||[]),editingId='',editorInitial='',references=[];
  const editor=$('#leasePayEditor238'),year=$('#leasePayYear238'),list=$('#leasePayList238');
  const get=key=>$('#leasePay'+key+'238');
  const fields={date:get('Date'),amount:get('Amount'),residency:get('Residence'),nhiRule:get('NhiRule'),
   nhiMin:get('NhiMin'),taxActual:get('TaxActual'),nhiActual:get('NhiActual'),note:get('Note')};
+ const selected=new Set(),actualEdits=new Map(),monthDrafts=new Map();
+ const monthYear=get('MonthYear'),monthRows=get('MonthRows');
  const format=leaseEngine224.format;
  const snapshot=()=>JSON.stringify(Object.values(fields).map(input=>input.value));
  const dirtyEditor=()=>!editor.hidden&&snapshot()!==editorInitial;
@@ -8161,12 +8225,14 @@ function mountIndividualLease238(baseline){
  }
  function edit(row){
   if(dirtyEditor()&&!window.confirm('此筆給付尚未套用，捨棄編輯？'))return;
+  const terms=row||readWithholding();
   editingId=row?.id||uid('leasepay');
   get('EditorTitle').textContent=row?'編輯給付':'新增給付';
   for(const key of ['amount','nhiMin','taxActual','nhiActual'])fields[key].value=format(row?.[key]);
   fields.date.value=row?.date||'';
-  fields.residency.value=row?.residency||'resident';
-  fields.nhiRule.value=row?.nhiRule||'standard';
+  fields.residency.value=terms.residency;
+  fields.nhiRule.value=terms.nhiRule;
+  fields.nhiMin.value=format(terms.nhiMin);
   fields.note.value=row?.note||'';
   get('Import').value='';
   get('Error').hidden=true;
@@ -8180,10 +8246,13 @@ function mountIndividualLease238(baseline){
   editor.hidden=true;
  }
  function collect(submit=false){
+  if(!submit&&actualEdits.size)throw Error('實扣金額尚未套用，請勾選這些給付後按「核對勾選」。');
+  if(!submit&&monthDrafts.size)throw Error('月租給付日尚未套用。請先帶入本年度紀錄，或清空草稿給付日。');
   if(editor.hidden)return rows;
   if(!dirtyEditor()&&!submit){closeEditor();return rows;}
+  const old=rows.find(item=>item.id===editingId);
   const row={id:editingId,date:fields.date.value,...amounts(),taxActual:amount('taxActual'),
-   nhiActual:amount('nhiActual'),note:fields.note.value};
+   nhiActual:amount('nhiActual'),note:fields.note.value,...(old?.rentMonth?{rentMonth:old.rentMonth}:{})};
   const next=rows.filter(item=>item.id!==editingId);
   rows=leaseWithholding238.normalize([...next,row]);
   if(year.value&&year.value!==row.date.slice(0,4))year.value='';
@@ -8196,22 +8265,57 @@ function mountIndividualLease238(baseline){
   const badge=actual===expected?statusBadge('相符','green'):statusBadge('差 '+leaseMoney224(actual-expected),'orange');
   return `<strong>${esc(leaseMoney224(expected))}</strong><small>實扣 ${esc(leaseMoney224(actual))} ${badge}</small>`;
  }
+ function run(action){
+  get('BatchError').hidden=true;
+  try{action();}
+  catch(error){get('BatchError').textContent=error.message;get('BatchError').hidden=false;get('BatchError').focus();}
+ }
+ const monthKey=row=>row.key.slice(0,7);
+ const visibleRows=()=>rows.filter(row=>!year.value||row.date.startsWith(year.value+'-')).sort((a,b)=>b.date.localeCompare(a.date));
+ function drawMonths(){
+  const chosen=monthYear.value,years=[...new Set(references.map(row=>monthKey(row).slice(0,4)))].sort().reverse();
+  const current=localDate().slice(0,4),preferred=years.includes(chosen)?chosen:years.includes(current)?current:years[0];
+  monthYear.innerHTML=years.map(key=>leaseOption224(key,leaseYear224(key),preferred)).join('');
+  const recorded=new Set(rows.map(row=>row.rentMonth).filter(Boolean));
+  const refs=references.filter(row=>monthKey(row).startsWith(monthYear.value+'-')&&!recorded.has(monthKey(row)));
+  get('Monthly').hidden=!references.length&&!monthDrafts.size;
+  get('AddMonths').disabled=!refs.length;
+  if(!refs.length){monthRows.innerHTML='<p class="muted">這個年度無可帶入的月租。</p>';return;}
+  let terms;
+  try{terms=readWithholding();}
+  catch(error){monthRows.innerHTML='<p class="muted">請先核對基本資料的扣繳設定。</p>';get('AddMonths').disabled=true;return;}
+  monthRows.innerHTML=refs.map(row=>{
+   const key=monthKey(row),date=monthDrafts.get(key)||'',expected=leaseWithholding238.calculate({amount:row.base,...terms});
+   return `<div class="lease-pay-month239" data-pay-month239="${esc(key)}"><div><strong>${esc(rentMonthLabel234(row))}</strong> · 月租 ${esc(leaseMoney224(row.base))}
+    <small>扣繳 ${esc(leaseMoney224(expected.tax))} · 二代健保 ${esc(leaseMoney224(expected.nhi))}</small></div>
+    <label class="field">實際給付日<input class="input" type="date" min="${leaseWithholding238.minDate}" data-pay-month-date239 value="${esc(date)}"></label></div>`;
+  }).join('');
+ }
+ function syncSelection(){
+  const picks=[...list.querySelectorAll('[data-pay-select239]')];
+  const count=picks.filter(node=>node.checked).length;
+  get('Selection').textContent='已勾選 '+count+' 筆';
+  get('SelectAll').checked=!!picks.length&&count===picks.length;
+  get('SelectAll').indeterminate=count>0&&count<picks.length;
+  for(const action of ['Compare','Fill','Clear'])get(action).disabled=!count;
+ }
  function render(){
   const selection=year.value,years=[...new Set(rows.map(row=>row.date.slice(0,4)))].sort().reverse();
   year.innerHTML='<option value="">全部年度</option>'+years.map(key=>leaseOption224(key,leaseYear224(key),selection)).join('');
-  const visible=rows.filter(row=>!year.value||row.date.startsWith(year.value+'-'))
-   .sort((a,b)=>b.date.localeCompare(a.date));
+  const visible=visibleRows();
   const calculations=visible.map(row=>({row,...leaseWithholding238.calculate(row)}));
   const total=key=>calculations.reduce((sum,row)=>sum+row[key],0);
   get('Summary').innerHTML=`<span>${visible.length} 筆給付</span><span>應扣所得稅 <strong>${esc(leaseMoney224(total('tax')))}</strong></span>
    <span>應扣補充保費 <strong>${esc(leaseMoney224(total('nhi')))}</strong></span>`;
+  get('Batch').hidden=!visible.length;
+  const inline=(row,part,label)=>`<label class="field lease-pay-actual239">實扣${label}<input class="input" inputmode="decimal" data-pay-actual239="${part}" aria-label="${esc(fmtDate(row.date)+' 實扣'+label)}" value="${esc(actualEdits.get(row.id)?.[part]??format(row[part]))}"></label>`;
   list.innerHTML=calculations.length?`<div class="lease-pay-table238">
    <div class="lease-pay-row238 lease-pay-head238" aria-hidden="true"><span>給付日</span><span>給付總額</span><span>應扣所得稅</span><span>應扣補充保費</span><span></span></div>
    ${calculations.map(({row,tax,nhi})=>`<div class="lease-pay-row238" data-lease-pay-row238="${esc(row.id)}">
-    <div><time datetime="${esc(row.date)}">${esc(fmtDate(row.date))}</time>${row.note?`<small>${esc(row.note)}</small>`:''}</div>
+    <div><label class="cases-check219"><input type="checkbox" data-pay-select239 aria-label="${esc('勾選給付 '+fmtDate(row.date))}" ${selected.has(row.id)?'checked':''}><time datetime="${esc(row.date)}">${esc(fmtDate(row.date))}</time></label>${row.note?`<small>${esc(row.note)}</small>`:''}</div>
     <strong>${esc(leaseMoney224(row.amount))}</strong>
-    <div class="lease-pay-tax238">${comparison(tax,row.taxActual)}</div>
-    <div class="lease-pay-nhi238">${comparison(nhi,row.nhiActual)}</div>
+    <div class="lease-pay-tax238">${comparison(tax,row.taxActual)}${inline(row,'taxActual','所得稅')}</div>
+    <div class="lease-pay-nhi238">${comparison(nhi,row.nhiActual)}${inline(row,'nhiActual','補充保費')}</div>
     <div class="lease-pay-actions238"><button class="btn small" type="button" data-pay-edit238>編輯</button>
       <button class="btn small ghost danger" type="button" data-pay-delete238>刪除</button></div>
    </div>`).join('')}</div>`:'<div class="empty">尚無給付紀錄</div>';
@@ -8232,15 +8336,83 @@ function mountIndividualLease238(baseline){
   const row=references.find(item=>item.key===event.target.value);
   if(row){fields.amount.value=format(row.base);updatePreview();}
  };
- year.onchange=render;
+ year.onchange=()=>{selected.clear();render();};
+ monthYear.onchange=()=>drawMonths();
+ monthRows.oninput=event=>{
+  if(!event.target.matches('[data-pay-month-date239]'))return;
+  const key=event.target.closest('[data-pay-month239]').dataset.payMonth239;
+  if(event.target.value)monthDrafts.set(key,event.target.value);else monthDrafts.delete(key);
+ };
+ get('AddMonths').onclick=()=>run(()=>{
+  if(!editor.hidden)throw Error('請先套用或取消單筆給付編輯。');
+  const terms=readWithholding(),refs=references.filter(row=>monthKey(row).startsWith(monthYear.value+'-')&&monthDrafts.has(monthKey(row)));
+  if(!refs.length)throw Error('請先填至少一筆實際給付日。');
+  const dates=refs.map(ref=>monthDrafts.get(monthKey(ref)));
+  if(new Set(dates).size!==dates.length||dates.some(date=>rows.some(row=>row.date===date)))throw Error('給付日重複。若同一天合付數月，請改用「新增給付」登記一次總額。');
+  const staged=refs.map(ref=>({id:uid('leasepay'),date:monthDrafts.get(monthKey(ref)),amount:ref.base,...terms,
+   taxActual:null,nhiActual:null,note:rentMonthLabel234(ref)+' 租金',rentMonth:monthKey(ref)}));
+  rows=leaseWithholding238.normalize([...rows,...staged]);
+  refs.forEach(ref=>monthDrafts.delete(monthKey(ref)));year.value='';
+  drawMonths();render();toast('已帶入 '+staged.length+' 筆給付，儲存合約後生效');
+ });
+ function batch(mode){
+  run(()=>{
+   if(!editor.hidden)throw Error('請先套用或取消單筆給付編輯。');
+   const picked=visibleRows().filter(row=>selected.has(row.id));
+   if(!picked.length)return;
+   if(mode==='clear'&&!window.confirm('清除勾選給付的兩項實扣，保留給付與應扣試算？'))return;
+   const updates=new Map(picked.map(row=>{
+    const raw=actualEdits.get(row.id)||{};
+    const read=key=>{
+     if(mode==='clear')return null;
+     if(!(key in raw))return row[key];
+     try{return leaseEngine224.amount(raw[key]);}
+     catch{throw Error(fmtDate(row.date)+' 的實扣須是非負金額，最多兩位小數。');}
+    };
+    return [row.id,{taxActual:read('taxActual'),nhiActual:read('nhiActual')}];
+   }));
+   if(mode==='compare'&&[...updates.values()].every(row=>row.taxActual===null&&row.nhiActual===null))throw Error('沒有可核對的實扣。請輸入實扣，或選擇「空白帶入應扣後核對」。');
+   rows=leaseWithholding238.reconcile(rows,updates,{fill:mode==='fill'});
+   picked.forEach(row=>actualEdits.delete(row.id));render();
+   toast((mode==='clear'?'已清除':'已核對')+' '+picked.length+' 筆給付，儲存合約後生效');
+  });
+ }
+ get('Compare').onclick=()=>batch('compare');
+ get('Fill').onclick=()=>batch('fill');
+ get('Clear').onclick=()=>batch('clear');
+ get('SelectAll').onchange=event=>{
+  for(const pick of list.querySelectorAll('[data-pay-select239]')){
+   pick.checked=event.target.checked;
+   const id=pick.closest('[data-lease-pay-row238]').dataset.leasePayRow238;
+   if(pick.checked)selected.add(id);else selected.delete(id);
+  }
+  syncSelection();
+ };
+ list.onchange=event=>{
+  if(!event.target.matches('[data-pay-select239]'))return;
+  const id=event.target.closest('[data-lease-pay-row238]').dataset.leasePayRow238;
+  if(event.target.checked)selected.add(id);else selected.delete(id);
+  syncSelection();
+ };
+ list.oninput=event=>{
+  const key=event.target.dataset.payActual239;
+  if(!key)return;
+  const id=event.target.closest('[data-lease-pay-row238]').dataset.leasePayRow238;
+  const draft=actualEdits.get(id)||{},old=rows.find(row=>row.id===id);
+  if(event.target.value===format(old[key]))delete draft[key];else draft[key]=event.target.value;
+  if(Object.keys(draft).length)actualEdits.set(id,draft);else actualEdits.delete(id);
+ };
  list.onclick=event=>{
   const id=event.target.closest('[data-lease-pay-row238]')?.dataset.leasePayRow238;
   if(!id)return;
-  if(event.target.closest('[data-pay-edit238]'))edit(rows.find(row=>row.id===id));
+  if(event.target.closest('[data-pay-edit238]'))run(()=>{
+   if(actualEdits.has(id))throw Error('此筆有尚未套用的實扣，請先批量核對。');
+   edit(rows.find(row=>row.id===id));
+  });
   if(event.target.closest('[data-pay-delete238]')&&window.confirm('移除這筆給付與實扣紀錄？儲存合約後生效。')){
-   rows=rows.filter(row=>row.id!==id);
+   rows=rows.filter(row=>row.id!==id);actualEdits.delete(id);selected.delete(id);
    if(editingId===id)closeEditor();
-   render();
+   drawMonths();render();
    get('New').focus();
   }
  };
@@ -8251,9 +8423,9 @@ function mountIndividualLease238(baseline){
    get('ImportField').hidden=!references.length;
    get('Import').innerHTML='<option value="">選擇租金月份</option>'+references.map(row=>
     leaseOption224(row.key,rentMonthLabel234(row)+' · '+leaseMoney224(row.base),value)).join('');
-   render();
+   drawMonths();render();
   },
-  snapshot:()=>JSON.stringify([rows,!editor.hidden&&dirtyEditor()?snapshot():'']),
+  snapshot:()=>JSON.stringify([rows,!editor.hidden&&dirtyEditor()?snapshot():'',[...actualEdits],[...monthDrafts]]),
   collect
  };
 }
@@ -8934,7 +9106,7 @@ boot();
 
 
 <!-- OFFLINE_REVIEW_BEGIN -->
-<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.38.0"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
+<script>window.OFFLINE_REVIEW_CONFIG={"appId": "vat-workbench", "appVersion": "2.38.1"};if(document.documentElement.dataset.vatSample)window.OFFLINE_REVIEW_CONFIG.appId+='-sample';</script>
 <script>
 /* Offline Review 1.1.0 — dependency-free, inline this file before </body>. */
 (() => {

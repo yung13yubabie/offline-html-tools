@@ -683,4 +683,73 @@ async function landlordPayments(page,h){
  assert.equal(next.leasePayments,undefined);
 }
 
-module.exports={lifecycle,lists,renewal,batchLeases,rentReminders,renewalCostsAndReferences,landlordPayments};
+async function landlordBatchReview(page,h){
+ await page.clock.setFixedTime(formatDate(2026,11,1));
+ await nav(page,'contracts');
+ const save=page.locator('#saveContract220'),cancel=page.locator('#cancelContract220');
+ const pay=key=>page.locator('#leasePay'+key+'238');
+ const tab=key=>page.locator('#lease-tab-'+key);
+ const rows=page.locator('[data-lease-pay-row238]');
+ const manage=()=>page.locator('[data-contract-id220]').filter({hasText:'合成批量個人租約'}).getByRole('button',{name:'管理合約',exact:true}).click();
+ await page.locator('#newContract220').click();
+ await field(page,'title').fill('合成批量個人租約');
+ await field(page,'clientId').selectOption('synthetic-a');
+ await field(page,'lessorKind').selectOption('individual');
+ await field(page,'lessorResidency').selectOption('nonresident');
+ await field(page,'lessorNhiRule').selectOption('special');
+ await field(page,'lessorNhiMin').fill('29500');
+ await field(page,'startDate').fill('2026-11-01');
+ await field(page,'endDate').fill('2027-01-31');
+ await field(page,'monthlyRent').fill('19000');
+ await save.click();await waitToast(page,'合約已儲存');await manage();
+ await tab('setup').click();
+ await page.locator('#leaseAddStep224').click();
+ await page.locator('.lease-step-date').last().fill('2026-12-01');
+ await page.locator('.lease-step-rent').last().fill('30000');
+ await tab('review').click();
+ await pay('Monthly').locator('summary').click();
+ const month=key=>page.locator('[data-pay-month239="'+key+'"]');
+ assert.match(await month('2026-11').innerText(),/19,000 元[\s\S]+3,800 元[\s\S]+健保 0 元/);
+ assert.match(await month('2026-12').innerText(),/30,000 元[\s\S]+6,000 元[\s\S]+633 元/);
+ await month('2026-11').locator('input').fill('2026-11-04');
+ await month('2026-12').locator('input').fill('2026-11-04');
+ await pay('AddMonths').click();
+ assert.match(await pay('BatchError').innerText(),/給付日重複/);
+ assert.equal(await rows.count(),0);
+ await month('2026-12').locator('input').fill('2026-12-07');
+ await pay('AddMonths').click();
+ assert.equal(await rows.count(),2);
+ assert.equal(await month('2026-11').count(),0);
+ assert.match(await rows.first().innerText(),/待核對/);
+ const actual=(row,key)=>row.locator('[data-pay-actual239="'+key+'"]');
+ await actual(rows.first(),'nhiActual').fill('630');
+ await pay('SelectAll').check();
+ await pay('Compare').click();
+ assert.match(await rows.first().innerText(),/差 -3 元/);
+ assert.equal(await actual(rows.first(),'taxActual').inputValue(),'');
+ await pay('Fill').click();
+ assert.equal(await actual(rows.first(),'nhiActual').inputValue(),'630');
+ assert.equal(await actual(rows.first(),'taxActual').inputValue(),'6000');
+ assert.equal(await actual(rows.last(),'nhiActual').inputValue(),'0');
+ assert.equal(await actual(rows.last(),'taxActual').inputValue(),'3800');
+ await page.setViewportSize({width:320,height:844});
+ assert(await pay('List').evaluate(node=>node.scrollWidth<=node.clientWidth+1));
+ await page.setViewportSize({width:1440,height:1000});
+ await save.click();await waitToast(page,'租約費用已儲存');await cancel.click();
+ await h.reload(page);await nav(page,'contracts');await manage();
+ assert.equal(await field(page,'lessorNhiMin').inputValue(),'29500');
+ await field(page,'lessorNhiRule').selectOption('exempt');
+ await tab('review').click();
+ assert.match(await rows.first().innerText(),/633 元[\s\S]+630 元/);
+ await pay('New').click();
+ assert.equal(await pay('Residence').inputValue(),'nonresident');
+ assert.equal(await pay('NhiRule').inputValue(),'exempt');
+ await pay('Cancel').click();
+ await save.click();await waitToast(page,'租約費用已儲存');await cancel.click();
+ const data=(await h.backup(page)).data.contracts.find(row=>row.title==='合成批量個人租約');
+ assert.deepEqual(data.rental.withholding,{residency:'nonresident',nhiRule:'exempt'});
+ assert.deepEqual(data.leasePayments.map(row=>[row.rentMonth,row.amount,row.nhiRule,row.taxActual,row.nhiActual]),
+  [['2026-11',1_900_000,'special',380_000,0],['2026-12',3_000_000,'special',600_000,63_000]]);
+}
+
+module.exports={lifecycle,lists,renewal,batchLeases,rentReminders,renewalCostsAndReferences,landlordPayments,landlordBatchReview};

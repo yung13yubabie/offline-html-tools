@@ -275,10 +275,10 @@ function contractLeasePanels228(contract,basic,{recoveredRent=false}={}){
   `)}
  </div>`;
 }
-function mountContractLease228(modal,baseline,readBasic,recordNotice){
+function mountContractLease228(modal,baseline,readBasic,recordNotice,readWithholding){
  let term={...baseline},draft=baseline.lease?leaseEngine224.normalize(baseline.lease,baseline.startDate,baseline.endDate):leaseEngine224.defaultLease();
  const error=$('#leaseError224'),field=leaseField228;
- const paymentReview=mountIndividualLease238(baseline);
+ const paymentReview=mountIndividualLease238(baseline,readWithholding);
  const personal=()=>readBasic().rental.kind==='individual';
  function syncMode(){
   const individual=personal();

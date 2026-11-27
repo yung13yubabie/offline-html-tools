@@ -325,3 +325,14 @@
  .lease-pay-editor238{padding:9px}
  .lease-pay-toolbar238>.field,.lease-pay-editor-head238>.field{width:100%;max-width:none}
 }
+
+.lease-pay-batch239{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+.lease-pay-batch239 small{width:100%;color:var(--muted)}
+.lease-pay-row238 .lease-pay-actual239{margin-top:5px;min-width:0}
+.lease-pay-actual239 input{width:100%;min-width:0}
+.lease-pay-month239{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,180px);align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.lease-pay-month239 small{display:block;color:var(--muted)}
+#leasePayMonthly238>summary{cursor:pointer;font-weight:650}
+#leasePayMonthly238>.field{max-width:12rem;margin:6px 0}
+#leasePayAddMonths238{margin-top:8px}
+@media(max-width:440px){.lease-pay-month239{grid-template-columns:minmax(0,1fr)}}

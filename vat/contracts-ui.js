@@ -247,12 +247,18 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
  const input=(key,type,value,extra='')=>`<input id="contract-${key}220" class="input" type="${type}" value="${esc(value)}" ${extra}>`;
  const customer=`<select class="select" id="contract-clientId220" required><option value="">${clientMissing?'找不到原客戶，請重新選擇':'選擇客戶'}</option>${recordClientOptions220(draft.clientId)}</select>`;
  const category=`<select class="select" id="contract-categoryId220">${categoryMissing?'<option value="" selected>找不到原類別，請重新選擇</option>':''}${contractTypeOptions220(draft.categoryId)}<option value="__new">＋ 新增類別</option></select>`;
- const rental=draft.rental||{};
+ const rental=draft.rental||{},withholding=rental.withholding||leaseWithholding238.defaultPolicy();
  const rentalFields=`<div class="cases-span219 contract-rental238">
   ${field('lessorKind','出租對象',`<select class="select" id="contract-lessorKind220">${leaseLessorOptions238(rental.kind)}</select>`)}
   ${field('lessorName','出租方名稱',input('lessorName','text',rental.name||'','maxlength="120"'))}
   ${field('rentalAddress','租賃地址',input('rentalAddress','text',rental.address||'','maxlength="300"'))}
   ${field('lessorContact','出租方聯絡方式',input('lessorContact','text',rental.contact||'','maxlength="120"'))}
+ </div>
+ <div class="cases-span219 contract-rental238" id="contract-withholding238">
+  <p class="cases-span219 muted">個人房東扣繳預設：套用於新給付；已核對的舊資料不會被改寫。</p>
+  ${field('lessorResidency','所得人身分',`<select id="contract-lessorResidency220" class="select">${leaseResidencies238.map(([key,label])=>leaseOption224(key,label,withholding.residency)).join('')}</select>`)}
+  ${field('lessorNhiRule','二代健保條件',`<select id="contract-lessorNhiRule220" class="select">${leaseNhiRules238.map(([key,label])=>leaseOption224(key,label,withholding.nhiRule)).join('')}</select>`)}
+  ${field('lessorNhiMin','適用門檻（元）',input('lessorNhiMin','text',leaseEngine224.format(withholding.nhiMin),'inputmode="decimal"'))}
  </div>`;
  const basic=`<form id="contractForm220" class="cases-form219 record-form222" novalidate>
   ${renewalFrom?`<p class="cases-span219 contract-renew-info221">上期到期日 <strong>${esc(fmtDate(renewalFrom.endDate))}</strong>${renewalCosts?' · 已帶入月租與押金，可修改':''}</p>`:''}
@@ -336,9 +342,14 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
   rentPanel.open=isLease||!!get('monthlyRent').value.trim();
   depositPanel.open=isLease||!!get('deposit').value.trim();
  });
- const lease=existing?mountContractLease228(modal,draft,collect,notice=>commit('save',notice)):null;
+ const readWithholding=()=>{
+  try{return leaseWithholding238.policy({residency:get('lessorResidency').value,nhiRule:get('lessorNhiRule').value,
+   nhiMin:get('lessorNhiRule').value==='special'?leaseEngine224.amount(get('lessorNhiMin').value):null});}
+  catch(e){throw Object.assign(Error('請核對個人房東的二代健保門檻（20,000 元至 1,000 萬元）'),{field:'lessorNhiMin'});}
+ };
+ const lease=existing?mountContractLease228(modal,draft,collect,notice=>commit('save',notice),readWithholding):null;
  const detach=$('#contractDetachPrevious237');
- const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value,get('deposit')?.value,detach?.checked]);
+ const snapshot=()=>JSON.stringify([collect(),get('categoryName').value,term?.value,get('monthlyRent')?.value,get('rentBasis')?.value,get('deposit')?.value,detach?.checked,...['lessorResidency','lessorNhiRule','lessorNhiMin'].map(key=>get(key).value)]);
  let initial=snapshot();
  let busy=false;
  function updateNewDepositPreview(){
@@ -357,6 +368,8 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
  }
  function updatePreview(){
   const personal=get('lessorKind').value==='individual';
+  $('#contract-withholding238').hidden=!personal;
+  get('lessorNhiMin').closest('.field').hidden=get('lessorNhiRule').value!=='special';
   if(rentPanel)get('rentBasis').closest('.field').hidden=personal;
   lease?.syncMode();
   const requiresStart=!!renewalFrom||!!get('monthlyRent')?.value.trim()||!!get('deposit')?.value.trim()||!!existing?.lease;
@@ -414,6 +427,8 @@ function openContract220(id,renewalFrom=null,initialPane='basic') {
   let saved;
   try{
    if(action==='save'){
+    if(fields.rental.kind==='individual')fields.rental.withholding=readWithholding();
+    else if(existing?.rental?.withholding)fields.rental.withholding=existing.rental.withholding;
     if(fields.categoryId==='__new')contractEngine220.categoryFor(categoryName);
     const costs=lease?lease.collect():leaseEngine224.updateDeposit(
      leaseEngine224.updateOpeningRent(renewalCosts?{...renewalCosts,steps:[]}:undefined,fields.startDate,get('monthlyRent').value,get('rentBasis').value),
